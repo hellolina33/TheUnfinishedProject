@@ -7,7 +7,9 @@
 <meta name="description" content="Your life in weeks: how many are left, and what you can still fit into them. Day 2 of The Unfinished 30.">
 <meta property="og:title" content="How many weeks do you have left?">
 <meta property="og:description" content="Your life in weeks, and what you can still fit into them. Day 2 of The Unfinished 30, by Salah Khenissi.">
-<meta property="og:image" content="https://the-unfinished-30.vercel.app/og.jpg">
+<meta property="og:image" content="https://the-unfinished-30.vercel.app/day-02-howmanyweeks/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script defer src="/_vercel/insights/script.js"></script>
 <style>[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
 <title>How Many Weeks · The Unfinished 30</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -285,10 +287,43 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .foot { max-width: 1240px; margin: 0 auto; padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted); }
 .foot a { color: var(--ink); }
 .foot nav { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+
+/* ---------- v2 additions ---------- */
+.chbar { background: #0E1638; color: #F6F4FB; font-size: 13px; line-height: 1.35; }
+.chbar .in { max-width: 1240px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 2px 14px; align-items: center; justify-content: space-between; padding-block: 7px; }
+@media (max-width: 560px) { .chtag { display: none; } }
+.chbar a { color: #FFD84D; font-weight: 700; text-decoration: none; }
+.prog { position: absolute; left: 0; bottom: -1px; height: 3px; width: 0; background: var(--accent); }
+.skip { display: inline-block; margin: 22px 0 0 14px; font-weight: 700; color: var(--ink); }
+.note.cta { border-style: solid; font-size: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.dob { display: grid; grid-template-columns: 76px minmax(0, 1fr) 96px; gap: 8px; }
+select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; min-height: 46px; padding: 0 10px; width: 100%; min-width: 0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+.out { margin: 0; font-size: 16px; }
+.out .n { font-family: var(--f-display); font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.out + .out { margin-top: 8px; }
+.add-row.wide { grid-template-columns: minmax(0, 1fr) 160px auto; }
+@media (max-width: 460px) { .add-row.wide { grid-template-columns: minmax(0, 1fr); } }
+.fam { display: grid; gap: 8px; }
+.fam .r { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 8px; align-items: center; font-size: 13px; }
+.fam .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fam .track { position: relative; height: 14px; background: var(--c-blank); border-radius: 4px; overflow: hidden; }
+.fam .seg { position: absolute; top: 0; bottom: 0; background: var(--c-lived); }
+.fam .seg.you { background: var(--c-left); }
+.fam .ov { position: absolute; top: 0; bottom: 0; background: var(--accent); }
+.fam .nowl { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--ink); }
+.check { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; min-height: 36px; }
+.check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.stage canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.goals .sh { color: var(--accent); font-weight: 700; }
+@media (max-width: 899px) { .scene { min-height: 58vh; min-height: 58svh; } }
 </style>
 
 </head>
 <body>
+<div class="chbar"><div class="in gutter"><span><a href="https://the-unfinished-30.vercel.app/" target="_blank" rel="noopener">The Unfinished 30</a> · <span data-i18n="chDay"></span><span class="chtag" data-i18n="chTag"></span></span><span><span data-i18n="chBy"></span> <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span></div></div>
 <header class="bar">
   <div class="bar-in gutter">
     <a class="brand" href="#top">
@@ -299,7 +334,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       </svg>
       <span data-i18n="brand">Combien de semaines</span>
     </a>
-    <a class="day" href="https://the-unfinished-30.vercel.app/" style="text-decoration:none" data-i18n="dayTag">Jour 02 / 30</a>
+    <a class="day" href="https://the-unfinished-30.vercel.app/" style="text-decoration:none" data-i18n="dayTag">Day 2/30</a>
     <nav class="nav" aria-label="Sections">
       <a href="#histoire" data-i18n="navStory">Histoire</a>
       <a href="#methode" data-i18n="navMethod">Méthode</a>
@@ -312,6 +347,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       <button id="lang-fr" type="button" aria-pressed="false">FR</button>
     </div>
   </div>
+  <div class="prog" id="prog" aria-hidden="true"></div>
 </header>
 
 <main id="top">
@@ -324,7 +360,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
           <span id="viz-example" class="pill" hidden></span>
         </div>
         <div id="stage" class="stage">
-          <canvas id="cv" role="img" aria-label=""></canvas>
+          <canvas id="cv" role="img" aria-label="" tabindex="0"></canvas>
           <div id="tip" class="tip" hidden></div>
         </div>
         <div id="legend" class="legend"></div>
@@ -333,14 +369,19 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 
     <div class="scenes">
       <article class="scene scene-you" data-scene="you" id="s-you">
-        <p class="kick" data-i18n="kicker">The Unfinished 30 · Jour 02 sur 30</p>
+        <p class="kick" data-i18n="kicker">The Unfinished 30 · Day 2/30</p>
         <h1 class="h1" data-i18n="h1">Combien de semaines il te reste ?</h1>
         <p class="lead" data-i18n="lead"></p>
+        <div id="example-note" class="note cta" hidden><span data-i18n="example"></span><button type="button" class="btn" id="example-go" data-i18n="exampleBtn"></button></div>
         <div class="panel">
           <div class="form">
             <div class="field">
-              <label class="label" for="birth" data-i18n="lblBirth"></label>
-              <input id="birth" type="date" min="1900-01-01">
+              <span class="label" id="lbl-birth" data-i18n="lblBirth"></span>
+              <div class="dob" role="group" aria-labelledby="lbl-birth">
+                <select id="dob-d"></select>
+                <select id="dob-m"></select>
+                <input id="dob-y" type="number" inputmode="numeric" min="1900" placeholder="1990">
+              </div>
             </div>
             <div class="field">
               <label class="label" for="life-num" data-i18n="lblLife"></label>
@@ -350,16 +391,19 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
               </div>
             </div>
           </div>
+          <div class="form">
+            <div class="field"><label class="label" for="country" data-i18n="lblCountry"></label><select id="country"></select></div>
+            <div class="field"><label class="label" for="sex" data-i18n="lblSex"></label><select id="sex"></select></div>
+          </div>
           <p class="hint" data-i18n="lifeHint"></p>
           <p id="hero-err" class="err" role="alert"></p>
         </div>
-        <p id="example-note" class="note" data-i18n="example" hidden></p>
         <div class="answer" aria-live="polite">
           <p id="hero-big" class="big">0</p>
           <p id="hero-unit" class="unit"></p>
           <p id="hero-sub" class="sub"></p>
         </div>
-        <a class="start" href="#s-life" data-i18n="start"></a>
+        <a class="start" href="#s-life" data-i18n="start"></a><a class="skip" href="#s-card" data-i18n="skip"></a>
         <p class="privacy-line" data-i18n="privacyShort"></p>
       </article>
 
@@ -373,6 +417,20 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         <p class="kick" data-kick></p>
         <h2 class="say" id="h-lived"></h2>
         <p class="body" id="p-lived"></p>
+        <div class="panel">
+          <details class="add" id="ev-details">
+            <summary data-i18n="evAdd"></summary>
+            <form id="ev-form" novalidate>
+              <div class="add-row wide">
+                <div class="field"><label class="label" for="ev-label" data-i18n="evLabel"></label><input id="ev-label" type="text" maxlength="40" autocomplete="off"></div>
+                <div class="field"><label class="label" for="ev-date" data-i18n="evDate"></label><input id="ev-date" type="date" min="1900-01-01"></div>
+                <button class="btn" type="submit" data-i18n="addBtn"></button>
+              </div>
+              <p id="ev-err" class="err" role="alert"></p>
+            </form>
+            <ul id="ev-list" class="goals"></ul>
+          </details>
+        </div>
       </article>
 
       <article class="scene" data-scene="left" id="s-left">
@@ -410,7 +468,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
             </div>
             <p class="hint" id="parent-hint"></p>
           </div>
+          <div id="grand-row" class="field" hidden>
+            <div class="row2">
+              <label class="label" for="grand-age" data-i18n="grandLbl"></label>
+              <input id="grand-age" type="number" min="40" max="125" step="1" inputmode="numeric">
+            </div>
+            <p class="hint" id="grand-hint"></p>
+          </div>
           <p id="moment-result" class="result" aria-live="polite"></p>
+          <p id="moment-plus" class="hint"></p>
           <div class="actions"><button id="moment-remove" class="mini" type="button" hidden data-i18n="removeMoment"></button></div>
           <details class="add" id="add-details">
             <summary data-i18n="addMoment"></summary>
@@ -423,6 +489,59 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
               <p id="add-err" class="err" role="alert"></p>
             </form>
           </details>
+        </div>
+      </article>
+
+      <article class="scene" data-scene="circles" id="s-circles">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-circles"></h2>
+        <p class="body" id="p-circles"></p>
+        <div class="panel">
+          <div id="tabs" class="tabs" role="tablist"></div>
+          <div id="tab-friends" class="field" role="tabpanel" hidden>
+            <div class="grid2">
+              <div class="field"><label class="label" for="fr-name" data-i18n="frName"></label><input id="fr-name" type="text" maxlength="30" autocomplete="off"></div>
+              <div class="field"><label class="label" for="fr-met" data-i18n="frMet"></label><input id="fr-met" type="date" min="1900-01-01"></div>
+            </div>
+            <div id="fr-out"></div>
+            <p class="hint" data-i18n="frHint"></p>
+          </div>
+          <div id="tab-family" class="field" role="tabpanel" hidden>
+            <form id="kid-form" novalidate>
+              <div class="add-row wide">
+                <div class="field"><label class="label" for="kid-name" data-i18n="kidName"></label><input id="kid-name" type="text" maxlength="30" autocomplete="off"></div>
+                <div class="field"><label class="label" for="kid-birth" data-i18n="kidBirth"></label><input id="kid-birth" type="date" min="1950-01-01"></div>
+                <button class="btn" type="submit" data-i18n="addBtn"></button>
+              </div>
+              <p id="kid-err" class="err" role="alert"></p>
+            </form>
+            <ul id="kid-list" class="goals"></ul>
+            <p class="label" data-i18n="famTitle"></p>
+            <div id="fam" class="fam"></div>
+            <p class="hint" id="fam-hint"></p>
+          </div>
+          <div id="tab-couple" class="field" role="tabpanel" hidden>
+            <div class="grid2">
+              <div class="field"><label class="label" for="cp-since" data-i18n="cpSince"></label><input id="cp-since" type="date" min="1900-01-01"></div>
+              <div class="field"><label class="label" for="cp-birth" data-i18n="cpBirth"></label><input id="cp-birth" type="date" min="1900-01-01"></div>
+            </div>
+            <div id="cp-out"></div>
+            <div class="actions"><button id="cp-ics" class="btn ghost" type="button" data-i18n="cpIcs"></button></div>
+          </div>
+          <div id="tab-work" class="field" role="tabpanel" hidden>
+            <div class="grid2">
+            <div class="field"><label class="label" for="w-start" data-i18n="wStart"></label><input id="w-start" data-w="workStart" type="number" min="14" max="80" step="1" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-retire" data-i18n="wRetire"></label><input id="w-retire" data-w="retire" type="number" min="40" max="95" step="1" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-days" data-i18n="wDays"></label><input id="w-days" data-w="workDays" type="number" min="1" max="7" step="1" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-hol" data-i18n="wHol"></label><input id="w-hol" data-w="holidays" type="number" min="0" max="60" step="1" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-leave" data-i18n="wLeave"></label><input id="w-leave" data-w="leave" type="number" min="0" max="90" step="1" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-meet" data-i18n="wMeet"></label><input id="w-meet" data-w="meetH" type="number" min="0" max="80" step="1" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-comm" data-i18n="wComm"></label><input id="w-comm" data-w="commuteM" type="number" min="0" max="360" step="5" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-screen" data-i18n="wScreen"></label><input id="w-screen" data-w="screenH" type="number" min="0" max="18" step="0.5" inputmode="decimal"></div>
+            <div class="field"><label class="label" for="w-proj" data-i18n="wProj"></label><input id="w-proj" data-w="projY" type="number" min="0" max="52" step="1" inputmode="decimal"></div>
+            </div>
+            <div id="w-out"></div>
+          </div>
         </div>
       </article>
 
@@ -447,6 +566,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
               <div class="field"><label class="label" for="goal-age" data-i18n="goalAge"></label><input id="goal-age" type="number" min="1" max="110" step="1" inputmode="numeric"></div>
               <button class="btn" type="submit" data-i18n="goalAdd"></button>
             </div>
+            <div class="actions" style="margin-top:8px"><label class="check"><input type="checkbox" id="goal-shared"><span data-i18n="goalShared"></span></label><button type="button" class="mini" id="goal-example" data-i18n="goalExample"></button></div>
             <p id="goal-err" class="err" role="alert"></p>
           </form>
           <ul id="goal-list" class="goals"></ul>
@@ -460,10 +580,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         <p class="body" id="p-card"></p>
         <div class="panel">
           <p id="card-need" class="hint" hidden data-i18n="cardNeed"></p>
+          <div class="field"><span class="label" data-i18n="cardTheme"></span><div id="card-themes" class="chips" role="group"></div></div>
+          <div class="field"><span class="label" data-i18n="cardFormat"></span><div id="card-fmts" class="chips" role="group"></div></div>
           <div class="actions">
             <button id="card-btn" class="btn" type="button" data-i18n="cardBtn"></button>
+            <button id="card-share" class="btn ghost" type="button" hidden data-i18n="cardShare"></button>
             <a id="card-dl" class="btn ghost" hidden data-i18n="cardDl"></a>
+            <button id="remind-btn" class="btn ghost" type="button" data-i18n="remindBtn"></button>
           </div>
+          <p id="card-status" class="status" role="status"></p>
           <img id="card-img" class="card-img" alt="" hidden>
           <p id="card-hint" class="hint" hidden data-i18n="cardHint"></p>
         </div>
@@ -492,8 +617,11 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       <div class="content">
         <p data-i18n="privacy1"></p>
         <p data-i18n="privacy2"></p>
+        <p data-i18n="privacy3"></p>
         <button id="clear-btn" class="btn ghost" type="button" data-i18n="clear"></button>
         <p id="clear-status" class="status" role="status"></p>
+        <div class="actions" style="margin-top:14px"><button id="export-btn" class="btn ghost" type="button" data-i18n="exportBtn"></button><label class="btn ghost" for="import-file" data-i18n="importBtn"></label><input id="import-file" type="file" accept="application/json,.json" class="sr"></div>
+        <p id="io-status" class="status" role="status"></p>
       </div>
     </section>
 
@@ -514,6 +642,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 <footer class="foot gutter">
   <span><span data-i18n="madeBy"></span> <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span>
   <span><a href="https://the-unfinished-30.vercel.app/" target="_blank" rel="noopener">The Unfinished 30</a> · <span data-i18n="footDay"></span></span>
+  <span><a href="/day-02-howmanyweeks/" download="how-many-weeks.html" data-i18n="dlHtml"></a></span>
   <nav aria-label="Sections">
     <a href="#methode" data-i18n="navMethod"></a>
     <a href="#sources" data-i18n="navSources"></a>
@@ -533,7 +662,28 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   var STEPS_PER_MIN = 120;
   var BOOKS_WORLD = 129864880;
   var WORK_START = 22, WORK_END = 65, ADULT = 18, FORGOT_ROWS = 3;
-  var SCENES = ["you", "life", "lived", "left", "rows", "feel", "times", "last", "choose", "card"];
+  var SCENES = ["you", "life", "lived", "left", "rows", "feel", "times", "circles", "last", "choose", "card"];
+  var APP_URL = "https://the-unfinished-30.vercel.app/day-02-howmanyweeks/";
+  var TABS = ["friends", "family", "couple", "work"];
+  var THEMES = ["me", "friends", "family", "couple", "work"];
+  var WORK_DEFAULTS = { workStart: 22, retire: 65, workDays: 5, holidays: 11, leave: 20, meetH: 8, commuteM: 60, screenH: 3, projY: 4 };
+  var WORK_LIMITS = { workStart: [14, 80], retire: [40, 95], workDays: [1, 7], holidays: [0, 60], leave: [0, 90], meetH: [0, 80], commuteM: [0, 360], screenH: [0, 18], projY: [0, 52] };
+  // United Nations, World Population Prospects 2024: life expectancy at birth, 2023 estimates [both, female, male].
+  var COUNTRIES = [
+    ["AU", "Australia", "Australie", 83.92, 85.74, 82.10], ["BE", "Belgium", "Belgique", 82.11, 84.33, 79.86], ["BR", "Brazil", "Brésil", 75.85, 78.98, 72.76],
+    ["CA", "Canada", "Canada", 82.63, 84.83, 80.43], ["CN", "China", "Chine", 77.95, 80.93, 75.20], ["CI", "Côte d'Ivoire", "Côte d'Ivoire", 61.94, 64.13, 60.02],
+    ["DZ", "Algeria", "Algérie", 76.26, 77.70, 74.89], ["EG", "Egypt", "Égypte", 71.63, 73.81, 69.49], ["FR", "France", "France", 83.33, 86.09, 80.43],
+    ["DE", "Germany", "Allemagne", 81.38, 83.76, 79.02], ["IN", "India", "Inde", 72.00, 73.60, 70.52], ["ID", "Indonesia", "Indonésie", 71.15, 73.27, 69.04],
+    ["IT", "Italy", "Italie", 83.72, 85.75, 81.57], ["JP", "Japan", "Japon", 84.71, 87.74, 81.69], ["MY", "Malaysia", "Malaisie", 76.66, 79.37, 74.27],
+    ["MX", "Mexico", "Mexique", 75.07, 77.81, 72.24], ["MA", "Morocco", "Maroc", 75.31, 77.60, 73.17], ["NL", "Netherlands", "Pays-Bas", 82.16, 83.74, 80.54],
+    ["NG", "Nigeria", "Nigeria", 54.46, 54.74, 54.18], ["PH", "Philippines", "Philippines", 69.83, 72.82, 66.89], ["PT", "Portugal", "Portugal", 82.36, 85.12, 79.44],
+    ["SA", "Saudi Arabia", "Arabie saoudite", 78.73, 81.16, 77.10], ["SN", "Senegal", "Sénégal", 68.68, 70.75, 66.79], ["SG", "Singapore", "Singapour", 83.74, 86.24, 81.24],
+    ["ZA", "South Africa", "Afrique du Sud", 66.14, 69.60, 62.61], ["KR", "South Korea", "Corée du Sud", 84.33, 87.16, 81.19], ["ES", "Spain", "Espagne", 83.67, 86.31, 80.96],
+    ["SE", "Sweden", "Suède", 83.26, 85.10, 81.44], ["CH", "Switzerland", "Suisse", 83.95, 85.83, 82.01], ["TH", "Thailand", "Thaïlande", 76.41, 80.86, 72.16],
+    ["TN", "Tunisia", "Tunisie", 76.51, 79.15, 73.92], ["AE", "United Arab Emirates", "Émirats arabes unis", 82.91, 84.20, 81.98], ["GB", "United Kingdom", "Royaume-Uni", 81.30, 83.21, 79.36],
+    ["US", "United States", "États-Unis", 79.30, 81.85, 76.86], ["VN", "Vietnam", "Viêt Nam", 74.59, 79.26, 69.88]
+  ];
+
   var R = { BLANK: 0, LIVED: 1, LEFT: 2, ACCENT: 3, NOW: 4 };
   var LAST_TIMES = [[4, 11], [5, 37], [6, 20], [7, 44], [9, 9], [10, 31], [12, 16], [14, 40]];
   var SAMPLE_CELL = [20, 38]; // the "1 week" cell shown in scene 02
@@ -541,24 +691,24 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   var T = {
     fr: {
       brand: "Combien de semaines",
-      dayTag: "Jour 02 / 30",
+      dayTag: "Jour 2/30",
       navStory: "Histoire", navMethod: "Méthode", navSources: "Sources", navPrivacy: "Confidentialité", navFaq: "FAQ",
-      kicker: "The Unfinished 30 · Jour 02 sur 30",
+      kicker: "The Unfinished 30 · Jour 2/30",
       h1: "Combien de semaines il te reste ?",
       lead: "Entre ta date de naissance et vois ta vie en semaines : celles derrière toi, celles devant, et tout ce qui peut encore y tenir. Tes étés, tes livres, tes jours avec tes parents, ce que tu veux finir.",
       lblBirth: "Date de naissance",
       lblLife: "Espérance de vie visée",
-      lifeHint: "80 ans par défaut. C'est une hypothèse, pas une prédiction.",
-      example: "Exemple affiché : une personne de 35 ans. Entre ta date de naissance pour voir ta vie.",
+      lifeHint: "80 ans par défaut, ou la moyenne de ton pays. C'est une hypothèse, pas une prédiction.",
+      example: "Tu regardes un exemple : une personne de 35 ans.",
       unit: "semaines devant toi",
       sub: "soit {y} ans · tu vis ta semaine n° {n}",
       subOver: "Tu as dépassé l'espérance de vie choisie. Monte-la pour voir plus loin.",
       start: "Lancer l'histoire ↓",
-      privacyShort: "Rien ne quitte ton navigateur. Pas de compte, pas de serveur.",
+      privacyShort: "Rien de ce que tu tapes ne quitte ton navigateur. Pas de compte.",
       errFuture: "La date doit être dans le passé.",
       errRange: "Choisis entre 50 et 110 ans.",
       pillExample: "Exemple",
-      titles: { you: "Ta vie", life: "Une vie", lived: "Déjà vécu", left: "Ce qui reste", rows: "Les lignes", feel: "Le ressenti", times: "Les fois", last: "Dernières fois", choose: "Choisir", card: "Ta carte" },
+      titles: { you: "Ta vie", life: "Une vie", lived: "Déjà vécu", left: "Ce qui reste", rows: "Les lignes", feel: "Le ressenti", times: "Les fois", last: "Dernières fois", circles: "Tes proches", choose: "Choisir", card: "Ta carte" },
       h: {
         life: "Une vie de {L} ans.",
         lived: "Tu en as déjà vécu {lived}.",
@@ -568,6 +718,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         feel: "Les lignes ne se ressentent pas pareil.",
         times: "Ce qui s'épuise : <s>les semaines</s> les fois.",
         last: "Il y a une dernière fois pour tout.",
+        circles: "Les semaines se partagent. Compte-les avec tes proches.",
         choose: "Ça ne suffit pas pour tout. Ça suffit pour ce que tu choisis.",
         card: "Combien de semaines il te reste ?"
       },
@@ -576,12 +727,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         lived: "{pct} % de la grille. La case orange, c'est cette semaine : du {d1} au {d2}.",
         left: "Si chaque semaine était un pas, à 120 pas par minute, tu marcherais tout le reste de ta vie en {walk}.",
         leftOver: "Tu as dépassé l'espérance de vie choisie. Monte-la en haut de page pour voir plus loin.",
-        rows: "Les trois premières, presque personne ne s'en souvient : le premier souvenir arrive en moyenne vers 3 ans et demi. Et si tu travailles de 22 à 65 ans, ce bloc fait {work} semaines, soit {workPct} % de ta vie d'adulte.",
+        rows: "Les trois premières, presque personne ne s'en souvient : le premier souvenir arrive en moyenne vers 3 ans et demi. Et si tu travailles de {ws} à {we} ans, ce bloc fait {work} semaines, soit {workPct} % de ta vie d'adulte.",
         rowsLeft: " Il t'en reste {workLeft} à travailler.",
         feel: "À 10 ans, une année, c'est 10 % de ta vie. À {age} ans, c'est {p} %. Les étés qui semblaient éternels se mettent à filer.",
         feelYoung: "À 10 ans, une année, c'est 10 % de ta vie. À 50 ans, ce sera 2 %. Les étés qui semblent éternels finiront par filer.",
         times: "Choisis un moment et règle sa fréquence. La grille montre combien de fois il en reste.",
         last: "Quelqu'un t'a porté dans ses bras pour la dernière fois. Un dernier après-midi à jouer dehors avec les copains. Ce jour-là, personne ne le savait.",
+        circles: "Choisis un cercle : amis, famille, couple ou travail. La grille suit.",
         choose: "Note ce que tu veux finir, et l'âge avant lequel tu veux l'avoir fait. La grille l'allume.",
         card: "Garde ta carte, partage-la, et reviens dans un an : elle aura perdu 52 cases."
       },
@@ -596,22 +748,27 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       lblToday: "Aujourd'hui",
       lg: {
         lived: "Vécues", now: "Cette semaine", left: "À venir", week: "Une semaine",
-        remaining: "Restantes", forgot: "Oubliées", work: "Travail, de 22 à 65 ans",
+        remaining: "Restantes", forgot: "Oubliées", work: "Travail, de {ws} à {we} ans",
         feel: "Une année à 10 ans, et à ton âge", last: "Des dernières fois, sans le savoir",
         choose: "Ce que tu choisis", goal: "Tes objectifs"
       },
-      moments: { summers: "Étés", sea: "La mer", books: "Livres", parents: "Tes parents" },
-      freq: { sea: "Fois par an", books: "Livres par an", parents: "Jours par an avec eux", custom: "Fois par an" },
+      moments: { summers: "Étés", sea: "La mer", books: "Livres", parents: "Tes parents", parentsCalls: "Appels à tes parents", grandparents: "Tes grands-parents", friendsDinner: "Dîners entre amis", friendsTrip: "Voyages entre amis", dateNights: "Soirées en amoureux" },
+      freq: { sea: "Fois par an", books: "Livres par an", parents: "Jours par an avec eux", parentsCalls: "Appels par an", grandparents: "Jours par an avec eux", friendsDinner: "Dîners par an", friendsTrip: "Voyages par an", dateNights: "Soirées par an", custom: "Fois par an" },
       parentLbl: "Âge du plus jeune de tes parents",
       parentHint: "Laisse vide pour utiliser ton âge + 30 ans ({a} ans).",
       res: {
         summers: "Il te reste environ {n} étés.",
         sea: "Encore environ {n} fois à la mer.",
         books: "Encore environ {n} livres.",
-        booksWorld: " Il en existe près de 130 millions : à ce rythme, il te faudrait {lives} vies pour tous les lire.",
+        booksWorld: " Google en comptait près de 130 millions en 2010 : à ce rythme, il te faudrait {lives} vies pour tous les lire.",
         parents: "Encore environ {n} jours avec eux, si tout va bien.",
         parentsPct: " Si tu as vécu avec eux jusqu'à 18 ans, tu as déjà passé {pct} % de ton temps avec eux.",
         parentsNone: "Avec l'espérance choisie, la grille ne compte plus rien ici. Les moyennes ne savent rien de tes parents.",
+        parentsCalls: "Encore environ {n} appels à tes parents, si tout va bien.",
+        grandparents: "Encore environ {n} jours avec tes grands-parents, si tout va bien.",
+        friendsDinner: "Encore environ {n} dîners avec tes amis proches.",
+        friendsTrip: "Encore environ {n} voyages entre amis.",
+        dateNights: "Encore environ {n} soirées en amoureux.",
         custom: "Encore environ {n} fois : {name}."
       },
       addMoment: "Ajouter un moment",
@@ -641,7 +798,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       cardUnit: "semaines devant moi · soit {y} ans",
       cardLived: "VÉCUES", cardLeft: "RESTANTES", cardSummers: "ÉTÉS", cardGoal: "PROCHAIN OBJECTIF",
       cardGoalIn: "dans {w} semaines",
-      cardFooter: "The Unfinished 30 · Jour 02 · Gratuit",
+      cardFooter: "The Unfinished 30 · Jour 2/30 · Gratuit",
       stage: "{title}. {left} semaines restantes sur {total}.",
       tipWeek: "Semaine {n} de ta vie", tipAge: "{a} ans, semaine {w}", tipDates: "Du {d1} au {d2}",
       tipLived: "Vécue", tipNow: "Cette semaine", tipLeft: "À venir", tipGoal: "Objectif : {t}",
@@ -651,10 +808,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         ["Semaines vécues", "Jours entre ta date de naissance et aujourd'hui, divisés par 7, arrondis vers le bas. Le calcul se fait en jours calendaires : les changements d'heure ne décalent rien."],
         ["La grille", "Une ligne par année, 52 cases par ligne. Total = espérance × 52. Une vraie année fait 52,18 semaines : sur 80 ans, la grille ignore environ 14 semaines."],
         ["Les pas", "120 pas par minute, soit une marche soutenue. Minutes = semaines restantes ÷ 120."],
-        ["Les lignes", "Les 3 premières lignes sont marquées oubliées : le premier souvenir arrive en moyenne vers 3 ans et demi. Le bloc travail va de 22 à 65 ans, à titre d'exemple. La vie d'adulte commence à 18 ans."],
+        ["Les lignes", "Les 3 premières lignes sont marquées oubliées : le premier souvenir arrive en moyenne vers 3 ans et demi. Le bloc travail va de 22 à 65 ans par défaut, réglable dans « Tes proches », onglet Travail. La vie d'adulte commence à 18 ans."],
         ["Le ressenti", "Une année vaut 1 ÷ ton âge de ta vie vécue. C'est la loi proportionnelle proposée par Paul Janet en 1877."],
         ["Les fois", "Années restantes × fréquence par an. Pour tes parents, l'horizon s'arrête au plus court : ta vie ou la leur, avec la même espérance. La part déjà passée suppose que tu as vécu avec eux tous les jours jusqu'à 18 ans, comme le calcul de Tim Urban."],
-        ["Tes objectifs", "Chaque objectif s'allume sur la dernière semaine avant l'âge choisi."]
+        ["Tes objectifs", "Chaque objectif s'allume sur la dernière semaine avant l'âge choisi."],
+        ["Pays et sexe", "Espérance de vie à la naissance, Nations unies, World Population Prospects 2024, estimations 2023, arrondie à l'année. C'est une moyenne : pour une personne qui a déjà 35 ans, le vrai chiffre est un peu plus élevé."],
+        ["Tes proches", "Semaines depuis une date = jours ÷ 7. Couple : la date de bascule est le jour où le temps passé ensemble égale le temps vécu avant. Enfants : semaines jusqu'à leurs 18 ans. Les barres de la famille supposent la même espérance pour tous."],
+        ["Travail", "Jours travaillés par an = jours par semaine × 52, moins les jours fériés et les congés. Réunions et trajets sont convertis en semaines pleines de 24 h. Les heures éveillées comptent 16 h par jour."]
       ],
       sourcesTitle: "Sources",
       sources: [
@@ -663,46 +823,177 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         ["Paul Janet, « Une illusion d'optique interne »", "Revue philosophique de la France et de l'étranger, n° 3, 1877, p. 497 à 502. Une année ressentie comme une fraction de la vie déjà vécue. Lien : synthèse récente qui le cite.", "https://arxiv.org/pdf/2310.05945"],
         ["Google Books : 129 864 880 livres", "Estimation publiée en août 2010 par Leonid Taycher, ingénieur chez Google. Lien : NPR, 6 août 2010.", "https://www.npr.org/sections/thetwo-way/2010/08/06/129027628/google-tallies-129-864-880-titles"],
         ["Qi Wang et Carole Peterson, 2014", "Developmental Psychology. L'âge du premier souvenir est estimé en moyenne à 3 ans et demi. Lien : Cornell Chronicle.", "https://news.cornell.edu/node/283106"],
-        ["Sénèque, De la brièveté de la vie", "De brevitate vitae, vers 49 apr. J.-C., chapitre I. La citation de la scène 09.", ""]
+        ["Sénèque, De la brièveté de la vie", "De brevitate vitae, vers 49 apr. J.-C., chapitre I. La citation de la scène « Choisir ».", ""],
+        ["Nations unies, World Population Prospects 2024", "Espérance de vie à la naissance par pays et par sexe, estimations 2023. Lien : tableau de synthèse sur Wikipédia.", "https://en.wikipedia.org/wiki/List_of_countries_by_life_expectancy"]
       ],
       privacyTitle: "Confidentialité",
-      privacy1: "Pas de compte, pas de serveur, pas de suivi. Rien n'est envoyé nulle part.",
-      privacy2: "Ta date, tes moments et tes objectifs sont gardés dans le stockage local de ton navigateur, sur cet appareil uniquement.",
+      privacy1: "Pas de compte, pas de serveur. Rien de ce que tu tapes n'est envoyé nulle part.",
+      privacy2: "Ta date, tes moments, tes proches et tes objectifs sont gardés dans le stockage local de ton navigateur, sur cet appareil uniquement.",
+      privacy3: "La page compte les visites de façon anonyme avec Vercel Web Analytics : sans cookie, et sans rien de ce que tu tapes.",
       clear: "Effacer mes données",
       cleared: "C'est effacé. L'exemple est de retour.",
       faqTitle: "FAQ",
       faq: [
-        ["Pourquoi 80 ans ?", "C'est un chiffre rond, pas personnel. Tim Urban, lui, utilise 90 ans. Règle-la en haut de page."],
+        ["Pourquoi 80 ans ?", "C'est un chiffre rond, pas personnel. Choisis ton pays pour prendre la moyenne de l'ONU, ou règle-la toi-même en haut de page."],
+        ["Quelqu'un voit les noms de mes proches ?", "Non. Les prénoms et les dates restent dans ton navigateur, comme tout le reste."],
         ["Pourquoi 52 semaines par an ?", "Pour que chaque ligne fasse une année pile. L'écart avec les 52,18 semaines réelles est expliqué dans la méthode."],
-        ["C'est un peu déprimant, non ?", "Ça peut piquer. Le but est de choisir à quoi tu donnes tes semaines. La scène 09 sert à ça."],
+        ["C'est un peu déprimant, non ?", "Ça peut piquer. Le but est de choisir à quoi tu donnes tes semaines. La scène « Choisir » sert à ça."],
         ["Je peux reprendre le code ?", "Oui. Comme tous les prototypes de The Unfinished 30, tu peux le réutiliser et l'adapter. Un crédit à Salah sur LinkedIn fait plaisir, sans obligation."],
-        ["Mes données partent-elles quelque part ?", "Non. Tout reste dans ton navigateur. Voir la section Confidentialité."]
+        ["Mes données partent-elles quelque part ?", "Non. Tout reste dans ton navigateur. Pour changer d'appareil, exporte un fichier puis importe-le. Voir la section Confidentialité."]
       ],
       unfTitle: "Ce qui reste inachevé",
-      unfText: "L'espérance de vie est une seule valeur, la même pour tout le monde : pas de pays, pas de sexe, pas d'historique de santé. Le bloc travail est fixé de 22 à 65 ans. Les fois sont des moyennes lissées sur l'année. Rien n'est synchronisé : sur un autre appareil, tu repars de zéro. La carte de partage n'a été testée que sur quelques navigateurs.",
+      unfText: "L'espérance de vie est une moyenne nationale par sexe : elle ignore ta santé et ton mode de vie. Les fois sont des moyennes lissées sur l'année. Rien ne se synchronise tout seul : exporte puis importe tes données pour changer d'appareil. Les rappels d'agenda sont des fichiers que tu ajoutes toi-même. La carte et le partage n'ont été testés que sur quelques navigateurs.",
       madeBy: "Fait par",
-      footDay: "Jour 02 sur 30 · Gratuit"
+      footDay: "Jour 2/30 · Gratuit",
+      chDay: "Jour 2/30", chTag: ", un prototype gratuit par jour",
+      chBy: "Conçu par",
+      lblCountry: "Pays (moyenne ONU)",
+      lblSex: "Sexe",
+      sexAll: "Tous",
+      sexF: "Femme",
+      sexM: "Homme",
+      countryNone: "Aucun pays (80 ans)",
+      dobD: "Jour",
+      dobM: "Mois",
+      dobY: "Année",
+      errDate: "Vérifie la date : un vrai jour, dans le passé.",
+      exampleBtn: "Entrer ma date de naissance",
+      skip: "Aller à ma carte →",
+      evAdd: "Marquer des repères sur ta grille",
+      evLabel: "Repère",
+      evDate: "Date",
+      evErr: "Donne un nom et une date entre ta naissance et aujourd'hui.",
+      evFull: "Douze au maximum.",
+      evNeed: "Entre d'abord ta date de naissance.",
+      tipEvent: "Repère : {t}",
+      grandLbl: "Âge du plus jeune de tes grands-parents",
+      grandHint: "Les moyennes ne savent rien d'eux : c'est toi qui donnes leur âge.", grandAsk: "Entre l'âge du plus jeune de tes grands-parents pour compter.",
+      grandNone: "Au-delà de l'espérance choisie, chaque visite est un bonus : {f} jours cette année, si tout va bien.",
+      plus: "Une fois de plus par an : environ {d} de plus.",
+      tabFriends: "Amis",
+      tabFamily: "Famille",
+      tabCouple: "Couple",
+      tabWork: "Travail",
+      frName: "Prénom de l'ami (facultatif)",
+      frMet: "Date de votre rencontre",
+      frDefault: "cet ami",
+      frOut: "Tu as rencontré {name} il y a {w} semaines : {p} % de ta vie jusqu'ici.",
+      frEmpty: "Ajoute la date de votre rencontre pour allumer vos semaines communes.",
+      frTrips: "À {f} voyage(s) par an, il vous reste environ {n} voyages ensemble. À {g} dîner(s) par an, environ {m} dîners.",
+      frHint: "Règle les fréquences dans « Les fois », plus haut : dîners et voyages entre amis.",
+      kidName: "Prénom de l'enfant",
+      kidBirth: "Date de naissance",
+      kidErr: "Donne un prénom et une date de naissance passée.",
+      kidFull: "Quatre au maximum.",
+      kidMeta: "{w} semaines et environ {s} étés avant ses 18 ans",
+      kidAdult: "18 ans ou plus",
+      kidEmpty: "Ajoute tes enfants pour voir les semaines avant leurs 18 ans.",
+      famTitle: "Ta famille, côte à côte",
+      famHint: "Chaque barre est une vie de {L} ans. En orange, le temps partagé avec toi. Le trait marque aujourd'hui.",
+      famYou: "Toi",
+      famParent: "Ton parent",
+      famGrand: "Grand-parent",
+      cpSince: "Ensemble depuis",
+      cpBirth: "Naissance de l'autre (facultatif)",
+      cpOut: "Ensemble depuis {w} semaines : {p} % de ta vie.",
+      cpCross: "Le {d}, tu auras passé plus de ta vie à deux que sans.",
+      cpCrossed: "Tu as déjà passé plus de ta vie à deux que sans.",
+      cpLeft: "À {L} ans chacun, il vous reste environ {n} semaines ensemble.",
+      cpNights: "À {f} soirées en amoureux par an, encore environ {n}.",
+      cpShared: "Objectifs à deux : {n}.",
+      cpEmpty: "Ajoute la date où vous vous êtes mis ensemble.",
+      cpIcs: "Rappel d'anniversaire (.ics)",
+      cpIcsTitle: "Notre anniversaire",
+      cpIcsNeed: "Ajoute d'abord la date.",
+      wStart: "Début de carrière (âge)",
+      wRetire: "Âge de la retraite",
+      wDays: "Jours travaillés par semaine",
+      wHol: "Jours fériés par an",
+      wLeave: "Jours de congé par an",
+      wMeet: "Heures de réunion par semaine",
+      wComm: "Trajet, minutes par jour",
+      wScreen: "Écran par jour hors travail (h)",
+      wProj: "Projets finis par an",
+      wDaysOut: "Il te reste environ {d} jours de travail avant {r} ans, à {y} jours par an.",
+      wDone: "Avec ces réglages, tes années de travail sont derrière toi.",
+      wMeetOut: "Réunions : environ {w} semaines de ta vie, jour et nuit, d'ici la retraite.",
+      wCommOut: "Trajets : environ {w} semaines, jour et nuit.",
+      wScreenOut: "Écrans hors travail : environ {w} semaines sur ce qui te reste, soit {p} % de tes heures éveillées.",
+      wProjOut: "À {f} par an, tu peux encore finir environ {n} projets avant {r} ans.",
+      lgFriends: "Depuis votre rencontre",
+      lgKids: "Jusqu'aux 18 ans du plus jeune",
+      lgTogether: "Déjà ensemble",
+      lgTogetherLeft: "Encore ensemble",
+      lgWorkLeft: "Travail restant, jusqu'à {r} ans",
+      lgEvent: "Tes repères",
+      goalShared: "À deux",
+      goalExample: "Prendre un exemple",
+      goalExampleText: "Finir un de mes projets inachevés",
+      goalSharedMeta: " · à deux",
+      cardTheme: "Carte",
+      thMe: "Moi",
+      thFriends: "Amis",
+      thFamily: "Famille",
+      thCouple: "Couple",
+      thWork: "Travail",
+      cardFormat: "Format",
+      fmtPortrait: "Portrait 4:5",
+      fmtSquare: "Carré",
+      cardShare: "Partager",
+      shareText: "Combien de semaines il te reste ? J'ai fait ma carte.",
+      linkCopied: "Lien copié.",
+      shareFail: "Partage indisponible ici. Télécharge l'image.",
+      remindBtn: "Me le rappeler dans un an (.ics)",
+      remindTitle: "Combien de semaines : refais ta carte",
+      remindDone: "Rappel téléchargé. Ouvre-le pour l'ajouter à ton agenda.",
+      cardKFriends: "COMBIEN DE VOYAGES IL NOUS RESTE",
+      cardUFriends: "voyages entre amis · à {f} par an",
+      cardDinners: "DÎNERS",
+      cardMet: "SEMAINES DEPUIS NOTRE RENCONTRE",
+      cardKFamily: "COMBIEN D'ÉTÉS IL NOUS RESTE",
+      cardUKid: "étés avant les 18 ans de {name}",
+      cardUParents: "jours avec mes parents",
+      cardParentsDays: "JOURS AVEC MES PARENTS",
+      cardCalls: "APPELS",
+      cardKidW: "{name} · SEMAINES AVANT 18 ANS",
+      cardKCouple: "COMBIEN DE SEMAINES IL NOUS RESTE",
+      cardUCouple: "semaines ensemble · à {L} ans chacun",
+      cardTogether: "DÉJÀ ENSEMBLE",
+      cardNights: "SOIRÉES",
+      cardSharedGoal: "PROCHAIN OBJECTIF À DEUX",
+      cardKWork: "COMBIEN DE JOURS DE TRAVAIL IL ME RESTE",
+      cardUWork: "jours de travail · retraite à {r} ans",
+      cardMeet: "SEMAINES EN RÉUNION",
+      cardComm: "SEMAINES DE TRAJET",
+      cardProj: "PROJETS À FINIR",
+      exportBtn: "Exporter mes données (.json)",
+      importBtn: "Importer un fichier",
+      exported: "Fichier enregistré.",
+      imported: "Données importées.",
+      importErr: "Impossible de lire ce fichier.",
+      dlHtml: "Télécharger le HTML (marche en local)",
+      gridKeys: "Grille de ta vie. Flèches pour parcourir les semaines, Échap pour fermer."
     },
     en: {
       brand: "How Many Weeks",
-      dayTag: "Day 02 / 30",
+      dayTag: "Day 2/30",
       navStory: "Story", navMethod: "Method", navSources: "Sources", navPrivacy: "Privacy", navFaq: "FAQ",
-      kicker: "The Unfinished 30 · Day 02 of 30",
+      kicker: "The Unfinished 30 · Day 2/30",
       h1: "How many weeks do you have left?",
       lead: "Enter your date of birth and see your life in weeks: the ones behind you, the ones ahead, and everything that can still fit into them. Your summers, your books, your days with your parents, the things you want to finish.",
       lblBirth: "Date of birth",
       lblLife: "Target lifespan",
-      lifeHint: "80 years by default. It is an assumption, not a prediction.",
-      example: "Showing an example: a 35-year-old. Enter your date of birth to see your life.",
+      lifeHint: "80 years by default, or your country's average. It is an assumption, not a prediction.",
+      example: "You are looking at an example: a 35-year-old.",
       unit: "weeks ahead of you",
       sub: "that is {y} years · you are living week {n}",
       subOver: "You have passed the lifespan you chose. Raise it to see further.",
       start: "Start the story ↓",
-      privacyShort: "Nothing leaves your browser. No account, no server.",
+      privacyShort: "Nothing you type leaves your browser. No account.",
       errFuture: "The date must be in the past.",
       errRange: "Pick between 50 and 110 years.",
       pillExample: "Example",
-      titles: { you: "Your life", life: "A life", lived: "Already lived", left: "What is left", rows: "The rows", feel: "How it feels", times: "The times", last: "Last times", choose: "Choose", card: "Your card" },
+      titles: { you: "Your life", life: "A life", lived: "Already lived", left: "What is left", rows: "The rows", feel: "How it feels", times: "The times", last: "Last times", circles: "Your people", choose: "Choose", card: "Your card" },
       h: {
         life: "A {L}-year life.",
         lived: "You have already lived {lived}.",
@@ -712,6 +1003,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         feel: "Rows do not feel the same.",
         times: "What runs out: <s>weeks</s> times.",
         last: "There is a last time for everything.",
+        circles: "Weeks are shared. Count them with your people.",
         choose: "It is not enough for everything. It is enough for what you choose.",
         card: "How many weeks do you have left?"
       },
@@ -720,12 +1012,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         lived: "{pct}% of the grid. The orange box is this week: {d1} to {d2}.",
         left: "If every week were a step, at 120 steps a minute, you would walk the rest of your life in {walk}.",
         leftOver: "You have passed the lifespan you chose. Raise it at the top of the page to see further.",
-        rows: "Almost nobody remembers the first three: the earliest memory comes at about three and a half on average. And if you work from 22 to 65, that block is {work} weeks, or {workPct}% of your adult life.",
+        rows: "Almost nobody remembers the first three: the earliest memory comes at about three and a half on average. And if you work from {ws} to {we}, that block is {work} weeks, or {workPct}% of your adult life.",
         rowsLeft: " You have {workLeft} of them left to work.",
         feel: "At 10, one year is 10% of your life. At {age}, it is {p}%. Summers that felt endless start to slip by.",
         feelYoung: "At 10, one year is 10% of your life. At 50, it will be 2%. Summers that feel endless will start to slip by.",
         times: "Pick a moment and set how often it happens. The grid shows how many times are left.",
         last: "Someone carried you in their arms for the last time. A last afternoon playing outside with friends. Nobody knew it on the day.",
+        circles: "Pick a circle: friends, family, couple or work. The grid follows.",
         choose: "Write down what you want to finish, and the age you want it done by. The grid lights it up.",
         card: "Keep your card, share it, and come back in a year: it will have lost 52 boxes."
       },
@@ -740,22 +1033,27 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       lblToday: "Today",
       lg: {
         lived: "Lived", now: "This week", left: "Ahead", week: "One week",
-        remaining: "Left", forgot: "Forgotten", work: "Work, from 22 to 65",
+        remaining: "Left", forgot: "Forgotten", work: "Work, from {ws} to {we}",
         feel: "One year at 10, and at your age", last: "Last times, unnoticed",
         choose: "What you choose", goal: "Your goals"
       },
-      moments: { summers: "Summers", sea: "The sea", books: "Books", parents: "Your parents" },
-      freq: { sea: "Times a year", books: "Books a year", parents: "Days a year with them", custom: "Times a year" },
+      moments: { summers: "Summers", sea: "The sea", books: "Books", parents: "Your parents", parentsCalls: "Calls with your parents", grandparents: "Your grandparents", friendsDinner: "Dinners with best friends", friendsTrip: "Trips with friends", dateNights: "Date nights" },
+      freq: { sea: "Times a year", books: "Books a year", parents: "Days a year with them", parentsCalls: "Calls a year", grandparents: "Days a year with them", friendsDinner: "Dinners a year", friendsTrip: "Trips a year", dateNights: "Date nights a year", custom: "Times a year" },
       parentLbl: "Age of your younger parent",
       parentHint: "Leave empty to use your age + 30 ({a}).",
       res: {
         summers: "About {n} summers left.",
         sea: "About {n} more trips to the sea.",
         books: "About {n} more books.",
-        booksWorld: " There are close to 130 million: at this pace, it would take {lives} lifetimes to read them all.",
+        booksWorld: " Google counted close to 130 million in 2010: at this pace, it would take {lives} lifetimes to read them all.",
         parents: "About {n} more days with them, if all goes well.",
         parentsPct: " If you lived with them until 18, you have already spent {pct}% of your time with them.",
         parentsNone: "With the lifespan you chose, the grid has nothing left to count here. Averages know nothing about your parents.",
+        parentsCalls: "About {n} more calls with your parents, if all goes well.",
+        grandparents: "About {n} more days with your grandparents, if all goes well.",
+        friendsDinner: "About {n} more dinners with your best friends.",
+        friendsTrip: "About {n} more trips with friends.",
+        dateNights: "About {n} more date nights.",
         custom: "About {n} more times: {name}."
       },
       addMoment: "Add a moment",
@@ -785,7 +1083,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       cardUnit: "weeks ahead of me · that is {y} years",
       cardLived: "LIVED", cardLeft: "LEFT", cardSummers: "SUMMERS", cardGoal: "NEXT GOAL",
       cardGoalIn: "in {w} weeks",
-      cardFooter: "The Unfinished 30 · Day 02 · Free",
+      cardFooter: "The Unfinished 30 · Day 2/30 · Free",
       stage: "{title}. {left} weeks left out of {total}.",
       tipWeek: "Week {n} of your life", tipAge: "age {a}, week {w}", tipDates: "{d1} to {d2}",
       tipLived: "Lived", tipNow: "This week", tipLeft: "Ahead", tipGoal: "Goal: {t}",
@@ -795,10 +1093,13 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         ["Weeks lived", "Days between your date of birth and today, divided by 7, rounded down. It counts calendar days, so clock changes never shift a week."],
         ["The grid", "One row per year, 52 boxes per row. Total = lifespan × 52. A real year is 52.18 weeks: over 80 years, the grid leaves out about 14 weeks."],
         ["Steps", "120 steps a minute, a brisk walk. Minutes = weeks left ÷ 120."],
-        ["The rows", "The first 3 rows are marked forgotten: the earliest memory comes at about three and a half on average. The work block runs from 22 to 65, as an example. Adult life starts at 18."],
+        ["The rows", "The first 3 rows are marked forgotten: the earliest memory comes at about three and a half on average. The work block runs from 22 to 65 by default, adjustable in “Your people”, Work tab. Adult life starts at 18."],
         ["How it feels", "One year is worth 1 ÷ your age of the life you have lived. This is the proportional law Paul Janet proposed in 1877."],
         ["The times", "Years left × times per year. For your parents, the horizon ends at the shorter of your life or theirs, with the same lifespan. The share already spent assumes you lived with them every day until 18, as in Tim Urban's calculation."],
-        ["Your goals", "Each goal lights up the last week before the age you chose."]
+        ["Your goals", "Each goal lights up the last week before the age you chose."],
+        ["Country and sex", "Life expectancy at birth, United Nations World Population Prospects 2024, 2023 estimates, rounded to the year. It is an average: for someone already 35, the real figure is a little higher."],
+        ["Your people", "Weeks since a date = days ÷ 7. Couple: the crossing date is the day time together equals the time lived before. Children: weeks until they turn 18. Family bars assume the same lifespan for everyone."],
+        ["Work", "Working days a year = days a week × 52, minus public holidays and days off. Meetings and commute are turned into full 24-hour weeks. Waking hours count 16 a day."]
       ],
       sourcesTitle: "Sources",
       sources: [
@@ -807,25 +1108,156 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         ["Paul Janet, “Une illusion d'optique interne”", "Revue philosophique de la France et de l'étranger, no. 3, 1877, pp. 497 to 502. A year felt as a fraction of the life already lived. Link: a recent review that cites it.", "https://arxiv.org/pdf/2310.05945"],
         ["Google Books: 129,864,880 books", "Estimate published in August 2010 by Leonid Taycher, a Google engineer. Link: NPR, 6 August 2010.", "https://www.npr.org/sections/thetwo-way/2010/08/06/129027628/google-tallies-129-864-880-titles"],
         ["Qi Wang and Carole Peterson, 2014", "Developmental Psychology. The earliest memory is estimated at about three and a half on average. Link: Cornell Chronicle.", "https://news.cornell.edu/node/283106"],
-        ["Seneca, On the Shortness of Life", "De brevitate vitae, around AD 49, chapter I. The quote in scene 09.", ""]
+        ["Seneca, On the Shortness of Life", "De brevitate vitae, around AD 49, chapter I. The quote in the “Choose” scene.", ""],
+        ["United Nations, World Population Prospects 2024", "Life expectancy at birth by country and sex, 2023 estimates. Link: summary table on Wikipedia.", "https://en.wikipedia.org/wiki/List_of_countries_by_life_expectancy"]
       ],
       privacyTitle: "Privacy",
-      privacy1: "No account, no server, no tracking. Nothing is sent anywhere.",
-      privacy2: "Your date, your moments and your goals are kept in your browser's local storage, on this device only.",
+      privacy1: "No account, no server. Nothing you type is sent anywhere.",
+      privacy2: "Your date, your moments, your people and your goals are kept in your browser's local storage, on this device only.",
+      privacy3: "The page counts anonymous visits with Vercel Web Analytics: no cookies, and nothing you type.",
       clear: "Clear my data",
       cleared: "Cleared. The example is back.",
       faqTitle: "FAQ",
       faq: [
-        ["Why 80 years?", "It is a round number, not a personal one. Tim Urban uses 90. Set it at the top of the page."],
+        ["Why 80 years?", "It is a round number, not a personal one. Pick your country to use the UN average, or set it yourself at the top of the page."],
+        ["Does anyone see my people's names?", "No. Names and dates stay in your browser, like everything else."],
         ["Why 52 weeks a year?", "So each row is exactly one year. The gap with the real 52.18 weeks is explained in the method."],
-        ["Isn't this a bit depressing?", "It can sting. The point is to choose what you give your weeks to. Scene 09 is there for that."],
+        ["Isn't this a bit depressing?", "It can sting. The point is to choose what you give your weeks to. The “Choose” scene is there for that."],
         ["Can I reuse the code?", "Yes. Like every prototype in The Unfinished 30, you can reuse and adapt it. Crediting Salah on LinkedIn is appreciated, not required."],
-        ["Does my data go anywhere?", "No. Everything stays in your browser. See the Privacy section."]
+        ["Does my data go anywhere?", "No. Everything stays in your browser. To switch devices, export a file and import it. See the Privacy section."]
       ],
       unfTitle: "What is still unfinished",
-      unfText: "Lifespan is one value, the same for everyone: no country, no sex, no health history. The work block is fixed from 22 to 65. The times are averages spread over the year. Nothing syncs: on another device, you start from scratch. The share card has only been tested on a few browsers.",
+      unfText: "Life expectancy is a national average by sex: it knows nothing about your health or habits. The times are averages spread over the year. Nothing syncs on its own: export and import your data to switch devices. Calendar reminders are files you add yourself. The card and sharing have only been tested on a few browsers.",
       madeBy: "Made by",
-      footDay: "Day 02 of 30 · Free"
+      footDay: "Day 2/30 · Free",
+      chDay: "Day 2/30", chTag: ", one free prototype a day",
+      chBy: "Made by",
+      lblCountry: "Country (UN average)",
+      lblSex: "Sex",
+      sexAll: "All",
+      sexF: "Female",
+      sexM: "Male",
+      countryNone: "No country (80 years)",
+      dobD: "Day",
+      dobM: "Month",
+      dobY: "Year",
+      errDate: "Check the date: a real day, in the past.",
+      exampleBtn: "Enter my birth date",
+      skip: "Skip to my card →",
+      evAdd: "Mark milestones on your grid",
+      evLabel: "Milestone",
+      evDate: "Date",
+      evErr: "Give it a name and a date between your birth and today.",
+      evFull: "Twelve at most.",
+      evNeed: "Enter your date of birth first.",
+      tipEvent: "Milestone: {t}",
+      grandLbl: "Age of your youngest grandparent",
+      grandHint: "Averages know nothing about them: you give their age.", grandAsk: "Enter the age of your youngest grandparent to count.",
+      grandNone: "Past the lifespan you chose, every visit is a bonus: {f} days this year, if all goes well.",
+      plus: "One more a year: about {d} more.",
+      tabFriends: "Friends",
+      tabFamily: "Family",
+      tabCouple: "Couple",
+      tabWork: "Work",
+      frName: "Friend's name (optional)",
+      frMet: "Date you met",
+      frDefault: "this friend",
+      frOut: "You met {name} {w} weeks ago: {p}% of your life so far.",
+      frEmpty: "Add the date you met to light up the weeks you have shared.",
+      frTrips: "At {f} trip(s) a year, about {n} trips together are left. At {g} dinner(s) a year, about {m} dinners.",
+      frHint: "Set how often in “The times” above: dinners and trips with friends.",
+      kidName: "Child's name",
+      kidBirth: "Date of birth",
+      kidErr: "Give a name and a date of birth in the past.",
+      kidFull: "Four at most.",
+      kidMeta: "{w} weeks and about {s} summers before turning 18",
+      kidAdult: "18 or older",
+      kidEmpty: "Add your children to see the weeks before they turn 18.",
+      famTitle: "Your family, side by side",
+      famHint: "Each bar is one life of {L} years. Orange is the time shared with you. The line marks today.",
+      famYou: "You",
+      famParent: "Your parent",
+      famGrand: "Grandparent",
+      cpSince: "Together since",
+      cpBirth: "Partner's birth date (optional)",
+      cpOut: "Together for {w} weeks: {p}% of your life.",
+      cpCross: "On {d}, you will have spent more of your life together than apart.",
+      cpCrossed: "You have already spent more of your life together than apart.",
+      cpLeft: "At {L} years each, about {n} weeks left together.",
+      cpNights: "At {f} date nights a year, about {n} more.",
+      cpShared: "Shared goals: {n}.",
+      cpEmpty: "Add the date you got together.",
+      cpIcs: "Anniversary reminder (.ics)",
+      cpIcsTitle: "Our anniversary",
+      cpIcsNeed: "Add the date first.",
+      wStart: "Started working at (age)",
+      wRetire: "Retirement age",
+      wDays: "Work days a week",
+      wHol: "Public holidays a year",
+      wLeave: "Days off a year",
+      wMeet: "Meeting hours a week",
+      wComm: "Commute, minutes a day",
+      wScreen: "Screen hours a day, outside work",
+      wProj: "Projects finished a year",
+      wDaysOut: "About {d} working days left before {r}, at {y} days a year.",
+      wDone: "On these settings, your working years are behind you.",
+      wMeetOut: "Meetings: about {w} weeks of your life, day and night, before you retire.",
+      wCommOut: "Commute: about {w} weeks, day and night.",
+      wScreenOut: "Screens outside work: about {w} weeks of what is left, {p}% of your waking hours.",
+      wProjOut: "At {f} a year, you can still finish about {n} projects before {r}.",
+      lgFriends: "Since you met",
+      lgKids: "Until your youngest turns 18",
+      lgTogether: "Together so far",
+      lgTogetherLeft: "Still together",
+      lgWorkLeft: "Work left, to age {r}",
+      lgEvent: "Your milestones",
+      goalShared: "Shared with my partner",
+      goalExample: "Use an example",
+      goalExampleText: "Finish one of my unfinished projects",
+      goalSharedMeta: " · shared",
+      cardTheme: "Card",
+      thMe: "Me",
+      thFriends: "Friends",
+      thFamily: "Family",
+      thCouple: "Couple",
+      thWork: "Work",
+      cardFormat: "Format",
+      fmtPortrait: "Portrait 4:5",
+      fmtSquare: "Square",
+      cardShare: "Share",
+      shareText: "How many weeks do you have left? I made my card.",
+      linkCopied: "Link copied.",
+      shareFail: "Sharing is not available here. Download the image.",
+      remindBtn: "Remind me in a year (.ics)",
+      remindTitle: "How many weeks: make your card again",
+      remindDone: "Reminder downloaded. Open it to add it to your calendar.",
+      cardKFriends: "HOW MANY TRIPS WE HAVE LEFT",
+      cardUFriends: "trips with friends · at {f} a year",
+      cardDinners: "DINNERS",
+      cardMet: "WEEKS SINCE WE MET",
+      cardKFamily: "HOW MANY SUMMERS WE HAVE LEFT",
+      cardUKid: "summers before {name} turns 18",
+      cardUParents: "days left with my parents",
+      cardParentsDays: "DAYS WITH PARENTS",
+      cardCalls: "CALLS",
+      cardKidW: "{name} · WEEKS TO 18",
+      cardKCouple: "HOW MANY WEEKS WE HAVE LEFT",
+      cardUCouple: "weeks left together · at {L} years each",
+      cardTogether: "TOGETHER SO FAR",
+      cardNights: "DATE NIGHTS",
+      cardSharedGoal: "NEXT SHARED GOAL",
+      cardKWork: "HOW MANY WORKING DAYS I HAVE LEFT",
+      cardUWork: "working days left · retiring at {r}",
+      cardMeet: "WEEKS IN MEETINGS",
+      cardComm: "WEEKS COMMUTING",
+      cardProj: "PROJECTS LEFT",
+      exportBtn: "Export my data (.json)",
+      importBtn: "Import a file",
+      exported: "File saved.",
+      imported: "Data imported.",
+      importErr: "This file could not be read.",
+      dlHtml: "Download the HTML (runs locally)",
+      gridKeys: "Grid of your life. Arrow keys move through the weeks, Escape closes."
     }
   };
 
@@ -833,7 +1265,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     { id: "summers", f: 1, fixed: true },
     { id: "sea", f: 1 },
     { id: "books", f: 12 },
-    { id: "parents", f: 10 }
+    { id: "parents", f: 10 },
+    { id: "parentsCalls", f: 52 },
+    { id: "grandparents", f: 4 },
+    { id: "friendsDinner", f: 12 },
+    { id: "friendsTrip", f: 1 },
+    { id: "dateNights", f: 24 }
   ];
 
   // PURE-START
@@ -866,11 +1303,12 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   function momentCount(m, c, lifespan, parentAge) {
     var yearsLeft = c.left / WPY;
     var f = Math.max(0, m.f || 0);
-    if (m.id === "parents") {
-      var horizon = Math.max(0, Math.min(yearsLeft, lifespan - parentAge));
+    if (m.id === "parents" || m.id === "parentsCalls" || m.id === "grandparents") {
+      var other = m.id === "grandparents" ? grandAgeFor(c) : parentAge;
+      var horizon = Math.max(0, Math.min(yearsLeft, lifespan - other));
       var future = horizon * f;
       var pct = null;
-      if (c.age >= ADULT) {
+      if (m.id === "parents" && c.age >= ADULT) {
         var past = ADULT * 365 + (c.age - ADULT) * f;
         pct = (past / (past + future)) * 100;
       }
@@ -880,10 +1318,27 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   }
 
   function goalWeek(age) { return age * WPY - 1; }
+  function weeksBetween(a, b) {
+    var x = parseYmd(a), y = parseYmd(b);
+    return Math.floor((dayIndex(y.y, y.m, y.d) - dayIndex(x.y, x.m, x.d)) / 7);
+  }
+  function validIso(v) {
+    if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+    var p = parseYmd(v), d = new Date(Date.UTC(p.y, p.m - 1, p.d));
+    return d.getUTCFullYear() === p.y && d.getUTCMonth() === p.m - 1 && d.getUTCDate() === p.d && v >= "1900-01-01";
+  }
+  function addDaysIso(iso, n) { var p = parseYmd(iso); return ymd(new Date(p.y, p.m - 1, p.d + n)); }
   // PURE-END
 
-  var state = { lang: "en", birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [] };
-  var ui = { scene: "you", cur: null, from: null, to: null, anim: 0, labelT: 1, hover: null, layout: null, colors: null, ticking: false, lastPointer: "mouse" };
+  function freshState(lang) {
+    var st = { lang: lang || "en", birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [],
+      country: "", sex: "all", grandAge: null, events: [], tab: "friends", friendName: "", friendMet: "", kids: [], since: "", partnerBirth: "",
+      cardTheme: "me", cardFmt: "portrait" };
+    for (var k in WORK_DEFAULTS) st[k] = WORK_DEFAULTS[k];
+    return st;
+  }
+  var state = freshState("en");
+  var ui = { kbd: null, cardCv: null, scene: "you", cur: null, from: null, to: null, anim: 0, labelT: 1, hover: null, layout: null, colors: null, ticking: false, lastPointer: "mouse" };
   var dom = {};
 
   function cloneMoments(list) { return list.map(function (m) { return { id: m.id, f: m.f, fixed: !!m.fixed, name: m.name }; }); }
@@ -910,6 +1365,10 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   }
   function current() { return compute(effectiveBirth(), state.lifespan, todayParts()); }
   function parentAgeFor(c) { return state.parentAge != null ? state.parentAge : Math.min(110, c.age + 30); }
+  function grandAgeFor(c) { return state.grandAge != null ? state.grandAge : 125; }
+  function countOf(id, c) { var m = state.moments.filter(function (x) { return x.id === id; })[0]; return m ? momentCount(m, c, state.lifespan, parentAgeFor(c)) : { n: 0, horizon: 0 }; }
+  function freqOf(id) { var m = state.moments.filter(function (x) { return x.id === id; })[0]; return m ? m.f : 0; }
+  function weekOf(iso) { return weeksBetween(effectiveBirth(), iso); }
   function activeMoment() {
     for (var i = 0; i < state.moments.length; i++) if (state.moments[i].id === state.active) return state.moments[i];
     return state.moments[0];
@@ -919,13 +1378,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   function isWide() { return window.matchMedia("(min-width: 900px)").matches; }
 
   // ---------- Persistence ----------
+  function payload() {
+    var o = { v: 4, lang: state.lang, birth: state.birth, lifespan: state.lifespan, moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items,
+      country: state.country, sex: state.sex, grandAge: state.grandAge, events: state.events, tab: state.tab, friendName: state.friendName, friendMet: state.friendMet,
+      kids: state.kids, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
+    for (var k in WORK_DEFAULTS) o[k] = state[k];
+    return o;
+  }
   function save() {
-    try {
-      localStorage.setItem(KEY, JSON.stringify({
-        lang: state.lang, birth: state.birth, lifespan: state.lifespan,
-        moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items
-      }));
-    } catch (e) { /* storage blocked: the page still works for this visit */ }
+    try { localStorage.setItem(KEY, JSON.stringify(payload())); } catch (e) { /* storage blocked: the page still works for this visit */ }
   }
 
   function load() {
@@ -935,32 +1396,51 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       if (!raw) for (var k = 0; k < OLD_KEYS.length && !raw; k++) raw = localStorage.getItem(OLD_KEYS[k]);
       saved = raw ? JSON.parse(raw) : null;
     } catch (e) { saved = null; }
-    if (!saved) {
-      state.lang = "en";
-      return;
-    }
-    if (saved.lang === "fr" || saved.lang === "en") state.lang = saved.lang;
-    if (typeof saved.birth === "string" && /^\d{4}-\d{2}-\d{2}$/.test(saved.birth) && saved.birth <= todayIso()) state.birth = saved.birth;
-    if (Number.isInteger(saved.lifespan) && saved.lifespan >= 50 && saved.lifespan <= 110) state.lifespan = saved.lifespan;
+    if (saved) applySaved(saved);
+  }
+
+  function applySaved(saved) {
+    if (!saved || typeof saved !== "object") return false;
+    var st = freshState(saved.lang === "fr" ? "fr" : "en");
+    if (validIso(saved.birth) && saved.birth <= todayIso()) st.birth = saved.birth;
+    if (Number.isInteger(saved.lifespan) && saved.lifespan >= 50 && saved.lifespan <= 110) st.lifespan = saved.lifespan;
     if (Array.isArray(saved.moments)) {
-      var builtIn = cloneMoments(DEFAULT_MOMENTS);
       saved.moments.forEach(function (m) {
         if (!m || typeof m.id !== "string" || !(m.f >= 0 && m.f <= 365)) return;
-        var hit = builtIn.filter(function (b) { return b.id === m.id; })[0];
+        var hit = st.moments.filter(function (b) { return b.id === m.id; })[0];
         if (hit) { if (!hit.fixed) hit.f = Math.round(m.f); }
-        else if (typeof m.name === "string" && m.name.trim()) builtIn.push({ id: m.id, f: Math.round(m.f), name: m.name.slice(0, 30) });
+        else if (typeof m.name === "string" && m.name.trim()) st.moments.push({ id: m.id, f: Math.round(m.f), name: m.name.slice(0, 30) });
       });
-      state.moments = builtIn;
     }
-    if (typeof saved.active === "string") state.active = saved.active;
-    if (Number.isInteger(saved.parentAge) && saved.parentAge >= 15 && saved.parentAge <= 120) state.parentAge = saved.parentAge;
+    if (typeof saved.active === "string") st.active = saved.active;
+    if (Number.isInteger(saved.parentAge) && saved.parentAge >= 15 && saved.parentAge <= 120) st.parentAge = saved.parentAge;
+    if (Number.isInteger(saved.grandAge) && saved.grandAge >= 40 && saved.grandAge <= 125) st.grandAge = saved.grandAge;
     if (Array.isArray(saved.items)) {
-      state.items = saved.items.filter(function (it) {
+      st.items = saved.items.filter(function (it) {
         return it && typeof it.title === "string" && Number.isInteger(it.age) && typeof it.done === "boolean";
       }).slice(0, 8).map(function (it) {
-        return { id: String(it.id || Math.random().toString(36).slice(2)), title: it.title.slice(0, 60), age: it.age, done: it.done };
+        return { id: String(it.id || Math.random().toString(36).slice(2)), title: it.title.slice(0, 60), age: it.age, done: it.done, shared: it.shared === true };
       });
     }
+    if (typeof saved.country === "string" && COUNTRIES.some(function (c) { return c[0] === saved.country; })) st.country = saved.country;
+    if (saved.sex === "f" || saved.sex === "m" || saved.sex === "all") st.sex = saved.sex;
+    if (Array.isArray(saved.events)) st.events = saved.events.filter(function (e) { return e && typeof e.label === "string" && validIso(e.date); }).slice(0, 12)
+      .map(function (e) { return { id: String(e.id || Math.random().toString(36).slice(2)), label: e.label.slice(0, 40), date: e.date }; });
+    if (TABS.indexOf(saved.tab) >= 0) st.tab = saved.tab;
+    if (typeof saved.friendName === "string") st.friendName = saved.friendName.slice(0, 30);
+    if (validIso(saved.friendMet)) st.friendMet = saved.friendMet;
+    if (Array.isArray(saved.kids)) st.kids = saved.kids.filter(function (k) { return k && typeof k.name === "string" && validIso(k.birth); }).slice(0, 4)
+      .map(function (k) { return { id: String(k.id || Math.random().toString(36).slice(2)), name: k.name.slice(0, 30), birth: k.birth }; });
+    if (validIso(saved.since)) st.since = saved.since;
+    if (validIso(saved.partnerBirth)) st.partnerBirth = saved.partnerBirth;
+    if (THEMES.indexOf(saved.cardTheme) >= 0) st.cardTheme = saved.cardTheme;
+    if (saved.cardFmt === "square" || saved.cardFmt === "portrait") st.cardFmt = saved.cardFmt;
+    for (var k in WORK_DEFAULTS) {
+      var v = Number(saved[k]);
+      if (isFinite(v) && v >= WORK_LIMITS[k][0] && v <= WORK_LIMITS[k][1]) st[k] = v;
+    }
+    state = st;
+    return true;
   }
 
   // ---------- Colours ----------
@@ -1020,7 +1500,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         if (SAMPLE_CELL[0] < state.lifespan) a[SAMPLE_CELL[0] * WPY + SAMPLE_CELL[1]] = R.ACCENT;
         break;
       case "lived":
-        base(R.LEFT, R.BLANK); now();
+        base(R.LEFT, R.BLANK);
+        state.events.forEach(function (ev) { var w = weekOf(ev.date); if (w >= 0 && w < lived && w < total) a[w] = R.ACCENT; });
+        now();
         break;
       case "left":
         base(R.LIVED, R.LEFT); now();
@@ -1028,7 +1510,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       case "rows":
         base(R.LIVED, R.LEFT);
         for (r = 0; r < FORGOT_ROWS; r++) fillRow(r, R.BLANK);
-        for (r = WORK_START; r < Math.min(WORK_END, state.lifespan); r++) fillRow(r, R.ACCENT);
+        for (r = state.workStart; r < Math.min(state.retire, state.lifespan); r++) fillRow(r, R.ACCENT);
         now();
         break;
       case "feel":
@@ -1047,6 +1529,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         LAST_TIMES.forEach(function (p) { var idx = p[0] * WPY + p[1]; if (idx < lived && idx < total) a[idx] = R.ACCENT; });
         now();
         break;
+      case "circles":
+        circleRoles(a, c, base, now);
+        break;
       case "choose":
         base(R.LIVED, R.BLANK);
         state.items.forEach(function (it) { var g = goalWeek(it.age); if (!it.done && g > lived && g < total) a[g] = R.ACCENT; });
@@ -1058,13 +1543,74 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     return a;
   }
 
+
+  function youngestKid() {
+    var k = state.kids.slice().sort(function (x, y) { return y.birth < x.birth ? -1 : y.birth > x.birth ? 1 : 0; });
+    return k[0] || null;
+  }
+  function kidWeeksTo18(k) { return Math.max(0, ADULT * WPY - weeksBetween(k.birth, todayIso())); }
+  function coupleNums(c) {
+    if (!state.since || state.since > todayIso()) return null;
+    var tog = weeksBetween(state.since, todayIso());
+    var leftTog = c.left;
+    if (state.partnerBirth) leftTog = Math.min(c.left, Math.max(0, state.lifespan * WPY - weeksBetween(state.partnerBirth, todayIso())));
+    var before = weeksBetween(effectiveBirth(), state.since);
+    var cross = addDaysIso(state.since, Math.max(0, before) * 7);
+    return { tog: Math.max(0, tog), leftTog: leftTog, pct: c.lived > 0 ? Math.min(100, tog / c.lived * 100) : 0, cross: cross, crossed: cross <= todayIso() };
+  }
+  function workNums(c) {
+    var ageNow = c.lived / WPY;
+    var years = Math.max(0, state.retire - Math.max(ageNow, state.workStart));
+    var perYear = Math.max(0, state.workDays * 52 - state.holidays - state.leave);
+    var weeksPerYear = state.workDays > 0 ? perYear / state.workDays : 0;
+    var lifeYearsLeft = c.left / WPY;
+    return {
+      years: years, perYear: perYear, days: Math.round(years * perYear),
+      meet: state.meetH * weeksPerYear * years / 168,
+      comm: state.commuteM / 60 * perYear * years / 168,
+      screen: state.screenH * 365 * lifeYearsLeft / 168,
+      screenPct: Math.min(100, state.screenH / 16 * 100),
+      proj: Math.floor(state.projY * years)
+    };
+  }
+  function circleRoles(a, c, base, now) {
+    var lived = c.lived, total = c.total, i;
+    if (state.tab === "friends") {
+      base(R.LIVED, R.BLANK);
+      if (state.friendMet && state.friendMet <= todayIso()) { var s0 = Math.max(0, weekOf(state.friendMet)); for (i = s0; i < lived && i < total; i++) a[i] = R.ACCENT; }
+    } else if (state.tab === "family") {
+      base(R.LIVED, R.LEFT);
+      var y = youngestKid();
+      if (y) { var end = Math.min(total, lived + kidWeeksTo18(y)); for (i = lived; i < end; i++) a[i] = R.ACCENT; }
+    } else if (state.tab === "couple") {
+      base(R.LIVED, R.BLANK);
+      var cn = coupleNums(c);
+      if (cn) {
+        var s1 = Math.max(0, weekOf(state.since));
+        for (i = s1; i < lived && i < total; i++) a[i] = R.ACCENT;
+        for (i = lived; i < Math.min(total, lived + cn.leftTog); i++) a[i] = R.LEFT;
+      }
+    } else {
+      base(R.LIVED, R.BLANK);
+      var from = Math.max(lived, state.workStart * WPY), to = Math.min(total, state.retire * WPY);
+      for (i = from; i < to; i++) a[i] = R.ACCENT;
+    }
+    now();
+  }
+
   function legendFor(scene, c) {
     var lg = t().lg;
     switch (scene) {
       case "life": return [["blank", lg.week]];
-      case "lived": return [["left", lg.lived], ["now", lg.now]];
+      case "lived": return state.events.length ? [["left", lg.lived], ["accent", t().lgEvent], ["now", lg.now]] : [["left", lg.lived], ["now", lg.now]];
       case "left": return [["lived", lg.lived], ["left", lg.remaining], ["now", lg.now]];
-      case "rows": return [["blank", lg.forgot], ["accent", lg.work]];
+      case "rows": return [["blank", lg.forgot], ["accent", fill(lg.work, { ws: state.workStart, we: state.retire })]];
+      case "circles":
+        var tx = t();
+        if (state.tab === "friends") return [["accent", tx.lgFriends], ["lived", lg.lived]];
+        if (state.tab === "family") return [["accent", tx.lgKids], ["left", lg.left]];
+        if (state.tab === "couple") return [["accent", tx.lgTogether], ["left", tx.lgTogetherLeft]];
+        return [["accent", fill(tx.lgWorkLeft, { r: state.retire })], ["lived", lg.lived]];
       case "feel": return [["accent", lg.feel]];
       case "times": return [["accent", momentName(activeMoment())], ["lived", lg.lived]];
       case "last": return [["accent", lg.last]];
@@ -1198,8 +1744,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         break;
       case "rows":
         pill(ctx, tx.lblForgot, L.ox + L.gridW / 2, L.oy + (FORGOT_ROWS / 2) * L.pitch, "center", a);
-        var we = Math.min(WORK_END, state.lifespan);
-        if (we > WORK_START) pill(ctx, tx.lblWork, L.ox + L.gridW / 2, L.oy + ((WORK_START + we) / 2) * L.pitch, "center", a);
+        var we = Math.min(state.retire, state.lifespan);
+        if (we > state.workStart) pill(ctx, tx.lblWork, L.ox + L.gridW / 2, L.oy + ((state.workStart + we) / 2) * L.pitch, "center", a);
         break;
       case "feel":
         var fr = feelRows(c);
@@ -1273,6 +1819,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     state.items.forEach(function (it) {
       if (!it.done && goalWeek(it.age) === i) html += '<br><span class="hl">' + esc(fill(tx.tipGoal, { t: it.title })) + "</span>";
     });
+    state.events.forEach(function (ev) {
+      if (weekOf(ev.date) === i) html += '<br><span class="hl">' + esc(fill(tx.tipEvent, { t: ev.label })) + "</span>";
+    });
     ui.hover = i;
     dom.tip.innerHTML = html;
     dom.tip.hidden = false;
@@ -1345,6 +1894,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   function renderHero(c) {
     var tx = t();
     dom.exampleNote.hidden = !!state.birth;
+    dom.lifeRange.value = String(state.lifespan);
+    if (document.activeElement !== dom.lifeNum) dom.lifeNum.value = String(state.lifespan);
     if (c.over) {
       dom.heroBig.textContent = "0";
       dom.heroUnit.textContent = tx.unit;
@@ -1359,15 +1910,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   function renderScenes(c) {
     var tx = t();
     var wd = weekDates(effectiveBirth(), c.lived);
-    var workEnd = Math.min(WORK_END, state.lifespan);
-    var workWeeks = Math.max(0, workEnd - WORK_START) * WPY;
+    var workEnd = Math.min(state.retire, state.lifespan);
+    var workWeeks = Math.max(0, workEnd - state.workStart) * WPY;
     var adultWeeks = Math.max(1, state.lifespan - ADULT) * WPY;
-    var workLeft = Math.max(0, Math.min(workEnd * WPY, c.total) - Math.max(c.lived, WORK_START * WPY));
+    var workLeft = Math.max(0, Math.min(workEnd * WPY, c.total) - Math.max(c.lived, state.workStart * WPY));
     var v = {
       L: state.lifespan, total: fmt(c.total), lived: fmt(c.lived), left: fmt(c.left),
       pct: fmt1(c.pct), d1: fmtDate(wd.start), d2: fmtDate(wd.end), walk: walkText(c.left),
       work: fmt(workWeeks), workPct: fmt(workWeeks / adultWeeks * 100), workLeft: fmt(workLeft),
-      age: c.age, p: c.age > 0 ? fmt1(100 / c.age) : "100"
+      age: c.age, p: c.age > 0 ? fmt1(100 / c.age) : "100", ws: state.workStart, we: state.retire
     };
 
     // Scene kickers: "02 · A life"
@@ -1383,13 +1934,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     $("h-left").innerHTML = c.over ? fillN(tx.h.leftOver, v) : fillN(tx.h.left, v);
     $("p-left").innerHTML = c.over ? fillN(tx.p.leftOver, v) : fillN(tx.p.left, v);
     $("h-rows").innerHTML = fillN(tx.h.rows, v);
-    $("p-rows").innerHTML = fillN(tx.p.rows, v) + (c.age < WORK_END && workLeft > 0 ? fillN(tx.p.rowsLeft, v) : "");
+    $("p-rows").innerHTML = fillN(tx.p.rows, v) + (c.age < state.retire && workLeft > 0 ? fillN(tx.p.rowsLeft, v) : "");
     $("h-feel").innerHTML = fillN(tx.h.feel, v);
     $("p-feel").innerHTML = c.age > 10 ? fillN(tx.p.feel, v) : fillN(tx.p.feelYoung, v);
     $("h-times").innerHTML = tx.h.times;
     $("p-times").innerHTML = fillN(tx.p.times, v);
     $("h-last").innerHTML = fillN(tx.h.last, v);
     $("p-last").innerHTML = fillN(tx.p.last, v);
+    $("h-circles").innerHTML = fillN(tx.h.circles, v);
+    $("p-circles").innerHTML = fillN(tx.p.circles, v);
     $("h-choose").innerHTML = fillN(tx.h.choose, v);
     $("p-choose").innerHTML = fillN(tx.p.choose, v);
     $("h-card").innerHTML = fillN(tx.h.card, v);
@@ -1419,8 +1972,14 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     dom.freqRow.hidden = !!m.fixed;
     dom.freqLbl.textContent = isCustom ? tx.freq.custom : (tx.freq[m.id] || tx.freq.custom);
     if (document.activeElement !== dom.freq) dom.freq.value = String(m.f);
-    dom.parentRow.hidden = m.id !== "parents";
-    if (m.id === "parents") {
+    dom.parentRow.hidden = !(m.id === "parents" || m.id === "parentsCalls");
+    dom.grandRow.hidden = m.id !== "grandparents";
+    if (m.id === "grandparents") {
+      dom.grandHint.textContent = tx.grandHint;
+      if (document.activeElement !== dom.grandAge) dom.grandAge.value = state.grandAge != null ? String(state.grandAge) : "";
+      dom.grandAge.placeholder = String(Math.min(120, c.age + 55));
+    }
+    if (m.id === "parents" || m.id === "parentsCalls") {
       dom.parentHint.textContent = fill(tx.parentHint, { a: Math.min(110, c.age + 30) });
       if (document.activeElement !== dom.parentAge) dom.parentAge.value = state.parentAge != null ? String(state.parentAge) : "";
       dom.parentAge.placeholder = String(Math.min(110, c.age + 30));
@@ -1440,8 +1999,18 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
         html = fillN(tx.res.parents, { n: fmt(cnt.n) });
         if (cnt.pct !== null) html += fillN(tx.res.parentsPct, { pct: fmt1(Math.min(99.9, cnt.pct)) });
       }
-    } else html = fillN(tx.res.custom, { n: fmt(cnt.n), name: momentName(m) });
+    } else if (tx.res[m.id] && (m.id === "parentsCalls" || m.id === "grandparents")) {
+      if (m.id === "grandparents" && state.grandAge == null) html = esc(tx.grandAsk);
+      else if (cnt.horizon <= 0) html = m.id === "grandparents" ? fillN(tx.grandNone, { f: fmt(m.f) }) : esc(tx.res.parentsNone);
+      else html = fillN(tx.res[m.id], { n: fmt(cnt.n) });
+    } else if (tx.res[m.id] && m.id !== "custom") html = fillN(tx.res[m.id], { n: fmt(cnt.n) });
+    else html = fillN(tx.res.custom, { n: fmt(cnt.n), name: momentName(m) });
     dom.momentResult.innerHTML = html;
+    if (m.fixed || cnt.horizon <= 0 || (m.id === "grandparents" && state.grandAge == null)) dom.momentPlus.textContent = "";
+    else {
+      var more = momentCount({ id: m.id, f: (m.f || 0) + 1 }, c, state.lifespan, parentAgeFor(c)).n - cnt.n;
+      dom.momentPlus.innerHTML = fillN(tx.plus, { d: fmt(Math.max(0, more)) });
+    }
   }
 
   function renderGoals(c) {
@@ -1462,7 +2031,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       var tt = document.createElement("div"); tt.className = "t"; tt.textContent = it.title;
       var mm = document.createElement("div"); mm.className = "m";
       var g = goalWeek(it.age);
-      mm.textContent = it.done ? tx.goalDoneMeta : g <= c.lived ? fill(tx.goalPast, { a: it.age }) : fill(tx.goalMeta, { a: it.age, w: fmt(g - c.lived) });
+      mm.textContent = (it.done ? tx.goalDoneMeta : g <= c.lived ? fill(tx.goalPast, { a: it.age }) : fill(tx.goalMeta, { a: it.age, w: fmt(g - c.lived) })) + (it.shared ? tx.goalSharedMeta : "");
       left.append(tt, mm);
       var acts = document.createElement("div"); acts.className = "acts";
       var tog = document.createElement("button");
@@ -1488,10 +2057,214 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
   }
 
   function renderCard() {
-    var has = !!state.birth;
+    var tx = t(), has = !!state.birth;
     dom.cardNeed.hidden = has;
     dom.cardBtn.disabled = !has;
-    if (!has) { dom.cardImg.hidden = true; dom.cardHint.hidden = true; dom.cardDl.hidden = true; }
+    if (!has) { dom.cardImg.hidden = true; dom.cardHint.hidden = true; dom.cardDl.hidden = true; dom.cardShare.hidden = true; }
+    var names = { me: tx.thMe, friends: tx.thFriends, family: tx.thFamily, couple: tx.thCouple, work: tx.thWork };
+    chipRow(dom.cardThemes, THEMES.map(function (k) { return [k, names[k]]; }), state.cardTheme, function (k) { state.cardTheme = k; save(); renderCard(); refreshCardIfShown(); });
+    chipRow(dom.cardFmts, [["portrait", tx.fmtPortrait], ["square", tx.fmtSquare]], state.cardFmt, function (k) { state.cardFmt = k; save(); renderCard(); refreshCardIfShown(); });
+  }
+  function chipRow(box, items, cur, onPick) {
+    box.replaceChildren();
+    items.forEach(function (it) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chip"; b.textContent = it[1];
+      b.setAttribute("aria-pressed", it[0] === cur ? "true" : "false");
+      b.addEventListener("click", function () { onPick(it[0]); });
+      box.appendChild(b);
+    });
+  }
+  function refreshCardIfShown() { if (!dom.cardImg.hidden) buildCard(); }
+
+  // ---------- Your people ----------
+  function out(html) { var p = document.createElement("p"); p.className = "out"; p.innerHTML = html; return p; }
+  function renderCircles(c) {
+    var tx = t();
+    var labels = { friends: tx.tabFriends, family: tx.tabFamily, couple: tx.tabCouple, work: tx.tabWork };
+    dom.tabs.replaceChildren();
+    TABS.forEach(function (k) {
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "chip"; b.setAttribute("role", "tab"); b.textContent = labels[k];
+      b.setAttribute("aria-selected", state.tab === k ? "true" : "false");
+      b.setAttribute("aria-pressed", state.tab === k ? "true" : "false");
+      b.addEventListener("click", function () { state.tab = k; save(); renderCircles(current()); renderVizHead(); setTargets(false); });
+      dom.tabs.appendChild(b);
+    });
+    TABS.forEach(function (k) { $("tab-" + k).hidden = state.tab !== k; });
+
+    // Friends
+    if (document.activeElement !== dom.frName) dom.frName.value = state.friendName;
+    if (document.activeElement !== dom.frMet) dom.frMet.value = state.friendMet;
+    dom.frMet.max = todayIso();
+    dom.frOut.replaceChildren();
+    if (state.friendMet && state.friendMet <= todayIso()) {
+      var w = weeksBetween(state.friendMet, todayIso());
+      dom.frOut.appendChild(out(fillN(tx.frOut, { name: state.friendName || tx.frDefault, w: fmt(Math.max(0, w)), p: fmt1(c.lived > 0 ? Math.min(100, Math.max(0, w) / c.lived * 100) : 0) })));
+    } else dom.frOut.appendChild(out(esc(tx.frEmpty)));
+    dom.frOut.appendChild(out(fillN(tx.frTrips, { f: fmt(freqOf("friendsTrip")), n: fmt(countOf("friendsTrip", c).n), g: fmt(freqOf("friendsDinner")), m: fmt(countOf("friendsDinner", c).n) })));
+
+    // Family
+    dom.kidBirth.max = todayIso();
+    dom.kidList.replaceChildren();
+    if (!state.kids.length) { var li0 = document.createElement("li"); li0.style.gridTemplateColumns = "1fr"; li0.innerHTML = '<span class="m">' + esc(tx.kidEmpty) + "</span>"; dom.kidList.appendChild(li0); }
+    state.kids.forEach(function (k) {
+      var li = document.createElement("li");
+      var left = document.createElement("div");
+      var tt = document.createElement("div"); tt.className = "t"; tt.textContent = k.name;
+      var mm = document.createElement("div"); mm.className = "m";
+      var wk = kidWeeksTo18(k);
+      mm.textContent = wk > 0 ? fill(tx.kidMeta, { w: fmt(wk), s: fmt(Math.ceil(wk / WPY)) }) : tx.kidAdult;
+      left.append(tt, mm);
+      var del = document.createElement("button"); del.type = "button"; del.className = "mini"; del.textContent = tx.goalRemove;
+      del.addEventListener("click", function () { state.kids = state.kids.filter(function (x) { return x.id !== k.id; }); save(); renderLive(false); });
+      var acts = document.createElement("div"); acts.className = "acts"; acts.append(del);
+      li.append(left, acts);
+      dom.kidList.appendChild(li);
+    });
+    renderFamily(c);
+
+    // Couple
+    if (document.activeElement !== dom.cpSince) dom.cpSince.value = state.since;
+    if (document.activeElement !== dom.cpBirth) dom.cpBirth.value = state.partnerBirth;
+    dom.cpSince.max = todayIso(); dom.cpBirth.max = todayIso();
+    dom.cpOut.replaceChildren();
+    var cn = coupleNums(c);
+    if (cn) {
+      dom.cpOut.appendChild(out(fillN(tx.cpOut, { w: fmt(cn.tog), p: fmt1(cn.pct) })));
+      dom.cpOut.appendChild(out(cn.crossed ? esc(tx.cpCrossed) : fillN(tx.cpCross, { d: fmtDate(new Date(parseYmd(cn.cross).y, parseYmd(cn.cross).m - 1, parseYmd(cn.cross).d)) })));
+      dom.cpOut.appendChild(out(fillN(tx.cpLeft, { L: state.lifespan, n: fmt(cn.leftTog) })));
+    } else dom.cpOut.appendChild(out(esc(tx.cpEmpty)));
+    dom.cpOut.appendChild(out(fillN(tx.cpNights, { f: fmt(freqOf("dateNights")), n: fmt(countOf("dateNights", c).n) })));
+    var nShared = state.items.filter(function (it) { return it.shared && !it.done; }).length;
+    if (nShared) dom.cpOut.appendChild(out(fillN(tx.cpShared, { n: nShared })));
+
+    // Work
+    dom.workInputs.forEach(function (inp) { if (document.activeElement !== inp) inp.value = String(state[inp.getAttribute("data-w")]); });
+    var wn = workNums(c);
+    dom.wOut.replaceChildren();
+    if (wn.years <= 0) dom.wOut.appendChild(out(esc(tx.wDone)));
+    else {
+      dom.wOut.appendChild(out(fillN(tx.wDaysOut, { d: fmt(wn.days), r: state.retire, y: fmt(wn.perYear) })));
+      dom.wOut.appendChild(out(fillN(tx.wMeetOut, { w: fmt1(wn.meet) })));
+      dom.wOut.appendChild(out(fillN(tx.wCommOut, { w: fmt1(wn.comm) })));
+      dom.wOut.appendChild(out(fillN(tx.wProjOut, { f: fmt1(state.projY), n: fmt(wn.proj), r: state.retire })));
+    }
+    dom.wOut.appendChild(out(fillN(tx.wScreenOut, { w: fmt(wn.screen), p: fmt(wn.screenPct) })));
+  }
+
+  function renderFamily(c) {
+    var tx = t(), L = state.lifespan;
+    var birthY = parseYmd(effectiveBirth()).y + (parseYmd(effectiveBirth()).m - 1) / 12;
+    var nowY = new Date().getFullYear() + new Date().getMonth() / 12;
+    var rows = [];
+    var pa = parentAgeFor(c), ga = grandAgeFor(c);
+    if (state.grandAge != null) rows.push({ name: tx.famGrand, start: nowY - ga });
+    rows.push({ name: tx.famParent, start: nowY - pa });
+    rows.push({ name: tx.famYou, start: birthY, you: true });
+    state.kids.forEach(function (k) { var p = parseYmd(k.birth); rows.push({ name: k.name, start: p.y + (p.m - 1) / 12 }); });
+    var minY = Math.min.apply(null, rows.map(function (r) { return r.start; }));
+    var maxY = Math.max.apply(null, rows.map(function (r) { return r.start + L; }));
+    var span = Math.max(1, maxY - minY);
+    function pct(y) { return ((y - minY) / span * 100).toFixed(2) + "%"; }
+    dom.fam.replaceChildren();
+    rows.forEach(function (r) {
+      var row = document.createElement("div"); row.className = "r";
+      var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = r.name;
+      var tr = document.createElement("div"); tr.className = "track";
+      var sg = document.createElement("span"); sg.className = "seg" + (r.you ? " you" : "");
+      sg.style.left = pct(r.start); sg.style.width = (L / span * 100).toFixed(2) + "%";
+      tr.appendChild(sg);
+      if (!r.you) {
+        var a = Math.max(r.start, birthY), b = Math.min(r.start + L, birthY + L);
+        if (b > a) { var ov = document.createElement("span"); ov.className = "ov"; ov.style.left = pct(a); ov.style.width = ((b - a) / span * 100).toFixed(2) + "%"; tr.appendChild(ov); }
+      }
+      var nl = document.createElement("span"); nl.className = "nowl"; nl.style.left = pct(nowY); tr.appendChild(nl);
+      row.append(nm, tr);
+      dom.fam.appendChild(row);
+    });
+    dom.famHint.textContent = fill(tx.famHint, { L: L });
+  }
+
+  // ---------- Milestones ----------
+  function renderEvents() {
+    var tx = t();
+    dom.evDate.max = todayIso();
+    dom.evList.replaceChildren();
+    state.events.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; }).forEach(function (ev) {
+      var li = document.createElement("li");
+      var left = document.createElement("div");
+      var tt = document.createElement("div"); tt.className = "t"; tt.textContent = ev.label;
+      var mm = document.createElement("div"); mm.className = "m"; var p = parseYmd(ev.date); mm.textContent = fmtDate(new Date(p.y, p.m - 1, p.d));
+      left.append(tt, mm);
+      var del = document.createElement("button"); del.type = "button"; del.className = "mini"; del.textContent = tx.goalRemove;
+      del.addEventListener("click", function () { state.events = state.events.filter(function (x) { return x.id !== ev.id; }); save(); renderEvents(); renderVizHead(); setTargets(false); });
+      var acts = document.createElement("div"); acts.className = "acts"; acts.append(del);
+      li.append(left, acts);
+      dom.evList.appendChild(li);
+    });
+  }
+
+  // ---------- Country, date fields ----------
+  function countryLife() {
+    var row = COUNTRIES.filter(function (c) { return c[0] === state.country; })[0];
+    if (!row) return null;
+    var v = state.sex === "f" ? row[4] : state.sex === "m" ? row[5] : row[3];
+    return Math.max(50, Math.min(110, Math.round(v)));
+  }
+  function fillSelects() {
+    var tx = t(), loc = locale();
+    var curD = dom.dobD.value, curM = dom.dobM.value, i, o;
+    dom.dobD.replaceChildren(); dom.dobM.replaceChildren();
+    o = document.createElement("option"); o.value = ""; o.textContent = tx.dobD; dom.dobD.appendChild(o);
+    for (i = 1; i <= 31; i++) { o = document.createElement("option"); o.value = String(i); o.textContent = String(i); dom.dobD.appendChild(o); }
+    o = document.createElement("option"); o.value = ""; o.textContent = tx.dobM; dom.dobM.appendChild(o);
+    for (i = 1; i <= 12; i++) { o = document.createElement("option"); o.value = String(i); o.textContent = new Date(2000, i - 1, 1).toLocaleDateString(loc, { month: "long" }); dom.dobM.appendChild(o); }
+    dom.dobD.value = curD; dom.dobM.value = curM;
+    dom.dobD.setAttribute("aria-label", tx.dobD); dom.dobM.setAttribute("aria-label", tx.dobM); dom.dobY.setAttribute("aria-label", tx.dobY);
+    dom.dobY.placeholder = tx.dobY;
+    dom.country.replaceChildren();
+    o = document.createElement("option"); o.value = ""; o.textContent = tx.countryNone; dom.country.appendChild(o);
+    COUNTRIES.slice().sort(function (a, b) { return (state.lang === "fr" ? a[2] : a[1]).localeCompare(state.lang === "fr" ? b[2] : b[1], loc); }).forEach(function (c) {
+      var op = document.createElement("option"); op.value = c[0]; op.textContent = state.lang === "fr" ? c[2] : c[1]; dom.country.appendChild(op);
+    });
+    dom.country.value = state.country;
+    dom.sex.replaceChildren();
+    [["all", tx.sexAll], ["f", tx.sexF], ["m", tx.sexM]].forEach(function (p) { var op = document.createElement("option"); op.value = p[0]; op.textContent = p[1]; dom.sex.appendChild(op); });
+    dom.sex.value = state.sex;
+    dom.sex.disabled = !state.country;
+    dom.cv.setAttribute("aria-description", tx.gridKeys);
+  }
+  function setDobFields(iso) {
+    if (!iso) { dom.dobD.value = ""; dom.dobM.value = ""; dom.dobY.value = ""; return; }
+    var p = parseYmd(iso); dom.dobD.value = String(p.d); dom.dobM.value = String(p.m); dom.dobY.value = String(p.y);
+  }
+  function readDob() {
+    var d = parseInt(dom.dobD.value, 10), m = parseInt(dom.dobM.value, 10), y = parseInt(dom.dobY.value, 10);
+    if (!dom.dobY.value && !dom.dobD.value && !dom.dobM.value) return { empty: true };
+    if (!(d && m && y) || dom.dobY.value.length < 4) return { partial: true };
+    var iso = y + "-" + p2(m) + "-" + p2(d);
+    if (!validIso(iso) || iso > todayIso()) return { bad: true };
+    return { iso: iso };
+  }
+
+  // ---------- Files ----------
+  function downloadBlob(blob, name) {
+    var url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
+  }
+  function icsEsc(s) { return String(s).replace(/\\/g, "\\\\").replace(/([,;])/g, "\\$1").replace(/\n/g, "\\n"); }
+  function icsFile(name, title, desc, iso, yearly) {
+    var p = parseYmd(iso), d0 = new Date(p.y, p.m - 1, p.d), d1 = new Date(p.y, p.m - 1, p.d + 1);
+    function dt(d) { return d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()); }
+    var now = new Date(), stamp = now.getUTCFullYear() + p2(now.getUTCMonth() + 1) + p2(now.getUTCDate()) + "T" + p2(now.getUTCHours()) + p2(now.getUTCMinutes()) + p2(now.getUTCSeconds()) + "Z";
+    var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//The Unfinished 30//How Many Weeks//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+      "UID:" + Date.now().toString(36) + Math.random().toString(36).slice(2) + "@the-unfinished-30", "DTSTAMP:" + stamp,
+      "DTSTART;VALUE=DATE:" + dt(d0), "DTEND;VALUE=DATE:" + dt(d1)];
+    if (yearly) lines.push("RRULE:FREQ=YEARLY");
+    lines.push("SUMMARY:" + icsEsc(title), "DESCRIPTION:" + icsEsc(desc), "URL:" + APP_URL, "END:VEVENT", "END:VCALENDAR");
+    downloadBlob(new Blob([lines.join("\r\n") + "\r\n"], { type: "text/calendar" }), name);
   }
 
   function renderReference() {
@@ -1539,6 +2312,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     dom.langFr.setAttribute("aria-pressed", state.lang === "fr" ? "true" : "false");
     dom.langEn.setAttribute("aria-pressed", state.lang === "en" ? "true" : "false");
     dom.lifeRange.setAttribute("aria-label", tx.lblLife);
+    fillSelects();
   }
 
   function renderAll(snap) {
@@ -1548,6 +2322,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     renderHero(c);
     renderScenes(c);
     renderTimes(c);
+    renderCircles(c);
+    renderEvents();
     renderGoals(c);
     renderCard();
     renderReference();
@@ -1561,6 +2337,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     renderHero(c);
     renderScenes(c);
     renderTimes(c);
+    renderCircles(c);
     renderGoals(c);
     renderCard();
     renderVizHead();
@@ -1580,79 +2357,153 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     return lines;
   }
 
+  function cardContent(c) {
+    var tx = t(), th = state.cardTheme, open = openGoals(c), st = [], k;
+    var summers = momentCount({ id: "summers", f: 1 }, c, state.lifespan, parentAgeFor(c)).n;
+    var res = { kicker: tx.cardKicker, big: fmt(c.left), unit: fill(tx.cardUnit, { y: fmt1(c.left / WPY) }), stats: [], goal: open[0] ? { label: tx.cardGoal, title: open[0].title, meta: fill(tx.cardGoalIn, { w: fmt(goalWeek(open[0].age) - c.lived) }) } : null };
+    if (th === "friends") {
+      res.kicker = tx.cardKFriends; res.big = fmt(countOf("friendsTrip", c).n); res.unit = fill(tx.cardUFriends, { f: fmt(freqOf("friendsTrip")) });
+      st.push([tx.cardDinners, "≈ " + fmt(countOf("friendsDinner", c).n), false]);
+      st.push([tx.cardLeft, fmt(c.left), true]);
+      if (state.friendMet && state.friendMet <= todayIso()) st.push([tx.cardMet, fmt(weeksBetween(state.friendMet, todayIso())), false]);
+    } else if (th === "family") {
+      var y = youngestKid();
+      res.kicker = tx.cardKFamily;
+      if (y && kidWeeksTo18(y) > 0) {
+        res.big = fmt(Math.ceil(kidWeeksTo18(y) / WPY)); res.unit = fill(tx.cardUKid, { name: y.name });
+        state.kids.filter(function (x) { return kidWeeksTo18(x) > 0; }).slice(0, 2).forEach(function (x) { st.push([fill(tx.cardKidW, { name: x.name.toUpperCase() }), fmt(kidWeeksTo18(x)), x.id === y.id]); });
+      } else {
+        var pd = countOf("parents", c);
+        res.big = fmt(pd.n); res.unit = tx.cardUParents;
+      }
+      st.push([tx.cardParentsDays, "≈ " + fmt(countOf("parents", c).n), false]);
+      st.push([tx.cardCalls, "≈ " + fmt(countOf("parentsCalls", c).n), false]);
+    } else if (th === "couple") {
+      var cn = coupleNums(c);
+      res.kicker = tx.cardKCouple; res.big = fmt(cn ? cn.leftTog : c.left); res.unit = fill(tx.cardUCouple, { L: state.lifespan });
+      if (cn) st.push([tx.cardTogether, fmt(cn.tog), false]);
+      st.push([tx.cardNights, "≈ " + fmt(countOf("dateNights", c).n), true]);
+      var sh = open.filter(function (g) { return g.shared; })[0];
+      res.goal = sh ? { label: tx.cardSharedGoal, title: sh.title, meta: fill(tx.cardGoalIn, { w: fmt(goalWeek(sh.age) - c.lived) }) } : null;
+    } else if (th === "work") {
+      var wn = workNums(c);
+      res.kicker = tx.cardKWork; res.big = fmt(wn.days); res.unit = fill(tx.cardUWork, { r: state.retire });
+      st.push([tx.cardMeet, fmt1(wn.meet), true]);
+      st.push([tx.cardComm, fmt1(wn.comm), false]);
+      st.push([tx.cardProj, "≈ " + fmt(wn.proj), false]);
+    } else {
+      st.push([tx.cardLived, fmt(c.lived), false], [tx.cardLeft, fmt(c.left), true], [tx.cardSummers, "≈ " + fmt(summers), false]);
+      var am = activeMoment();
+      if (am.id !== "summers" && am.id !== "parents") st.push([momentName(am).toUpperCase(), "≈ " + fmt(momentCount(am, c, state.lifespan, parentAgeFor(c)).n), false]);
+    }
+    res.stats = st.slice(0, 4);
+    return res;
+  }
+
   function makeCard() {
-    var tx = t(), c = current();
-    var W = 1080, H = 1350, M = 80;
+    var c = current(), tx = t(), cc = cardContent(c);
+    var sq = state.cardFmt === "square";
+    var W = 1080, H = sq ? 1080 : 1350, M = 80;
     var cv = document.createElement("canvas");
     cv.width = W; cv.height = H;
     var x = cv.getContext("2d");
-    var C = { bg: "#f3f5f8", ink: "#0e1a2b", muted: "#576477", blank: "#e0e5ec", lived: "#b2bdcb", accent: "#ff4a1c" };
+    var C = { bg: "#0E1638", panel: "#16214A", ink: "#F6F4FB", muted: "#AEB6D4", lived: "#2A3766", left: "#F6F4FB", accent: "#FFD84D" };
     var DISPLAY = "'Bricolage Grotesque', 'Arial Narrow', Arial, sans-serif";
     var MONO = "'DM Mono', ui-monospace, monospace";
     var BODY = "'Atkinson Hyperlegible', Arial, sans-serif";
-
     x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
     x.textBaseline = "alphabetic";
 
-    // Logo and kicker.
     x.fillStyle = C.accent; x.fillRect(M, 92, 22, 22);
     x.fillStyle = C.muted; x.font = "500 26px " + MONO;
-    x.fillText(tx.cardKicker, M + 40, 112);
+    x.fillText(cc.kicker, M + 40, 112);
 
-    // The number.
+    var bigSize = sq ? 210 : 250, bigY = sq ? 320 : 360;
     if ("fontStretch" in x) x.fontStretch = "condensed";
-    x.fillStyle = C.ink; x.font = "800 250px " + DISPLAY;
-    x.fillText(fmt(c.left), M - 6, 360);
+    x.font = "800 " + bigSize + "px " + DISPLAY;
+    while (x.measureText(cc.big).width > W - 2 * M && bigSize > 90) { bigSize -= 10; x.font = "800 " + bigSize + "px " + DISPLAY; }
+    x.fillStyle = C.accent; x.fillText(cc.big, M - 6, bigY);
     if ("fontStretch" in x) x.fontStretch = "normal";
-    x.font = "700 40px " + BODY;
-    x.fillText(fill(tx.cardUnit, { y: fmt1(c.left / WPY) }), M, 430);
+    x.fillStyle = C.ink; x.font = "700 " + (sq ? 34 : 40) + "px " + BODY;
+    wrapLines(x, cc.unit, W - 2 * M, 2).forEach(function (ln, k) { x.fillText(ln, M, bigY + 70 + k * 46); });
 
-    // The grid.
-    var top = 500, bottom = 1230, gridMaxW = 540;
+    var top = sq ? 470 : 540, bottom = H - 150, gridMaxW = sq ? 470 : 540;
     var p = Math.min(gridMaxW / WPY, (bottom - top) / state.lifespan);
     var cs = p * 0.76, off = (p - cs) / 2;
-    var goals = openGoals(c);
     var goalSet = {};
-    goals.forEach(function (g) { goalSet[goalWeek(g.age)] = true; });
+    openGoals(c).forEach(function (g) { goalSet[goalWeek(g.age)] = true; });
     for (var i = 0; i < c.total; i++) {
       var r = Math.floor(i / WPY), w = i % WPY;
-      x.fillStyle = i < c.lived ? C.lived : (i === c.lived && !c.over ? C.accent : C.ink);
+      x.fillStyle = i < c.lived ? C.lived : (i === c.lived && !c.over ? C.accent : C.left);
       x.fillRect(M + w * p + off, top + r * p + off, cs, cs);
-      if (goalSet[i]) {
-        x.strokeStyle = C.accent; x.lineWidth = 2.5;
-        x.strokeRect(M + w * p + off - 3, top + r * p + off - 3, cs + 6, cs + 6);
-      }
+      if (goalSet[i]) { x.strokeStyle = C.accent; x.lineWidth = 2.5; x.strokeRect(M + w * p + off - 3, top + r * p + off - 3, cs + 6, cs + 6); }
     }
 
-    // Stats column.
-    var sx = M + gridMaxW + 70, sy = top + 40;
-    var cnt = momentCount({ id: "summers", f: 1 }, c, state.lifespan, parentAgeFor(c));
-    var stats = [[tx.cardLived, fmt(c.lived), C.ink], [tx.cardLeft, fmt(c.left), C.accent], [tx.cardSummers, "≈ " + fmt(cnt.n), C.ink]];
-    var am = activeMoment();
-    if (am.id !== "summers" && am.id !== "parents") {
-      stats.push([momentName(am).toUpperCase(), "≈ " + fmt(momentCount(am, c, state.lifespan, parentAgeFor(c)).n), C.ink]);
-    }
-    stats.forEach(function (s) {
-      x.fillStyle = C.muted; x.font = "500 22px " + MONO; x.fillText(s[0], sx, sy);
+    var sx = M + gridMaxW + 60, sy = top + 30, step = sq ? 118 : 140, num = sq ? 62 : 72, maxW = W - sx - M;
+    cc.stats.forEach(function (s) {
+      x.fillStyle = C.muted; x.font = "500 21px " + MONO;
+      wrapLines(x, s[0], maxW, 1).forEach(function (ln) { x.fillText(ln, sx, sy); });
       if ("fontStretch" in x) x.fontStretch = "condensed";
-      x.fillStyle = s[2]; x.font = "800 76px " + DISPLAY; x.fillText(s[1], sx, sy + 76);
+      x.fillStyle = s[2] ? C.accent : C.ink; x.font = "800 " + num + "px " + DISPLAY; x.fillText(s[1], sx, sy + num + 4);
       if ("fontStretch" in x) x.fontStretch = "normal";
-      sy += 150;
+      sy += step;
     });
-    if (goals.length) {
-      var g0 = goals[0];
-      x.fillStyle = C.muted; x.font = "500 22px " + MONO; x.fillText(tx.cardGoal, sx, sy);
-      x.fillStyle = C.ink; x.font = "700 34px " + BODY;
-      var lines = wrapLines(x, g0.title, W - sx - M, 3);
-      lines.forEach(function (ln, k) { x.fillText(ln, sx, sy + 46 + k * 42); });
-      x.fillStyle = C.accent; x.font = "700 28px " + BODY;
-      x.fillText(fill(tx.cardGoalIn, { w: fmt(goalWeek(g0.age) - c.lived) }), sx, sy + 46 + lines.length * 42 + 8);
+    if (cc.goal && sy < bottom - 80) {
+      x.fillStyle = C.muted; x.font = "500 21px " + MONO; x.fillText(cc.goal.label, sx, sy);
+      x.fillStyle = C.ink; x.font = "700 30px " + BODY;
+      var lines = wrapLines(x, cc.goal.title, maxW, 3);
+      lines.forEach(function (ln, k) { x.fillText(ln, sx, sy + 42 + k * 38); });
+      x.fillStyle = C.accent; x.font = "700 26px " + BODY;
+      x.fillText(cc.goal.meta, sx, sy + 42 + lines.length * 38 + 6);
     }
 
-    // Footer.
-    x.fillStyle = C.muted; x.font = "500 24px " + MONO;
-    x.fillText(tx.cardFooter, M, 1296);
-    return cv.toDataURL("image/png");
+    x.fillStyle = C.accent; x.font = "700 26px " + MONO;
+    x.fillText("the-unfinished-30.vercel.app/day-02-howmanyweeks", M, H - 88);
+    x.fillStyle = C.muted; x.font = "500 22px " + MONO;
+    x.fillText(tx.cardFooter + " · Salah Khenissi", M, H - 50);
+    return { cv: cv, alt: cc.kicker + " : " + cc.big };
+  }
+
+  function buildCard() {
+    if (!state.birth) return;
+    var made;
+    try { made = makeCard(); } catch (err) { return; }
+    var url = made.cv.toDataURL("image/png");
+    ui.cardCv = made.cv;
+    dom.cardImg.src = url;
+    dom.cardImg.alt = made.alt;
+    dom.cardImg.hidden = false;
+    dom.cardHint.hidden = false;
+    dom.cardDl.href = url;
+    dom.cardDl.download = (state.lang === "fr" ? "combien-de-semaines-" : "how-many-weeks-") + state.cardTheme + ".png";
+    dom.cardDl.hidden = false;
+    dom.cardShare.hidden = false;
+  }
+
+  function shareCard() {
+    var tx = t();
+    function status(m) { dom.cardStatus.textContent = m; }
+    function copyLink() {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(APP_URL).then(function () { status(tx.linkCopied); }, function () { status(tx.shareFail); });
+      else status(tx.shareFail);
+    }
+    if (!ui.cardCv || !ui.cardCv.toBlob) { copyLink(); return; }
+    ui.cardCv.toBlob(function (blob) {
+      var file = null;
+      try { file = blob ? new File([blob], "how-many-weeks.png", { type: "image/png" }) : null; } catch (e) { file = null; }
+      if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: tx.brand, text: tx.shareText + " " + APP_URL }).catch(function () {});
+      } else if (navigator.share) {
+        navigator.share({ title: tx.brand, text: tx.shareText, url: APP_URL }).catch(function () {});
+      } else copyLink();
+    }, "image/png");
+  }
+
+  function updateProgress() {
+    var el = $("histoire"); if (!el || !dom.prog) return;
+    var r = el.getBoundingClientRect(), span = Math.max(1, r.height - window.innerHeight);
+    var pr = Math.max(0, Math.min(1, -r.top / span));
+    dom.prog.style.width = (pr * 100).toFixed(1) + "%";
   }
 
   // ---------- Events ----------
@@ -1660,27 +2511,44 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     dom.langFr.addEventListener("click", function () { state.lang = "fr"; save(); renderAll(true); });
     dom.langEn.addEventListener("click", function () { state.lang = "en"; save(); renderAll(true); });
 
-    dom.birth.addEventListener("input", function () {
-      var val = dom.birth.value;
+    function onDob() {
+      var r = readDob();
       dom.heroErr.textContent = "";
-      if (!val) state.birth = null;
-      else if (val > todayIso() || val < "1900-01-01") { dom.heroErr.textContent = t().errFuture; return; }
-      else state.birth = val;
+      if (r.empty) state.birth = null;
+      else if (r.partial) return;
+      else if (r.bad) { dom.heroErr.textContent = t().errDate; return; }
+      else state.birth = r.iso;
       save(); renderLive(false);
+    }
+    dom.dobD.addEventListener("change", onDob);
+    dom.dobM.addEventListener("change", onDob);
+    dom.dobY.addEventListener("input", onDob);
+    dom.exampleGo.addEventListener("click", function () { dom.dobY.focus(); });
+    dom.country.addEventListener("change", function () {
+      state.country = dom.country.value;
+      dom.sex.disabled = !state.country;
+      var v = countryLife();
+      if (v) setLife(v); else { save(); }
+    });
+    dom.sex.addEventListener("change", function () {
+      state.sex = dom.sex.value;
+      var v = countryLife();
+      if (v) setLife(v); else save();
     });
 
-    function setLife(v) {
+    function setLife(v, manual) {
       state.lifespan = v;
+      if (manual && state.country && countryLife() !== v) { state.country = ""; dom.country.value = ""; dom.sex.disabled = true; }
       dom.lifeRange.value = String(v);
       if (document.activeElement !== dom.lifeNum) dom.lifeNum.value = String(v);
       save();
       ui.layout = layout();
       renderLive(true);
     }
-    dom.lifeRange.addEventListener("input", function () { dom.heroErr.textContent = ""; dom.lifeNum.value = dom.lifeRange.value; setLife(parseInt(dom.lifeRange.value, 10)); });
+    dom.lifeRange.addEventListener("input", function () { dom.heroErr.textContent = ""; dom.lifeNum.value = dom.lifeRange.value; setLife(parseInt(dom.lifeRange.value, 10), true); });
     dom.lifeNum.addEventListener("input", function () {
       var v = parseInt(dom.lifeNum.value, 10);
-      if (v >= 50 && v <= 110) { dom.heroErr.textContent = ""; setLife(v); }
+      if (v >= 50 && v <= 110) { dom.heroErr.textContent = ""; setLife(v, true); }
       else dom.heroErr.textContent = t().errRange;
     });
 
@@ -1714,6 +2582,99 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       save(); renderTimes(current()); renderVizHead(); setTargets(false);
     });
 
+
+    dom.grandAge.addEventListener("input", function () {
+      var v = parseInt(dom.grandAge.value, 10);
+      if (dom.grandAge.value === "") state.grandAge = null;
+      else if (v >= 40 && v <= 125) state.grandAge = v;
+      else return;
+      save(); renderTimes(current()); renderCircles(current()); setTargets(false);
+    });
+    dom.evForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var tx = t(), label = dom.evLabel.value.trim(), d = dom.evDate.value;
+      if (!state.birth) { dom.evErr.textContent = tx.evNeed; return; }
+      if (!label || !validIso(d) || d < state.birth || d > todayIso()) { dom.evErr.textContent = tx.evErr; return; }
+      if (state.events.length >= 12) { dom.evErr.textContent = tx.evFull; return; }
+      dom.evErr.textContent = "";
+      state.events.push({ id: Date.now().toString(36), label: label.slice(0, 40), date: d });
+      dom.evLabel.value = ""; dom.evDate.value = "";
+      save(); renderEvents(); renderVizHead(); setTargets(false);
+    });
+    function circlesChanged() { save(); renderCircles(current()); renderVizHead(); setTargets(false); }
+    dom.frName.addEventListener("input", function () { state.friendName = dom.frName.value.slice(0, 30); circlesChanged(); });
+    dom.frMet.addEventListener("change", function () { var v = dom.frMet.value; state.friendMet = validIso(v) && v <= todayIso() ? v : ""; circlesChanged(); });
+    dom.kidForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var tx = t(), name = dom.kidName.value.trim(), b = dom.kidBirth.value;
+      if (!name || !validIso(b) || b > todayIso()) { dom.kidErr.textContent = tx.kidErr; return; }
+      if (state.kids.length >= 4) { dom.kidErr.textContent = tx.kidFull; return; }
+      dom.kidErr.textContent = "";
+      state.kids.push({ id: Date.now().toString(36), name: name.slice(0, 30), birth: b });
+      dom.kidName.value = ""; dom.kidBirth.value = "";
+      circlesChanged();
+    });
+    dom.cpSince.addEventListener("change", function () { var v = dom.cpSince.value; state.since = validIso(v) && v <= todayIso() ? v : ""; circlesChanged(); });
+    dom.cpBirth.addEventListener("change", function () { var v = dom.cpBirth.value; state.partnerBirth = validIso(v) && v <= todayIso() ? v : ""; circlesChanged(); });
+    dom.cpIcs.addEventListener("click", function () {
+      var tx = t();
+      if (!state.since) { dom.cpOut.appendChild(out(esc(tx.cpIcsNeed))); return; }
+      var p = parseYmd(state.since), y = new Date().getFullYear();
+      function onYear(yy) { var iso = yy + "-" + p2(p.m) + "-" + p2(p.d); return validIso(iso) ? iso : yy + "-" + p2(p.m) + "-28"; }
+      var next = onYear(y);
+      if (next < todayIso()) next = onYear(y + 1);
+      icsFile("anniversary.ics", tx.cpIcsTitle, tx.cpIcsTitle + " · " + APP_URL, next, true);
+    });
+    dom.workInputs.forEach(function (inp) {
+      inp.addEventListener("input", function () {
+        var k = inp.getAttribute("data-w"), v = parseFloat(inp.value);
+        if (!isFinite(v) || v < WORK_LIMITS[k][0] || v > WORK_LIMITS[k][1]) return;
+        state[k] = k === "screenH" || k === "projY" ? v : Math.round(v);
+        if (state.retire <= state.workStart) return;
+        save(); renderScenes(current()); renderCircles(current()); renderVizHead(); setTargets(false);
+      });
+    });
+    dom.goalExample.addEventListener("click", function () {
+      var c = current();
+      dom.goalTitle.value = t().goalExampleText;
+      if (!dom.goalAge.value) dom.goalAge.value = String(Math.min(state.lifespan, c.age + 2));
+      dom.goalTitle.focus();
+    });
+    dom.cardShare.addEventListener("click", shareCard);
+    dom.remindBtn.addEventListener("click", function () {
+      var tx = t();
+      icsFile("how-many-weeks-reminder.ics", tx.remindTitle, tx.shareText + " " + APP_URL, addDaysIso(todayIso(), 365), false);
+      dom.cardStatus.textContent = tx.remindDone;
+    });
+    dom.exportBtn.addEventListener("click", function () {
+      downloadBlob(new Blob([JSON.stringify(payload(), null, 2)], { type: "application/json" }), "how-many-weeks-data.json");
+      dom.ioStatus.textContent = t().exported;
+    });
+    dom.importFile.addEventListener("change", function () {
+      var f = dom.importFile.files && dom.importFile.files[0]; if (!f) return;
+      var rd = new FileReader();
+      rd.onload = function () {
+        var ok = false;
+        try { ok = applySaved(JSON.parse(String(rd.result))); } catch (e) { ok = false; }
+        dom.importFile.value = "";
+        if (!ok) { dom.ioStatus.textContent = t().importErr; return; }
+        save(); setDobFields(state.birth); ui.layout = layout(); renderAll(true);
+        dom.ioStatus.textContent = t().imported;
+      };
+      rd.readAsText(f);
+    });
+    dom.cv.addEventListener("keydown", function (e) {
+      var c = current(), k = e.key, i = ui.kbd === null ? Math.min(c.lived, c.total - 1) : ui.kbd;
+      if (k === "Escape") { ui.kbd = null; hideTip(); return; }
+      if (k === "ArrowRight") i += 1; else if (k === "ArrowLeft") i -= 1; else if (k === "ArrowDown") i += WPY; else if (k === "ArrowUp") i -= WPY;
+      else if (k === "Home") i = 0; else if (k === "End") i = c.total - 1; else if (k !== "Enter" && k !== " ") return;
+      e.preventDefault();
+      i = Math.max(0, Math.min(c.total - 1, i));
+      ui.kbd = i;
+      var q = cellXY(i);
+      showTip(i, q.x, q.y);
+    });
+    dom.cv.addEventListener("blur", function () { ui.kbd = null; hideTip(); });
     dom.goalForm.addEventListener("submit", function (e) {
       e.preventDefault();
       var tx = t(), c = current();
@@ -1723,30 +2684,19 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       if (!(age >= min && age <= max)) { dom.goalErr.textContent = fill(tx.errGoalAge, { min: min, max: max }); dom.goalAge.focus(); return; }
       if (state.items.length >= 8) { dom.goalErr.textContent = tx.errGoalFull; return; }
       dom.goalErr.textContent = "";
-      state.items.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title: title.slice(0, 60), age: age, done: false });
-      dom.goalTitle.value = ""; dom.goalAge.value = "";
-      save(); refreshGoals();
+      state.items.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title: title.slice(0, 60), age: age, done: false, shared: dom.goalShared.checked });
+      dom.goalTitle.value = ""; dom.goalAge.value = ""; dom.goalShared.checked = false;
+      save(); refreshGoals(); renderCircles(current());
     });
 
-    dom.cardBtn.addEventListener("click", function () {
-      if (!state.birth) return;
-      var url;
-      try { url = makeCard(); } catch (err) { return; }
-      dom.cardImg.src = url;
-      dom.cardImg.alt = t().cardKicker + " : " + fmt(current().left);
-      dom.cardImg.hidden = false;
-      dom.cardHint.hidden = false;
-      dom.cardDl.href = url;
-      dom.cardDl.download = state.lang === "fr" ? "combien-de-semaines.png" : "how-many-weeks.png";
-      dom.cardDl.hidden = false;
-    });
+    dom.cardBtn.addEventListener("click", function () { buildCard(); dom.cardStatus.textContent = ""; });
 
     dom.clearBtn.addEventListener("click", function () {
       try { localStorage.removeItem(KEY); OLD_KEYS.forEach(function (k) { localStorage.removeItem(k); }); } catch (e) { /* nothing stored */ }
       var lang = state.lang;
-      state = { lang: lang, birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [] };
-      dom.birth.value = ""; dom.lifeRange.value = "80"; dom.lifeNum.value = "80";
-      dom.cardImg.hidden = true; dom.cardHint.hidden = true; dom.cardDl.hidden = true;
+      state = freshState(lang);
+      setDobFields(null); dom.lifeRange.value = "80"; dom.lifeNum.value = "80";
+      dom.cardImg.hidden = true; dom.cardHint.hidden = true; dom.cardDl.hidden = true; dom.cardShare.hidden = true; ui.cardCv = null;
       save();
       ui.layout = layout();
       renderAll(true);
@@ -1771,7 +2721,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     window.addEventListener("scroll", function () {
       if (ui.ticking) return;
       ui.ticking = true;
-      requestAnimationFrame(function () { ui.ticking = false; pickScene(); });
+      requestAnimationFrame(function () { ui.ticking = false; pickScene(); updateProgress(); });
     }, { passive: true });
 
     if (window.ResizeObserver) new ResizeObserver(function () { resize(); draw(); }).observe(dom.stage);
@@ -1791,7 +2741,17 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
       stage: $("stage"), cv: $("cv"), tip: $("tip"), legend: $("legend"),
       vizStep: $("viz-step"), vizTitle: $("viz-title"), vizExample: $("viz-example"),
       langFr: $("lang-fr"), langEn: $("lang-en"),
-      birth: $("birth"), lifeRange: $("life-range"), lifeNum: $("life-num"), heroErr: $("hero-err"),
+      dobD: $("dob-d"), dobM: $("dob-m"), dobY: $("dob-y"), country: $("country"), sex: $("sex"), exampleGo: $("example-go"), prog: $("prog"),
+      grandRow: $("grand-row"), grandAge: $("grand-age"), grandHint: $("grand-hint"), momentPlus: $("moment-plus"),
+      evForm: $("ev-form"), evLabel: $("ev-label"), evDate: $("ev-date"), evErr: $("ev-err"), evList: $("ev-list"),
+      tabs: $("tabs"), frName: $("fr-name"), frMet: $("fr-met"), frOut: $("fr-out"),
+      kidForm: $("kid-form"), kidName: $("kid-name"), kidBirth: $("kid-birth"), kidErr: $("kid-err"), kidList: $("kid-list"), fam: $("fam"), famHint: $("fam-hint"),
+      cpSince: $("cp-since"), cpBirth: $("cp-birth"), cpOut: $("cp-out"), cpIcs: $("cp-ics"),
+      workInputs: Array.prototype.slice.call(document.querySelectorAll("[data-w]")), wOut: $("w-out"),
+      goalShared: $("goal-shared"), goalExample: $("goal-example"),
+      cardThemes: $("card-themes"), cardFmts: $("card-fmts"), cardShare: $("card-share"), remindBtn: $("remind-btn"), cardStatus: $("card-status"),
+      exportBtn: $("export-btn"), importFile: $("import-file"), ioStatus: $("io-status"),
+      lifeRange: $("life-range"), lifeNum: $("life-num"), heroErr: $("hero-err"),
       exampleNote: $("example-note"), heroBig: $("hero-big"), heroUnit: $("hero-unit"), heroSub: $("hero-sub"),
       chips: $("chips"), freqRow: $("freq-row"), freqLbl: $("freq-lbl"), freq: $("freq"),
       parentRow: $("parent-row"), parentAge: $("parent-age"), parentHint: $("parent-hint"),
@@ -1808,8 +2768,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     dom.dpr = 1;
 
     load();
-    dom.birth.max = todayIso();
-    if (state.birth) dom.birth.value = state.birth;
+    dom.dobY.max = String(new Date().getFullYear());
+    fillSelects();
+    setDobFields(state.birth);
     dom.lifeRange.value = String(state.lifespan);
     dom.lifeNum.value = String(state.lifespan);
 
@@ -1825,6 +2786,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
     for (var i = 0; i < c.total; i++) { ui.cur[i * 3] = blank[0]; ui.cur[i * 3 + 1] = blank[1]; ui.cur[i * 3 + 2] = blank[2]; }
     renderAll(false);
     pickScene();
+    updateProgress();
 
     // Keeps "this week" right if a week rolls over while the page stays open.
     setInterval(function () { if (current().lived !== ui.week) renderLive(true); }, 60000);
