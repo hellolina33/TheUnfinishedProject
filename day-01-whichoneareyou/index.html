@@ -242,6 +242,7 @@ header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;backgroun
 .seg2{display:inline-flex;border:1px solid var(--line);background:var(--table);border-radius:var(--r-ctl);padding:4px;gap:4px;flex-wrap:wrap}
 .seg2 button{border:0;background:transparent;border-radius:8px;padding:4px 12px;font-weight:600;font-size:14px;color:var(--muted);min-height:32px}
 .seg2 button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.seg2.locked b{background:var(--ink);color:var(--card);border-radius:8px;padding:4px 12px;font-weight:600;font-size:14px;min-height:32px;display:inline-flex;align-items:center}
 .grid{display:grid;gap:12px}
 .g2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .g4{grid-template-columns:repeat(4,minmax(0,1fr))}
@@ -1506,7 +1507,7 @@ fr: {
   img_cta_c: 'Et vous deux, vous êtes qui ?', copy_c: 'Notre couple sur WhichOneAreYou : harmonie {h}/100. {s} Et vous deux ?',
   // dashboard
   d_period: '{a} → {b} ({n} jours)', d_pdf: 'Exporter en PDF', x_t: 'Exporter et partager', x_d: 'Le rapport complet, ta carte en image, ou un message prêt à envoyer dans le groupe.', x_pdf: 'PDF', x_img: 'Image', x_wa: 'WhatsApp', x_copy: 'Copier', x_wa_d: 'Envoyer ton résultat et le lien', x_img_d: 'Carte 1080 × 1350, parfaite pour une story ou le groupe.', t_img: 'Préparation de l’image…', t_err_img: 'Impossible de créer l’image.', img_group: 'Groupe', img_cta: 'Et toi, t’es qui ?', d_copy: 'Copier mon résultat', d_new: 'Nouvelle analyse', d_quiz: 'Refaire le questionnaire',
-  d_me: 'Tu es', d_me_none: 'Je choisis…', d_cat: 'Rôles', d_anon: 'Anonymiser',
+  d_me: 'Tu es', d_me_none: 'Je choisis…', d_cat: 'Groupe', d_cat_lock: 'Choisi à l’import. Pour changer, lance une nouvelle analyse.', d_anon: 'Anonymiser',
   you_lbl: 'Ton rôle dans ce groupe', you_none: 'Dis-nous qui tu es pour voir ton rôle, ton fan n°1 et tes conseils.', you_pick: 'Choisir mon prénom',
   en_refuge: 'Ce groupe te fait du bien. Les chiffres vont juste te dire pourquoi.', en_devoir: 'Tu y vas par loyauté. Voyons qui d’autre porte la loyauté.', en_charge: 'Tu sentais la charge avant même les stats. Voyons si elles te donnent raison.', en_show: 'Tu es là pour le spectacle. Bonne nouvelle : il y en a.',
   bet_ok: 'Ton pari : {b}. Les chiffres disent : {a}. Lucidité rare. Respect.', bet_ko: 'Ton pari : {b}. Les chiffres disent : {a}. Le déni, c’est normal. Ça passe.',
@@ -1632,7 +1633,7 @@ en: {
   en_cocon: 'You see a cocoon. Let’s see if your messages agree.', en_coloc: 'You see flatmates. The numbers will say who does the groceries.', en_aventure: 'You see an adventure. Let’s see who makes whom laugh.', en_rollercoaster: 'You see a rollercoaster. We counted the storms, and the calm after.',
   img_cta_c: 'What about you two?', copy_c: 'Our couple on WhichOneAreYou: harmony {h}/100. {s} What about you two?',
   d_period: '{a} → {b} ({n} days)', d_pdf: 'Export PDF', x_t: 'Export and share', x_d: 'The full report, your card as an image, or a message ready to send to the group.', x_pdf: 'PDF', x_img: 'Image', x_wa: 'WhatsApp', x_copy: 'Copy', x_wa_d: 'Send your result and the link', x_img_d: '1080 × 1350 card, perfect for a story or the group.', t_img: 'Preparing the image…', t_err_img: 'Couldn’t create the image.', img_group: 'Group', img_cta: 'Which one are you?', d_copy: 'Copy my result', d_new: 'New analysis', d_quiz: 'Redo the questions',
-  d_me: 'You are', d_me_none: 'Pick…', d_cat: 'Roles', d_anon: 'Anonymize',
+  d_me: 'You are', d_me_none: 'Pick…', d_cat: 'Group', d_cat_lock: 'Set at import. To change it, start a new analysis.', d_anon: 'Anonymize',
   you_lbl: 'Your role in this group', you_none: 'Tell us who you are to see your role, your #1 fan and your tips.', you_pick: 'Pick my name',
   en_refuge: 'This group does you good. The numbers will just tell you why.', en_devoir: 'You show up out of loyalty. Let’s see who else carries it.', en_charge: 'You felt the load before the stats. Let’s see if they agree.', en_show: 'You’re here for the show. Good news: there is one.',
   bet_ok: 'Your bet: {b}. The numbers say: {a}. Rare self-awareness. Respect.', bet_ko: 'Your bet: {b}. The numbers say: {a}. Denial is normal. It passes.',
@@ -2240,7 +2241,7 @@ function renderDash() {
   </div>
   <div class="d-bar">
     <label>${t('d_me')} <select data-act="me"><option value="">${t('d_me_none')}</option>${opts}</select></label>
-    <span>${t('d_cat')} <span class="seg2" role="group">${CATS.map(c => `<button type="button" data-setcat="${c}" aria-pressed="${state.cat === c}">${t('cat_' + c)}</button>`).join('')}</span></span>
+    <span>${t('d_cat')} <span class="seg2 locked" title="${esc(t('d_cat_lock'))}"><b>${t('cat_' + state.cat)}</b></span></span>
     <label class="switch"><input type="checkbox" data-act="anon" ${state.anon ? 'checked' : ''}><span>${t('d_anon')}</span></label>
   </div>
   ${youCard()}
@@ -2291,7 +2292,6 @@ function renderDash() {
 dash.addEventListener('click', e => {
   const b = e.target.closest('[data-act],[data-duel],[data-setcat],[data-aiq]'); if (!b) return;
   if (b.dataset.duel) { if (b.dataset.duel === state.me) { b.dataset.act = 'duelme'; } else { state.duelB = b.dataset.duel; if (state.duelA === state.duelB) state.duelA = (state.me && state.me !== b.dataset.duel ? state.me : state.stats.people.find(p => p.name !== b.dataset.duel).name); $('#duelWrap').innerHTML = duelHTML(); $('#duelWrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; } }
-  if (b.dataset.setcat) { state.cat = b.dataset.setcat; assign(state.stats, state.cat); renderDash(); return; }
   if (b.dataset.aiq) { askAI(aiQ()[+b.dataset.aiq]); return; }
   const a = b.dataset.act;
   if (a === 'wa') return;
