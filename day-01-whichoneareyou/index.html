@@ -1539,7 +1539,7 @@ fr: {
   ai_note: 'Quand tu envoies une question, un résumé chiffré du groupe (prénoms ou alias, rôles, statistiques) part directement de ton navigateur vers l’IA que tu as choisie (Claude, ChatGPT, Gemini ou Grok), avec ta propre clé. Aucun serveur WhichOneAreYou au milieu. Tes messages ne partent pas, sauf si tu coches les extraits : 30 messages courts, numéros, e-mails et liens masqués.',
   ai_off: 'Branche ton IA pour débloquer l’assistant. Sans clé, rien n’est envoyé nulle part.',
   k_prov: 'Ton IA', k_model: 'Modèle', k_key: 'Ta clé API', k_rem: 'Mémoriser la clé sur cet appareil', k_save: 'Brancher', k_change: 'Changer d’IA ou de clé', k_on: 'Branché sur {p} · {m}',
-  k_help: 'Ta clé reste dans ce navigateur et part seulement vers le fournisseur choisi. Elle se crée sur la console du fournisseur : console.anthropic.com, platform.openai.com, aistudio.google.com ou console.x.ai. Chaque question coûte quelques centimes au plus.',
+  k_help: 'Ta clé reste dans ce navigateur et part seulement vers le fournisseur choisi. Chaque question coûte quelques centimes au plus. Créer une clé :', k_get: 'Créer ma clé {p} ↗', k_rec: 'recommandé', k_other: 'Autre (saisir l’ID du modèle)', k_other_ph: 'ID exact du modèle', k_key_ph: 'Colle ta clé ici', q_restart: 'Recommencer',
   k_need: 'Colle une clé API d’abord.', k_err: 'Le fournisseur a refusé la requête :',
   ai_wait: 'Connexion à l’assistant…', ai_ph: 'Ta question…', ai_send: 'Envoyer', ai_stop: 'Stop', ai_thinking: 'Réflexion en cours…',
   ai_err: { not_granted: 'Tu n’as pas autorisé l’assistant. Rien n’a été envoyé.', rate_limited: 'Trop de questions d’un coup. Attends quelques secondes.', cancelled: '' , def: 'L’assistant n’a pas pu répondre. Réessaie dans un instant.' },
@@ -1665,7 +1665,7 @@ en: {
   ai_note: 'When you send a question, a numeric summary of the group (names or aliases, roles, statistics) goes straight from your browser to the AI you picked (Claude, ChatGPT, Gemini or Grok), with your own key. No WhichOneAreYou server in between. Your messages don’t, unless you tick excerpts: 30 short messages, with numbers, emails and links masked.',
   ai_off: 'Plug in your AI to unlock the assistant. Without a key, nothing is sent anywhere.',
   k_prov: 'Your AI', k_model: 'Model', k_key: 'Your API key', k_rem: 'Remember the key on this device', k_save: 'Plug in', k_change: 'Change AI or key', k_on: 'Plugged into {p} · {m}',
-  k_help: 'Your key stays in this browser and only goes to the provider you picked. Create one in the provider’s console: console.anthropic.com, platform.openai.com, aistudio.google.com or console.x.ai. Each question costs a few cents at most.',
+  k_help: 'Your key stays in this browser and only goes to the provider you picked. Each question costs a few cents at most. Get a key:', k_get: 'Get my {p} API key ↗', k_rec: 'recommended', k_other: 'Other (type the model ID)', k_other_ph: 'Exact model ID', k_key_ph: 'Paste your key here', q_restart: 'Restart',
   k_need: 'Paste an API key first.', k_err: 'The provider refused the request:',
   ai_wait: 'Connecting to the assistant…', ai_ph: 'Your question…', ai_send: 'Send', ai_stop: 'Stop', ai_thinking: 'Thinking…',
   ai_err: { not_granted: 'You didn’t allow the assistant. Nothing was sent.', rate_limited: 'Too many questions at once. Wait a few seconds.', cancelled: '', def: 'The assistant couldn’t answer. Try again in a moment.' },
@@ -1995,14 +1995,16 @@ function renderQuiz() {
   } else {
     h += `<h3>${t('q4_t')}</h3><p class="q-sub">${t('q4_s')}</p><div class="opts-grid">${[...PERSONAS.filter(p => p.cat === state.cat), FALLBACK].map(p => `<button type="button" class="opt" data-bet="${p.k}" aria-pressed="${state.bet === p.k}">${charSVG(p.k)}${esc(p[lang].n)}</button>`).join('')}</div>`;
   }
-  h += `<div class="q-nav">${idx > 0 ? `<button type="button" class="btn ghost sm" data-q="back">${t('q_back')}</button>` : ''}<button type="button" class="btn soft sm" data-q="skip">${idx === all.length - 1 ? t('q_done') : t('q_skip')}</button></div>`;
+  h += `<div class="q-nav">${idx > 0 ? `<button type="button" class="btn ghost sm" data-q="back">${t('q_back')}</button>` : ''}<button type="button" class="btn soft sm" data-q="skip">${idx === all.length - 1 ? t('q_done') : t('q_skip')}</button><button type="button" class="btn ghost sm" data-q="restart">↻ ${t('q_restart')}</button></div>`;
   quiz.innerHTML = h;
 }
+function newAnalysis() { dash.classList.remove('show'); dash.innerHTML = ''; quiz.classList.remove('show'); state.stats = null; state.src = null; AI.log = []; showInputs(true); drop.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
 function nextStep() { const all = steps(), i = all.indexOf(state.qstep); if (i >= all.length - 1) finishQuiz(); else { state.qstep = all[i + 1]; renderQuiz(); } }
 quiz.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b) return;
   if (b.dataset.q === 'back') { const all = steps(); state.qstep = all[Math.max(0, all.indexOf(state.qstep) - 1)]; renderQuiz(); return; }
   if (b.dataset.q === 'skip') { nextStep(); return; }
+  if (b.dataset.q === 'restart') { newAnalysis(); return; }
   if ('me' in b.dataset) state.me = b.dataset.me;
   else if (b.dataset.cat) state.cat = b.dataset.cat;
   else if (b.dataset.energy) state.energy = b.dataset.energy;
@@ -2185,11 +2187,13 @@ function keyForm() {
   return `<div class="ai-off" style="display:grid;gap:12px">
     <p>${t('ai_off')}</p>
     <div style="display:flex;flex-wrap:wrap;gap:8px">${Object.keys(PROV).map(p => `<button type="button" class="chip" data-kprov="${p}" aria-pressed="${c.p === p}" style="${c.p === p ? 'background:var(--ink);color:var(--card);border-color:var(--ink)' : ''}">${PROV[p].n}</button>`).join('')}</div>
-    <label class="small">${t('k_model')}<input id="kModel" type="text" value="${esc(c.m)}" spellcheck="false" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--card)"></label>
-    <label class="small">${t('k_key')}<input id="kKey" type="password" value="${esc(c.k)}" autocomplete="off" spellcheck="false" placeholder="sk-…" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--card)"></label>
+    <label class="small">${t('k_model')}<select id="kModelSel" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--card);color:var(--ink);min-height:42px">${PROV[c.p].ms.map((m, i) => `<option value="${m}" ${m === c.m ? 'selected' : ''}>${m}${i === 0 ? ` · ${t('k_rec')}` : ''}</option>`).join('')}<option value="__other" ${PROV[c.p].ms.includes(c.m) ? '' : 'selected'}>${t('k_other')}</option></select></label>
+    <input id="kModel" type="text" value="${PROV[c.p].ms.includes(c.m) ? '' : esc(c.m)}" spellcheck="false" placeholder="${t('k_other_ph')}" aria-label="${t('k_model')}" style="${PROV[c.p].ms.includes(c.m) ? 'display:none;' : 'display:block;'}width:100%;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--card)">
+    <label class="small">${t('k_key')}<input id="kKey" type="password" value="${esc(c.k)}" autocomplete="off" spellcheck="false" placeholder="${t('k_key_ph')}" style="display:block;width:100%;margin-top:4px;border:1px solid var(--line);border-radius:8px;padding:8px 12px;background:var(--card)"></label>
+    <a class="small" href="${PROV[c.p].url}" target="_blank" rel="noopener" style="font-weight:600;color:var(--ink)">${t('k_get', { p: PROV[c.p].n })}</a>
     <label class="switch small"><input type="checkbox" id="kRem" ${AI.remember ? 'checked' : ''}><span>${t('k_rem')}</span></label>
     <div><button type="button" class="btn sm" data-act="ksave">${t('k_save')}</button></div>
-    <p class="small muted">${t('k_help')}</p></div>`;
+    <p class="small muted">${t('k_help')} ${Object.keys(PROV).map(p => `<a href="${PROV[p].url}" target="_blank" rel="noopener">${PROV[p].n}</a>`).join(' · ')}</p></div>`;
 }
 const exportBlock = () => `<div class="panel xport" style="margin-top:14px"><h4>${t('x_t')}</h4><p class="sub">${t('x_d')}</p><div class="x-grid">${xBtns()}</div></div>`;
 const xBtns = () => `<button type="button" class="x-btn" data-act="pdf"><b>${t('x_pdf')}</b><span>${t('d_pdf')}</span></button><button type="button" class="x-btn" data-act="img"><b>${t('x_img')}</b><span>${t('x_img_d')}</span></button><a class="x-btn" data-act="wa" href="https://wa.me/?text=${encodeURIComponent(shareText() + ' ' + SHARE_URL)}" target="_blank" rel="noopener"><b>${t('x_wa')}</b><span>${esc(t('x_wa_d'))}</span></a><button type="button" class="x-btn" data-act="copy"><b>${t('x_copy')}</b><span>${t('d_copy')}</span></button>`;
@@ -2236,7 +2240,7 @@ function renderDash() {
       <button class="btn sm" type="button" data-act="pdf">${t('d_pdf')}</button>
       <button class="btn sm" type="button" data-act="img">${t('x_img')}</button>
       <button class="btn sm soft" type="button" data-act="quiz">${t('d_quiz')}</button>
-      <button class="btn sm ghost" type="button" data-act="new">${t('d_new')}</button>
+      <button class="btn sm primary" type="button" data-act="new">↻ ${t('d_new')}</button>
     </div>
   </div>
   <div class="d-bar">
@@ -2301,7 +2305,7 @@ dash.addEventListener('click', e => {
   else if (a === 'copyduel') copyText(duelText());
   else if (a === 'duelme') { state.duelA = state.me; if (state.duelB === state.me) state.duelB = state.stats.people.find(p => p.name !== state.me).name; $('#duelWrap').innerHTML = duelHTML(); $('#duelWrap').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   else if (a === 'quiz') { dash.classList.remove('show'); state.qstep = 0; renderQuiz(); quiz.classList.add('show'); quiz.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  else if (a === 'new') { dash.classList.remove('show'); dash.innerHTML = ''; quiz.classList.remove('show'); state.stats = null; state.src = null; AI.log = []; showInputs(true); drop.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  else if (a === 'new') newAnalysis();
   else if (a === 'aisend') { const i = $('#aiIn'); if (i && i.value.trim()) askAI(i.value.trim()); }
   else if (a === 'aistop') { AI.ctl && AI.ctl.abort(); }
 });
@@ -2332,15 +2336,17 @@ async function copyText(txt) {
 
 /* ================= AI ASSISTANT (bring your own key) ================= */
 const AI = { status: 'wait', fn: null, log: [], busy: false, ctl: null, excerpts: false, byok: null, edit: false, remember: false };
+/* Models: first = default (fast and cheap). Checked Nov 2026. */
 const PROV = {
-  anthropic: { n: 'Claude', m: 'claude-haiku-4-5' },
-  openai: { n: 'ChatGPT', m: 'gpt-4.1-mini' },
-  gemini: { n: 'Gemini', m: 'gemini-2.5-flash' },
-  xai: { n: 'Grok', m: 'grok-3-mini' }
+  anthropic: { n: 'Claude', m: 'claude-haiku-5-5', ms: ['claude-haiku-5-5', 'claude-sonnet-5-5', 'claude-opus-5-5'], url: 'https://console.anthropic.com/settings/keys' },
+  openai: { n: 'ChatGPT', m: 'gpt-5.4-mini', ms: ['gpt-5.4-mini', 'gpt-5.4-nano', 'gpt-6-luna', 'gpt-6.1-terra', 'gpt-6.1-sol'], url: 'https://platform.openai.com/api-keys' },
+  gemini: { n: 'Gemini', m: 'gemini-3.5-flash', ms: ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3.5-flash-lite', 'gemini-3.1-pro-preview'], url: 'https://aistudio.google.com/apikey' },
+  xai: { n: 'Grok', m: 'grok-4.3', ms: ['grok-4.3', 'grok-4.7'], url: 'https://console.x.ai' }
 };
+const OLD_MODELS = ['claude-haiku-4-5', 'gpt-4.1-mini', 'gemini-2.5-flash', 'grok-3-mini'];
 const KEY_STORE = 'woay_ai';
 function readKey() {
-  for (const st of [() => sessionStorage, () => localStorage]) { try { const v = JSON.parse(st().getItem(KEY_STORE) || 'null'); if (v && v.k && PROV[v.p]) return v; } catch (e) {} }
+  for (const st of [() => sessionStorage, () => localStorage]) { try { const v = JSON.parse(st().getItem(KEY_STORE) || 'null'); if (v && v.k && PROV[v.p]) { if (!v.m || OLD_MODELS.includes(v.m)) v.m = PROV[v.p].m; return v; } } catch (e) {} }
   return null;
 }
 function writeKey(cfg, remember) {
@@ -2385,6 +2391,7 @@ async function byokCall(turns, opts) {
   try { if (window.claude && typeof window.claude.use === 'function') window.claude.use('sample').then(finish, () => finish(null)); else finish(null); } catch (e) { finish(null); }
   setTimeout(() => finish(null), 11000);
 })();
+dash.addEventListener('change', e => { if (e.target.id === 'kModelSel') { const o = $('#kModel'); const on = e.target.value === '__other'; o.style.display = on ? 'block' : 'none'; if (on) o.focus(); } });
 dash.addEventListener('click', e => {
   const pv = e.target.closest('[data-kprov]');
   if (pv) { const cur = AI.byok || {}; AI.byok = { p: pv.dataset.kprov, m: PROV[pv.dataset.kprov].m, k: ($('#kKey') || {}).value || cur.k || '' }; AI.edit = true; AI.remember = ($('#kRem') || {}).checked || false; $('#aiWrap').innerHTML = aiHTML(); return; }
@@ -2392,7 +2399,7 @@ dash.addEventListener('click', e => {
   e.preventDefault();
   if (b.dataset.act === 'kchange') { AI.edit = true; $('#aiWrap').innerHTML = aiHTML(); return; }
   const k = ($('#kKey').value || '').trim(); if (!k) { toast(t('k_need')); return; }
-  const p = (AI.byok && AI.byok.p) || 'anthropic', m = ($('#kModel').value || '').trim() || PROV[p].m;
+  const p = (AI.byok && AI.byok.p) || 'anthropic', sel = $('#kModelSel').value, m = (sel === '__other' ? ($('#kModel').value || '').trim() : sel) || PROV[p].m;
   AI.remember = $('#kRem').checked; AI.byok = { p, m, k }; writeKey(AI.byok, AI.remember);
   AI.fn = byokCall; AI.status = 'ok'; AI.edit = false; $('#aiWrap').innerHTML = aiHTML();
 });
