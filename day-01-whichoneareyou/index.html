@@ -1984,7 +1984,7 @@ function renderQuiz() {
   const S = state.stats, st = state.qstep, all = steps(), idx = all.indexOf(st), total = state.me || st === 0 ? 4 : 3;
   let h = `<div class="q-prog">${Array.from({ length: total }, (_, i) => `<i class="${i <= idx ? 'on' : ''}"></i>`).join('')}</div><p class="small muted">${t('q_step', { i: idx + 1, n: total })}</p>`;
   if (st === 0) {
-    h += `<h3>${t('q1_t')}</h3><p class="q-sub">${t('q1_s')}</p><div class="opts-grid">${S.people.map(p => `<button type="button" class="opt" data-me="${esc(p.name)}" aria-pressed="${state.me === p.name}">${esc(nm(p.name))}<small>${fmtN(p.n)} ${t('s_msgs')}</small></button>`).join('')}<button type="button" class="opt" data-me="" aria-pressed="false"><small>${t('q1_none')}</small></button></div>`;
+    h += `<h3>${t('q1_t')}</h3><p class="q-sub">${t('q1_s')}</p><div class="opts-grid">${S.people.map(p => `<button type="button" class="opt" data-me="${esc(p.name)}" aria-pressed="${state.me === p.name}">${esc(nm(p.name))}<small>${fmtN(p.n)} ${t('s_msgs')}</small></button>`).join('')}</div>`;
   } else if (st === 1) {
     const icon = { famille: 'f_calendrier', amis: 'a_blagues', couple: 'k_romantique', collegues: 'c_dimanche' };
     h += `<h3>${t('q2_t')}</h3><p class="q-sub">${t('q2_s')}</p><div class="opts-grid">${CATS.map(c => `<button type="button" class="opt" data-cat="${c}" aria-pressed="${state.cat === c}">${c === S.guess ? `<span class="tag">${t('q_sugg')}</span>` : ''}${charSVG(icon[c])}${t('cat_' + c)}</button>`).join('')}</div>`;
