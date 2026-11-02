@@ -518,6 +518,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
             <ul id="kid-list" class="goals"></ul>
             <div class="row2"><label class="label" for="custody" data-i18n="custodyLbl"></label><input id="custody" type="number" min="0" max="100" step="5" inputmode="numeric"></div>
             <p class="hint" data-i18n="custodyHint"></p>
+            <div class="row2"><label class="label" for="summer-weeks" data-i18n="summerLbl"></label><input id="summer-weeks" type="number" min="0" max="12" step="1" inputmode="numeric"></div>
             <p class="label" data-i18n="famTitle"></p>
             <div id="fam" class="fam"></div>
             <p class="hint" id="fam-hint"></p>
@@ -823,7 +824,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["Les fois", "Années restantes × fréquence par an. Pour tes parents, l'horizon s'arrête au plus court : ta vie ou la leur, avec la même espérance. La part déjà passée suppose que tu as vécu avec eux tous les jours jusqu'à 18 ans, comme le calcul de Tim Urban."],
         ["Tes objectifs", "Chaque objectif s'allume sur la dernière semaine avant l'âge choisi."],
         ["Pays et sexe", "Espérance de vie à la naissance, Nations unies, World Population Prospects 2024, estimations 2023, arrondie à l'année. C'est une moyenne : pour une personne qui a déjà 35 ans, le vrai chiffre est un peu plus élevé."],
-        ["Tes proches", "Semaines depuis une date = jours ÷ 7. Couple : la date de bascule est le jour où le temps passé ensemble égale le temps vécu avant. Enfants : semaines jusqu'à leurs 18 ans et étés restants (mi-juillet), multipliés par ton temps de garde. Les barres de la famille supposent la même espérance pour tous."],
+        ["Tes proches", "Semaines depuis une date = jours ÷ 7. Couple : la date de bascule est le jour où le temps passé ensemble égale le temps vécu avant. Enfants : semaines jusqu'à leurs 18 ans multipliées par ton temps de garde. Les étés (mi-juillet) ne sont pas divisés : en garde alternée, chaque parent a souvent quelques semaines chaque été, à régler toi-même. Les barres de la famille supposent la même espérance pour tous."],
         ["Travail", "Jours travaillés par an = jours par semaine × 52, moins les jours fériés et les congés. Réunions et trajets sont convertis en semaines pleines de 24 h. Les heures éveillées comptent 16 h par jour."]
       ],
       sourcesTitle: "Sources",
@@ -868,9 +869,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       posterDone: "PDF téléchargé : {s}. Imprime-le à 100 %, sans ajustement.",
       custodyLbl: "Temps avec eux (%)",
       custodyHint: "100 si tu vis avec eux tout le temps, 50 en garde alternée.",
-      kidMetaC: "{w} semaines avant ses 18 ans, dont environ {h} avec toi · {s} étés, environ {hs} avec toi",
+      kidMetaC: "{w} semaines avant ses 18 ans, dont environ {h} avec toi · {s} étés, partagés", summerLbl: "Semaines avec eux chaque été", kidSummerW: " · {sw} semaines par été, soit {t} semaines de vacances d'été ensemble",
       lgKidsC: "Semaines avec ton plus jeune avant ses 18 ans ({c} %)",
-      cardUKidC: "étés avec {name} avant ses 18 ans · garde à {c} %",
+      cardUKidC: "étés avec {name} avant ses 18 ans · {sw} semaines chacun",
       cardKidWC: "{name} · SEMAINES AVEC MOI",
       chDay: "Jour 2/30", chTag: ", un prototype gratuit par jour",
       chBy: "Conçu par",
@@ -1125,7 +1126,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["The times", "Years left × times per year. For your parents, the horizon ends at the shorter of your life or theirs, with the same lifespan. The share already spent assumes you lived with them every day until 18, as in Tim Urban's calculation."],
         ["Your goals", "Each goal lights up the last week before the age you chose."],
         ["Country and sex", "Life expectancy at birth, United Nations World Population Prospects 2024, 2023 estimates, rounded to the year. It is an average: for someone already 35, the real figure is a little higher."],
-        ["Your people", "Weeks since a date = days ÷ 7. Couple: the crossing date is the day time together equals the time lived before. Children: weeks until they turn 18 and summers left (mid-July), multiplied by your custody share. Family bars assume the same lifespan for everyone."],
+        ["Your people", "Weeks since a date = days ÷ 7. Couple: the crossing date is the day time together equals the time lived before. Children: weeks until they turn 18, multiplied by your custody share. Summers (mid-July) are not halved: with shared custody, each parent often gets a few weeks every summer, which you set yourself. Family bars assume the same lifespan for everyone."],
         ["Work", "Working days a year = days a week × 52, minus public holidays and days off. Meetings and commute are turned into full 24-hour weeks. Waking hours count 16 a day."]
       ],
       sourcesTitle: "Sources",
@@ -1170,9 +1171,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       posterDone: "PDF downloaded: {s}. Print it at 100%, no scaling.",
       custodyLbl: "Time with them (%)",
       custodyHint: "100 if they live with you full time, 50 for alternating custody.",
-      kidMetaC: "{w} weeks before turning 18, about {h} of them with you · {s} summers, about {hs} with you",
+      kidMetaC: "{w} weeks before turning 18, about {h} of them with you · {s} summers, shared", summerLbl: "Weeks with them each summer", kidSummerW: " · {sw} weeks each summer, {t} weeks of summer holidays together",
       lgKidsC: "Weeks with your youngest before 18 ({c}%)",
-      cardUKidC: "summers with {name} before 18 · {c}% custody",
+      cardUKidC: "summers with {name} before 18 · {sw} weeks each",
       cardKidWC: "{name} · WEEKS WITH ME",
       chDay: "Day 2/30", chTag: ", one free prototype a day",
       chBy: "Made by",
@@ -1377,7 +1378,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function freshState(lang) {
     var st = { lang: lang || "en", birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [],
       country: "", sex: "all", grandAge: null, events: [], tab: "friends", friendName: "", friendMet: "", kids: [], since: "", partnerBirth: "",
-      cardTheme: "me", cardFmt: "portrait", custody: 100 };
+      cardTheme: "me", cardFmt: "portrait", custody: 100, summerWeeks: 0 };
     for (var k in WORK_DEFAULTS) st[k] = WORK_DEFAULTS[k];
     return st;
   }
@@ -1425,7 +1426,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function payload() {
     var o = { v: 4, lang: state.lang, birth: state.birth, lifespan: state.lifespan, moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items,
       country: state.country, sex: state.sex, grandAge: state.grandAge, events: state.events, tab: state.tab, friendName: state.friendName, friendMet: state.friendMet,
-      kids: state.kids, custody: state.custody, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
+      kids: state.kids, custody: state.custody, summerWeeks: state.summerWeeks, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
     for (var k in WORK_DEFAULTS) o[k] = state[k];
     return o;
   }
@@ -1475,6 +1476,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     if (validIso(saved.friendMet)) st.friendMet = saved.friendMet;
     if (Array.isArray(saved.kids)) st.kids = saved.kids.filter(function (k) { return k && typeof k.name === "string" && validIso(k.birth); }).slice(0, 4)
       .map(function (k) { return { id: String(k.id || Math.random().toString(36).slice(2)), name: k.name.slice(0, 30), birth: k.birth }; });
+    if (Number.isFinite(saved.summerWeeks) && saved.summerWeeks >= 0 && saved.summerWeeks <= 12) st.summerWeeks = saved.summerWeeks;
     if (Number.isFinite(saved.custody) && saved.custody >= 0 && saved.custody <= 100) st.custody = saved.custody;
     if (validIso(saved.since)) st.since = saved.since;
     if (validIso(saved.partnerBirth)) st.partnerBirth = saved.partnerBirth;
@@ -2161,7 +2163,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       var tt = document.createElement("div"); tt.className = "t"; tt.textContent = k.name;
       var mm = document.createElement("div"); mm.className = "m";
       var wk = kidWeeksTo18(k);
-      mm.textContent = wk > 0 ? (state.custody < 100 ? fill(tx.kidMetaC, { w: fmt(wk), h: fmt(Math.round(wk * custody())), s: fmt(kidSummers(k)), hs: fmt1(kidSummers(k) * custody()) }) : fill(tx.kidMeta, { w: fmt(wk), s: fmt(kidSummers(k)) })) : tx.kidAdult;
+      mm.textContent = wk > 0 ? (state.custody < 100 ? fill(tx.kidMetaC, { w: fmt(wk), h: fmt(Math.round(wk * custody())), s: fmt(kidSummers(k)) }) : fill(tx.kidMeta, { w: fmt(wk), s: fmt(kidSummers(k)) })) + (state.summerWeeks > 0 ? fill(tx.kidSummerW, { t: fmt(kidSummers(k) * state.summerWeeks), sw: fmt(state.summerWeeks) }) : "") : tx.kidAdult;
       left.append(tt, mm);
       var del = document.createElement("button"); del.type = "button"; del.className = "mini"; del.textContent = tx.goalRemove;
       del.addEventListener("click", function () { state.kids = state.kids.filter(function (x) { return x.id !== k.id; }); save(); renderLive(false); });
@@ -2170,6 +2172,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       dom.kidList.appendChild(li);
     });
     if (document.activeElement !== dom.custody) dom.custody.value = String(state.custody);
+    if (document.activeElement !== dom.summerWeeks) dom.summerWeeks.value = state.summerWeeks ? String(state.summerWeeks) : "";
     renderFamily(c);
 
     // Couple
@@ -2419,8 +2422,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       res.kicker = tx.cardKFamily;
       if (y && kidWeeksTo18(y) > 0) {
         var cu = custody();
-        res.big = cu < 1 ? fmt1(kidSummers(y) * cu) : fmt(kidSummers(y));
-        res.unit = cu < 1 ? fill(tx.cardUKidC, { name: y.name, c: state.custody }) : fill(tx.cardUKid, { name: y.name });
+        res.big = fmt(kidSummers(y));
+        res.unit = state.summerWeeks > 0 ? fill(tx.cardUKidC, { name: y.name, sw: fmt(state.summerWeeks) }) : fill(tx.cardUKid, { name: y.name });
         state.kids.filter(function (x) { return kidWeeksTo18(x) > 0; }).slice(0, 2).forEach(function (x) { st.push([fill(cu < 1 ? tx.cardKidWC : tx.cardKidW, { name: x.name.toUpperCase() }), fmt(Math.round(kidWeeksTo18(x) * cu)), x.id === y.id]); });
       } else {
         var pd = countOf("parents", c);
@@ -2729,6 +2732,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       dom.kidName.value = ""; dom.kidBirth.value = "";
       circlesChanged();
     });
+    dom.summerWeeks.addEventListener("input", function () { var v = dom.summerWeeks.value === "" ? 0 : parseInt(dom.summerWeeks.value, 10); if (!(v >= 0 && v <= 12)) return; state.summerWeeks = v; circlesChanged(); });
     dom.custody.addEventListener("input", function () { var v = parseFloat(dom.custody.value); if (!(v >= 0 && v <= 100)) return; state.custody = v; circlesChanged(); });
     dom.cpSince.addEventListener("change", function () { var v = dom.cpSince.value; state.since = validIso(v) && v <= todayIso() ? v : ""; circlesChanged(); });
     dom.cpBirth.addEventListener("change", function () { var v = dom.cpBirth.value; state.partnerBirth = validIso(v) && v <= todayIso() ? v : ""; circlesChanged(); });
@@ -2867,7 +2871,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       evForm: $("ev-form"), evLabel: $("ev-label"), evDate: $("ev-date"), evErr: $("ev-err"), evList: $("ev-list"),
       tabs: $("tabs"), frName: $("fr-name"), frMet: $("fr-met"), frOut: $("fr-out"),
       kidForm: $("kid-form"), kidName: $("kid-name"), kidBirth: $("kid-birth"), kidErr: $("kid-err"), kidList: $("kid-list"), fam: $("fam"), famHint: $("fam-hint"),
-      custody: $("custody"), cpSince: $("cp-since"), cpBirth: $("cp-birth"), cpOut: $("cp-out"), cpIcs: $("cp-ics"),
+      custody: $("custody"), summerWeeks: $("summer-weeks"), cpSince: $("cp-since"), cpBirth: $("cp-birth"), cpOut: $("cp-out"), cpIcs: $("cp-ics"),
       workInputs: Array.prototype.slice.call(document.querySelectorAll("[data-w]")), wOut: $("w-out"),
       goalShared: $("goal-shared"), goalExample: $("goal-example"),
       cardThemes: $("card-themes"), cardFmts: $("card-fmts"), cardShare: $("card-share"), remindBtn: $("remind-btn"), cardStatus: $("card-status"),
