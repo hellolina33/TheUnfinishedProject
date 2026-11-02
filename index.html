@@ -197,12 +197,12 @@ const START = '2026-11-02'; // Day 1 date (Bangkok)
 const DAYS = [
   { n: 1, name: 'WhichOneAreYou', line: 'Drop a WhatsApp export and find out which role everyone really plays: the Firefighter, the Ghost, the Night Owl…', tags: ['WhatsApp', 'Couples & groups', 'English & French'], emo: '🃏', c: 'var(--lemon)',
     img: 'images/day-01-card.webp', alt: 'Five playful cards representing different group-chat roles',
-    app: '/day-01-whichoneareyou/', post: '',
+    app: '/day-01-whichoneareyou/', dl: 'whichoneareyou.html', post: '',
     todo: "No accounts and no saved history: close the tab and the analysis is gone. Built and tested on WhatsApp exports in English and French; other formats may read badly. The roles are playful patterns from message stats, not a diagnosis. The AI chat needs your own API key." },
   { n: 2, name: 'How Many Weeks', line: 'Your life in weeks: how many are left, and what can still fit into them. Summers, books, days with your parents, the things you want to finish.', tags: ['Life in weeks', 'No account', 'English & French'], emo: '⏳', c: 'var(--sky)',
     app: '/day-02-howmanyweeks/', post: '',
     todo: "Lifespan is one value for everyone: no country, no sex, no health history. The work block is fixed from 22 to 65. The times are yearly averages. Nothing syncs between devices. The share card has only been tested on a few browsers." },
-  // { n: 3, name: '', line: '', tags: [], emo: '', c: 'var(--peach)', img: '', alt: '', app: '', post: '', todo: '' },
+  // { n: 3, name: '', line: '', tags: [], emo: '', c: 'var(--peach)', img: '', alt: '', app: '', dl: '', post: '', todo: '' },
 ];
 /* ============================================ */
 
@@ -232,7 +232,7 @@ for (let i = 1; i <= 30; i++) {
       <div class="bd"><span class="dn">Day ${i}</span><h3>${esc(d.name)}</h3><p>${esc(d.line)}</p>
       <div class="tags">${(d.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
       ${d.todo ? `<details class="note"><summary>What's unfinished</summary><p>${esc(d.todo)}</p></details>` : ''}
-      <div class="acts">${d.app ? `<a class="p" href="${esc(d.app)}" target="_blank" rel="noopener">Try it</a>` : ''}<a href="${esc(d.post || LI_ACTIVITY)}" target="_blank" rel="noopener">Read the story</a></div></div></article>`;
+      <div class="acts">${d.app ? `<a class="p" href="${esc(d.app)}" target="_blank" rel="noopener">Try it</a>` : ''}<a href="${esc(d.post || LI_ACTIVITY)}" target="_blank" rel="noopener">Read the story</a>${d.dl && d.app ? `<a href="${esc(d.app)}" download="${esc(d.dl)}" title="One HTML file. Open it in your browser, nothing to install.">Download HTML</a>` : ''}</div></div></article>`;
   } else if (i === latest + 1) {
     h += `<article class="day locked" id="day-${i}"><div class="face"><span class="n">Day ${i}</span><span class="emo">?</span></div>
       <div class="bd"><h3>Next up: ${fmt(dateOf(i))}</h3><p>Follow on LinkedIn to catch it the morning it's out.</p></div></article>`;
