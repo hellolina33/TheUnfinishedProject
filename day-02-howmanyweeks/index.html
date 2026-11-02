@@ -592,6 +592,14 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
           <img id="card-img" class="card-img" alt="" hidden>
           <p id="card-hint" class="hint" hidden data-i18n="cardHint"></p>
         </div>
+        <div class="panel">
+          <p class="label" data-i18n="posterLbl"></p>
+          <p class="hint" style="margin:0" data-i18n="posterHint"></p>
+          <div id="poster-sizes" class="chips" role="group"></div>
+          <label class="check"><input type="checkbox" id="poster-shade" checked><span data-i18n="posterShade"></span></label>
+          <div class="actions"><button id="poster-btn" class="btn" type="button" data-i18n="posterBtn"></button></div>
+          <p id="poster-status" class="status" role="status"></p>
+        </div>
       </article>
     </div>
   </section>
@@ -845,6 +853,17 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       unfText: "L'espérance de vie est une moyenne nationale par sexe : elle ignore ta santé et ton mode de vie. Les fois sont des moyennes lissées sur l'année. Rien ne se synchronise tout seul : exporte puis importe tes données pour changer d'appareil. Les rappels d'agenda sont des fichiers que tu ajoutes toi-même. La carte et le partage n'ont été testés que sur quelques navigateurs.",
       madeBy: "Fait par",
       footDay: "Jour 2/30 · Gratuit",
+      lgOneTime: "1 case = 1 fois",
+      posterLbl: "Affiche à imprimer",
+      posterHint: "Ta grille en PDF, une case par semaine à colorier. Imprime-la, accroche-la, colorie une case chaque dimanche.",
+      posterShade: "Griser les semaines déjà vécues",
+      posterBtn: "Télécharger le PDF",
+      posterTitle: "Ma vie en semaines",
+      posterSub: "Née/né le {d} · {L} ans · 1 case = 1 semaine · une case à colorier chaque dimanche",
+      posterSubNo: "{L} ans · 1 case = 1 semaine · une case à colorier chaque dimanche",
+      posterAge: "âge",
+      posterWeek: "semaine",
+      posterDone: "PDF téléchargé : {s}. Imprime-le à 100 %, sans ajustement.",
       chDay: "Jour 2/30", chTag: ", un prototype gratuit par jour",
       chBy: "Conçu par",
       lblCountry: "Pays (moyenne ONU)",
@@ -1130,6 +1149,17 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       unfText: "Life expectancy is a national average by sex: it knows nothing about your health or habits. The times are averages spread over the year. Nothing syncs on its own: export and import your data to switch devices. Calendar reminders are files you add yourself. The card and sharing have only been tested on a few browsers.",
       madeBy: "Made by",
       footDay: "Day 2/30 · Free",
+      lgOneTime: "1 box = 1 time",
+      posterLbl: "Printable poster",
+      posterHint: "Your grid as a PDF, one box per week to colour in. Print it, pin it up, colour one box every Sunday.",
+      posterShade: "Shade the weeks already lived",
+      posterBtn: "Download the PDF",
+      posterTitle: "My life in weeks",
+      posterSub: "Born {d} · {L} years · 1 box = 1 week · colour one box every Sunday",
+      posterSubNo: "{L} years · 1 box = 1 week · colour one box every Sunday",
+      posterAge: "age",
+      posterWeek: "week",
+      posterDone: "PDF downloaded: {s}. Print it at 100%, no scaling.",
       chDay: "Day 2/30", chTag: ", one free prototype a day",
       chBy: "Made by",
       lblCountry: "Country (UN average)",
@@ -1459,24 +1489,17 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   }
 
   // ---------- Scene roles ----------
+  // One box = one time, packed from this week onward.
   function momentMarks(c, total) {
     var marks = new Uint8Array(total);
     var m = activeMoment();
+    if (m.id === "grandparents" && state.grandAge == null) return marks;
     var cnt = momentCount(m, c, state.lifespan, parentAgeFor(c));
-    var f = Math.round(Math.max(0, m.f || 0));
-    var start = c.lived + 1;
-    var end = Math.min(total, Math.floor(c.lived + cnt.horizon * WPY));
-    if (f <= 0 || end <= start) return marks;
-    var i, r, k;
-    if (f >= WPY) { for (i = start; i < end; i++) marks[i] = 1; return marks; }
-    for (r = Math.floor(start / WPY); r * WPY < end; r++) {
-      for (k = 0; k < f; k++) {
-        i = r * WPY + Math.floor(((k + 0.5) * WPY) / f);
-        if (i >= start && i < end) marks[i] = 1;
-      }
-    }
+    var start = c.lived + 1, end = Math.min(total, start + Math.max(0, cnt.n));
+    for (var i = start; i < end; i++) marks[i] = 1;
     return marks;
   }
+
 
   function feelRows(c) { return { a: 10, b: c.age > 10 ? c.age : 50 }; }
 
@@ -1612,7 +1635,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         if (state.tab === "couple") return [["accent", tx.lgTogether], ["left", tx.lgTogetherLeft]];
         return [["accent", fill(tx.lgWorkLeft, { r: state.retire })], ["lived", lg.lived]];
       case "feel": return [["accent", lg.feel]];
-      case "times": return [["accent", momentName(activeMoment())], ["lived", lg.lived]];
+      case "times": return [["accent", momentName(activeMoment()) + " · " + t().lgOneTime], ["lived", lg.lived]];
       case "last": return [["accent", lg.last]];
       case "choose": return [["accent", lg.choose], ["now", lg.now]];
       default:
@@ -2063,6 +2086,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     if (!has) { dom.cardImg.hidden = true; dom.cardHint.hidden = true; dom.cardDl.hidden = true; dom.cardShare.hidden = true; }
     var names = { me: tx.thMe, friends: tx.thFriends, family: tx.thFamily, couple: tx.thCouple, work: tx.thWork };
     chipRow(dom.cardThemes, THEMES.map(function (k) { return [k, names[k]]; }), state.cardTheme, function (k) { state.cardTheme = k; save(); renderCard(); refreshCardIfShown(); });
+    chipRow(dom.posterSizes, [["A4", "A4"], ["A3", "A3"], ["A2", "A2"]], ui.poster || "A3", function (k) { ui.poster = k; renderCard(); });
     chipRow(dom.cardFmts, [["portrait", tx.fmtPortrait], ["square", tx.fmtSquare]], state.cardFmt, function (k) { state.cardFmt = k; save(); renderCard(); refreshCardIfShown(); });
   }
   function chipRow(box, items, cur, onPick) {
@@ -2499,6 +2523,71 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     }, "image/png");
   }
 
+
+  // ---------- Printable poster (tiny PDF writer, no library) ----------
+  var POSTER = { A4: [595.28, 841.89], A3: [841.89, 1190.55], A2: [1190.55, 1683.78] };
+  var WIN = { 0x2019: 0x92, 0x2018: 0x91, 0x201C: 0x93, 0x201D: 0x94, 0x2013: 0x96, 0x2014: 0x97, 0x2026: 0x85, 0x2022: 0x95, 0x0153: 0x9C, 0x0152: 0x8C, 0x20AC: 0x80, 0x202F: 0x20, 0x00A0: 0x20 };
+  function pdfStr(str) {
+    var out = "";
+    for (var i = 0; i < str.length; i++) {
+      var ch = str.charCodeAt(i), code = WIN[ch] || (ch < 256 ? ch : 63);
+      if (code === 40 || code === 41 || code === 92) out += "\\" + String.fromCharCode(code);
+      else if (code < 32 || code > 126) out += "\\" + ("00" + code.toString(8)).slice(-3);
+      else out += String.fromCharCode(code);
+    }
+    return out;
+  }
+  function makePoster(size, shade) {
+    var tx = t(), c = current(), L = state.lifespan, S = POSTER[size], W = S[0], H = S[1], k = W / 595.28;
+    var ops = [];
+    function n(x) { return (Math.round(x * 100) / 100).toString(); }
+    function text(str, x, y, pt, bold, gray) { ops.push("BT /" + (bold ? "F2" : "F1") + " " + n(pt) + " Tf " + n(gray || 0) + " g " + n(x) + " " + n(y) + " Td (" + pdfStr(str) + ") Tj ET"); }
+    var M = 34 * k;
+    text(tx.posterTitle, M, H - M - 22 * k, 24 * k, true, 0);
+    var p0 = state.birth ? parseYmd(state.birth) : null;
+    text(p0 ? fill(tx.posterSub, { d: fmtDate(new Date(p0.y, p0.m - 1, p0.d)), L: L }) : fill(tx.posterSubNo, { L: L }), M, H - M - 40 * k, 9 * k, false, 0.35);
+    var top = H - M - 64 * k, bottom = M + 30 * k, left = M + 20 * k, right = W - M;
+    var pitch = Math.min((right - left) / WPY, (top - bottom) / L), cell = pitch * 0.8, off = (pitch - cell) / 2;
+    var ox = left + ((right - left) - pitch * WPY) / 2, oy = top;
+    var lab = Math.max(5, Math.min(9 * k, pitch * 0.9));
+    [1, 10, 20, 30, 40, 52].forEach(function (w) { text(String(w), ox + (w - 1) * pitch + off, oy + 3 * k, lab * 0.8, false, 0.45); });
+    text(tx.posterWeek, ox, oy + 4 * k + lab, lab * 0.8, false, 0.45);
+    for (var r = 0; r <= L; r += 5) if (r < L) text(String(r), ox - lab * 1.9, oy - (r + 0.5) * pitch - lab * 0.35, lab, false, 0.45);
+    text(tx.posterAge, ox - lab * 2.4, oy + 4 * k + lab, lab * 0.8, false, 0.45);
+    var lived = state.birth ? c.lived : 0, i, x, y, rr, w;
+    if (shade && lived > 0) {
+      ops.push("0.8 g");
+      for (i = 0; i < Math.min(lived, c.total); i++) { rr = Math.floor(i / WPY); w = i % WPY; x = ox + w * pitch + off; y = oy - (rr + 1) * pitch + off; ops.push(n(x) + " " + n(y) + " " + n(cell) + " " + n(cell) + " re f"); }
+    }
+    ops.push("0.15 G " + n(Math.max(0.25, pitch * 0.05)) + " w");
+    for (i = 0; i < c.total; i++) { rr = Math.floor(i / WPY); w = i % WPY; x = ox + w * pitch + off; y = oy - (rr + 1) * pitch + off; ops.push(n(x) + " " + n(y) + " " + n(cell) + " " + n(cell) + " re"); if (i % 200 === 199) ops.push("S"); }
+    ops.push("S");
+    if (state.birth && !c.over) {
+      rr = Math.floor(c.lived / WPY); w = c.lived % WPY; x = ox + w * pitch + off; y = oy - (rr + 1) * pitch + off;
+      ops.push("0 G " + n(Math.max(0.8, pitch * 0.14)) + " w " + n(x - pitch * 0.12) + " " + n(y - pitch * 0.12) + " " + n(cell + pitch * 0.24) + " " + n(cell + pitch * 0.24) + " re S");
+    }
+    if (state.birth) openGoals(c).forEach(function (g) {
+      var gi = goalWeek(g.age); rr = Math.floor(gi / WPY); w = gi % WPY; x = ox + w * pitch + off; y = oy - (rr + 1) * pitch + off;
+      ops.push("0 G " + n(Math.max(0.6, pitch * 0.1)) + " w " + n(x - pitch * 0.25) + " " + n(y - pitch * 0.25) + " " + n(cell + pitch * 0.5) + " " + n(cell + pitch * 0.5) + " re S");
+    });
+    text("The Unfinished 30 · " + tx.dayTag + " · Salah Khenissi · the-unfinished-30.vercel.app/day-02-howmanyweeks", M, M, 7 * k, false, 0.4);
+    var stream = ops.join("\n");
+    var objs = [
+      "<< /Type /Catalog /Pages 2 0 R >>",
+      "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 " + n(W) + " " + n(H) + "] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>",
+      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
+      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
+      "<< /Length " + stream.length + " >>\nstream\n" + stream + "\nendstream"
+    ];
+    var pdf = "%PDF-1.4\n", offs = [];
+    objs.forEach(function (o, idx) { offs.push(pdf.length); pdf += (idx + 1) + " 0 obj\n" + o + "\nendobj\n"; });
+    var xref = pdf.length;
+    pdf += "xref\n0 " + (objs.length + 1) + "\n0000000000 65535 f \n" + offs.map(function (o) { return ("0000000000" + o).slice(-10) + " 00000 n \n"; }).join("");
+    pdf += "trailer\n<< /Size " + (objs.length + 1) + " /Root 1 0 R >>\nstartxref\n" + xref + "\n%%EOF\n";
+    return new Blob([pdf], { type: "application/pdf" });
+  }
+
   function updateProgress() {
     var el = $("histoire"); if (!el || !dom.prog) return;
     var r = el.getBoundingClientRect(), span = Math.max(1, r.height - window.innerHeight);
@@ -2641,6 +2730,11 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       dom.goalTitle.focus();
     });
     dom.cardShare.addEventListener("click", shareCard);
+    dom.posterBtn.addEventListener("click", function () {
+      var size = ui.poster || "A3";
+      downloadBlob(makePoster(size, dom.posterShade.checked), (state.lang === "fr" ? "ma-vie-en-semaines-" : "my-life-in-weeks-") + size + ".pdf");
+      dom.posterStatus.textContent = fill(t().posterDone, { s: size });
+    });
     dom.remindBtn.addEventListener("click", function () {
       var tx = t();
       icsFile("how-many-weeks-reminder.ics", tx.remindTitle, tx.shareText + " " + APP_URL, addDaysIso(todayIso(), 365), false);
@@ -2750,6 +2844,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       workInputs: Array.prototype.slice.call(document.querySelectorAll("[data-w]")), wOut: $("w-out"),
       goalShared: $("goal-shared"), goalExample: $("goal-example"),
       cardThemes: $("card-themes"), cardFmts: $("card-fmts"), cardShare: $("card-share"), remindBtn: $("remind-btn"), cardStatus: $("card-status"),
+      posterSizes: $("poster-sizes"), posterShade: $("poster-shade"), posterBtn: $("poster-btn"), posterStatus: $("poster-status"),
       exportBtn: $("export-btn"), importFile: $("import-file"), ioStatus: $("io-status"),
       lifeRange: $("life-range"), lifeNum: $("life-num"), heroErr: $("hero-err"),
       exampleNote: $("example-note"), heroBig: $("hero-big"), heroUnit: $("hero-unit"), heroSub: $("hero-sub"),
