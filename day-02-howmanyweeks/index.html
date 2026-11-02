@@ -34,6 +34,7 @@
   --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
   --f-mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
   --bar-h: 56px;
+  --ch0: #7FB3E0; --ch1: #F2C14E; --ch2: #8FD19E; --ch3: #C7A6F0;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -157,6 +158,8 @@ a { color: inherit; }
 .sw.accent { background: var(--accent); }
 .sw.now { background: var(--accent); box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 3px var(--ink); }
 .sw.ring { background: transparent; box-shadow: inset 0 0 0 2px var(--accent); }
+.sw.ch0 { background: var(--ch0); } .sw.ch1 { background: var(--ch1); } .sw.ch2 { background: var(--ch2); } .sw.ch3 { background: var(--ch3); }
+.sw.line { background: var(--ink); height: 2px; border-radius: 0; }
 
 .scenes { position: relative; z-index: 1; }
 .scene {
@@ -289,6 +292,15 @@ input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
 .foot nav { display: flex; flex-wrap: wrap; gap: 8px 14px; }
 
 /* ---------- v2 additions ---------- */
+.lives { display: grid; gap: 10px; }
+.lives .grp { display: grid; gap: 6px; }
+.lives .gl { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.tl .ag { font-family: var(--f-display); font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.tl .b { color: var(--muted); font-weight: 400; }
+.srcl { font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+.chip.dot::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; background: var(--c); }
 .chbar { background: #0E1638; color: #F6F4FB; font-size: 13px; line-height: 1.35; }
 .chbar .in { max-width: 1240px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 2px 14px; align-items: center; justify-content: space-between; padding-block: 7px; }
 @media (max-width: 560px) { .chtag { display: none; } }
@@ -430,6 +442,20 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
             </form>
             <ul id="ev-list" class="goals"></ul>
           </details>
+          <details class="add" id="chap-details">
+            <summary data-i18n="chapAdd"></summary>
+            <p class="hint" data-i18n="chapHint"></p>
+            <form id="chap-form" novalidate>
+              <div class="add-row" style="grid-template-columns:minmax(0,1fr) 72px 72px auto">
+                <div class="field"><label class="label" for="chap-label" data-i18n="chapLabel"></label><input id="chap-label" type="text" maxlength="30" autocomplete="off"></div>
+                <div class="field"><label class="label" for="chap-from" data-i18n="chapFrom"></label><input id="chap-from" type="number" min="0" max="110" inputmode="numeric"></div>
+                <div class="field"><label class="label" for="chap-to" data-i18n="chapTo"></label><input id="chap-to" type="number" min="1" max="110" inputmode="numeric"></div>
+                <button class="btn" type="submit" data-i18n="addBtn"></button>
+              </div>
+              <p id="chap-err" class="err" role="alert"></p>
+            </form>
+            <ul id="chap-list" class="goals"></ul>
+          </details>
         </div>
       </article>
 
@@ -554,6 +580,18 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         <p class="body" id="p-last"></p>
       </article>
 
+      <article class="scene" data-scene="others" id="s-others">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-others"></h2>
+        <p class="body" id="p-others"></p>
+        <div class="panel">
+          <div id="lives" class="lives"></div>
+          <p id="ol-out" class="result" aria-live="polite"></p>
+          <ul id="ol-tl" class="tl"></ul>
+          <p id="ol-src" class="srcl"></p>
+        </div>
+      </article>
+
       <article class="scene" data-scene="choose" id="s-choose">
         <p class="kick" data-kick></p>
         <blockquote class="quote">
@@ -673,7 +711,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   var STEPS_PER_MIN = 120;
   var BOOKS_WORLD = 129864880;
   var WORK_START = 22, WORK_END = 65, ADULT = 18, FORGOT_ROWS = 3;
-  var SCENES = ["you", "life", "lived", "left", "rows", "feel", "times", "circles", "last", "choose", "card"];
+  var SCENES = ["you", "life", "lived", "left", "rows", "feel", "times", "circles", "last", "others", "choose", "card"];
   var APP_URL = "https://the-unfinished-30.vercel.app/day-02-howmanyweeks/";
   var TABS = ["friends", "family", "couple", "work"];
   var THEMES = ["me", "friends", "family", "couple", "work"];
@@ -695,7 +733,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     ["US", "United States", "États-Unis", 79.30, 81.85, 76.86], ["VN", "Vietnam", "Viêt Nam", 74.59, 79.26, 69.88]
   ];
 
-  var R = { BLANK: 0, LIVED: 1, LEFT: 2, ACCENT: 3, NOW: 4 };
+  var R = { BLANK: 0, LIVED: 1, LEFT: 2, ACCENT: 3, NOW: 4, CH0: 5 };
   var LAST_TIMES = [[4, 11], [5, 37], [6, 20], [7, 44], [9, 9], [10, 31], [12, 16], [14, 40]];
   var SAMPLE_CELL = [20, 38]; // the "1 week" cell shown in scene 02
 
@@ -719,7 +757,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       errFuture: "La date doit être dans le passé.",
       errRange: "Choisis entre 50 et 110 ans.",
       pillExample: "Exemple",
-      titles: { you: "Ta vie", life: "Une vie", lived: "Déjà vécu", left: "Ce qui reste", rows: "Les lignes", feel: "Le ressenti", times: "Les fois", last: "Dernières fois", circles: "Tes proches", choose: "Choisir", card: "Ta carte" },
+      titles: { you: "Ta vie", life: "Une vie", lived: "Déjà vécu", left: "Ce qui reste", rows: "Les lignes", feel: "Le ressenti", times: "Les fois", last: "Dernières fois", circles: "Tes proches", others: "Autres vies", choose: "Choisir", card: "Ta carte" },
       h: {
         life: "Une vie de {L} ans.",
         lived: "Tu en as déjà vécu {lived}.",
@@ -730,6 +768,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         times: "Ce qui s'épuise : <s>les semaines</s> les fois.",
         last: "Il y a une dernière fois pour tout.",
         circles: "Les semaines se partagent. Compte-les avec tes proches.",
+        others: "D'autres ont commencé tard. D'autres sont partis tôt.",
         choose: "Ça ne suffit pas pour tout. Ça suffit pour ce que tu choisis.",
         card: "Combien de semaines il te reste ?"
       },
@@ -744,6 +783,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         feelYoung: "À 10 ans, une année, c'est 10 % de ta vie. À 50 ans, ce sera 2 %. Les étés qui semblent éternels finiront par filer.",
         times: "Choisis un moment et règle sa fréquence. La grille montre combien de fois il en reste.",
         last: "Quelqu'un t'a porté dans ses bras pour la dernière fois. Un dernier après-midi à jouer dehors avec les copains. Ce jour-là, personne ne le savait.",
+        others: "Choisis une vie : la grille montre ses grands moments, et le trait marque ton âge.",
         circles: "Choisis un cercle : amis, famille, couple ou travail. La grille suit.",
         choose: "Note ce que tu veux finir, et l'âge avant lequel tu veux l'avoir fait. La grille l'allume.",
         card: "Garde ta carte, partage-la, et reviens dans un an : elle aura perdu 52 cases."
@@ -822,6 +862,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["Les lignes", "Les 3 premières lignes sont marquées oubliées : le premier souvenir arrive en moyenne vers 3 ans et demi. Le bloc travail va de 22 à 65 ans par défaut, réglable dans « Tes proches », onglet Travail. La vie d'adulte commence à 18 ans."],
         ["Le ressenti", "Une année vaut 1 ÷ ton âge de ta vie vécue. C'est la loi proportionnelle proposée par Paul Janet en 1877."],
         ["Les fois", "Années restantes × fréquence par an. Pour tes parents, l'horizon s'arrête au plus court : ta vie ou la leur, avec la même espérance. La part déjà passée suppose que tu as vécu avec eux tous les jours jusqu'à 18 ans, comme le calcul de Tim Urban."],
+        ["Autres vies", "Dates vérifiées une à une dans les sources listées sous chaque vie. Quand seule l'année est connue, le moment est placé au milieu de l'année. Âges calculés en semaines depuis la naissance. Vie française type : moyennes INSEE, DREES et ONU, pas une personne réelle."],
         ["Tes objectifs", "Chaque objectif s'allume sur la dernière semaine avant l'âge choisi."],
         ["Pays et sexe", "Espérance de vie à la naissance, Nations unies, World Population Prospects 2024, estimations 2023, arrondie à l'année. C'est une moyenne : pour une personne qui a déjà 35 ans, le vrai chiffre est un peu plus élevé."],
         ["Tes proches", "Semaines depuis une date = jours ÷ 7. Couple : la date de bascule est le jour où le temps passé ensemble égale le temps vécu avant. Enfants : semaines jusqu'à leurs 18 ans multipliées par ton temps de garde. Les étés (mi-juillet) ne sont pas divisés : en garde alternée, chaque parent a souvent quelques semaines chaque été, à régler toi-même. Les barres de la famille supposent la même espérance pour tous."],
@@ -873,6 +914,36 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       lgKidsC: "Semaines avec ton plus jeune avant ses 18 ans ({c} %)",
       cardUKidC: "étés avec {name} avant ses 18 ans · {sw} semaines chacun",
       cardKidWC: "{name} · SEMAINES AVEC MOI",
+      chapAdd: "Colorier les chapitres de ta vie",
+      chapHint: "École, premier job, nouvelle ville, une relation… Donne à chaque chapitre une tranche d'âge : la grille le colore.",
+      chapLabel: "Chapitre",
+      chapFrom: "De (âge)",
+      chapTo: "À (âge)",
+      chapErr: "Donne un nom et une tranche d'âge (de < à, jusqu'à 110).",
+      chapFull: "Huit chapitres au maximum.",
+      chapMeta: "de {a} à {b} ans",
+      olLate: "Partis tard",
+      olShort: "Vies courtes et fulgurantes",
+      olDuos: "Côte à côte",
+      olMore: "Autres grilles",
+      olGone: "Partis jeunes",
+      olTypical: "Une vie française type",
+      olNotYet: "À {a} ans, {name} n'avait pas encore {what}. C'est arrivé {at}.",
+      olAlready: "À {a} ans, {name} avait déjà {what} ({at}).", olAt: "à {n} ans", olAround: "vers {n} ans", olDiedSame: "{name} est mort·e à {d} ans, ton âge aujourd'hui.",
+      olDiedYounger: "{name} est mort·e à {d} ans, plus jeune que toi aujourd'hui.",
+      olDied: "décès",
+      olOffGrid: "Cette vie dépasse les {L} lignes de ta grille : les dernières années sont hors grille.",
+      olSources: "Sources :",
+      olGoneOut: "{n} de ces {t} vies se sont arrêtées avant {a} ans, ton âge aujourd'hui. Chaque case orange en est une.",
+      olTypOut: "À {a} ans, la prochaine étape d'une vie française type, c'est : {what}, vers {at} ans.",
+      olTypPast: "Tu as dépassé toutes les étapes de cette vie type. La suite t'appartient.",
+      olTypLife: "espérance de vie à la naissance (ONU, 2023)",
+      lgGone: "Âge au décès",
+      lgYou: "Ton âge",
+      lgTypical: "Une vie française type",
+      lgTypEv: "Âges moyens",
+      lgMoments: "Moments clés",
+      lblYouAge: "Toi · {a} ans",
       chDay: "Jour 2/30", chTag: ", un prototype gratuit par jour",
       chBy: "Conçu par",
       lblCountry: "Pays (moyenne ONU)",
@@ -1021,7 +1092,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       errFuture: "The date must be in the past.",
       errRange: "Pick between 50 and 110 years.",
       pillExample: "Example",
-      titles: { you: "Your life", life: "A life", lived: "Already lived", left: "What is left", rows: "The rows", feel: "How it feels", times: "The times", last: "Last times", circles: "Your people", choose: "Choose", card: "Your card" },
+      titles: { you: "Your life", life: "A life", lived: "Already lived", left: "What is left", rows: "The rows", feel: "How it feels", times: "The times", last: "Last times", circles: "Your people", others: "Other lives", choose: "Choose", card: "Your card" },
       h: {
         life: "A {L}-year life.",
         lived: "You have already lived {lived}.",
@@ -1032,6 +1103,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         times: "What runs out: <s>weeks</s> times.",
         last: "There is a last time for everything.",
         circles: "Weeks are shared. Count them with your people.",
+        others: "Some started late. Some left early.",
         choose: "It is not enough for everything. It is enough for what you choose.",
         card: "How many weeks do you have left?"
       },
@@ -1046,6 +1118,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         feelYoung: "At 10, one year is 10% of your life. At 50, it will be 2%. Summers that feel endless will start to slip by.",
         times: "Pick a moment and set how often it happens. The grid shows how many times are left.",
         last: "Someone carried you in their arms for the last time. A last afternoon playing outside with friends. Nobody knew it on the day.",
+        others: "Pick a life: the grid shows its big moments, and the line marks your age.",
         circles: "Pick a circle: friends, family, couple or work. The grid follows.",
         choose: "Write down what you want to finish, and the age you want it done by. The grid lights it up.",
         card: "Keep your card, share it, and come back in a year: it will have lost 52 boxes."
@@ -1124,6 +1197,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["The rows", "The first 3 rows are marked forgotten: the earliest memory comes at about three and a half on average. The work block runs from 22 to 65 by default, adjustable in “Your people”, Work tab. Adult life starts at 18."],
         ["How it feels", "One year is worth 1 ÷ your age of the life you have lived. This is the proportional law Paul Janet proposed in 1877."],
         ["The times", "Years left × times per year. For your parents, the horizon ends at the shorter of your life or theirs, with the same lifespan. The share already spent assumes you lived with them every day until 18, as in Tim Urban's calculation."],
+        ["Other lives", "Dates checked one by one against the sources listed under each life. When only the year is known, the moment sits mid-year. Ages are counted in weeks from birth. Typical French life: INSEE, DREES and UN averages, not a real person."],
         ["Your goals", "Each goal lights up the last week before the age you chose."],
         ["Country and sex", "Life expectancy at birth, United Nations World Population Prospects 2024, 2023 estimates, rounded to the year. It is an average: for someone already 35, the real figure is a little higher."],
         ["Your people", "Weeks since a date = days ÷ 7. Couple: the crossing date is the day time together equals the time lived before. Children: weeks until they turn 18, multiplied by your custody share. Summers (mid-July) are not halved: with shared custody, each parent often gets a few weeks every summer, which you set yourself. Family bars assume the same lifespan for everyone."],
@@ -1175,6 +1249,36 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       lgKidsC: "Weeks with your youngest before 18 ({c}%)",
       cardUKidC: "summers with {name} before 18 · {sw} weeks each",
       cardKidWC: "{name} · WEEKS WITH ME",
+      chapAdd: "Colour your life chapters",
+      chapHint: "School, first job, a new city, a relationship… Give each chapter a range of ages: the grid colours it.",
+      chapLabel: "Chapter",
+      chapFrom: "From age",
+      chapTo: "To age",
+      chapErr: "Give it a name and an age range (from < to, up to 110).",
+      chapFull: "Eight chapters at most.",
+      chapMeta: "from {a} to {b}",
+      olLate: "Late starters",
+      olShort: "Short and bright",
+      olDuos: "Side by side",
+      olMore: "More grids",
+      olGone: "Gone young",
+      olTypical: "A typical French life",
+      olNotYet: "At {a}, {name} had not yet {what}. That came at {at}.",
+      olAlready: "At {a}, {name} had already {what} (at {at}).", olAt: "{n}", olAround: "around {n}", olDiedSame: "{name} died at {d}, your age today.",
+      olDiedYounger: "{name} died at {d}, younger than you are today.",
+      olDied: "died",
+      olOffGrid: "This life went past the {L} rows of your grid: the last years are off the grid.",
+      olSources: "Sources:",
+      olGoneOut: "{n} of these {t} lives ended before {a}, your age today. Each orange box is one of them.",
+      olTypOut: "At {a}, the next step of a typical French life is {what}, around {at}.",
+      olTypPast: "You are past every step of this typical life. The rest is yours.",
+      olTypLife: "life expectancy at birth (UN, 2023)",
+      lgGone: "Age at death",
+      lgYou: "Your age",
+      lgTypical: "A typical French life",
+      lgTypEv: "Average ages",
+      lgMoments: "Key moments",
+      lblYouAge: "You · {a}",
       chDay: "Day 2/30", chTag: ", one free prototype a day",
       chBy: "Made by",
       lblCountry: "Country (UN average)",
@@ -1374,11 +1478,92 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   }
   function addDaysIso(iso, n) { var p = parseYmd(iso); return ymd(new Date(p.y, p.m - 1, p.d + n)); }
   // PURE-END
+  // ---------- Other lives (dates checked against the sources listed in each entry) ----------
+  // d: "YYYY-MM-DD", "YYYY-MM" or "YYYY" (year only: placed mid-year, shown as "around").
+  var LIVES = [
+    { id: "child", g: "late", name: "Julia Child", born: "1912-08-15", died: "2004-08-13", ev: [
+      { d: "1961-09", en: "published her first cookbook, Mastering the Art of French Cooking", fr: "publié son premier livre de cuisine, Mastering the Art of French Cooking" },
+      { d: "1963", en: "started her TV show, The French Chef", fr: "lancé son émission de télé, The French Chef" }],
+      src: ["https://www.biography.com/cook/julia-child"] },
+    { id: "sanders", g: "late", name: "Colonel Sanders", born: "1890-09-09", died: "1980-12-16", ev: [
+      { d: "1952", en: "sold his first Kentucky Fried Chicken franchise", fr: "vendu sa première franchise Kentucky Fried Chicken" },
+      { d: "1964", en: "sold the company", fr: "revendu l'entreprise" }],
+      src: ["https://en.wikipedia.org/wiki/Colonel_Sanders"] },
+    { id: "kroc", g: "late", name: "Ray Kroc", born: "1902-10-05", died: "1984-01-14", ev: [
+      { d: "1955", en: "opened his first McDonald's franchise", fr: "ouvert son premier McDonald's franchisé" },
+      { d: "1961", en: "bought McDonald's from the McDonald brothers", fr: "racheté McDonald's aux frères McDonald" }],
+      src: ["https://webcf.waybackmachine.org/web/20211002111059/https://en.wikipedia.org/wiki/Ray_Kroc"] },
+    { id: "morrison", g: "late", name: "Toni Morrison", born: "1931-02-18", died: "2019-08-05", ev: [
+      { d: "1970", en: "published her first novel, The Bluest Eye", fr: "publié son premier roman, The Bluest Eye" },
+      { d: "1987", en: "published Beloved", fr: "publié Beloved" },
+      { d: "1993", en: "won the Nobel Prize in Literature", fr: "reçu le prix Nobel de littérature" }],
+      src: ["https://poets.org/poet/toni-morrison"] },
+    { id: "wang", g: "late", name: "Vera Wang", born: "1949-06-27", died: null, ev: [
+      { d: "1990", en: "opened her first bridal salon, in New York", fr: "ouvert son premier salon de robes de mariée, à New York" }],
+      src: ["https://en.wikipedia.org/wiki/Vera_Wang"] },
+    { id: "mozart", g: "short", name: "Mozart", born: "1756-01-27", died: "1791-12-05", ev: [
+      { d: "1767-05-13", en: "premiered his first opera", fr: "créé son premier opéra" },
+      { d: "1786", en: "premiered The Marriage of Figaro", fr: "créé Les Noces de Figaro" },
+      { d: "1791-09-30", en: "premiered The Magic Flute", fr: "créé La Flûte enchantée" }],
+      src: ["https://www.worldhistory.org/timeline/Wolfgang_Amadeus_Mozart"] },
+    { id: "vangogh", g: "short", name: "Vincent van Gogh", born: "1853-03-30", died: "1890-07-29", ev: [
+      { d: "1880", en: "decided to become an artist", fr: "décidé de devenir artiste" },
+      { d: "1882", en: "started painting in oil", fr: "commencé la peinture à l'huile" },
+      { d: "1889-06", en: "painted The Starry Night", fr: "peint La Nuit étoilée" }],
+      note: { en: "About 900 paintings, almost all in his last ten years.", fr: "Environ 900 tableaux, presque tous dans ses dix dernières années." },
+      src: ["https://www.newworldencyclopedia.org/entry/Vincent_van_Gogh"] },
+    { id: "saintex", g: "short", name: "Antoine de Saint-Exupéry", born: "1900-06-29", died: "1944-07-31", ev: [
+      { d: "1931", en: "published Night Flight, which won the Prix Femina", fr: "publié Vol de nuit, prix Femina" },
+      { d: "1943", en: "published The Little Prince", fr: "publié Le Petit Prince" }],
+      src: ["https://www.newworldencyclopedia.org/entry/Antoine_de_Saint-Exupery"] },
+    { id: "einstein", g: "solo", name: "Albert Einstein", born: "1879-03-14", died: "1955-04-18", ev: [
+      { d: "1905", en: "published his four miracle-year papers, special relativity among them", fr: "publié les quatre articles de son année miraculeuse, dont la relativité restreinte" },
+      { d: "1915", en: "completed general relativity", fr: "achevé la relativité générale" },
+      { d: "1921", en: "won the Nobel Prize in Physics", fr: "reçu le prix Nobel de physique" }],
+      src: ["https://www.physik.uzh.ch/en/department/Nobel_Prizes/AlbertEinstein0.html"] },
+    { id: "curie", g: "solo", name: "Marie Curie", born: "1867-11-07", died: "1934-07-04", ev: [
+      { d: "1903", en: "won the Nobel Prize in Physics", fr: "reçu le prix Nobel de physique" },
+      { d: "1911", en: "won the Nobel Prize in Chemistry", fr: "reçu le prix Nobel de chimie" }],
+      src: ["https://www.britannica.com/facts/Marie-Curie"] },
+    { id: "jobs", g: "comeback", name: "Steve Jobs", born: "1955-02-24", died: "2011-10-05", ev: [
+      { d: "1976", en: "co-founded Apple", fr: "cofondé Apple" },
+      { d: "1985", en: "left Apple", fr: "quitté Apple" },
+      { d: "1997", en: "come back to lead Apple", fr: "repris la tête d'Apple" },
+      { d: "2007-01-09", en: "unveiled the iPhone", fr: "présenté l'iPhone" }],
+      src: ["https://ktvz.com/news/national-world/cnn-national/2022/07/09/steve-jobs-fast-facts/"] },
+    { id: "mbappe", g: "solo", name: "Kylian Mbappé", born: "1998-12-20", died: null, ev: [
+      { d: "2015-12-02", en: "made his professional debut", fr: "fait ses débuts professionnels" },
+      { d: "2018-07-15", en: "won the World Cup, scoring in the final", fr: "gagné la Coupe du monde, en marquant en finale" }],
+      src: ["https://en.wikipedia.org/wiki/Kylian_Mbapp%C3%A9"] },
+    { id: "vardy", g: "solo", name: "Jamie Vardy", born: "1987-01-11", died: null, ev: [
+      { d: "2012-05", en: "signed for Leicester, after years of part-time football and factory work", fr: "signé à Leicester, après des années de foot amateur et de travail en usine" },
+      { d: "2016-05", en: "won the Premier League with Leicester", fr: "gagné la Premier League avec Leicester" }],
+      src: ["https://uefa.com/uefachampionsleague/news/0253-0d816f9afcee-549adcca5392-1000--the-rise-of-leicester-and-england-s-jamie-vardy"] },
+    // Ages at death only (for the "Gone young" view).
+    { id: "galois", g: "x", name: "Évariste Galois", born: "1811-10-25", died: "1832-05-31", ev: [], src: ["https://en.wikipedia.org/wiki/%C3%89variste_Galois"] },
+    { id: "hendrix", g: "x", name: "Jimi Hendrix", born: "1942-11-27", died: "1970-09-18", ev: [], src: ["https://en.wikipedia.org/wiki/Jimi_Hendrix"] },
+    { id: "brucelee", g: "x", name: "Bruce Lee", born: "1940-11-27", died: "1973-07-20", ev: [], src: ["https://en.wikipedia.org/wiki/Bruce_Lee"] },
+    { id: "mlk", g: "x", name: "Martin Luther King Jr.", born: "1929-01-15", died: "1968-04-04", ev: [], src: ["https://en.wikipedia.org/wiki/Martin_Luther_King_Jr."] },
+    { id: "kahlo", g: "x", name: "Frida Kahlo", born: "1907-07-06", died: "1954-07-13", ev: [], src: ["https://en.wikipedia.org/wiki/Frida_Kahlo"] }
+  ];
+  var DUOS = [{ id: "einstein-curie", a: "einstein", b: "curie" }, { id: "mbappe-vardy", a: "mbappe", b: "vardy" }];
+  var GONE = ["galois", "hendrix", "brucelee", "mozart", "vangogh", "mlk", "saintex", "kahlo", "jobs"];
+  // A typical French life (INSEE, DREES, UN). Ages, not dates.
+  var TYPICAL_FR = { life: 83.33, ev: [
+    { age: 29.1, en: "first child, for women (average age, 2023)", fr: "premier enfant, pour les femmes (âge moyen, 2023)", src: "https://www.journaldeleconomie.fr/maternite-en-france-les-femmes-ont-leur-premier-enfant-a-29-ans-en-moyenne/" },
+    { age: 37.5, en: "getting married, women (average age, 2025, provisional)", fr: "mariage, femmes (âge moyen, 2025, provisoire)", src: "https://www.insee.fr/fr/statistiques/2381500" },
+    { age: 39.8, en: "getting married, men (average age, 2025, provisional)", fr: "mariage, hommes (âge moyen, 2025, provisoire)", src: "https://www.insee.fr/fr/statistiques/2381500" },
+    { age: 62.75, en: "retirement (average age, end of 2023)", fr: "retraite (âge moyen, fin 2023)", src: "https://drees.solidarites-sante.gouv.fr/sites/default/files/2025-07/Fiche%2015%20-%20L%27%C3%A2ge%20moyen%20de%20d%C3%A9part%20%C3%A0%20la%20retraite%20et%20son%20%C3%A9volution.pdf" }] };
+  var LBY = {}; LIVES.forEach(function (p) { LBY[p.id] = p; });
+  function evIso(d) { return d.length === 4 ? d + "-07-01" : d.length === 7 ? d + "-15" : d; }
+  function lifeWeek(p, d) { return weeksBetween(p.born, evIso(d)); }
+  function lifeEnd(p) { return p.died ? weeksBetween(p.born, p.died) : weeksBetween(p.born, todayIso()); }
+
 
   function freshState(lang) {
     var st = { lang: lang || "en", birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [],
       country: "", sex: "all", grandAge: null, events: [], tab: "friends", friendName: "", friendMet: "", kids: [], since: "", partnerBirth: "",
-      cardTheme: "me", cardFmt: "portrait", custody: 100, summerWeeks: 0 };
+      cardTheme: "me", cardFmt: "portrait", custody: 100, summerWeeks: 0, chapters: [], other: "child" };
     for (var k in WORK_DEFAULTS) st[k] = WORK_DEFAULTS[k];
     return st;
   }
@@ -1426,7 +1611,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function payload() {
     var o = { v: 4, lang: state.lang, birth: state.birth, lifespan: state.lifespan, moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items,
       country: state.country, sex: state.sex, grandAge: state.grandAge, events: state.events, tab: state.tab, friendName: state.friendName, friendMet: state.friendMet,
-      kids: state.kids, custody: state.custody, summerWeeks: state.summerWeeks, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
+      kids: state.kids, chapters: state.chapters, other: state.other, custody: state.custody, summerWeeks: state.summerWeeks, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
     for (var k in WORK_DEFAULTS) o[k] = state[k];
     return o;
   }
@@ -1476,6 +1661,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     if (validIso(saved.friendMet)) st.friendMet = saved.friendMet;
     if (Array.isArray(saved.kids)) st.kids = saved.kids.filter(function (k) { return k && typeof k.name === "string" && validIso(k.birth); }).slice(0, 4)
       .map(function (k) { return { id: String(k.id || Math.random().toString(36).slice(2)), name: k.name.slice(0, 30), birth: k.birth }; });
+    if (Array.isArray(saved.chapters)) st.chapters = saved.chapters.filter(function (c) { return c && typeof c.label === "string" && Number.isInteger(c.from) && Number.isInteger(c.to) && c.from >= 0 && c.to > c.from && c.to <= 110; }).slice(0, 8)
+      .map(function (c) { return { id: String(c.id || Math.random().toString(36).slice(2)), label: c.label.slice(0, 30), from: c.from, to: c.to }; });
+    if (typeof saved.other === "string" && (LBY[saved.other] || saved.other === "gone" || saved.other === "typical" || DUOS.some(function (d) { return d.id === saved.other; }))) st.other = saved.other;
     if (Number.isFinite(saved.summerWeeks) && saved.summerWeeks >= 0 && saved.summerWeeks <= 12) st.summerWeeks = saved.summerWeeks;
     if (Number.isFinite(saved.custody) && saved.custody >= 0 && saved.custody <= 100) st.custody = saved.custody;
     if (validIso(saved.since)) st.since = saved.since;
@@ -1501,7 +1689,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function readColors() {
     var s = getComputedStyle(document.documentElement);
     function v(name) { return s.getPropertyValue(name).trim(); }
-    var roles = [hexToRgb(v("--c-blank")), hexToRgb(v("--c-lived")), hexToRgb(v("--c-left")), hexToRgb(v("--accent")), hexToRgb(v("--accent"))];
+    var roles = [hexToRgb(v("--c-blank")), hexToRgb(v("--c-lived")), hexToRgb(v("--c-left")), hexToRgb(v("--accent")), hexToRgb(v("--accent")), hexToRgb(v("--ch0")), hexToRgb(v("--ch1")), hexToRgb(v("--ch2")), hexToRgb(v("--ch3"))];
     return { roles: roles, ink: v("--ink"), bg: v("--bg"), muted: v("--muted"), accent: v("--accent") };
   }
 
@@ -1541,6 +1729,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         break;
       case "lived":
         base(R.LEFT, R.BLANK);
+        state.chapters.forEach(function (ch, k) { for (var q = ch.from * WPY; q < Math.min(total, ch.to * WPY); q++) a[q] = R.CH0 + (k % 4); });
         state.events.forEach(function (ev) { var w = weekOf(ev.date); if (w >= 0 && w < lived && w < total) a[w] = R.ACCENT; });
         now();
         break;
@@ -1571,6 +1760,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         break;
       case "circles":
         circleRoles(a, c, base, now);
+        break;
+      case "others":
+        otherRoles(a, c);
         break;
       case "choose":
         base(R.LIVED, R.BLANK);
@@ -1646,11 +1838,118 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     now();
   }
 
+  // ---------- Other lives: grid roles, text ----------
+  function otherSel() { return state.other || "child"; }
+  function otherRoles(a, c) {
+    var total = c.total, i, sel = otherSel();
+    for (i = 0; i < total; i++) a[i] = R.BLANK;
+    if (sel === "gone") { GONE.forEach(function (id) { var w = lifeEnd(LBY[id]); if (w >= 0 && w < total) a[w] = R.ACCENT; }); return; }
+    if (sel === "typical") {
+      var end = Math.min(total, Math.round(TYPICAL_FR.life * WPY));
+      for (i = 0; i < end; i++) a[i] = R.LIVED;
+      TYPICAL_FR.ev.forEach(function (e) { var w = Math.round(e.age * WPY); if (w < total) a[w] = R.ACCENT; });
+      return;
+    }
+    var duo = DUOS.filter(function (d) { return d.id === sel; })[0];
+    var p = duo ? LBY[duo.a] : LBY[sel];
+    var e1 = Math.min(total, Math.max(0, lifeEnd(p)));
+    for (i = 0; i < e1; i++) a[i] = R.LIVED;
+    p.ev.forEach(function (e) { var w = lifeWeek(p, e.d); if (w >= 0 && w < total) a[w] = R.ACCENT; });
+  }
+  function otherRings() {
+    var sel = otherSel(), duo = DUOS.filter(function (d) { return d.id === sel; })[0], out = [];
+    if (!duo) return out;
+    var b = LBY[duo.b];
+    b.ev.forEach(function (e) { out.push(lifeWeek(b, e.d)); });
+    if (b.died) out.push(lifeEnd(b));
+    return out;
+  }
+  function ageAt(p, d) { return Math.floor(lifeWeek(p, d) / WPY); }
+  function ageTxt(p, d) { var a = ageAt(p, d); return fill(d.length === 4 ? t().olAround : t().olAt, { n: a }); }
+  function evDate(d) { var x = parseYmd(evIso(d)); return d.length === 4 ? String(x.y) : new Date(x.y, x.m - 1, x.d).toLocaleDateString(locale(), d.length === 7 ? { month: "short", year: "numeric" } : { day: "numeric", month: "short", year: "numeric" }); }
+  function lifeLine(p, yourAge) {
+    var tx = t(), L = state.lang, firstLater = null, lastBefore = null;
+    p.ev.forEach(function (e) { var ag = ageAt(p, e.d); if (ag <= yourAge) lastBefore = e; else if (!firstLater) firstLater = e; });
+    var deathAge = p.died ? Math.floor(lifeEnd(p) / WPY) : null;
+    if (deathAge !== null && deathAge < yourAge) return fillN(tx.olDiedYounger, { name: p.name, d: deathAge });
+    var tail = deathAge !== null && deathAge === yourAge ? " " + fillN(tx.olDiedSame, { name: p.name, d: deathAge }) : "";
+    if (firstLater) return fillN(tx.olNotYet, { a: yourAge, name: p.name, what: firstLater[L], at: ageTxt(p, firstLater.d) }) + tail;
+    if (lastBefore) return fillN(tx.olAlready, { a: yourAge, name: p.name, what: lastBefore[L], at: ageTxt(p, lastBefore.d) }) + tail;
+    return "";
+  }
+  function renderOthers(c) {
+    var tx = t(), L = state.lang, sel = otherSel(), yourAge = c.age;
+    var groups = [
+      ["late", tx.olLate, LIVES.filter(function (p) { return p.g === "late"; }).map(function (p) { return [p.id, p.name]; })],
+      ["short", tx.olShort, LIVES.filter(function (p) { return p.g === "short"; }).map(function (p) { return [p.id, p.name]; }).concat([["jobs", "Steve Jobs"]])],
+      ["duos", tx.olDuos, DUOS.map(function (d) { return [d.id, LBY[d.a].name + " × " + LBY[d.b].name]; })],
+      ["more", tx.olMore, [["gone", tx.olGone], ["typical", tx.olTypical]]]
+    ];
+    dom.lives.replaceChildren();
+    groups.forEach(function (g) {
+      var box = document.createElement("div"); box.className = "grp";
+      var gl = document.createElement("span"); gl.className = "gl"; gl.textContent = g[1];
+      var row = document.createElement("div"); row.className = "chips";
+      g[2].forEach(function (it) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = it[1];
+        b.setAttribute("aria-pressed", it[0] === sel ? "true" : "false");
+        b.addEventListener("click", function () { state.other = it[0]; save(); renderOthers(current()); renderVizHead(); setTargets(false); });
+        row.appendChild(b);
+      });
+      box.append(gl, row); dom.lives.appendChild(box);
+    });
+    dom.olTl.replaceChildren();
+    var srcs = [];
+    function li(age, text, bold) {
+      var l = document.createElement("li");
+      var a = document.createElement("span"); a.className = "ag"; a.textContent = age;
+      var s2 = document.createElement("span"); s2.innerHTML = bold ? "<b>" + esc(bold) + "</b> " : ""; s2.appendChild(document.createTextNode(text));
+      l.append(a, s2); dom.olTl.appendChild(l);
+    }
+    if (sel === "gone") {
+      var younger = GONE.filter(function (id) { return Math.floor(lifeEnd(LBY[id]) / WPY) < yourAge; }).length;
+      dom.olOut.innerHTML = fillN(tx.olGoneOut, { n: younger, t: GONE.length, a: yourAge });
+      GONE.slice().sort(function (x, y) { return lifeEnd(LBY[x]) - lifeEnd(LBY[y]); }).forEach(function (id) { var p = LBY[id]; li(Math.floor(lifeEnd(p) / WPY), p.born.slice(0, 4) + "–" + p.died.slice(0, 4), p.name); srcs.push(p.src[0]); });
+    } else if (sel === "typical") {
+      var next = TYPICAL_FR.ev.filter(function (e) { return e.age > yourAge; })[0];
+      dom.olOut.innerHTML = next ? fillN(tx.olTypOut, { a: yourAge, what: next[L], at: fmt1(next.age) }) : esc(tx.olTypPast);
+      TYPICAL_FR.ev.forEach(function (e) { li(fmt1(e.age), e[L]); if (srcs.indexOf(e.src) < 0) srcs.push(e.src); });
+      li(fmt1(TYPICAL_FR.life), tx.olTypLife);
+      srcs.push("https://en.wikipedia.org/wiki/List_of_countries_by_life_expectancy");
+    } else {
+      var duo = DUOS.filter(function (d) { return d.id === sel; })[0];
+      var people = duo ? [LBY[duo.a], LBY[duo.b]] : [LBY[sel]];
+      dom.olOut.innerHTML = people.map(function (p) { return lifeLine(p, yourAge); }).filter(Boolean).join("<br>");
+      people.forEach(function (p, k) {
+        p.ev.forEach(function (e) { li((e.d.length === 4 ? "~" : "") + ageAt(p, e.d), e[L] + " · " + evDate(e.d), duo ? p.name + (k ? " ◻" : " ■") : ""); });
+        if (p.died) li(Math.floor(lifeEnd(p) / WPY), tx.olDied + " · " + evDate(p.died), duo ? p.name + (k ? " ◻" : " ■") : "");
+        if (p.note) li("·", p.note[L]);
+        srcs = srcs.concat(p.src);
+      });
+      if (people.some(function (p) { return Math.floor(lifeEnd(p) / WPY) >= state.lifespan; })) li("·", fill(tx.olOffGrid, { L: state.lifespan }));
+    }
+    dom.olSrc.textContent = tx.olSources + " " + srcs.map(function (u) { return u.replace(/^https?:\/\/(www\.)?/, "").split("/")[0]; }).filter(function (h, i, arr) { return arr.indexOf(h) === i; }).join(" · ");
+    dom.olSrc.title = srcs.join("\n");
+  }
+  function legendOthers() {
+    var tx = t(), sel = otherSel();
+    if (sel === "gone") return [["accent", tx.lgGone], ["line", tx.lgYou]];
+    if (sel === "typical") return [["lived", tx.lgTypical], ["accent", tx.lgTypEv], ["line", tx.lgYou]];
+    var duo = DUOS.filter(function (d) { return d.id === sel; })[0];
+    if (duo) return [["accent", LBY[duo.a].name], ["ring", LBY[duo.b].name], ["line", tx.lgYou]];
+    return [["lived", LBY[sel].name], ["accent", tx.lgMoments], ["line", tx.lgYou]];
+  }
+
   function legendFor(scene, c) {
     var lg = t().lg;
     switch (scene) {
       case "life": return [["blank", lg.week]];
-      case "lived": return state.events.length ? [["left", lg.lived], ["accent", t().lgEvent], ["now", lg.now]] : [["left", lg.lived], ["now", lg.now]];
+      case "lived":
+        var lv = [["left", lg.lived]].concat(state.chapters.slice(0, 4).map(function (ch, k) { return ["ch" + (k % 4), ch.label]; }));
+        if (state.events.length) lv.push(["accent", t().lgEvent]);
+        lv.push(["now", lg.now]);
+        return lv;
+      case "others": return legendOthers();
       case "left": return [["lived", lg.lived], ["left", lg.remaining], ["now", lg.now]];
       case "rows": return [["blank", lg.forgot], ["accent", fill(lg.work, { ws: state.workStart, we: state.retire })]];
       case "circles":
@@ -1752,11 +2051,19 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     var pad = Math.max(1.5, L.pitch * 0.2);
 
     // This week: a ring in ink, so it reads inside any colour block.
-    if (!c.over && ui.scene !== "life") {
+    if (!c.over && ui.scene !== "life" && ui.scene !== "others") {
       p = cellXY(c.lived);
       ctx.strokeStyle = col.ink;
       ctx.lineWidth = lw;
       ctx.strokeRect(p.x - pad, p.y - pad, s + pad * 2, s + pad * 2);
+    }
+
+    if (ui.scene === "others") {
+      ctx.strokeStyle = col.accent;
+      ctx.lineWidth = lw;
+      otherRings().forEach(function (w) { if (w >= 0 && w < total) { var q = cellXY(w); ctx.strokeRect(q.x - pad, q.y - pad, s + pad * 2, s + pad * 2); } });
+      var mainP = (function () { var sel = otherSel(), d = DUOS.filter(function (x) { return x.id === sel; })[0]; return d ? LBY[d.a] : LBY[sel]; })();
+      if (mainP) mainP.ev.forEach(function (e) { var w = lifeWeek(mainP, e.d); if (w >= 0 && w < total) { var q = cellXY(w); ctx.fillStyle = col.accent; ctx.fillRect(q.x - pad, q.y - pad, s + pad * 2, s + pad * 2); } });
     }
 
     // Goals: accent rings on the personal views.
@@ -1802,6 +2109,12 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
           rowMid = L.oy + (row + 0.5) * L.pitch;
           pill(ctx, fill(tx.lblRow, { a: row, p: fmt1(100 / row) }), L.ox + L.gridW - 4, rowMid + (row === fr.a ? -L.pitch * 1.6 - 6 : L.pitch * 1.6 + 6), "right", a);
         });
+        break;
+      case "others":
+        var ry = L.oy + c.age * L.pitch;
+        ctx.save(); ctx.globalAlpha = a; ctx.strokeStyle = ui.colors.ink; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(L.ox - 2, ry - 0.5); ctx.lineTo(L.ox + L.gridW + 2, ry - 0.5); ctx.stroke(); ctx.restore();
+        pill(ctx, fill(tx.lblYouAge, { a: c.age }), L.ox, ry - 12, "left", a);
         break;
       case "times":
         if (!c.over) {
@@ -1858,7 +2171,21 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     return i < current().total ? i : null;
   }
 
+  function othersTip(i) {
+    var tx = t(), sel = otherSel(), L = state.lang, lines = ["<b>" + esc(fill(tx.tipAge, { a: Math.floor(i / WPY), w: (i % WPY) + 1 })) + "</b>"];
+    if (sel === "gone") GONE.forEach(function (id) { if (lifeEnd(LBY[id]) === i) lines.push(esc(LBY[id].name)); });
+    else if (sel === "typical") TYPICAL_FR.ev.forEach(function (e) { if (Math.round(e.age * WPY) === i) lines.push(esc(e[L])); });
+    else {
+      var duo = DUOS.filter(function (d) { return d.id === sel; })[0];
+      (duo ? [LBY[duo.a], LBY[duo.b]] : [LBY[sel]]).forEach(function (p) {
+        p.ev.forEach(function (e) { if (lifeWeek(p, e.d) === i) lines.push('<span class="hl">' + esc(p.name) + "</span> " + esc(e[L])); });
+        if (p.died && lifeEnd(p) === i) lines.push('<span class="hl">' + esc(p.name) + "</span> " + esc(tx.olDied));
+      });
+    }
+    return lines.join("<br>");
+  }
   function showTip(i, px, py) {
+    if (ui.scene === "others") { dom.tip.innerHTML = othersTip(i); ui.hover = i; dom.tip.hidden = false; placeTip(px, py); draw(); return; }
     var tx = t(), c = current(), wd = weekDates(effectiveBirth(), i);
     var status = i < c.lived ? tx.tipLived : i === c.lived ? '<span class="hl">' + esc(tx.tipNow) + "</span>" : tx.tipLeft;
     var html = "<b>" + esc(fill(tx.tipWeek, { n: fmt(i + 1) })) + "</b>" +
@@ -1873,13 +2200,16 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     ui.hover = i;
     dom.tip.innerHTML = html;
     dom.tip.hidden = false;
+    placeTip(px, py);
+    draw();
+  }
+  function placeTip(px, py) {
     var sw = dom.stage.clientWidth, sh = dom.stage.clientHeight, tw = dom.tip.offsetWidth, th = dom.tip.offsetHeight;
     var left = Math.min(Math.max(4, px + 14), sw - tw - 4);
     var top = py - th - 12;
     if (top < 4) top = py + 16;
     dom.tip.style.left = left + "px";
     dom.tip.style.top = Math.min(Math.max(4, top), Math.max(4, sh - th - 4)) + "px";
-    draw();
   }
 
   function hideTip() {
@@ -1991,6 +2321,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     $("p-last").innerHTML = fillN(tx.p.last, v);
     $("h-circles").innerHTML = fillN(tx.h.circles, v);
     $("p-circles").innerHTML = fillN(tx.p.circles, v);
+    $("h-others").innerHTML = fillN(tx.h.others, v);
+    $("p-others").innerHTML = fillN(tx.p.others, v);
     $("h-choose").innerHTML = fillN(tx.h.choose, v);
     $("p-choose").innerHTML = fillN(tx.p.choose, v);
     $("h-card").innerHTML = fillN(tx.h.card, v);
@@ -2237,6 +2569,23 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     dom.famHint.textContent = fill(tx.famHint, { L: L });
   }
 
+  // ---------- Chapters ----------
+  function renderChapters() {
+    var tx = t();
+    dom.chapList.replaceChildren();
+    state.chapters.forEach(function (ch, k) {
+      var li = document.createElement("li");
+      var left = document.createElement("div");
+      var tt = document.createElement("div"); tt.className = "t"; tt.innerHTML = '<i class="sw ch' + (k % 4) + '" style="display:inline-block;margin-right:6px"></i>'; tt.appendChild(document.createTextNode(ch.label));
+      var mm = document.createElement("div"); mm.className = "m"; mm.textContent = fill(tx.chapMeta, { a: ch.from, b: ch.to });
+      left.append(tt, mm);
+      var del = document.createElement("button"); del.type = "button"; del.className = "mini"; del.textContent = tx.goalRemove;
+      del.addEventListener("click", function () { state.chapters = state.chapters.filter(function (x) { return x.id !== ch.id; }); save(); renderChapters(); renderVizHead(); setTargets(false); });
+      var acts = document.createElement("div"); acts.className = "acts"; acts.append(del);
+      li.append(left, acts); dom.chapList.appendChild(li);
+    });
+  }
+
   // ---------- Milestones ----------
   function renderEvents() {
     var tx = t();
@@ -2374,7 +2723,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     renderScenes(c);
     renderTimes(c);
     renderCircles(c);
+    renderOthers(c);
     renderEvents();
+    renderChapters();
     renderGoals(c);
     renderCard();
     renderReference();
@@ -2389,6 +2740,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     renderScenes(c);
     renderTimes(c);
     renderCircles(c);
+    renderOthers(c);
     renderGoals(c);
     renderCard();
     renderVizHead();
@@ -2708,6 +3060,16 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       else return;
       save(); renderTimes(current()); renderCircles(current()); setTargets(false);
     });
+    dom.chapForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var tx = t(), label = dom.chapLabel.value.trim(), a = parseInt(dom.chapFrom.value, 10), b = parseInt(dom.chapTo.value, 10);
+      if (!label || !(a >= 0) || !(b > a) || b > 110) { dom.chapErr.textContent = tx.chapErr; return; }
+      if (state.chapters.length >= 8) { dom.chapErr.textContent = tx.chapFull; return; }
+      dom.chapErr.textContent = "";
+      state.chapters.push({ id: Date.now().toString(36), label: label.slice(0, 30), from: a, to: b });
+      dom.chapLabel.value = ""; dom.chapFrom.value = ""; dom.chapTo.value = "";
+      save(); renderChapters(); renderVizHead(); setTargets(false);
+    });
     dom.evForm.addEventListener("submit", function (e) {
       e.preventDefault();
       var tx = t(), label = dom.evLabel.value.trim(), d = dom.evDate.value;
@@ -2868,6 +3230,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       langFr: $("lang-fr"), langEn: $("lang-en"),
       dobD: $("dob-d"), dobM: $("dob-m"), dobY: $("dob-y"), country: $("country"), sex: $("sex"), exampleGo: $("example-go"), prog: $("prog"),
       grandRow: $("grand-row"), grandAge: $("grand-age"), grandHint: $("grand-hint"), momentPlus: $("moment-plus"),
+      chapForm: $("chap-form"), chapLabel: $("chap-label"), chapFrom: $("chap-from"), chapTo: $("chap-to"), chapErr: $("chap-err"), chapList: $("chap-list"),
+      lives: $("lives"), olOut: $("ol-out"), olTl: $("ol-tl"), olSrc: $("ol-src"),
       evForm: $("ev-form"), evLabel: $("ev-label"), evDate: $("ev-date"), evErr: $("ev-err"), evList: $("ev-list"),
       tabs: $("tabs"), frName: $("fr-name"), frMet: $("fr-met"), frOut: $("fr-out"),
       kidForm: $("kid-form"), kidName: $("kid-name"), kidBirth: $("kid-birth"), kidErr: $("kid-err"), kidList: $("kid-list"), fam: $("fam"), famHint: $("fam-hint"),
