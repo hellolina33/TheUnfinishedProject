@@ -1,0 +1,1847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="author" content="Salah Khenissi">
+<meta name="description" content="Your life in weeks: how many are left, and what you can still fit into them. Day 2 of The Unfinished 30.">
+<meta property="og:title" content="How many weeks do you have left?">
+<meta property="og:description" content="Your life in weeks, and what you can still fit into them. Day 2 of The Unfinished 30, by Salah Khenissi.">
+<meta property="og:image" content="https://the-unfinished-30.vercel.app/og.jpg">
+<style>[hidden]:not([hidden=until-found i]){display:none!important}img{max-width:100%}</style>
+<title>How Many Weeks · The Unfinished 30</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a scroll story. A sticky life grid (left on desktop, top on phone) re-colours itself as ten personal scenes scroll past; reference sections follow. */
+:root {
+  --bg: #f3f5f8;
+  --paper: #ffffff;
+  --ink: #0e1a2b;
+  --muted: #576477;
+  --line: #d8dee6;
+  --c-blank: #e0e5ec;
+  --c-lived: #b2bdcb;
+  --c-left: #0e1a2b;
+  --accent: #ff4a1c;
+  --accent-ink: #ffffff;
+  --err: #c0311a;
+  --f-display: "Bricolage Grotesque", "Arial Narrow", Arial, sans-serif;
+  --f-body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --bar-h: 56px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1320;
+    --paper: #111c2c;
+    --ink: #e8eef6;
+    --muted: #93a1b4;
+    --line: #22314a;
+    --c-blank: #1a2639;
+    --c-lived: #3a4c66;
+    --c-left: #e8eef6;
+    --accent: #ff6a3d;
+    --accent-ink: #0b1320;
+    --err: #ff8f73;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1320;
+  --paper: #111c2c;
+  --ink: #e8eef6;
+  --muted: #93a1b4;
+  --line: #22314a;
+  --c-blank: #1a2639;
+  --c-lived: #3a4c66;
+  --c-left: #e8eef6;
+  --accent: #ff6a3d;
+  --accent-ink: #0b1320;
+  --err: #ff8f73;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 40; background: var(--bg);
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+.gutter {
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Top bar ---------- */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.bar-in { max-width: 1240px; margin: 0 auto; height: var(--bar-h); display: flex; align-items: center; gap: 12px; }
+.brand {
+  display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink);
+  font-family: var(--f-display); font-weight: 700; font-size: 17px; letter-spacing: -0.01em; white-space: nowrap;
+}
+.logo { width: 16px; height: 16px; flex: none; }
+.logo rect { fill: var(--ink); }
+.logo .lv { fill: var(--c-lived); }
+.logo .nw { fill: var(--accent); }
+.day { font-family: var(--f-mono); font-size: 11px; color: var(--muted); white-space: nowrap; }
+.nav { display: none; gap: 2px; margin-left: auto; }
+.nav a { font-size: 14px; color: var(--muted); text-decoration: none; padding: 8px 10px; border-radius: 8px; }
+.nav a:hover { color: var(--ink); background: var(--paper); }
+.seg { margin-left: auto; display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 2px; flex: none; }
+.seg button {
+  font: inherit; font-family: var(--f-mono); font-size: 12px; min-height: 32px; min-width: 40px; padding: 0 10px;
+  border: 0; border-radius: 999px; background: transparent; color: var(--muted); cursor: pointer;
+}
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+@media (min-width: 900px) {
+  .nav { display: flex; }
+  .seg { margin-left: 8px; }
+}
+@media (max-width: 560px) { .day { display: none; } }
+.brand { min-width: 0; }
+.brand span { overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- Story ---------- */
+.story { max-width: 1240px; margin: 0 auto; }
+.viz-col {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--bar-h)); z-index: 10;
+  height: 48vh; height: 48svh;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  padding-block: 10px 8px;
+}
+.viz { height: 100%; display: flex; flex-direction: column; gap: 6px; }
+.viz-head { display: flex; align-items: center; gap: 10px; min-height: 24px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.step { font-variant-numeric: tabular-nums; }
+.viz-title { color: var(--ink); font-weight: 500; }
+.pill {
+  font-family: var(--f-mono); font-size: 11px; line-height: 1; padding: 5px 8px; border-radius: 999px;
+  background: var(--accent); color: var(--accent-ink);
+}
+.stage { position: relative; flex: 1; min-height: 0; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: pan-y; cursor: crosshair; }
+.tip {
+  position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; max-width: 230px;
+  background: var(--ink); color: var(--bg); padding: 8px 10px; border-radius: 8px;
+  font-size: 12px; line-height: 1.4;
+}
+.tip b { display: block; font-size: 13px; }
+.tip .hl { color: var(--accent); font-weight: 700; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; min-height: 18px; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.sw.blank { background: var(--c-blank); }
+.sw.lived { background: var(--c-lived); }
+.sw.left { background: var(--c-left); }
+.sw.accent { background: var(--accent); }
+.sw.now { background: var(--accent); box-shadow: 0 0 0 1.5px var(--bg), 0 0 0 3px var(--ink); }
+.sw.ring { background: transparent; box-shadow: inset 0 0 0 2px var(--accent); }
+
+.scenes { position: relative; z-index: 1; }
+.scene {
+  min-height: 72vh; min-height: 72svh;
+  padding-block: 28px 48px;
+  scroll-margin-top: calc(var(--bar-h) + 48vh);
+}
+.kick { margin: 0 0 12px; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.04em; color: var(--muted); font-variant-numeric: tabular-nums; }
+.say {
+  margin: 0; font-family: var(--f-display); font-weight: 700; font-stretch: 88%;
+  font-size: clamp(28px, 6.6vw, 46px); line-height: 1.05; letter-spacing: -0.02em; text-wrap: balance;
+}
+.say .n { color: var(--accent); font-variant-numeric: tabular-nums; }
+.say s { text-decoration-thickness: 3px; color: var(--muted); }
+.body { margin: 14px 0 0; max-width: 46ch; font-size: 17px; color: var(--muted); }
+.body .n { color: var(--ink); font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* Hero scene */
+.scene-you { min-height: 0; padding-top: 22px; }
+.h1 {
+  margin: 8px 0 0; font-family: var(--f-display); font-weight: 800; font-stretch: 78%;
+  font-size: clamp(38px, 9vw, 66px); line-height: 0.98; letter-spacing: -0.03em; text-wrap: balance;
+}
+.lead { margin: 14px 0 0; max-width: 46ch; color: var(--muted); font-size: 17px; }
+.panel {
+  margin-top: 22px; padding: 16px; display: grid; gap: 14px;
+  background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+}
+.form { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 520px) { .form { grid-template-columns: 1fr 1fr; } }
+.field { display: grid; gap: 6px; min-width: 0; align-content: start; }
+.label { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+input[type="date"], input[type="number"], input[type="text"] {
+  font: inherit; font-size: 16px; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 10px; min-height: 46px; padding: 0 12px;
+  width: 100%; min-width: 0;
+}
+input[type="range"] { width: 100%; accent-color: var(--accent); margin: 0; }
+.life { display: grid; grid-template-columns: 1fr 84px; gap: 10px; align-items: center; }
+.hint { margin: 0; font-size: 13px; color: var(--muted); }
+.err { margin: 0; font-size: 14px; font-weight: 700; color: var(--err); }
+.err:empty { display: none; }
+.note { margin: 16px 0 0; padding: 10px 12px; font-size: 14px; border: 1px dashed var(--accent); border-radius: 10px; background: var(--paper); }
+.answer { margin-top: 26px; }
+.big {
+  margin: 0; font-family: var(--f-display); font-weight: 800; font-stretch: 75%;
+  font-size: clamp(76px, 23vw, 152px); line-height: 0.86; letter-spacing: -0.045em; font-variant-numeric: tabular-nums;
+}
+.unit { margin: 8px 0 0; font-family: var(--f-display); font-weight: 700; font-size: 22px; letter-spacing: -0.01em; }
+.sub { margin: 4px 0 0; color: var(--muted); }
+.start {
+  display: inline-flex; align-items: center; min-height: 46px; margin-top: 22px; padding: 0 20px;
+  border-radius: 999px; background: var(--ink); color: var(--bg); font-weight: 700; text-decoration: none;
+}
+.privacy-line { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+
+/* Tools inside scenes */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  font: inherit; font-size: 15px; min-height: 42px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer;
+}
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.row2 { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 12px; align-items: center; }
+.result { margin: 0; font-size: 17px; }
+.result .n { font-family: var(--f-display); font-weight: 800; font-size: 1.45em; color: var(--accent); font-variant-numeric: tabular-nums; }
+.btn {
+  font: inherit; font-size: 15px; font-weight: 700; min-height: 46px; padding: 0 18px;
+  border: 0; border-radius: 12px; background: var(--ink); color: var(--bg); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; text-decoration: none;
+}
+.btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.mini {
+  font: inherit; font-size: 13px; min-height: 36px; padding: 0 12px; border-radius: 999px;
+  border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer;
+}
+.mini.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+.add summary { cursor: pointer; font-weight: 700; min-height: 36px; display: flex; align-items: center; }
+.add-row { display: grid; grid-template-columns: minmax(0, 1fr) 96px auto; gap: 8px; align-items: end; margin-top: 10px; }
+@media (max-width: 460px) { .add-row { grid-template-columns: minmax(0, 1fr) 84px; } .add-row .btn { grid-column: 1 / -1; } }
+.goals { list-style: none; margin: 0; padding: 0; }
+.goals li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+.goals .t { font-weight: 700; overflow-wrap: anywhere; }
+.goals .m { font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.goals .done .t { text-decoration: line-through; color: var(--muted); }
+.goals .acts { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.quote { margin: 0 0 22px; }
+.quote p { margin: 0; font-family: var(--f-display); font-weight: 500; font-size: clamp(21px, 4.4vw, 28px); line-height: 1.2; text-wrap: balance; }
+.quote footer { margin-top: 8px; font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.card-img { display: block; width: 100%; max-width: 360px; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+@media (min-width: 900px) {
+  .story { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 56px; align-items: start; }
+  .viz-col { height: calc(100vh - var(--bar-h)); height: calc(100svh - var(--bar-h) - env(safe-area-inset-top, 0px)); border-bottom: 0; padding-block: 22px 18px; }
+  .scene { min-height: 88vh; min-height: 88svh; display: flex; flex-direction: column; justify-content: center; scroll-margin-top: var(--bar-h); }
+  .scene-you { min-height: calc(100svh - var(--bar-h)); }
+}
+
+/* ---------- Reference sections ---------- */
+.page { max-width: 1240px; margin: 0 auto; }
+.sec {
+  padding-block: 56px; border-top: 1px solid var(--line); display: grid; gap: 18px;
+  scroll-margin-top: calc(var(--bar-h) + 12px);
+}
+@media (min-width: 900px) { .sec { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 48px; } }
+.sec h2 {
+  margin: 0; font-family: var(--f-display); font-weight: 800; font-stretch: 80%;
+  font-size: clamp(30px, 5vw, 42px); line-height: 1; letter-spacing: -0.02em;
+}
+.sec .content { min-width: 0; max-width: 64ch; }
+.sec .content > p { margin: 0 0 14px; }
+.defs { margin: 0; display: grid; gap: 0; }
+.defs div { padding: 14px 0; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.defs dt { font-weight: 700; }
+.defs dd { margin: 0; color: var(--muted); }
+.srcs { list-style: none; margin: 0; padding: 0; }
+.srcs li { padding: 14px 0; border-top: 1px solid var(--line); display: grid; gap: 4px; }
+.srcs .st { font-weight: 700; }
+.srcs .sd { color: var(--muted); }
+.srcs a { font-family: var(--f-mono); font-size: 13px; overflow-wrap: anywhere; }
+.faq details { border-top: 1px solid var(--line); padding: 12px 0; }
+.faq summary { cursor: pointer; font-weight: 700; min-height: 32px; display: flex; align-items: center; }
+.faq details p { margin: 8px 0 0; color: var(--muted); }
+.status { font-size: 14px; color: var(--muted); margin: 10px 0 0; }
+
+.foot { max-width: 1240px; margin: 0 auto; padding-block: 28px calc(28px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted); }
+.foot a { color: var(--ink); }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+</style>
+
+</head>
+<body>
+<header class="bar">
+  <div class="bar-in gutter">
+    <a class="brand" href="#top">
+      <svg class="logo" viewBox="0 0 16 16" aria-hidden="true">
+        <rect class="lv" x="0" y="0" width="4" height="4"/><rect class="lv" x="6" y="0" width="4" height="4"/><rect class="lv" x="12" y="0" width="4" height="4"/>
+        <rect class="lv" x="0" y="6" width="4" height="4"/><rect class="nw" x="6" y="6" width="4" height="4"/><rect x="12" y="6" width="4" height="4"/>
+        <rect x="0" y="12" width="4" height="4"/><rect x="6" y="12" width="4" height="4"/><rect x="12" y="12" width="4" height="4"/>
+      </svg>
+      <span data-i18n="brand">Combien de semaines</span>
+    </a>
+    <a class="day" href="https://the-unfinished-30.vercel.app/" style="text-decoration:none" data-i18n="dayTag">Jour 02 / 30</a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#histoire" data-i18n="navStory">Histoire</a>
+      <a href="#methode" data-i18n="navMethod">Méthode</a>
+      <a href="#sources" data-i18n="navSources">Sources</a>
+      <a href="#confidentialite" data-i18n="navPrivacy">Confidentialité</a>
+      <a href="#faq" data-i18n="navFaq">FAQ</a>
+    </nav>
+    <div class="seg" role="group" aria-label="Langue / Language">
+      <button id="lang-en" type="button" aria-pressed="true">EN</button>
+      <button id="lang-fr" type="button" aria-pressed="false">FR</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <section class="story gutter" id="histoire">
+    <div class="viz-col">
+      <div class="viz">
+        <div class="viz-head">
+          <span id="viz-step" class="step">01 / 10</span>
+          <span id="viz-title" class="viz-title"></span>
+          <span id="viz-example" class="pill" hidden></span>
+        </div>
+        <div id="stage" class="stage">
+          <canvas id="cv" role="img" aria-label=""></canvas>
+          <div id="tip" class="tip" hidden></div>
+        </div>
+        <div id="legend" class="legend"></div>
+      </div>
+    </div>
+
+    <div class="scenes">
+      <article class="scene scene-you" data-scene="you" id="s-you">
+        <p class="kick" data-i18n="kicker">The Unfinished 30 · Jour 02 sur 30</p>
+        <h1 class="h1" data-i18n="h1">Combien de semaines il te reste ?</h1>
+        <p class="lead" data-i18n="lead"></p>
+        <div class="panel">
+          <div class="form">
+            <div class="field">
+              <label class="label" for="birth" data-i18n="lblBirth"></label>
+              <input id="birth" type="date" min="1900-01-01">
+            </div>
+            <div class="field">
+              <label class="label" for="life-num" data-i18n="lblLife"></label>
+              <div class="life">
+                <input id="life-range" type="range" min="50" max="110" step="1" value="80">
+                <input id="life-num" type="number" min="50" max="110" step="1" value="80" inputmode="numeric">
+              </div>
+            </div>
+          </div>
+          <p class="hint" data-i18n="lifeHint"></p>
+          <p id="hero-err" class="err" role="alert"></p>
+        </div>
+        <p id="example-note" class="note" data-i18n="example" hidden></p>
+        <div class="answer" aria-live="polite">
+          <p id="hero-big" class="big">0</p>
+          <p id="hero-unit" class="unit"></p>
+          <p id="hero-sub" class="sub"></p>
+        </div>
+        <a class="start" href="#s-life" data-i18n="start"></a>
+        <p class="privacy-line" data-i18n="privacyShort"></p>
+      </article>
+
+      <article class="scene" data-scene="life" id="s-life">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-life"></h2>
+        <p class="body" id="p-life"></p>
+      </article>
+
+      <article class="scene" data-scene="lived" id="s-lived">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-lived"></h2>
+        <p class="body" id="p-lived"></p>
+      </article>
+
+      <article class="scene" data-scene="left" id="s-left">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-left"></h2>
+        <p class="body" id="p-left"></p>
+      </article>
+
+      <article class="scene" data-scene="rows" id="s-rows">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-rows"></h2>
+        <p class="body" id="p-rows"></p>
+      </article>
+
+      <article class="scene" data-scene="feel" id="s-feel">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-feel"></h2>
+        <p class="body" id="p-feel"></p>
+      </article>
+
+      <article class="scene" data-scene="times" id="s-times">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-times"></h2>
+        <p class="body" id="p-times"></p>
+        <div class="panel">
+          <div id="chips" class="chips" role="group"></div>
+          <div id="freq-row" class="row2">
+            <label id="freq-lbl" class="label" for="freq"></label>
+            <input id="freq" type="number" min="0" max="365" step="1" inputmode="numeric">
+          </div>
+          <div id="parent-row" class="field" hidden>
+            <div class="row2">
+              <label class="label" for="parent-age" data-i18n="parentLbl"></label>
+              <input id="parent-age" type="number" min="15" max="120" step="1" inputmode="numeric">
+            </div>
+            <p class="hint" id="parent-hint"></p>
+          </div>
+          <p id="moment-result" class="result" aria-live="polite"></p>
+          <div class="actions"><button id="moment-remove" class="mini" type="button" hidden data-i18n="removeMoment"></button></div>
+          <details class="add" id="add-details">
+            <summary data-i18n="addMoment"></summary>
+            <form id="add-form" novalidate>
+              <div class="add-row">
+                <div class="field"><label class="label" for="add-name" data-i18n="addName"></label><input id="add-name" type="text" maxlength="30" autocomplete="off"></div>
+                <div class="field"><label class="label" for="add-freq" data-i18n="addFreq"></label><input id="add-freq" type="number" min="1" max="365" step="1" inputmode="numeric"></div>
+                <button class="btn" type="submit" data-i18n="addBtn"></button>
+              </div>
+              <p id="add-err" class="err" role="alert"></p>
+            </form>
+          </details>
+        </div>
+      </article>
+
+      <article class="scene" data-scene="last" id="s-last">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-last"></h2>
+        <p class="body" id="p-last"></p>
+      </article>
+
+      <article class="scene" data-scene="choose" id="s-choose">
+        <p class="kick" data-kick></p>
+        <blockquote class="quote">
+          <p data-i18n="quote"></p>
+          <footer data-i18n="quoteBy"></footer>
+        </blockquote>
+        <h2 class="say" id="h-choose"></h2>
+        <p class="body" id="p-choose"></p>
+        <div class="panel">
+          <form id="goal-form" novalidate>
+            <div class="add-row">
+              <div class="field"><label class="label" for="goal-title" data-i18n="goalTitle"></label><input id="goal-title" type="text" maxlength="60" autocomplete="off"></div>
+              <div class="field"><label class="label" for="goal-age" data-i18n="goalAge"></label><input id="goal-age" type="number" min="1" max="110" step="1" inputmode="numeric"></div>
+              <button class="btn" type="submit" data-i18n="goalAdd"></button>
+            </div>
+            <p id="goal-err" class="err" role="alert"></p>
+          </form>
+          <ul id="goal-list" class="goals"></ul>
+        </div>
+      </article>
+
+      <article class="scene" data-scene="card" id="s-card">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-card"></h2>
+        <p id="card-big" class="big" style="margin-top:18px">0</p>
+        <p class="body" id="p-card"></p>
+        <div class="panel">
+          <p id="card-need" class="hint" hidden data-i18n="cardNeed"></p>
+          <div class="actions">
+            <button id="card-btn" class="btn" type="button" data-i18n="cardBtn"></button>
+            <a id="card-dl" class="btn ghost" hidden data-i18n="cardDl"></a>
+          </div>
+          <img id="card-img" class="card-img" alt="" hidden>
+          <p id="card-hint" class="hint" hidden data-i18n="cardHint"></p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <div class="page gutter">
+    <section class="sec" id="methode">
+      <h2 data-i18n="methodTitle"></h2>
+      <div class="content">
+        <p data-i18n="methodIntro"></p>
+        <dl id="method-list" class="defs"></dl>
+      </div>
+    </section>
+
+    <section class="sec" id="sources">
+      <h2 data-i18n="sourcesTitle"></h2>
+      <div class="content">
+        <ul id="source-list" class="srcs"></ul>
+      </div>
+    </section>
+
+    <section class="sec" id="confidentialite">
+      <h2 data-i18n="privacyTitle"></h2>
+      <div class="content">
+        <p data-i18n="privacy1"></p>
+        <p data-i18n="privacy2"></p>
+        <button id="clear-btn" class="btn ghost" type="button" data-i18n="clear"></button>
+        <p id="clear-status" class="status" role="status"></p>
+      </div>
+    </section>
+
+    <section class="sec faq" id="faq">
+      <h2 data-i18n="faqTitle"></h2>
+      <div class="content" id="faq-list"></div>
+    </section>
+
+    <section class="sec" id="inacheve">
+      <h2 data-i18n="unfTitle"></h2>
+      <div class="content">
+        <p data-i18n="unfText"></p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="foot gutter">
+  <span><span data-i18n="madeBy"></span> <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span>
+  <span><a href="https://the-unfinished-30.vercel.app/" target="_blank" rel="noopener">The Unfinished 30</a> · <span data-i18n="footDay"></span></span>
+  <nav aria-label="Sections">
+    <a href="#methode" data-i18n="navMethod"></a>
+    <a href="#sources" data-i18n="navSources"></a>
+    <a href="#confidentialite" data-i18n="navPrivacy"></a>
+    <a href="#faq" data-i18n="navFaq"></a>
+  </nav>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var KEY = "combien-de-semaines-v3";
+  var OLD_KEYS = ["combien-de-semaines-v2", "combien-de-semaines-v1"];
+  var WPY = 52;
+  var DAY = 86400000;
+  var STEPS_PER_MIN = 120;
+  var BOOKS_WORLD = 129864880;
+  var WORK_START = 22, WORK_END = 65, ADULT = 18, FORGOT_ROWS = 3;
+  var SCENES = ["you", "life", "lived", "left", "rows", "feel", "times", "last", "choose", "card"];
+  var R = { BLANK: 0, LIVED: 1, LEFT: 2, ACCENT: 3, NOW: 4 };
+  var LAST_TIMES = [[4, 11], [5, 37], [6, 20], [7, 44], [9, 9], [10, 31], [12, 16], [14, 40]];
+  var SAMPLE_CELL = [20, 38]; // the "1 week" cell shown in scene 02
+
+  var T = {
+    fr: {
+      brand: "Combien de semaines",
+      dayTag: "Jour 02 / 30",
+      navStory: "Histoire", navMethod: "Méthode", navSources: "Sources", navPrivacy: "Confidentialité", navFaq: "FAQ",
+      kicker: "The Unfinished 30 · Jour 02 sur 30",
+      h1: "Combien de semaines il te reste ?",
+      lead: "Entre ta date de naissance et vois ta vie en semaines : celles derrière toi, celles devant, et tout ce qui peut encore y tenir. Tes étés, tes livres, tes jours avec tes parents, ce que tu veux finir.",
+      lblBirth: "Date de naissance",
+      lblLife: "Espérance de vie visée",
+      lifeHint: "80 ans par défaut. C'est une hypothèse, pas une prédiction.",
+      example: "Exemple affiché : une personne de 35 ans. Entre ta date de naissance pour voir ta vie.",
+      unit: "semaines devant toi",
+      sub: "soit {y} ans · tu vis ta semaine n° {n}",
+      subOver: "Tu as dépassé l'espérance de vie choisie. Monte-la pour voir plus loin.",
+      start: "Lancer l'histoire ↓",
+      privacyShort: "Rien ne quitte ton navigateur. Pas de compte, pas de serveur.",
+      errFuture: "La date doit être dans le passé.",
+      errRange: "Choisis entre 50 et 110 ans.",
+      pillExample: "Exemple",
+      titles: { you: "Ta vie", life: "Une vie", lived: "Déjà vécu", left: "Ce qui reste", rows: "Les lignes", feel: "Le ressenti", times: "Les fois", last: "Dernières fois", choose: "Choisir", card: "Ta carte" },
+      h: {
+        life: "Une vie de {L} ans.",
+        lived: "Tu en as déjà vécu {lived}.",
+        left: "Il t'en reste {left}.",
+        leftOver: "Il ne t'en reste aucune sur cette grille.",
+        rows: "Toutes les lignes ne se valent pas.",
+        feel: "Les lignes ne se ressentent pas pareil.",
+        times: "Ce qui s'épuise : <s>les semaines</s> les fois.",
+        last: "Il y a une dernière fois pour tout.",
+        choose: "Ça ne suffit pas pour tout. Ça suffit pour ce que tu choisis.",
+        card: "Combien de semaines il te reste ?"
+      },
+      p: {
+        life: "Une ligne, c'est une année. Une case, c'est une semaine. {L} × 52 = {total} semaines. Une vie entière tient sur un écran.",
+        lived: "{pct} % de la grille. La case orange, c'est cette semaine : du {d1} au {d2}.",
+        left: "Si chaque semaine était un pas, à 120 pas par minute, tu marcherais tout le reste de ta vie en {walk}.",
+        leftOver: "Tu as dépassé l'espérance de vie choisie. Monte-la en haut de page pour voir plus loin.",
+        rows: "Les trois premières, presque personne ne s'en souvient : le premier souvenir arrive en moyenne vers 3 ans et demi. Et si tu travailles de 22 à 65 ans, ce bloc fait {work} semaines, soit {workPct} % de ta vie d'adulte.",
+        rowsLeft: " Il t'en reste {workLeft} à travailler.",
+        feel: "À 10 ans, une année, c'est 10 % de ta vie. À {age} ans, c'est {p} %. Les étés qui semblaient éternels se mettent à filer.",
+        feelYoung: "À 10 ans, une année, c'est 10 % de ta vie. À 50 ans, ce sera 2 %. Les étés qui semblent éternels finiront par filer.",
+        times: "Choisis un moment et règle sa fréquence. La grille montre combien de fois il en reste.",
+        last: "Quelqu'un t'a porté dans ses bras pour la dernière fois. Un dernier après-midi à jouer dehors avec les copains. Ce jour-là, personne ne le savait.",
+        choose: "Note ce que tu veux finir, et l'âge avant lequel tu veux l'avoir fait. La grille l'allume.",
+        card: "Garde ta carte, partage-la, et reviens dans un an : elle aura perdu 52 cases."
+      },
+      quote: "« Ce n'est pas que nous ayons peu de temps, c'est que nous en perdons beaucoup. »",
+      quoteBy: "Sénèque, De la brièveté de la vie, vers 49",
+      walkMin: "{m} min {s} s",
+      walkHour: "{h} h {m} min",
+      lblWeek: "1 case = 1 semaine",
+      lblForgot: "Oubliées",
+      lblWork: "Travail",
+      lblRow: "{a} ans · {p} %",
+      lblToday: "Aujourd'hui",
+      lg: {
+        lived: "Vécues", now: "Cette semaine", left: "À venir", week: "Une semaine",
+        remaining: "Restantes", forgot: "Oubliées", work: "Travail, de 22 à 65 ans",
+        feel: "Une année à 10 ans, et à ton âge", last: "Des dernières fois, sans le savoir",
+        choose: "Ce que tu choisis", goal: "Tes objectifs"
+      },
+      moments: { summers: "Étés", sea: "La mer", books: "Livres", parents: "Tes parents" },
+      freq: { sea: "Fois par an", books: "Livres par an", parents: "Jours par an avec eux", custom: "Fois par an" },
+      parentLbl: "Âge du plus jeune de tes parents",
+      parentHint: "Laisse vide pour utiliser ton âge + 30 ans ({a} ans).",
+      res: {
+        summers: "Il te reste environ {n} étés.",
+        sea: "Encore environ {n} fois à la mer.",
+        books: "Encore environ {n} livres.",
+        booksWorld: " Il en existe près de 130 millions : à ce rythme, il te faudrait {lives} vies pour tous les lire.",
+        parents: "Encore environ {n} jours avec eux, si tout va bien.",
+        parentsPct: " Si tu as vécu avec eux jusqu'à 18 ans, tu as déjà passé {pct} % de ton temps avec eux.",
+        parentsNone: "Avec l'espérance choisie, la grille ne compte plus rien ici. Les moyennes ne savent rien de tes parents.",
+        custom: "Encore environ {n} fois : {name}."
+      },
+      addMoment: "Ajouter un moment",
+      addName: "Nom du moment",
+      addFreq: "Fois par an",
+      addBtn: "Ajouter",
+      addErr: "Donne un nom et une fréquence entre 1 et 365.",
+      removeMoment: "Retirer ce moment",
+      goalTitle: "Ce que tu veux finir",
+      goalAge: "Avant quel âge",
+      goalAdd: "Ajouter",
+      goalEmpty: "Rien encore. Une seule chose suffit pour commencer.",
+      goalMeta: "avant {a} ans · dans {w} semaines",
+      goalPast: "avant {a} ans · échéance passée",
+      goalDoneMeta: "fait",
+      goalDone: "Fait",
+      goalReopen: "Rouvrir",
+      goalRemove: "Retirer",
+      errGoalTitle: "Écris ce que tu veux finir.",
+      errGoalAge: "Choisis un âge entre {min} et {max} ans.",
+      errGoalFull: "Huit au maximum. Finis-en un d'abord.",
+      cardBtn: "Créer ma carte",
+      cardDl: "Télécharger le PNG",
+      cardHint: "Sur téléphone, maintiens l'image pour l'enregistrer.",
+      cardNeed: "Entre ta date de naissance en haut de page pour créer ta carte.",
+      cardKicker: "COMBIEN DE SEMAINES IL ME RESTE",
+      cardUnit: "semaines devant moi · soit {y} ans",
+      cardLived: "VÉCUES", cardLeft: "RESTANTES", cardSummers: "ÉTÉS", cardGoal: "PROCHAIN OBJECTIF",
+      cardGoalIn: "dans {w} semaines",
+      cardFooter: "The Unfinished 30 · Jour 02 · Gratuit",
+      stage: "{title}. {left} semaines restantes sur {total}.",
+      tipWeek: "Semaine {n} de ta vie", tipAge: "{a} ans, semaine {w}", tipDates: "Du {d1} au {d2}",
+      tipLived: "Vécue", tipNow: "Cette semaine", tipLeft: "À venir", tipGoal: "Objectif : {t}",
+      methodTitle: "Méthode",
+      methodIntro: "Tous les calculs tournent dans ton navigateur. Voici exactement ce qu'ils font.",
+      method: [
+        ["Semaines vécues", "Jours entre ta date de naissance et aujourd'hui, divisés par 7, arrondis vers le bas. Le calcul se fait en jours calendaires : les changements d'heure ne décalent rien."],
+        ["La grille", "Une ligne par année, 52 cases par ligne. Total = espérance × 52. Une vraie année fait 52,18 semaines : sur 80 ans, la grille ignore environ 14 semaines."],
+        ["Les pas", "120 pas par minute, soit une marche soutenue. Minutes = semaines restantes ÷ 120."],
+        ["Les lignes", "Les 3 premières lignes sont marquées oubliées : le premier souvenir arrive en moyenne vers 3 ans et demi. Le bloc travail va de 22 à 65 ans, à titre d'exemple. La vie d'adulte commence à 18 ans."],
+        ["Le ressenti", "Une année vaut 1 ÷ ton âge de ta vie vécue. C'est la loi proportionnelle proposée par Paul Janet en 1877."],
+        ["Les fois", "Années restantes × fréquence par an. Pour tes parents, l'horizon s'arrête au plus court : ta vie ou la leur, avec la même espérance. La part déjà passée suppose que tu as vécu avec eux tous les jours jusqu'à 18 ans, comme le calcul de Tim Urban."],
+        ["Tes objectifs", "Chaque objectif s'allume sur la dernière semaine avant l'âge choisi."]
+      ],
+      sourcesTitle: "Sources",
+      sources: [
+        ["Tim Urban, « Your Life in Weeks »", "Wait But Why, 7 mai 2014. La grille d'une vie en semaines. L'original compte 90 ans.", "https://waitbutwhy.com/2014/05/life-weeks.html"],
+        ["Tim Urban, « The Tail End »", "Wait But Why, décembre 2015. Compter en fois plutôt qu'en années, et 93 % du temps avec ses parents déjà passé à la fin du lycée.", "https://waitbutwhy.com/2015/12/the-tail-end.html"],
+        ["Paul Janet, « Une illusion d'optique interne »", "Revue philosophique de la France et de l'étranger, n° 3, 1877, p. 497 à 502. Une année ressentie comme une fraction de la vie déjà vécue. Lien : synthèse récente qui le cite.", "https://arxiv.org/pdf/2310.05945"],
+        ["Google Books : 129 864 880 livres", "Estimation publiée en août 2010 par Leonid Taycher, ingénieur chez Google. Lien : NPR, 6 août 2010.", "https://www.npr.org/sections/thetwo-way/2010/08/06/129027628/google-tallies-129-864-880-titles"],
+        ["Qi Wang et Carole Peterson, 2014", "Developmental Psychology. L'âge du premier souvenir est estimé en moyenne à 3 ans et demi. Lien : Cornell Chronicle.", "https://news.cornell.edu/node/283106"],
+        ["Sénèque, De la brièveté de la vie", "De brevitate vitae, vers 49 apr. J.-C., chapitre I. La citation de la scène 09.", ""]
+      ],
+      privacyTitle: "Confidentialité",
+      privacy1: "Pas de compte, pas de serveur, pas de suivi. Rien n'est envoyé nulle part.",
+      privacy2: "Ta date, tes moments et tes objectifs sont gardés dans le stockage local de ton navigateur, sur cet appareil uniquement.",
+      clear: "Effacer mes données",
+      cleared: "C'est effacé. L'exemple est de retour.",
+      faqTitle: "FAQ",
+      faq: [
+        ["Pourquoi 80 ans ?", "C'est un chiffre rond, pas personnel. Tim Urban, lui, utilise 90 ans. Règle-la en haut de page."],
+        ["Pourquoi 52 semaines par an ?", "Pour que chaque ligne fasse une année pile. L'écart avec les 52,18 semaines réelles est expliqué dans la méthode."],
+        ["C'est un peu déprimant, non ?", "Ça peut piquer. Le but est de choisir à quoi tu donnes tes semaines. La scène 09 sert à ça."],
+        ["Je peux reprendre le code ?", "Oui. Comme tous les prototypes de The Unfinished 30, tu peux le réutiliser et l'adapter. Un crédit à Salah sur LinkedIn fait plaisir, sans obligation."],
+        ["Mes données partent-elles quelque part ?", "Non. Tout reste dans ton navigateur. Voir la section Confidentialité."]
+      ],
+      unfTitle: "Ce qui reste inachevé",
+      unfText: "L'espérance de vie est une seule valeur, la même pour tout le monde : pas de pays, pas de sexe, pas d'historique de santé. Le bloc travail est fixé de 22 à 65 ans. Les fois sont des moyennes lissées sur l'année. Rien n'est synchronisé : sur un autre appareil, tu repars de zéro. La carte de partage n'a été testée que sur quelques navigateurs.",
+      madeBy: "Fait par",
+      footDay: "Jour 02 sur 30 · Gratuit"
+    },
+    en: {
+      brand: "How Many Weeks",
+      dayTag: "Day 02 / 30",
+      navStory: "Story", navMethod: "Method", navSources: "Sources", navPrivacy: "Privacy", navFaq: "FAQ",
+      kicker: "The Unfinished 30 · Day 02 of 30",
+      h1: "How many weeks do you have left?",
+      lead: "Enter your date of birth and see your life in weeks: the ones behind you, the ones ahead, and everything that can still fit into them. Your summers, your books, your days with your parents, the things you want to finish.",
+      lblBirth: "Date of birth",
+      lblLife: "Target lifespan",
+      lifeHint: "80 years by default. It is an assumption, not a prediction.",
+      example: "Showing an example: a 35-year-old. Enter your date of birth to see your life.",
+      unit: "weeks ahead of you",
+      sub: "that is {y} years · you are living week {n}",
+      subOver: "You have passed the lifespan you chose. Raise it to see further.",
+      start: "Start the story ↓",
+      privacyShort: "Nothing leaves your browser. No account, no server.",
+      errFuture: "The date must be in the past.",
+      errRange: "Pick between 50 and 110 years.",
+      pillExample: "Example",
+      titles: { you: "Your life", life: "A life", lived: "Already lived", left: "What is left", rows: "The rows", feel: "How it feels", times: "The times", last: "Last times", choose: "Choose", card: "Your card" },
+      h: {
+        life: "A {L}-year life.",
+        lived: "You have already lived {lived}.",
+        left: "You have {left} left.",
+        leftOver: "None are left on this grid.",
+        rows: "Not every row counts the same.",
+        feel: "Rows do not feel the same.",
+        times: "What runs out: <s>weeks</s> times.",
+        last: "There is a last time for everything.",
+        choose: "It is not enough for everything. It is enough for what you choose.",
+        card: "How many weeks do you have left?"
+      },
+      p: {
+        life: "One row is one year. One box is one week. {L} × 52 = {total} weeks. A whole life fits on one screen.",
+        lived: "{pct}% of the grid. The orange box is this week: {d1} to {d2}.",
+        left: "If every week were a step, at 120 steps a minute, you would walk the rest of your life in {walk}.",
+        leftOver: "You have passed the lifespan you chose. Raise it at the top of the page to see further.",
+        rows: "Almost nobody remembers the first three: the earliest memory comes at about three and a half on average. And if you work from 22 to 65, that block is {work} weeks, or {workPct}% of your adult life.",
+        rowsLeft: " You have {workLeft} of them left to work.",
+        feel: "At 10, one year is 10% of your life. At {age}, it is {p}%. Summers that felt endless start to slip by.",
+        feelYoung: "At 10, one year is 10% of your life. At 50, it will be 2%. Summers that feel endless will start to slip by.",
+        times: "Pick a moment and set how often it happens. The grid shows how many times are left.",
+        last: "Someone carried you in their arms for the last time. A last afternoon playing outside with friends. Nobody knew it on the day.",
+        choose: "Write down what you want to finish, and the age you want it done by. The grid lights it up.",
+        card: "Keep your card, share it, and come back in a year: it will have lost 52 boxes."
+      },
+      quote: "“It is not that we have a short time to live, but that we waste a lot of it.”",
+      quoteBy: "Seneca, On the Shortness of Life, around AD 49",
+      walkMin: "{m} min {s} s",
+      walkHour: "{h} h {m} min",
+      lblWeek: "1 box = 1 week",
+      lblForgot: "Forgotten",
+      lblWork: "Work",
+      lblRow: "age {a} · {p}%",
+      lblToday: "Today",
+      lg: {
+        lived: "Lived", now: "This week", left: "Ahead", week: "One week",
+        remaining: "Left", forgot: "Forgotten", work: "Work, from 22 to 65",
+        feel: "One year at 10, and at your age", last: "Last times, unnoticed",
+        choose: "What you choose", goal: "Your goals"
+      },
+      moments: { summers: "Summers", sea: "The sea", books: "Books", parents: "Your parents" },
+      freq: { sea: "Times a year", books: "Books a year", parents: "Days a year with them", custom: "Times a year" },
+      parentLbl: "Age of your younger parent",
+      parentHint: "Leave empty to use your age + 30 ({a}).",
+      res: {
+        summers: "About {n} summers left.",
+        sea: "About {n} more trips to the sea.",
+        books: "About {n} more books.",
+        booksWorld: " There are close to 130 million: at this pace, it would take {lives} lifetimes to read them all.",
+        parents: "About {n} more days with them, if all goes well.",
+        parentsPct: " If you lived with them until 18, you have already spent {pct}% of your time with them.",
+        parentsNone: "With the lifespan you chose, the grid has nothing left to count here. Averages know nothing about your parents.",
+        custom: "About {n} more times: {name}."
+      },
+      addMoment: "Add a moment",
+      addName: "Moment name",
+      addFreq: "Times a year",
+      addBtn: "Add",
+      addErr: "Give it a name and a frequency between 1 and 365.",
+      removeMoment: "Remove this moment",
+      goalTitle: "What you want to finish",
+      goalAge: "Before age",
+      goalAdd: "Add",
+      goalEmpty: "Nothing yet. One thing is enough to start.",
+      goalMeta: "before {a} · in {w} weeks",
+      goalPast: "before {a} · deadline passed",
+      goalDoneMeta: "done",
+      goalDone: "Done",
+      goalReopen: "Reopen",
+      goalRemove: "Remove",
+      errGoalTitle: "Write what you want to finish.",
+      errGoalAge: "Pick an age between {min} and {max}.",
+      errGoalFull: "Eight at most. Finish one first.",
+      cardBtn: "Create my card",
+      cardDl: "Download PNG",
+      cardHint: "On a phone, press and hold the image to save it.",
+      cardNeed: "Enter your date of birth at the top of the page to create your card.",
+      cardKicker: "HOW MANY WEEKS I HAVE LEFT",
+      cardUnit: "weeks ahead of me · that is {y} years",
+      cardLived: "LIVED", cardLeft: "LEFT", cardSummers: "SUMMERS", cardGoal: "NEXT GOAL",
+      cardGoalIn: "in {w} weeks",
+      cardFooter: "The Unfinished 30 · Day 02 · Free",
+      stage: "{title}. {left} weeks left out of {total}.",
+      tipWeek: "Week {n} of your life", tipAge: "age {a}, week {w}", tipDates: "{d1} to {d2}",
+      tipLived: "Lived", tipNow: "This week", tipLeft: "Ahead", tipGoal: "Goal: {t}",
+      methodTitle: "Method",
+      methodIntro: "Every calculation runs in your browser. Here is exactly what each one does.",
+      method: [
+        ["Weeks lived", "Days between your date of birth and today, divided by 7, rounded down. It counts calendar days, so clock changes never shift a week."],
+        ["The grid", "One row per year, 52 boxes per row. Total = lifespan × 52. A real year is 52.18 weeks: over 80 years, the grid leaves out about 14 weeks."],
+        ["Steps", "120 steps a minute, a brisk walk. Minutes = weeks left ÷ 120."],
+        ["The rows", "The first 3 rows are marked forgotten: the earliest memory comes at about three and a half on average. The work block runs from 22 to 65, as an example. Adult life starts at 18."],
+        ["How it feels", "One year is worth 1 ÷ your age of the life you have lived. This is the proportional law Paul Janet proposed in 1877."],
+        ["The times", "Years left × times per year. For your parents, the horizon ends at the shorter of your life or theirs, with the same lifespan. The share already spent assumes you lived with them every day until 18, as in Tim Urban's calculation."],
+        ["Your goals", "Each goal lights up the last week before the age you chose."]
+      ],
+      sourcesTitle: "Sources",
+      sources: [
+        ["Tim Urban, “Your Life in Weeks”", "Wait But Why, 7 May 2014. A life drawn as a grid of weeks. The original uses 90 years.", "https://waitbutwhy.com/2014/05/life-weeks.html"],
+        ["Tim Urban, “The Tail End”", "Wait But Why, December 2015. Counting in times rather than years, and 93% of parent time already used by the end of high school.", "https://waitbutwhy.com/2015/12/the-tail-end.html"],
+        ["Paul Janet, “Une illusion d'optique interne”", "Revue philosophique de la France et de l'étranger, no. 3, 1877, pp. 497 to 502. A year felt as a fraction of the life already lived. Link: a recent review that cites it.", "https://arxiv.org/pdf/2310.05945"],
+        ["Google Books: 129,864,880 books", "Estimate published in August 2010 by Leonid Taycher, a Google engineer. Link: NPR, 6 August 2010.", "https://www.npr.org/sections/thetwo-way/2010/08/06/129027628/google-tallies-129-864-880-titles"],
+        ["Qi Wang and Carole Peterson, 2014", "Developmental Psychology. The earliest memory is estimated at about three and a half on average. Link: Cornell Chronicle.", "https://news.cornell.edu/node/283106"],
+        ["Seneca, On the Shortness of Life", "De brevitate vitae, around AD 49, chapter I. The quote in scene 09.", ""]
+      ],
+      privacyTitle: "Privacy",
+      privacy1: "No account, no server, no tracking. Nothing is sent anywhere.",
+      privacy2: "Your date, your moments and your goals are kept in your browser's local storage, on this device only.",
+      clear: "Clear my data",
+      cleared: "Cleared. The example is back.",
+      faqTitle: "FAQ",
+      faq: [
+        ["Why 80 years?", "It is a round number, not a personal one. Tim Urban uses 90. Set it at the top of the page."],
+        ["Why 52 weeks a year?", "So each row is exactly one year. The gap with the real 52.18 weeks is explained in the method."],
+        ["Isn't this a bit depressing?", "It can sting. The point is to choose what you give your weeks to. Scene 09 is there for that."],
+        ["Can I reuse the code?", "Yes. Like every prototype in The Unfinished 30, you can reuse and adapt it. Crediting Salah on LinkedIn is appreciated, not required."],
+        ["Does my data go anywhere?", "No. Everything stays in your browser. See the Privacy section."]
+      ],
+      unfTitle: "What is still unfinished",
+      unfText: "Lifespan is one value, the same for everyone: no country, no sex, no health history. The work block is fixed from 22 to 65. The times are averages spread over the year. Nothing syncs: on another device, you start from scratch. The share card has only been tested on a few browsers.",
+      madeBy: "Made by",
+      footDay: "Day 02 of 30 · Free"
+    }
+  };
+
+  var DEFAULT_MOMENTS = [
+    { id: "summers", f: 1, fixed: true },
+    { id: "sea", f: 1 },
+    { id: "books", f: 12 },
+    { id: "parents", f: 10 }
+  ];
+
+  // PURE-START
+  function p2(n) { return n < 10 ? "0" + n : "" + n; }
+  function ymd(d) { return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
+  function parseYmd(s) { var p = s.split("-").map(Number); return { y: p[0], m: p[1], d: p[2] }; }
+  function dayIndex(y, m, d) { return Date.UTC(y, m - 1, d) / DAY; }
+
+  // Calendar-day arithmetic, so clock changes never shift a week.
+  function compute(birthStr, lifespan, today) {
+    var b = parseYmd(birthStr);
+    var days = Math.floor(dayIndex(today.y, today.m, today.d) - dayIndex(b.y, b.m, b.d));
+    var lived = Math.max(0, Math.floor(days / 7));
+    var total = lifespan * WPY;
+    var left = Math.max(0, total - lived);
+    return {
+      lived: lived, total: total, left: left,
+      age: Math.floor(lived / WPY),
+      over: lived >= total,
+      pct: Math.min(100, (lived / total) * 100)
+    };
+  }
+
+  function weekDates(birthStr, i) {
+    var b = parseYmd(birthStr);
+    return { start: new Date(b.y, b.m - 1, b.d + 7 * i), end: new Date(b.y, b.m - 1, b.d + 7 * i + 6) };
+  }
+
+  // Remaining occurrences of a moment ("The Tail End" method).
+  function momentCount(m, c, lifespan, parentAge) {
+    var yearsLeft = c.left / WPY;
+    var f = Math.max(0, m.f || 0);
+    if (m.id === "parents") {
+      var horizon = Math.max(0, Math.min(yearsLeft, lifespan - parentAge));
+      var future = horizon * f;
+      var pct = null;
+      if (c.age >= ADULT) {
+        var past = ADULT * 365 + (c.age - ADULT) * f;
+        pct = (past / (past + future)) * 100;
+      }
+      return { n: Math.floor(future), horizon: horizon, pct: pct };
+    }
+    return { n: Math.floor(yearsLeft * f), horizon: yearsLeft, pct: null };
+  }
+
+  function goalWeek(age) { return age * WPY - 1; }
+  // PURE-END
+
+  var state = { lang: "en", birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [] };
+  var ui = { scene: "you", cur: null, from: null, to: null, anim: 0, labelT: 1, hover: null, layout: null, colors: null, ticking: false, lastPointer: "mouse" };
+  var dom = {};
+
+  function cloneMoments(list) { return list.map(function (m) { return { id: m.id, f: m.f, fixed: !!m.fixed, name: m.name }; }); }
+  function $(id) { return document.getElementById(id); }
+  function t() { return T[state.lang]; }
+  function locale() { return state.lang === "fr" ? "fr-FR" : "en-US"; }
+  function fmt(n) { return Math.round(n).toLocaleString(locale()); }
+  function fmt1(n) { return n.toLocaleString(locale(), { maximumFractionDigits: 1 }); }
+  function fmtDate(d) { return d.toLocaleDateString(locale(), { day: "numeric", month: "long", year: "numeric" }); }
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]; });
+  }
+  function fill(tpl, vars) { return tpl.replace(/\{(\w+)\}/g, function (_, k) { return vars[k] !== undefined ? vars[k] : ""; }); }
+  // Template strings are ours; inserted values are escaped and highlighted.
+  function fillN(tpl, vars) {
+    return tpl.replace(/\{(\w+)\}/g, function (_, k) { return vars[k] !== undefined ? '<span class="n">' + esc(vars[k]) + "</span>" : ""; });
+  }
+  function todayParts() { var n = new Date(); return { y: n.getFullYear(), m: n.getMonth() + 1, d: n.getDate() }; }
+  function todayIso() { return ymd(new Date()); }
+  function effectiveBirth() {
+    if (state.birth) return state.birth;
+    var n = todayParts();
+    return (n.y - 35) + "-" + p2(n.m) + "-" + p2(n.d);
+  }
+  function current() { return compute(effectiveBirth(), state.lifespan, todayParts()); }
+  function parentAgeFor(c) { return state.parentAge != null ? state.parentAge : Math.min(110, c.age + 30); }
+  function activeMoment() {
+    for (var i = 0; i < state.moments.length; i++) if (state.moments[i].id === state.active) return state.moments[i];
+    return state.moments[0];
+  }
+  function momentName(m) { return m.name || t().moments[m.id] || ""; }
+  function reduced() { return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches); }
+  function isWide() { return window.matchMedia("(min-width: 900px)").matches; }
+
+  // ---------- Persistence ----------
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify({
+        lang: state.lang, birth: state.birth, lifespan: state.lifespan,
+        moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items
+      }));
+    } catch (e) { /* storage blocked: the page still works for this visit */ }
+  }
+
+  function load() {
+    var saved = null;
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) for (var k = 0; k < OLD_KEYS.length && !raw; k++) raw = localStorage.getItem(OLD_KEYS[k]);
+      saved = raw ? JSON.parse(raw) : null;
+    } catch (e) { saved = null; }
+    if (!saved) {
+      state.lang = "en";
+      return;
+    }
+    if (saved.lang === "fr" || saved.lang === "en") state.lang = saved.lang;
+    if (typeof saved.birth === "string" && /^\d{4}-\d{2}-\d{2}$/.test(saved.birth) && saved.birth <= todayIso()) state.birth = saved.birth;
+    if (Number.isInteger(saved.lifespan) && saved.lifespan >= 50 && saved.lifespan <= 110) state.lifespan = saved.lifespan;
+    if (Array.isArray(saved.moments)) {
+      var builtIn = cloneMoments(DEFAULT_MOMENTS);
+      saved.moments.forEach(function (m) {
+        if (!m || typeof m.id !== "string" || !(m.f >= 0 && m.f <= 365)) return;
+        var hit = builtIn.filter(function (b) { return b.id === m.id; })[0];
+        if (hit) { if (!hit.fixed) hit.f = Math.round(m.f); }
+        else if (typeof m.name === "string" && m.name.trim()) builtIn.push({ id: m.id, f: Math.round(m.f), name: m.name.slice(0, 30) });
+      });
+      state.moments = builtIn;
+    }
+    if (typeof saved.active === "string") state.active = saved.active;
+    if (Number.isInteger(saved.parentAge) && saved.parentAge >= 15 && saved.parentAge <= 120) state.parentAge = saved.parentAge;
+    if (Array.isArray(saved.items)) {
+      state.items = saved.items.filter(function (it) {
+        return it && typeof it.title === "string" && Number.isInteger(it.age) && typeof it.done === "boolean";
+      }).slice(0, 8).map(function (it) {
+        return { id: String(it.id || Math.random().toString(36).slice(2)), title: it.title.slice(0, 60), age: it.age, done: it.done };
+      });
+    }
+  }
+
+  // ---------- Colours ----------
+  function hexToRgb(h) {
+    h = (h || "").trim().replace("#", "");
+    if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+    var n = parseInt(h, 16);
+    if (isNaN(n) || h.length !== 6) return [128, 128, 128];
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  }
+  function readColors() {
+    var s = getComputedStyle(document.documentElement);
+    function v(name) { return s.getPropertyValue(name).trim(); }
+    var roles = [hexToRgb(v("--c-blank")), hexToRgb(v("--c-lived")), hexToRgb(v("--c-left")), hexToRgb(v("--accent")), hexToRgb(v("--accent"))];
+    return { roles: roles, ink: v("--ink"), bg: v("--bg"), muted: v("--muted"), accent: v("--accent") };
+  }
+
+  // ---------- Scene roles ----------
+  function momentMarks(c, total) {
+    var marks = new Uint8Array(total);
+    var m = activeMoment();
+    var cnt = momentCount(m, c, state.lifespan, parentAgeFor(c));
+    var f = Math.round(Math.max(0, m.f || 0));
+    var start = c.lived + 1;
+    var end = Math.min(total, Math.floor(c.lived + cnt.horizon * WPY));
+    if (f <= 0 || end <= start) return marks;
+    var i, r, k;
+    if (f >= WPY) { for (i = start; i < end; i++) marks[i] = 1; return marks; }
+    for (r = Math.floor(start / WPY); r * WPY < end; r++) {
+      for (k = 0; k < f; k++) {
+        i = r * WPY + Math.floor(((k + 0.5) * WPY) / f);
+        if (i >= start && i < end) marks[i] = 1;
+      }
+    }
+    return marks;
+  }
+
+  function feelRows(c) { return { a: 10, b: c.age > 10 ? c.age : 50 }; }
+
+  function rolesFor(scene, c) {
+    var total = c.total;
+    var a = new Uint8Array(total);
+    var lived = c.lived;
+    var nowI = c.over ? -1 : lived;
+    var i, r;
+    function base(livedRole, leftRole) {
+      for (i = 0; i < total; i++) a[i] = i < lived ? livedRole : leftRole;
+    }
+    function now() { if (nowI >= 0 && nowI < total) a[nowI] = R.NOW; }
+    function fillRow(row, role) {
+      if (row < 0 || row >= state.lifespan) return;
+      for (i = row * WPY; i < (row + 1) * WPY; i++) a[i] = role;
+    }
+    switch (scene) {
+      case "life":
+        for (i = 0; i < total; i++) a[i] = R.BLANK;
+        if (SAMPLE_CELL[0] < state.lifespan) a[SAMPLE_CELL[0] * WPY + SAMPLE_CELL[1]] = R.ACCENT;
+        break;
+      case "lived":
+        base(R.LEFT, R.BLANK); now();
+        break;
+      case "left":
+        base(R.LIVED, R.LEFT); now();
+        break;
+      case "rows":
+        base(R.LIVED, R.LEFT);
+        for (r = 0; r < FORGOT_ROWS; r++) fillRow(r, R.BLANK);
+        for (r = WORK_START; r < Math.min(WORK_END, state.lifespan); r++) fillRow(r, R.ACCENT);
+        now();
+        break;
+      case "feel":
+        base(R.LIVED, R.BLANK);
+        var fr = feelRows(c);
+        fillRow(fr.a, R.ACCENT); fillRow(fr.b, R.ACCENT);
+        break;
+      case "times":
+        base(R.LIVED, R.BLANK);
+        var marks = momentMarks(c, total);
+        for (i = 0; i < total; i++) if (marks[i]) a[i] = R.ACCENT;
+        now();
+        break;
+      case "last":
+        base(R.LIVED, R.BLANK);
+        LAST_TIMES.forEach(function (p) { var idx = p[0] * WPY + p[1]; if (idx < lived && idx < total) a[idx] = R.ACCENT; });
+        now();
+        break;
+      case "choose":
+        base(R.LIVED, R.BLANK);
+        state.items.forEach(function (it) { var g = goalWeek(it.age); if (!it.done && g > lived && g < total) a[g] = R.ACCENT; });
+        now();
+        break;
+      default:
+        base(R.LIVED, R.LEFT); now();
+    }
+    return a;
+  }
+
+  function legendFor(scene, c) {
+    var lg = t().lg;
+    switch (scene) {
+      case "life": return [["blank", lg.week]];
+      case "lived": return [["left", lg.lived], ["now", lg.now]];
+      case "left": return [["lived", lg.lived], ["left", lg.remaining], ["now", lg.now]];
+      case "rows": return [["blank", lg.forgot], ["accent", lg.work]];
+      case "feel": return [["accent", lg.feel]];
+      case "times": return [["accent", momentName(activeMoment())], ["lived", lg.lived]];
+      case "last": return [["accent", lg.last]];
+      case "choose": return [["accent", lg.choose], ["now", lg.now]];
+      default:
+        var out = [["lived", lg.lived], ["now", lg.now], ["left", lg.left]];
+        if (openGoals(c).length) out.push(["ring", lg.goal]);
+        return out;
+    }
+  }
+
+  function openGoals(c) {
+    return state.items.filter(function (it) { return !it.done && goalWeek(it.age) > c.lived && goalWeek(it.age) < c.total; })
+      .sort(function (x, y) { return x.age - y.age; });
+  }
+
+  // ---------- Canvas ----------
+  function layout() {
+    var sw = dom.stage.clientWidth, sh = dom.stage.clientHeight;
+    var rows = state.lifespan;
+    var labelW = 24, padX = 4, padY = 6;
+    var availW = Math.max(10, sw - labelW - padX * 2), availH = Math.max(10, sh - padY * 2);
+    var pitch = Math.max(1.5, Math.min(availW / WPY, availH / rows));
+    var gridW = pitch * WPY, gridH = pitch * rows;
+    var cell = pitch * (pitch < 5 ? 0.82 : 0.76);
+    return {
+      sw: sw, sh: sh, rows: rows, pitch: pitch, cell: cell, off: (pitch - cell) / 2,
+      ox: labelW + padX + (availW - gridW) / 2, oy: padY + (availH - gridH) / 2, gridW: gridW, gridH: gridH
+    };
+  }
+
+  function resize() {
+    var dpr = Math.min(window.devicePixelRatio || 1, 3);
+    var sw = dom.stage.clientWidth, sh = dom.stage.clientHeight;
+    dom.cv.width = Math.max(1, Math.round(sw * dpr));
+    dom.cv.height = Math.max(1, Math.round(sh * dpr));
+    dom.dpr = dpr;
+    ui.layout = layout();
+  }
+
+  function cellXY(i) {
+    var L = ui.layout, r = Math.floor(i / WPY), w = i % WPY;
+    return { x: L.ox + w * L.pitch + L.off, y: L.oy + r * L.pitch + L.off };
+  }
+
+  function pill(ctx, text, x, y, align, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.font = "500 11px 'DM Mono', ui-monospace, monospace";
+    var w = ctx.measureText(text).width + 12, h = 20;
+    var L = ui.layout;
+    var px = align === "right" ? x - w : align === "center" ? x - w / 2 : x;
+    px = Math.max(2, Math.min(px, L.sw - w - 2));
+    var py = Math.max(2, Math.min(y - h / 2, L.sh - h - 2));
+    ctx.fillStyle = ui.colors.ink;
+    if (ctx.roundRect) { ctx.beginPath(); ctx.roundRect(px, py, w, h, 4); ctx.fill(); }
+    else ctx.fillRect(px, py, w, h);
+    ctx.fillStyle = ui.colors.bg;
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, px + 6, py + h / 2 + 0.5);
+    ctx.restore();
+  }
+
+  function draw() {
+    var ctx = dom.ctx, L = ui.layout;
+    if (!ctx || !L || !ui.cur) return;
+    var c = current();
+    var total = c.total;
+    var col = ui.colors, cur = ui.cur, dpr = dom.dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, L.sw, L.sh);
+
+    // Age labels every ten rows.
+    ctx.fillStyle = col.muted;
+    ctx.font = "400 10px 'DM Mono', ui-monospace, monospace";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "middle";
+    for (var r = 0; r <= L.rows; r += 10) {
+      ctx.fillText(String(r), L.ox - 6, L.oy + r * L.pitch + (r === L.rows ? 0 : L.pitch / 2));
+    }
+    ctx.textAlign = "left";
+
+    // Cells.
+    var i, p, s = L.cell;
+    for (i = 0; i < total; i++) {
+      ctx.fillStyle = "rgb(" + (cur[i * 3] | 0) + "," + (cur[i * 3 + 1] | 0) + "," + (cur[i * 3 + 2] | 0) + ")";
+      ctx.fillRect(L.ox + (i % WPY) * L.pitch + L.off, L.oy + Math.floor(i / WPY) * L.pitch + L.off, s, s);
+    }
+
+    var lw = Math.max(1.25, L.pitch * 0.16);
+    var pad = Math.max(1.5, L.pitch * 0.2);
+
+    // This week: a ring in ink, so it reads inside any colour block.
+    if (!c.over && ui.scene !== "life") {
+      p = cellXY(c.lived);
+      ctx.strokeStyle = col.ink;
+      ctx.lineWidth = lw;
+      ctx.strokeRect(p.x - pad, p.y - pad, s + pad * 2, s + pad * 2);
+    }
+
+    // Goals: accent rings on the personal views.
+    if (ui.scene === "you" || ui.scene === "card" || ui.scene === "choose") {
+      ctx.strokeStyle = col.accent;
+      ctx.lineWidth = lw;
+      openGoals(c).forEach(function (it) {
+        var q = cellXY(goalWeek(it.age));
+        ctx.strokeRect(q.x - pad, q.y - pad, s + pad * 2, s + pad * 2);
+      });
+    }
+
+    drawLabels(ctx, c, L);
+
+    if (ui.hover !== null && ui.hover < total) {
+      p = cellXY(ui.hover);
+      ctx.strokeStyle = col.ink;
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(p.x - 2.5, p.y - 2.5, s + 5, s + 5);
+    }
+  }
+
+  function drawLabels(ctx, c, L) {
+    var tx = t(), a = ui.labelT, rowMid;
+    if (a <= 0) return;
+    switch (ui.scene) {
+      case "life":
+        if (SAMPLE_CELL[0] < state.lifespan) {
+          var q = cellXY(SAMPLE_CELL[0] * WPY + SAMPLE_CELL[1]);
+          var rightSpace = L.sw - (q.x + L.pitch * 2);
+          pill(ctx, tx.lblWeek, rightSpace > 120 ? q.x + L.pitch * 1.6 : q.x - L.pitch * 0.6, q.y + L.cell / 2, rightSpace > 120 ? "left" : "right", a);
+        }
+        break;
+      case "rows":
+        pill(ctx, tx.lblForgot, L.ox + L.gridW / 2, L.oy + (FORGOT_ROWS / 2) * L.pitch, "center", a);
+        var we = Math.min(WORK_END, state.lifespan);
+        if (we > WORK_START) pill(ctx, tx.lblWork, L.ox + L.gridW / 2, L.oy + ((WORK_START + we) / 2) * L.pitch, "center", a);
+        break;
+      case "feel":
+        var fr = feelRows(c);
+        [fr.a, fr.b].forEach(function (row) {
+          if (row >= state.lifespan) return;
+          rowMid = L.oy + (row + 0.5) * L.pitch;
+          pill(ctx, fill(tx.lblRow, { a: row, p: fmt1(100 / row) }), L.ox + L.gridW - 4, rowMid + (row === fr.a ? -L.pitch * 1.6 - 6 : L.pitch * 1.6 + 6), "right", a);
+        });
+        break;
+      case "times":
+        if (!c.over) {
+          var row = Math.floor(c.lived / WPY);
+          var y = L.oy + row * L.pitch;
+          ctx.save();
+          ctx.globalAlpha = a;
+          ctx.strokeStyle = ui.colors.ink;
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(L.ox - 2, y - 0.5); ctx.lineTo(L.ox + L.gridW + 2, y - 0.5); ctx.stroke();
+          ctx.restore();
+          pill(ctx, tx.lblToday, L.ox, y - 12, "left", a);
+        }
+        break;
+    }
+  }
+
+  function setTargets(snap) {
+    var c = current();
+    var total = c.total;
+    var roles = rolesFor(ui.scene, c);
+    var to = new Float32Array(total * 3);
+    var rc = ui.colors.roles;
+    for (var i = 0; i < total; i++) {
+      var rgb = rc[roles[i]];
+      to[i * 3] = rgb[0]; to[i * 3 + 1] = rgb[1]; to[i * 3 + 2] = rgb[2];
+    }
+    if (!ui.cur || ui.cur.length !== to.length) { ui.cur = new Float32Array(to.length); snap = true; }
+    cancelAnimationFrame(ui.anim);
+    if (snap || reduced()) { ui.cur.set(to); ui.labelT = 1; draw(); return; }
+    ui.from = ui.cur.slice(0);
+    ui.to = to;
+    var start = null, dur = 520;
+    function step(ts) {
+      if (start === null) start = ts;
+      var k = Math.min(1, (ts - start) / dur);
+      var e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+      var from = ui.from, tgt = ui.to, cur = ui.cur;
+      for (var j = 0; j < cur.length; j++) cur[j] = from[j] + (tgt[j] - from[j]) * e;
+      ui.labelT = Math.max(0, (k - 0.4) / 0.6);
+      draw();
+      if (k < 1) ui.anim = requestAnimationFrame(step);
+    }
+    ui.anim = requestAnimationFrame(step);
+  }
+
+  // ---------- Tooltip ----------
+  function cellAt(px, py) {
+    var L = ui.layout;
+    if (!L) return null;
+    var col = Math.floor((px - L.ox) / L.pitch), row = Math.floor((py - L.oy) / L.pitch);
+    if (col < 0 || col >= WPY || row < 0 || row >= L.rows) return null;
+    var i = row * WPY + col;
+    return i < current().total ? i : null;
+  }
+
+  function showTip(i, px, py) {
+    var tx = t(), c = current(), wd = weekDates(effectiveBirth(), i);
+    var status = i < c.lived ? tx.tipLived : i === c.lived ? '<span class="hl">' + esc(tx.tipNow) + "</span>" : tx.tipLeft;
+    var html = "<b>" + esc(fill(tx.tipWeek, { n: fmt(i + 1) })) + "</b>" +
+      esc(fill(tx.tipAge, { a: Math.floor(i / WPY), w: (i % WPY) + 1 })) + "<br>" +
+      esc(fill(tx.tipDates, { d1: fmtDate(wd.start), d2: fmtDate(wd.end) })) + "<br>" + status;
+    state.items.forEach(function (it) {
+      if (!it.done && goalWeek(it.age) === i) html += '<br><span class="hl">' + esc(fill(tx.tipGoal, { t: it.title })) + "</span>";
+    });
+    ui.hover = i;
+    dom.tip.innerHTML = html;
+    dom.tip.hidden = false;
+    var sw = dom.stage.clientWidth, sh = dom.stage.clientHeight, tw = dom.tip.offsetWidth, th = dom.tip.offsetHeight;
+    var left = Math.min(Math.max(4, px + 14), sw - tw - 4);
+    var top = py - th - 12;
+    if (top < 4) top = py + 16;
+    dom.tip.style.left = left + "px";
+    dom.tip.style.top = Math.min(Math.max(4, top), Math.max(4, sh - th - 4)) + "px";
+    draw();
+  }
+
+  function hideTip() {
+    if (ui.hover === null && dom.tip.hidden) return;
+    ui.hover = null;
+    dom.tip.hidden = true;
+    draw();
+  }
+
+  function pointerPos(e) {
+    var rect = dom.cv.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+  // ---------- Scene tracking ----------
+  function pickScene() {
+    var line = window.innerHeight * (isWide() ? 0.55 : 0.74);
+    var cur = SCENES[0];
+    for (var k = 0; k < dom.scenes.length; k++) {
+      if (dom.scenes[k].getBoundingClientRect().top <= line) cur = dom.scenes[k].getAttribute("data-scene");
+    }
+    if (cur !== ui.scene) setScene(cur);
+  }
+
+  function setScene(name) {
+    ui.scene = name;
+    hideTip();
+    renderVizHead();
+    setTargets(false);
+  }
+
+  function renderVizHead() {
+    var tx = t(), c = current();
+    var idx = SCENES.indexOf(ui.scene);
+    dom.vizStep.textContent = p2(idx + 1) + " / " + p2(SCENES.length);
+    dom.vizTitle.textContent = tx.titles[ui.scene];
+    dom.vizExample.hidden = !!state.birth;
+    dom.vizExample.textContent = tx.pillExample;
+    dom.legend.replaceChildren();
+    legendFor(ui.scene, c).forEach(function (pair) {
+      var sp = document.createElement("span");
+      var sw = document.createElement("i");
+      sw.className = "sw " + pair[0];
+      sp.appendChild(sw);
+      sp.appendChild(document.createTextNode(pair[1]));
+      dom.legend.appendChild(sp);
+    });
+    dom.cv.setAttribute("aria-label", fill(tx.stage, { title: tx.titles[ui.scene], left: fmt(c.left), total: fmt(c.total) }));
+  }
+
+  // ---------- Text ----------
+  function walkText(weeks) {
+    var tx = t(), mins = weeks / STEPS_PER_MIN;
+    if (mins >= 60) return fill(tx.walkHour, { h: Math.floor(mins / 60), m: Math.round(mins % 60) });
+    var m = Math.floor(mins), s = Math.round((mins - m) * 60);
+    if (s === 60) { m += 1; s = 0; }
+    return fill(tx.walkMin, { m: m, s: s });
+  }
+
+  function renderHero(c) {
+    var tx = t();
+    dom.exampleNote.hidden = !!state.birth;
+    if (c.over) {
+      dom.heroBig.textContent = "0";
+      dom.heroUnit.textContent = tx.unit;
+      dom.heroSub.textContent = tx.subOver;
+    } else {
+      dom.heroBig.textContent = fmt(c.left);
+      dom.heroUnit.textContent = tx.unit;
+      dom.heroSub.textContent = fill(tx.sub, { y: fmt1(c.left / WPY), n: fmt(c.lived + 1) });
+    }
+  }
+
+  function renderScenes(c) {
+    var tx = t();
+    var wd = weekDates(effectiveBirth(), c.lived);
+    var workEnd = Math.min(WORK_END, state.lifespan);
+    var workWeeks = Math.max(0, workEnd - WORK_START) * WPY;
+    var adultWeeks = Math.max(1, state.lifespan - ADULT) * WPY;
+    var workLeft = Math.max(0, Math.min(workEnd * WPY, c.total) - Math.max(c.lived, WORK_START * WPY));
+    var v = {
+      L: state.lifespan, total: fmt(c.total), lived: fmt(c.lived), left: fmt(c.left),
+      pct: fmt1(c.pct), d1: fmtDate(wd.start), d2: fmtDate(wd.end), walk: walkText(c.left),
+      work: fmt(workWeeks), workPct: fmt(workWeeks / adultWeeks * 100), workLeft: fmt(workLeft),
+      age: c.age, p: c.age > 0 ? fmt1(100 / c.age) : "100"
+    };
+
+    // Scene kickers: "02 · A life"
+    dom.kicks.forEach(function (k) {
+      var sc = k.parentNode.getAttribute("data-scene");
+      k.textContent = p2(SCENES.indexOf(sc) + 1) + " · " + tx.titles[sc];
+    });
+
+    $("h-life").innerHTML = fillN(tx.h.life, v);
+    $("p-life").innerHTML = fillN(tx.p.life, v);
+    $("h-lived").innerHTML = fillN(tx.h.lived, v);
+    $("p-lived").innerHTML = c.over ? fillN(tx.p.leftOver, v) : fillN(tx.p.lived, v);
+    $("h-left").innerHTML = c.over ? fillN(tx.h.leftOver, v) : fillN(tx.h.left, v);
+    $("p-left").innerHTML = c.over ? fillN(tx.p.leftOver, v) : fillN(tx.p.left, v);
+    $("h-rows").innerHTML = fillN(tx.h.rows, v);
+    $("p-rows").innerHTML = fillN(tx.p.rows, v) + (c.age < WORK_END && workLeft > 0 ? fillN(tx.p.rowsLeft, v) : "");
+    $("h-feel").innerHTML = fillN(tx.h.feel, v);
+    $("p-feel").innerHTML = c.age > 10 ? fillN(tx.p.feel, v) : fillN(tx.p.feelYoung, v);
+    $("h-times").innerHTML = tx.h.times;
+    $("p-times").innerHTML = fillN(tx.p.times, v);
+    $("h-last").innerHTML = fillN(tx.h.last, v);
+    $("p-last").innerHTML = fillN(tx.p.last, v);
+    $("h-choose").innerHTML = fillN(tx.h.choose, v);
+    $("p-choose").innerHTML = fillN(tx.p.choose, v);
+    $("h-card").innerHTML = fillN(tx.h.card, v);
+    $("p-card").innerHTML = fillN(tx.p.card, v);
+    dom.cardBig.textContent = c.over ? "0" : fmt(c.left);
+  }
+
+  function renderTimes(c) {
+    var tx = t();
+    var m = activeMoment();
+    state.active = m.id;
+    dom.chips.replaceChildren();
+    state.moments.forEach(function (mm) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "chip";
+      b.textContent = momentName(mm);
+      b.setAttribute("aria-pressed", mm.id === m.id ? "true" : "false");
+      b.addEventListener("click", function () {
+        state.active = mm.id; save(); renderTimes(current()); renderVizHead(); setTargets(false);
+      });
+      dom.chips.appendChild(b);
+    });
+    dom.chips.setAttribute("aria-label", tx.titles.times);
+
+    var isCustom = !(m.id in tx.moments);
+    dom.freqRow.hidden = !!m.fixed;
+    dom.freqLbl.textContent = isCustom ? tx.freq.custom : (tx.freq[m.id] || tx.freq.custom);
+    if (document.activeElement !== dom.freq) dom.freq.value = String(m.f);
+    dom.parentRow.hidden = m.id !== "parents";
+    if (m.id === "parents") {
+      dom.parentHint.textContent = fill(tx.parentHint, { a: Math.min(110, c.age + 30) });
+      if (document.activeElement !== dom.parentAge) dom.parentAge.value = state.parentAge != null ? String(state.parentAge) : "";
+      dom.parentAge.placeholder = String(Math.min(110, c.age + 30));
+    }
+    dom.momentRemove.hidden = !isCustom;
+
+    var cnt = momentCount(m, c, state.lifespan, parentAgeFor(c));
+    var html;
+    if (m.id === "summers") html = fillN(tx.res.summers, { n: fmt(cnt.n) });
+    else if (m.id === "sea") html = fillN(tx.res.sea, { n: fmt(cnt.n) });
+    else if (m.id === "books") {
+      html = fillN(tx.res.books, { n: fmt(cnt.n) });
+      if (m.f > 0) html += fillN(tx.res.booksWorld, { lives: fmt(BOOKS_WORLD / (m.f * state.lifespan)) });
+    } else if (m.id === "parents") {
+      if (cnt.horizon <= 0) html = esc(tx.res.parentsNone);
+      else {
+        html = fillN(tx.res.parents, { n: fmt(cnt.n) });
+        if (cnt.pct !== null) html += fillN(tx.res.parentsPct, { pct: fmt1(Math.min(99.9, cnt.pct)) });
+      }
+    } else html = fillN(tx.res.custom, { n: fmt(cnt.n), name: momentName(m) });
+    dom.momentResult.innerHTML = html;
+  }
+
+  function renderGoals(c) {
+    var tx = t();
+    dom.goalList.replaceChildren();
+    if (!state.items.length) {
+      var li0 = document.createElement("li");
+      li0.className = "empty";
+      li0.style.gridTemplateColumns = "1fr";
+      li0.innerHTML = '<span class="m">' + esc(tx.goalEmpty) + "</span>";
+      dom.goalList.appendChild(li0);
+      return;
+    }
+    state.items.slice().sort(function (a, b) { return a.age - b.age; }).forEach(function (it) {
+      var li = document.createElement("li");
+      if (it.done) li.className = "done";
+      var left = document.createElement("div");
+      var tt = document.createElement("div"); tt.className = "t"; tt.textContent = it.title;
+      var mm = document.createElement("div"); mm.className = "m";
+      var g = goalWeek(it.age);
+      mm.textContent = it.done ? tx.goalDoneMeta : g <= c.lived ? fill(tx.goalPast, { a: it.age }) : fill(tx.goalMeta, { a: it.age, w: fmt(g - c.lived) });
+      left.append(tt, mm);
+      var acts = document.createElement("div"); acts.className = "acts";
+      var tog = document.createElement("button");
+      tog.type = "button"; tog.className = "mini" + (it.done ? "" : " on");
+      tog.textContent = it.done ? tx.goalReopen : tx.goalDone;
+      tog.addEventListener("click", function () { it.done = !it.done; save(); refreshGoals(); });
+      var del = document.createElement("button");
+      del.type = "button"; del.className = "mini"; del.textContent = tx.goalRemove;
+      del.addEventListener("click", function () {
+        state.items = state.items.filter(function (x) { return x.id !== it.id; }); save(); refreshGoals();
+      });
+      acts.append(tog, del);
+      li.append(left, acts);
+      dom.goalList.appendChild(li);
+    });
+  }
+
+  function refreshGoals() {
+    var c = current();
+    renderGoals(c);
+    renderVizHead();
+    setTargets(true);
+  }
+
+  function renderCard() {
+    var has = !!state.birth;
+    dom.cardNeed.hidden = has;
+    dom.cardBtn.disabled = !has;
+    if (!has) { dom.cardImg.hidden = true; dom.cardHint.hidden = true; dom.cardDl.hidden = true; }
+  }
+
+  function renderReference() {
+    var tx = t();
+    dom.methodList.replaceChildren();
+    tx.method.forEach(function (pair) {
+      var d = document.createElement("div");
+      var dt = document.createElement("dt"); dt.textContent = pair[0];
+      var dd = document.createElement("dd"); dd.textContent = pair[1];
+      d.append(dt, dd);
+      dom.methodList.appendChild(d);
+    });
+    dom.sourceList.replaceChildren();
+    tx.sources.forEach(function (s) {
+      var li = document.createElement("li");
+      var st = document.createElement("span"); st.className = "st"; st.textContent = s[0];
+      var sd = document.createElement("span"); sd.className = "sd"; sd.textContent = s[1];
+      li.append(st, sd);
+      if (s[2]) {
+        var a = document.createElement("a");
+        a.href = s[2]; a.target = "_blank"; a.rel = "noopener"; a.textContent = s[2].replace(/^https?:\/\//, "");
+        li.appendChild(a);
+      }
+      dom.sourceList.appendChild(li);
+    });
+    dom.faqList.replaceChildren();
+    tx.faq.forEach(function (pair) {
+      var d = document.createElement("details");
+      var s = document.createElement("summary"); s.textContent = pair[0];
+      var p = document.createElement("p"); p.textContent = pair[1];
+      d.append(s, p);
+      dom.faqList.appendChild(d);
+    });
+  }
+
+  function applyStatic() {
+    var tx = t();
+    document.documentElement.lang = state.lang;
+    document.title = tx.brand;
+    var els = document.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < els.length; i++) {
+      var key = els[i].getAttribute("data-i18n");
+      if (typeof tx[key] === "string") els[i].textContent = tx[key];
+    }
+    dom.langFr.setAttribute("aria-pressed", state.lang === "fr" ? "true" : "false");
+    dom.langEn.setAttribute("aria-pressed", state.lang === "en" ? "true" : "false");
+    dom.lifeRange.setAttribute("aria-label", tx.lblLife);
+  }
+
+  function renderAll(snap) {
+    var c = current();
+    ui.week = c.lived;
+    applyStatic();
+    renderHero(c);
+    renderScenes(c);
+    renderTimes(c);
+    renderGoals(c);
+    renderCard();
+    renderReference();
+    renderVizHead();
+    setTargets(snap);
+  }
+
+  function renderLive(snap) {
+    var c = current();
+    ui.week = c.lived;
+    renderHero(c);
+    renderScenes(c);
+    renderTimes(c);
+    renderGoals(c);
+    renderCard();
+    renderVizHead();
+    setTargets(snap);
+  }
+
+  // ---------- Share card ----------
+  function wrapLines(ctx, text, maxW, maxLines) {
+    var words = String(text).split(/\s+/), lines = [], line = "";
+    for (var i = 0; i < words.length; i++) {
+      var test = line ? line + " " + words[i] : words[i];
+      if (ctx.measureText(test).width > maxW && line) { lines.push(line); line = words[i]; }
+      else line = test;
+    }
+    if (line) lines.push(line);
+    if (lines.length > maxLines) { lines = lines.slice(0, maxLines); lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, "") + "…"; }
+    return lines;
+  }
+
+  function makeCard() {
+    var tx = t(), c = current();
+    var W = 1080, H = 1350, M = 80;
+    var cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    var x = cv.getContext("2d");
+    var C = { bg: "#f3f5f8", ink: "#0e1a2b", muted: "#576477", blank: "#e0e5ec", lived: "#b2bdcb", accent: "#ff4a1c" };
+    var DISPLAY = "'Bricolage Grotesque', 'Arial Narrow', Arial, sans-serif";
+    var MONO = "'DM Mono', ui-monospace, monospace";
+    var BODY = "'Atkinson Hyperlegible', Arial, sans-serif";
+
+    x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
+    x.textBaseline = "alphabetic";
+
+    // Logo and kicker.
+    x.fillStyle = C.accent; x.fillRect(M, 92, 22, 22);
+    x.fillStyle = C.muted; x.font = "500 26px " + MONO;
+    x.fillText(tx.cardKicker, M + 40, 112);
+
+    // The number.
+    if ("fontStretch" in x) x.fontStretch = "condensed";
+    x.fillStyle = C.ink; x.font = "800 250px " + DISPLAY;
+    x.fillText(fmt(c.left), M - 6, 360);
+    if ("fontStretch" in x) x.fontStretch = "normal";
+    x.font = "700 40px " + BODY;
+    x.fillText(fill(tx.cardUnit, { y: fmt1(c.left / WPY) }), M, 430);
+
+    // The grid.
+    var top = 500, bottom = 1230, gridMaxW = 540;
+    var p = Math.min(gridMaxW / WPY, (bottom - top) / state.lifespan);
+    var cs = p * 0.76, off = (p - cs) / 2;
+    var goals = openGoals(c);
+    var goalSet = {};
+    goals.forEach(function (g) { goalSet[goalWeek(g.age)] = true; });
+    for (var i = 0; i < c.total; i++) {
+      var r = Math.floor(i / WPY), w = i % WPY;
+      x.fillStyle = i < c.lived ? C.lived : (i === c.lived && !c.over ? C.accent : C.ink);
+      x.fillRect(M + w * p + off, top + r * p + off, cs, cs);
+      if (goalSet[i]) {
+        x.strokeStyle = C.accent; x.lineWidth = 2.5;
+        x.strokeRect(M + w * p + off - 3, top + r * p + off - 3, cs + 6, cs + 6);
+      }
+    }
+
+    // Stats column.
+    var sx = M + gridMaxW + 70, sy = top + 40;
+    var cnt = momentCount({ id: "summers", f: 1 }, c, state.lifespan, parentAgeFor(c));
+    var stats = [[tx.cardLived, fmt(c.lived), C.ink], [tx.cardLeft, fmt(c.left), C.accent], [tx.cardSummers, "≈ " + fmt(cnt.n), C.ink]];
+    var am = activeMoment();
+    if (am.id !== "summers" && am.id !== "parents") {
+      stats.push([momentName(am).toUpperCase(), "≈ " + fmt(momentCount(am, c, state.lifespan, parentAgeFor(c)).n), C.ink]);
+    }
+    stats.forEach(function (s) {
+      x.fillStyle = C.muted; x.font = "500 22px " + MONO; x.fillText(s[0], sx, sy);
+      if ("fontStretch" in x) x.fontStretch = "condensed";
+      x.fillStyle = s[2]; x.font = "800 76px " + DISPLAY; x.fillText(s[1], sx, sy + 76);
+      if ("fontStretch" in x) x.fontStretch = "normal";
+      sy += 150;
+    });
+    if (goals.length) {
+      var g0 = goals[0];
+      x.fillStyle = C.muted; x.font = "500 22px " + MONO; x.fillText(tx.cardGoal, sx, sy);
+      x.fillStyle = C.ink; x.font = "700 34px " + BODY;
+      var lines = wrapLines(x, g0.title, W - sx - M, 3);
+      lines.forEach(function (ln, k) { x.fillText(ln, sx, sy + 46 + k * 42); });
+      x.fillStyle = C.accent; x.font = "700 28px " + BODY;
+      x.fillText(fill(tx.cardGoalIn, { w: fmt(goalWeek(g0.age) - c.lived) }), sx, sy + 46 + lines.length * 42 + 8);
+    }
+
+    // Footer.
+    x.fillStyle = C.muted; x.font = "500 24px " + MONO;
+    x.fillText(tx.cardFooter, M, 1296);
+    return cv.toDataURL("image/png");
+  }
+
+  // ---------- Events ----------
+  function bind() {
+    dom.langFr.addEventListener("click", function () { state.lang = "fr"; save(); renderAll(true); });
+    dom.langEn.addEventListener("click", function () { state.lang = "en"; save(); renderAll(true); });
+
+    dom.birth.addEventListener("input", function () {
+      var val = dom.birth.value;
+      dom.heroErr.textContent = "";
+      if (!val) state.birth = null;
+      else if (val > todayIso() || val < "1900-01-01") { dom.heroErr.textContent = t().errFuture; return; }
+      else state.birth = val;
+      save(); renderLive(false);
+    });
+
+    function setLife(v) {
+      state.lifespan = v;
+      dom.lifeRange.value = String(v);
+      if (document.activeElement !== dom.lifeNum) dom.lifeNum.value = String(v);
+      save();
+      ui.layout = layout();
+      renderLive(true);
+    }
+    dom.lifeRange.addEventListener("input", function () { dom.heroErr.textContent = ""; dom.lifeNum.value = dom.lifeRange.value; setLife(parseInt(dom.lifeRange.value, 10)); });
+    dom.lifeNum.addEventListener("input", function () {
+      var v = parseInt(dom.lifeNum.value, 10);
+      if (v >= 50 && v <= 110) { dom.heroErr.textContent = ""; setLife(v); }
+      else dom.heroErr.textContent = t().errRange;
+    });
+
+    dom.freq.addEventListener("input", function () {
+      var m = activeMoment(), v = parseInt(dom.freq.value, 10);
+      if (m.fixed || isNaN(v)) return;
+      m.f = Math.max(0, Math.min(365, v));
+      save(); renderTimes(current()); setTargets(false);
+    });
+    dom.parentAge.addEventListener("input", function () {
+      var v = parseInt(dom.parentAge.value, 10);
+      if (dom.parentAge.value === "") state.parentAge = null;
+      else if (v >= 15 && v <= 120) state.parentAge = v;
+      else return;
+      save(); renderTimes(current()); setTargets(false);
+    });
+    dom.momentRemove.addEventListener("click", function () {
+      state.moments = state.moments.filter(function (m) { return m.id !== state.active; });
+      state.active = "summers";
+      save(); renderTimes(current()); renderVizHead(); setTargets(false);
+    });
+    dom.addForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = dom.addName.value.trim(), f = parseInt(dom.addFreq.value, 10);
+      if (!name || !(f >= 1 && f <= 365)) { dom.addErr.textContent = t().addErr; return; }
+      dom.addErr.textContent = "";
+      var id = "c" + Date.now().toString(36);
+      state.moments.push({ id: id, f: f, name: name.slice(0, 30) });
+      state.active = id;
+      dom.addName.value = ""; dom.addFreq.value = "";
+      save(); renderTimes(current()); renderVizHead(); setTargets(false);
+    });
+
+    dom.goalForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var tx = t(), c = current();
+      var title = dom.goalTitle.value.trim(), age = parseInt(dom.goalAge.value, 10);
+      var min = c.age + 1, max = state.lifespan;
+      if (!title) { dom.goalErr.textContent = tx.errGoalTitle; dom.goalTitle.focus(); return; }
+      if (!(age >= min && age <= max)) { dom.goalErr.textContent = fill(tx.errGoalAge, { min: min, max: max }); dom.goalAge.focus(); return; }
+      if (state.items.length >= 8) { dom.goalErr.textContent = tx.errGoalFull; return; }
+      dom.goalErr.textContent = "";
+      state.items.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), title: title.slice(0, 60), age: age, done: false });
+      dom.goalTitle.value = ""; dom.goalAge.value = "";
+      save(); refreshGoals();
+    });
+
+    dom.cardBtn.addEventListener("click", function () {
+      if (!state.birth) return;
+      var url;
+      try { url = makeCard(); } catch (err) { return; }
+      dom.cardImg.src = url;
+      dom.cardImg.alt = t().cardKicker + " : " + fmt(current().left);
+      dom.cardImg.hidden = false;
+      dom.cardHint.hidden = false;
+      dom.cardDl.href = url;
+      dom.cardDl.download = state.lang === "fr" ? "combien-de-semaines.png" : "how-many-weeks.png";
+      dom.cardDl.hidden = false;
+    });
+
+    dom.clearBtn.addEventListener("click", function () {
+      try { localStorage.removeItem(KEY); OLD_KEYS.forEach(function (k) { localStorage.removeItem(k); }); } catch (e) { /* nothing stored */ }
+      var lang = state.lang;
+      state = { lang: lang, birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [] };
+      dom.birth.value = ""; dom.lifeRange.value = "80"; dom.lifeNum.value = "80";
+      dom.cardImg.hidden = true; dom.cardHint.hidden = true; dom.cardDl.hidden = true;
+      save();
+      ui.layout = layout();
+      renderAll(true);
+      dom.clearStatus.textContent = t().cleared;
+    });
+
+    // Grid: hover with a mouse, tap on touch screens.
+    dom.cv.addEventListener("pointermove", function (e) {
+      ui.lastPointer = e.pointerType;
+      if (e.pointerType !== "mouse") return;
+      var p = pointerPos(e), i = cellAt(p.x, p.y);
+      if (i === null) hideTip(); else if (i !== ui.hover) showTip(i, p.x, p.y);
+    });
+    dom.cv.addEventListener("pointerdown", function (e) { ui.lastPointer = e.pointerType; });
+    dom.cv.addEventListener("pointerleave", function (e) { if (e.pointerType === "mouse") hideTip(); });
+    dom.cv.addEventListener("click", function (e) {
+      if (ui.lastPointer === "mouse") return;
+      var p = pointerPos(e), i = cellAt(p.x, p.y);
+      if (i === null || i === ui.hover) hideTip(); else showTip(i, p.x, p.y);
+    });
+
+    window.addEventListener("scroll", function () {
+      if (ui.ticking) return;
+      ui.ticking = true;
+      requestAnimationFrame(function () { ui.ticking = false; pickScene(); });
+    }, { passive: true });
+
+    if (window.ResizeObserver) new ResizeObserver(function () { resize(); draw(); }).observe(dom.stage);
+    window.addEventListener("resize", function () { pickScene(); });
+
+    // Follow the viewer's theme, whether set by the system or by the host.
+    function themeChanged() { ui.colors = readColors(); setTargets(true); }
+    if (window.matchMedia) {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)");
+      if (mq.addEventListener) mq.addEventListener("change", themeChanged);
+    }
+    new MutationObserver(themeChanged).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+
+  function init() {
+    dom = {
+      stage: $("stage"), cv: $("cv"), tip: $("tip"), legend: $("legend"),
+      vizStep: $("viz-step"), vizTitle: $("viz-title"), vizExample: $("viz-example"),
+      langFr: $("lang-fr"), langEn: $("lang-en"),
+      birth: $("birth"), lifeRange: $("life-range"), lifeNum: $("life-num"), heroErr: $("hero-err"),
+      exampleNote: $("example-note"), heroBig: $("hero-big"), heroUnit: $("hero-unit"), heroSub: $("hero-sub"),
+      chips: $("chips"), freqRow: $("freq-row"), freqLbl: $("freq-lbl"), freq: $("freq"),
+      parentRow: $("parent-row"), parentAge: $("parent-age"), parentHint: $("parent-hint"),
+      momentResult: $("moment-result"), momentRemove: $("moment-remove"),
+      addForm: $("add-form"), addName: $("add-name"), addFreq: $("add-freq"), addErr: $("add-err"),
+      goalForm: $("goal-form"), goalTitle: $("goal-title"), goalAge: $("goal-age"), goalErr: $("goal-err"), goalList: $("goal-list"),
+      cardBig: $("card-big"), cardBtn: $("card-btn"), cardDl: $("card-dl"), cardImg: $("card-img"), cardHint: $("card-hint"), cardNeed: $("card-need"),
+      methodList: $("method-list"), sourceList: $("source-list"), faqList: $("faq-list"),
+      clearBtn: $("clear-btn"), clearStatus: $("clear-status"),
+      scenes: Array.prototype.slice.call(document.querySelectorAll(".scene")),
+      kicks: Array.prototype.slice.call(document.querySelectorAll("[data-kick]"))
+    };
+    dom.ctx = dom.cv.getContext("2d");
+    dom.dpr = 1;
+
+    load();
+    dom.birth.max = todayIso();
+    if (state.birth) dom.birth.value = state.birth;
+    dom.lifeRange.value = String(state.lifespan);
+    dom.lifeNum.value = String(state.lifespan);
+
+    ui.colors = readColors();
+    resize();
+    bind();
+
+    // First frame: an empty grid that fills in with this life.
+    ui.scene = "you";
+    var c = current();
+    ui.cur = new Float32Array(c.total * 3);
+    var blank = ui.colors.roles[R.BLANK];
+    for (var i = 0; i < c.total; i++) { ui.cur[i * 3] = blank[0]; ui.cur[i * 3 + 1] = blank[1]; ui.cur[i * 3 + 2] = blank[2]; }
+    renderAll(false);
+    pickScene();
+
+    // Keeps "this week" right if a week rolls over while the page stays open.
+    setInterval(function () { if (current().lived !== ui.week) renderLive(true); }, 60000);
+    // Redraw once the web fonts arrive, so grid labels use them.
+    fontsReady.then(function () { if (ui.layout) draw(); });
+  }
+
+  var fontsReady = document.fonts && document.fonts.load
+    ? Promise.all([
+        document.fonts.load("800 60px 'Bricolage Grotesque'"),
+        document.fonts.load("400 16px 'Atkinson Hyperlegible'"),
+        document.fonts.load("500 11px 'DM Mono'")
+      ]).catch(function () {})
+    : Promise.resolve();
+  var timeout = new Promise(function (res) { setTimeout(res, 1500); });
+  Promise.race([fontsReady, timeout]).then(init);
+})();
+</script>
+
+</body></html>

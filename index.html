@@ -198,14 +198,18 @@ const DAYS = [
   { n: 1, name: 'WhichOneAreYou', line: 'Drop a WhatsApp export and find out which role everyone really plays: the Firefighter, the Ghost, the Night Owl…', tags: ['WhatsApp', 'Couples & groups', 'English & French'], emo: '🃏', c: 'var(--lemon)',
     img: 'images/day-01-card.webp', alt: 'Five playful cards representing different group-chat roles',
     app: '/day-01-whichoneareyou/', post: '',
-    todo: "No accounts and no saved history: close the tab and the analysis is gone. Built and tested on WhatsApp exports in English and French; other formats may read badly. The roles are playful patterns from message stats, not a diagnosis. The AI chat needs your own API key." }
-  // { n: 2, name: '', line: '', tags: [], emo: '', c: 'var(--sky)', img: '', alt: '', app: '', post: '', todo: '' },
+    todo: "No accounts and no saved history: close the tab and the analysis is gone. Built and tested on WhatsApp exports in English and French; other formats may read badly. The roles are playful patterns from message stats, not a diagnosis. The AI chat needs your own API key." },
+  { n: 2, name: 'How Many Weeks', line: 'Your life in weeks: how many are left, and what can still fit into them. Summers, books, days with your parents, the things you want to finish.', tags: ['Life in weeks', 'No account', 'English & French'], emo: '⏳', c: 'var(--sky)',
+    app: '/day-02-howmanyweeks/', post: '',
+    todo: "Lifespan is one value for everyone: no country, no sex, no health history. The work block is fixed from 22 to 65. The times are yearly averages. Nothing syncs between devices. The share card has only been tested on a few browsers." },
+  // { n: 3, name: '', line: '', tags: [], emo: '', c: 'var(--peach)', img: '', alt: '', app: '', post: '', todo: '' },
 ];
 /* ============================================ */
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const byN = new Map(DAYS.filter(d => d.name).map(d => [d.n, d]));
+const dateOf0 = n => { const d = new Date(START + 'T08:00:00+07:00'); d.setDate(d.getDate() + n - 1); return d; };
+const byN = new Map(DAYS.filter(d => d.name && (d.n === 1 || Date.now() >= dateOf0(d.n).getTime())).map(d => [d.n, d]));
 const latest = Math.max(1, ...byN.keys());
 const dateOf = n => { const d = new Date(START + 'T08:00:00+07:00'); d.setDate(d.getDate() + n - 1); return d; };
 const fmt = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
