@@ -6,6 +6,7 @@ Live: https://the-unfinished-30.vercel.app
 
 ## Structure
 - `index.html` — the landing page (the 30 cards).
+- `images/` — landing page artwork (hero, Day 1 card, About portrait).
 - `day-XX-name/` — one folder per day, each a self-contained prototype with its own README.
 
 | Day | Prototype | Folder |
