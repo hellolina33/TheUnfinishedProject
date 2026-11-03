@@ -3051,12 +3051,16 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
     }
 
     var sx = M + gridMaxW + 60, sy = top + 30, step = sq ? 128 : 152, num = sq ? 62 : 72, maxW = W - sx - M;
+    // Each figure is one handwritten line: the value in ink, then what it counts, like a line of a worked sum.
     cc.stats.forEach(function (s) {
-      x.fillStyle = C.muted; x.font = "400 24px " + MONO;
-      wrapLines(x, sc(s[0]), maxW, 1).forEach(function (ln) { x.fillText(ln, sx, sy); });
-      if ("fontStretch" in x) x.fontStretch = "condensed";
-      x.fillStyle = s[2] ? C.accent : C.blue; x.font = "400 " + Math.round(num * 0.72) + "px " + DISPLAY; x.fillText(s[1], sx, sy + num + 22);
-      if ("fontStretch" in x) x.fontStretch = "normal";
+      var vSize = sq ? 40 : 44, lSize = sq ? 24 : 26;
+      x.font = "400 " + vSize + "px " + DISPLAY; x.fillStyle = s[2] ? C.accent : C.blue;
+      x.fillText(s[1], sx, sy + vSize);
+      var vw = x.measureText(s[1] + " ").width;
+      x.font = "400 " + lSize + "px " + DISPLAY; x.fillStyle = C.ink;
+      var lab = String(s[0] || "").toLocaleLowerCase(), lw = x.measureText(lab).width;
+      if (vw + lw <= maxW) x.fillText(lab, sx + vw, sy + vSize);
+      else wrapLines(x, lab, maxW, 1).forEach(function (ln) { x.fillText(ln, sx, sy + vSize + lSize + 14); });
       sy += step;
     });
     if (cc.goal && sy < bottom - 80) {
