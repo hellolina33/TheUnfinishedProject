@@ -403,6 +403,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
                 <select id="dob-m"></select>
                 <input id="dob-y" type="number" inputmode="numeric" min="1900" placeholder="1990">
               </div>
+              <p class="hint" data-i18n="dobHint"></p>
             </div>
             <div class="field">
               <label class="label" for="life-num" data-i18n="lblLife"></label>
@@ -432,7 +433,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
           <div class="field"><label class="label" for="rit-next" data-i18n="ritNext"></label><input id="rit-next" type="text" maxlength="80" autocomplete="off"></div>
           <p id="rit-status" class="status" role="status"></p>
           <div class="tally" id="rit-tally"></div>
-          <div class="actions"><button id="rit-ics" class="btn ghost" type="button" data-i18n="ritIcs"></button></div>
+          <div class="actions"><button id="rit-ics" class="btn ghost" type="button" data-i18n="ritIcs"></button><button id="rit-gcal" class="btn ghost" type="button" data-i18n="gcal"></button></div>
+          <p class="hint" id="rit-backup" hidden><span data-i18n="ritBackup"></span> <button id="rit-export" class="mini" type="button" data-i18n="ritExport"></button></p>
           <p class="hint" data-i18n="ritHint"></p>
         </section>
         <a class="start" href="#s-life" data-i18n="start"></a><a class="skip" href="#s-card" data-i18n="skip"></a>
@@ -523,9 +525,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
           </div>
           <p id="moment-result" class="result" aria-live="polite"></p>
           <p id="moment-plus" class="hint"></p>
-          <div class="actions"><button id="moment-ics" class="btn ghost" type="button" data-i18n="momIcs"></button></div>
+          <div class="actions"><button id="moment-ics" class="btn ghost" type="button" data-i18n="momIcs"></button><button id="moment-gcal" class="btn ghost" type="button" data-i18n="gcal"></button></div>
           <p id="moment-ics-status" class="status" role="status"></p>
-          <div class="actions"><button id="moment-remove" class="mini" type="button" hidden data-i18n="removeMoment"></button></div>
+          <div class="actions"><button id="moment-remove" class="mini" type="button" hidden></button><button id="moment-restore" class="mini" type="button" hidden></button></div>
           <details class="add" id="add-details">
             <summary data-i18n="addMoment"></summary>
             <form id="add-form" novalidate>
@@ -769,6 +771,13 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       h1: "Combien de semaines il te reste ?",
       lead: "Entre ta date de naissance et vois ta vie en semaines : celles derrière toi, celles devant, et tout ce qui peut encore y tenir. Tes étés, tes livres, tes jours avec tes parents, ce que tu veux finir.",
       lblBirth: "Date de naissance",
+      dobHint: "L'année seule suffit. On compte alors à partir du 1er juillet.",
+      lifeRaised: " · Tu as dépassé {o} ans, la durée passe à {L} ans. Change-la quand tu veux.",
+      gcal: "Google Agenda",
+      ritBackup: "Tes cases ne vivent que dans ce navigateur.",
+      ritExport: "Faire une sauvegarde",
+      hideMoment: "Pas pour moi : masquer ce moment",
+      showHidden: "Réafficher les moments masqués ({n})",
       lblLife: "Espérance de vie visée",
       lifeHint: "80 ans par défaut, ou la moyenne de ton pays. C'est une hypothèse, pas une prédiction.",
       example: "Tu regardes un exemple : une personne de 35 ans.",
@@ -915,10 +924,18 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["Pourquoi 52 semaines par an ?", "Pour que chaque ligne fasse une année pile. L'écart avec les 52,18 semaines réelles est expliqué dans la méthode."],
         ["C'est un peu déprimant, non ?", "Ça peut piquer. Le but est de choisir à quoi tu donnes tes semaines. La scène « Choisir » sert à ça."],
         ["Je peux reprendre le code ?", "Oui. Comme tous les prototypes de The Unfinished 30, tu peux le réutiliser et l'adapter. Un crédit à Salah sur LinkedIn fait plaisir, sans obligation."],
-        ["Mes données partent-elles quelque part ?", "Non. Tout reste dans ton navigateur. Pour changer d'appareil, exporte un fichier puis importe-le. Voir la section Confidentialité."]
+        ["Mes données partent-elles quelque part ?", "Non. Tout reste dans ton navigateur. Pour changer d'appareil, exporte un fichier puis importe-le. Voir la section Confidentialité."],
+        ["Je ne veux pas donner ma date exacte.", "Mets seulement l'année. L'outil compte à partir du 1er juillet : l'écart est de quelques semaines au plus."],
+        ["J'ai déjà dépassé la moyenne.", "Alors la durée monte toute seule à ton âge plus 5 ans. Une moyenne à la naissance sous-estime toujours la vie de quelqu'un qui est déjà là."],
+        ["Mes parents ne sont plus là. Pourquoi me parler d'eux ?", "Choisis le moment, puis « Pas pour moi : masquer ce moment ». Il disparaît de la liste et de ta carte. Tu peux le réafficher plus tard."],
+        ["Pourquoi ma semaine ne commence pas le lundi ?", "Parce que tes semaines commencent le jour de la semaine où tu es né. Les dates exactes sont affichées sous « Ton rendez-vous du dimanche »."],
+        ["Je me suis trompé de case.", "Reclique sur la même catégorie : la case redevient vide."],
+        ["Je vais oublier de revenir.", "Ajoute le rappel du dimanche, en .ics ou dans Google Agenda. Deux minutes par semaine suffisent."],
+        ["Les vies célèbres me donnent l'impression d'être en retard.", "Regarde l'onglet des vies qui ont commencé tard : Julia Child a publié son premier livre à 49 ans, le colonel Sanders a vendu sa première franchise à 62 ans."],
+        ["Et si je vide mon navigateur ?", "Tes données disparaissent. Exporte un fichier de temps en temps : le bouton est sous ton bilan du dimanche et dans la section Confidentialité."]
       ],
       unfTitle: "Ce qui reste inachevé",
-      unfText: "L'espérance de vie est une moyenne nationale par sexe : elle ignore ta santé et ton mode de vie. Les fois sont des moyennes lissées sur l'année. Rien ne se synchronise tout seul : exporte puis importe tes données pour changer d'appareil. Les rappels d'agenda sont des fichiers que tu ajoutes toi-même. La carte et le partage n'ont été testés que sur quelques navigateurs.",
+      unfText: "L'espérance de vie est une moyenne nationale par sexe : elle ignore ta santé et ton mode de vie. Les fois sont des moyennes lissées sur l'année. Rien ne se synchronise tout seul : exporte puis importe tes données pour changer d'appareil. Les rappels d'agenda sont des fichiers que tu ajoutes toi-même. L'outil ne distingue pas les années en bonne santé des autres. La carte et le partage n'ont été testés que sur quelques navigateurs.",
       madeBy: "Fait par",
       footDay: "Jour 2/30 · Gratuit",
       lgOneTime: "1 case = 1 fois",
@@ -994,7 +1011,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       chBy: "Conçu par",
       lblCountry: "Pays (moyenne ONU)",
       lblSex: "Sexe",
-      sexAll: "Tous",
+      sexAll: "Non précisé (moyenne)",
       sexF: "Femme",
       sexM: "Homme",
       countryNone: "Aucun pays (80 ans)",
@@ -1127,6 +1144,13 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       h1: "How many weeks do you have left?",
       lead: "Enter your date of birth and see your life in weeks: the ones behind you, the ones ahead, and everything that can still fit into them. Your summers, your books, your days with your parents, the things you want to finish.",
       lblBirth: "Date of birth",
+      dobHint: "The year alone is enough. We then count from July 1.",
+      lifeRaised: " · You are past {o}, so the lifespan moves to {L} years. Change it any time.",
+      gcal: "Google Calendar",
+      ritBackup: "Your boxes live only in this browser.",
+      ritExport: "Back them up",
+      hideMoment: "Not for me: hide this moment",
+      showHidden: "Show hidden moments ({n})",
       lblLife: "Target lifespan",
       lifeHint: "80 years by default, or your country's average. It is an assumption, not a prediction.",
       example: "You are looking at an example: a 35-year-old.",
@@ -1273,10 +1297,18 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["Why 52 weeks a year?", "So each row is exactly one year. The gap with the real 52.18 weeks is explained in the method."],
         ["Isn't this a bit depressing?", "It can sting. The point is to choose what you give your weeks to. The “Choose” scene is there for that."],
         ["Can I reuse the code?", "Yes. Like every prototype in The Unfinished 30, you can reuse and adapt it. Crediting Salah on LinkedIn is appreciated, not required."],
-        ["Does my data go anywhere?", "No. Everything stays in your browser. To switch devices, export a file and import it. See the Privacy section."]
+        ["Does my data go anywhere?", "No. Everything stays in your browser. To switch devices, export a file and import it. See the Privacy section."],
+        ["I don't want to give my exact birthday.", "Put the year only. The tool counts from July 1: a few weeks off at most."],
+        ["I'm already past the average.", "Then the lifespan moves up on its own, to your age plus 5. An average at birth always underestimates the life of someone who is already here."],
+        ["My parents are gone. Why talk about them?", "Pick the moment, then “Not for me: hide this moment”. It leaves the list and your card. You can bring it back later."],
+        ["Why doesn't my week start on Monday?", "Your weeks start on the weekday you were born. The exact dates are shown under “Your Sunday check-in”."],
+        ["I coloured the wrong box.", "Click the same category again: the box goes back to empty."],
+        ["I'll forget to come back.", "Add the Sunday reminder, as an .ics file or in Google Calendar. Two minutes a week is enough."],
+        ["Famous lives make me feel late.", "Look at the lives that started late: Julia Child published her first cookbook at 49, Colonel Sanders sold his first franchise at 62."],
+        ["What if I clear my browser?", "Your data is gone. Export a file now and then: the button is under your Sunday tally and in the Privacy section."]
       ],
       unfTitle: "What is still unfinished",
-      unfText: "Life expectancy is a national average by sex: it knows nothing about your health or habits. The times are averages spread over the year. Nothing syncs on its own: export and import your data to switch devices. Calendar reminders are files you add yourself. The card and sharing have only been tested on a few browsers.",
+      unfText: "Life expectancy is a national average by sex: it knows nothing about your health or habits. The times are averages spread over the year. Nothing syncs on its own: export and import your data to switch devices. Calendar reminders are files you add yourself. The tool does not tell healthy years from the others. The card and sharing have only been tested on a few browsers.",
       madeBy: "Made by",
       footDay: "Day 2/30 · Free",
       lgOneTime: "1 box = 1 time",
@@ -1352,7 +1384,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       chBy: "Made by",
       lblCountry: "Country (UN average)",
       lblSex: "Sex",
-      sexAll: "All",
+      sexAll: "Not specified (average)",
       sexF: "Female",
       sexM: "Male",
       countryNone: "No country (80 years)",
@@ -1632,7 +1664,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function freshState(lang) {
     var st = { lang: lang || "en", birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [],
       country: "", sex: "all", grandAge: null, events: [], tab: "friends", friendName: "", friendMet: "", kids: [], since: "", partnerBirth: "",
-      cardTheme: "me", cardFmt: "portrait", custody: 100, summerWeeks: 0, chapters: [], other: "child", log: {}, next: null };
+      cardTheme: "me", cardFmt: "portrait", custody: 100, summerWeeks: 0, chapters: [], other: "child", log: {}, next: null, hiddenM: [], birthY: false };
     for (var k in WORK_DEFAULTS) st[k] = WORK_DEFAULTS[k];
     return st;
   }
@@ -1668,8 +1700,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function countOf(id, c) { var m = state.moments.filter(function (x) { return x.id === id; })[0]; return m ? momentCount(m, c, state.lifespan, parentAgeFor(c)) : { n: 0, horizon: 0 }; }
   function freqOf(id) { var m = state.moments.filter(function (x) { return x.id === id; })[0]; return m ? m.f : 0; }
   function weekOf(iso) { return weeksBetween(effectiveBirth(), iso); }
+  function isHiddenM(id) { return state.hiddenM.indexOf(id) >= 0; }
   function activeMoment() {
-    for (var i = 0; i < state.moments.length; i++) if (state.moments[i].id === state.active) return state.moments[i];
+    for (var i = 0; i < state.moments.length; i++) if (state.moments[i].id === state.active && !isHiddenM(state.active)) return state.moments[i];
     return state.moments[0];
   }
   function momentName(m) { return m.name || t().moments[m.id] || ""; }
@@ -1678,7 +1711,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
 
   // ---------- Persistence ----------
   function payload() {
-    var o = { v: 4, lang: state.lang, birth: state.birth, lifespan: state.lifespan, moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items,
+    var o = { v: 4, hiddenM: state.hiddenM, birthY: state.birthY, lang: state.lang, birth: state.birth, lifespan: state.lifespan, moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items,
       country: state.country, sex: state.sex, grandAge: state.grandAge, events: state.events, tab: state.tab, friendName: state.friendName, friendMet: state.friendMet,
       kids: state.kids, log: state.log, next: state.next, chapters: state.chapters, other: state.other, custody: state.custody, summerWeeks: state.summerWeeks, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
     for (var k in WORK_DEFAULTS) o[k] = state[k];
@@ -1731,6 +1764,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     if (Array.isArray(saved.kids)) st.kids = saved.kids.filter(function (k) { return k && typeof k.name === "string" && validIso(k.birth); }).slice(0, 4)
       .map(function (k) { return { id: String(k.id || Math.random().toString(36).slice(2)), name: k.name.slice(0, 30), birth: k.birth }; });
     if (saved.log && typeof saved.log === "object") Object.keys(saved.log).slice(-6000).forEach(function (k) { var r = saved.log[k]; if (/^\d+$/.test(k) && r && CATS.indexOf(r.c) >= 0) st.log[k] = { c: r.c, n: typeof r.n === "string" ? r.n.slice(0, 80) : "" }; });
+    if (Array.isArray(saved.hiddenM)) st.hiddenM = saved.hiddenM.filter(function (id) { return id !== "summers" && DEFAULT_MOMENTS.some(function (m) { return m.id === id; }); });
+    st.birthY = saved.birthY === true;
     if (saved.next && Number.isInteger(saved.next.w) && typeof saved.next.t === "string") st.next = { w: saved.next.w, t: saved.next.t.slice(0, 80) };
     if (Array.isArray(saved.chapters)) st.chapters = saved.chapters.filter(function (c) { return c && typeof c.label === "string" && Number.isInteger(c.from) && Number.isInteger(c.to) && c.from >= 0 && c.to > c.from && c.to <= 110; }).slice(0, 8)
       .map(function (c) { return { id: String(c.id || Math.random().toString(36).slice(2)), label: c.label.slice(0, 30), from: c.from, to: c.to }; });
@@ -2357,7 +2392,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     } else {
       dom.heroBig.textContent = fmt(c.left);
       dom.heroUnit.textContent = tx.unit;
-      dom.heroSub.textContent = fill(tx.sub, { y: fmt1(c.left / WPY), n: fmt(c.lived + 1) });
+      dom.heroSub.textContent = fill(tx.sub, { y: fmt1(c.left / WPY), n: fmt(c.lived + 1) }) + (ui.lifeNote && ui.lifeNote.L === state.lifespan ? fill(tx.lifeRaised, ui.lifeNote) : "");
     }
   }
 
@@ -2412,6 +2447,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     state.active = m.id;
     dom.chips.replaceChildren();
     state.moments.forEach(function (mm) {
+      if (isHiddenM(mm.id)) return;
       var b = document.createElement("button");
       b.type = "button";
       b.className = "chip";
@@ -2440,7 +2476,10 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       if (document.activeElement !== dom.parentAge) dom.parentAge.value = state.parentAge != null ? String(state.parentAge) : "";
       dom.parentAge.placeholder = String(Math.min(110, c.age + 30));
     }
-    dom.momentRemove.hidden = !isCustom;
+    dom.momentRemove.hidden = m.id === "summers";
+    dom.momentRemove.textContent = isCustom ? tx.removeMoment : tx.hideMoment;
+    dom.momentRestore.hidden = !state.hiddenM.length;
+    dom.momentRestore.textContent = fill(tx.showHidden, { n: state.hiddenM.length });
 
     var cnt = momentCount(m, c, state.lifespan, parentAgeFor(c));
     var html;
@@ -2677,9 +2716,11 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     var counts = {}, total = 0;
     Object.keys(state.log).forEach(function (k) { if (+k > c.lived - 52) { counts[state.log[k].c] = (counts[state.log[k].c] || 0) + 1; total++; } });
     dom.ritTally.replaceChildren();
+    dom.ritBackup.hidden = true;
     if (total) {
       var head = document.createElement("span"); head.style.setProperty("--c", "transparent"); head.textContent = fill(tx.ritTally, { n: total });
       dom.ritTally.appendChild(head);
+      dom.ritBackup.hidden = Object.keys(state.log).length < 4;
       CATS.forEach(function (cat, ci) { if (counts[cat]) { var sp = document.createElement("span"); sp.style.setProperty("--c", "var(--lg" + ci + ")"); sp.textContent = tx.cats[cat] + " " + counts[cat]; dom.ritTally.appendChild(sp); } });
     }
   }
@@ -2752,11 +2793,17 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   }
   function setDobFields(iso) {
     if (!iso) { dom.dobD.value = ""; dom.dobM.value = ""; dom.dobY.value = ""; return; }
-    var p = parseYmd(iso); dom.dobD.value = String(p.d); dom.dobM.value = String(p.m); dom.dobY.value = String(p.y);
+    var p = parseYmd(iso); dom.dobY.value = String(p.y);
+    if (state.birthY) { dom.dobD.value = ""; dom.dobM.value = ""; } else { dom.dobD.value = String(p.d); dom.dobM.value = String(p.m); }
   }
   function readDob() {
     var d = parseInt(dom.dobD.value, 10), m = parseInt(dom.dobM.value, 10), y = parseInt(dom.dobY.value, 10);
     if (!dom.dobY.value && !dom.dobD.value && !dom.dobM.value) return { empty: true };
+    if (y && dom.dobY.value.length === 4 && !d && !m) {
+      var yIso = y + "-07-01";
+      if (y < 1900 || y > new Date().getFullYear()) return { bad: true };
+      return { iso: yIso > todayIso() ? y + "-01-01" : yIso, yo: true };
+    }
     if (!(d && m && y) || dom.dobY.value.length < 4) return { partial: true };
     var iso = y + "-" + p2(m) + "-" + p2(d);
     if (!validIso(iso) || iso > todayIso()) return { bad: true };
@@ -2782,6 +2829,22 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     if (rrule) lines.push("RRULE:" + rrule);
     lines.push("SUMMARY:" + icsEsc(title), "DESCRIPTION:" + icsEsc(desc), "URL:" + APP_URL, "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + icsEsc(title), "TRIGGER:-PT0M", "END:VALARM", "END:VEVENT", "END:VCALENDAR");
     downloadBlob(new Blob([lines.join("\r\n") + "\r\n"], { type: "text/calendar" }), name);
+  }
+  function gcalOpen(title, desc, iso, hhmm, rrule) {
+    var p = parseYmd(iso), h = parseInt(hhmm.slice(0, 2), 10), mi = parseInt(hhmm.slice(2), 10);
+    function f(d) { return d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()) + "T" + p2(d.getHours()) + p2(d.getMinutes()) + "00"; }
+    var a = new Date(p.y, p.m - 1, p.d, h, mi), b = new Date(p.y, p.m - 1, p.d, h, mi + 30), tz = "";
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ""; } catch (e) {}
+    var u = "https://calendar.google.com/calendar/render?action=TEMPLATE&text=" + encodeURIComponent(title) + "&dates=" + f(a) + "/" + f(b) +
+      "&details=" + encodeURIComponent(desc) + (rrule ? "&recur=" + encodeURIComponent("RRULE:" + rrule) : "") + (tz ? "&ctz=" + encodeURIComponent(tz) : "");
+    window.open(u, "_blank", "noopener");
+  }
+  function momentEvent() {
+    var tx = t(), m = activeMoment(), c = current();
+    var f = m.id === "summers" ? 1 : Math.max(1, m.f || 1), rr = rruleFor(f);
+    var cnt = momentCount(m, c, state.lifespan, parentAgeFor(c)).n;
+    var start = m.id === "summers" ? (function () { var y = new Date().getFullYear(), iso = y + "-07-01"; return iso > todayIso() ? iso : (y + 1) + "-07-01"; })() : nextDow(0);
+    return { m: m, rr: rr, title: momentName(m), desc: fill(tx.momIcsDesc, { n: fmt(cnt) }) + " " + APP_URL, start: start };
   }
   function nextDow(dow) { var d = new Date(); var add = (dow - d.getDay() + 7) % 7 || 7; return ymd(new Date(d.getFullYear(), d.getMonth(), d.getDate() + add)); }
   // Times a year -> a calendar rule close to that rhythm.
@@ -2916,12 +2979,12 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         res.big = fmt(kidSummers(y));
         res.unit = state.summerWeeks > 0 ? fill(tx.cardUKidC, { name: y.name, sw: fmt(state.summerWeeks) }) : fill(tx.cardUKid, { name: y.name });
         state.kids.filter(function (x) { return kidWeeksTo18(x) > 0; }).slice(0, 2).forEach(function (x) { st.push([fill(cu < 1 ? tx.cardKidWC : tx.cardKidW, { name: x.name.toUpperCase() }), fmt(Math.round(kidWeeksTo18(x) * cu)), x.id === y.id]); });
-      } else {
+      } else if (!isHiddenM("parents")) {
         var pd = countOf("parents", c);
         res.big = fmt(pd.n); res.unit = tx.cardUParents;
       }
-      st.push([tx.cardParentsDays, "≈ " + fmt(countOf("parents", c).n), false]);
-      st.push([tx.cardCalls, "≈ " + fmt(countOf("parentsCalls", c).n), false]);
+      if (!isHiddenM("parents")) st.push([tx.cardParentsDays, "≈ " + fmt(countOf("parents", c).n), false]);
+      if (!isHiddenM("parentsCalls")) st.push([tx.cardCalls, "≈ " + fmt(countOf("parentsCalls", c).n), false]);
     } else if (th === "couple") {
       var cn = coupleNums(c);
       res.kicker = tx.cardKCouple; res.big = fmt(cn ? cn.leftTog : c.left); res.unit = fill(tx.cardUCouple, { L: state.lifespan });
@@ -3065,7 +3128,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     var M = 34 * k;
     text(tx.posterTitle, M, H - M - 22 * k, 24 * k, true, 0);
     var p0 = state.birth ? parseYmd(state.birth) : null;
-    text(p0 ? fill(tx.posterSub, { d: fmtDate(new Date(p0.y, p0.m - 1, p0.d)), L: L }) : fill(tx.posterSubNo, { L: L }), M, H - M - 40 * k, 9 * k, false, 0.35);
+    text(p0 ? fill(tx.posterSub, { d: state.birthY ? String(p0.y) : fmtDate(new Date(p0.y, p0.m - 1, p0.d)), L: L }) : fill(tx.posterSubNo, { L: L }), M, H - M - 40 * k, 9 * k, false, 0.35);
     var top = H - M - 64 * k, bottom = M + 30 * k, left = M + 20 * k, right = W - M;
     var pitch = Math.min((right - left) / WPY, (top - bottom) / L), cell = pitch * 0.8, off = (pitch - cell) / 2;
     var ox = left + ((right - left) - pitch * WPY) / 2, oy = top;
@@ -3126,7 +3189,15 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       if (r.empty) state.birth = null;
       else if (r.partial) return;
       else if (r.bad) { dom.heroErr.textContent = t().errDate; return; }
-      else state.birth = r.iso;
+      else {
+        state.birth = r.iso; state.birthY = !!r.yo;
+        var age = weeksBetween(r.iso, todayIso()) / WPY;
+        if (age >= state.lifespan && age < 105) {
+          var nl = Math.min(110, Math.floor(age) + 5);
+          ui.lifeNote = { L: nl, o: state.lifespan };
+          setLife(nl, true);
+        }
+      }
       save(); renderLive(false);
     }
     dom.dobD.addEventListener("change", onDob);
@@ -3174,8 +3245,11 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       else return;
       save(); renderTimes(current()); setTargets(false);
     });
+    dom.momentRestore.addEventListener("click", function () { state.hiddenM = []; save(); renderTimes(current()); renderVizHead(); setTargets(false); });
     dom.momentRemove.addEventListener("click", function () {
-      state.moments = state.moments.filter(function (m) { return m.id !== state.active; });
+      var mid = activeMoment().id;
+      if (mid in t().moments) { if (mid !== "summers" && !isHiddenM(mid)) state.hiddenM.push(mid); }
+      else state.moments = state.moments.filter(function (m) { return m.id !== mid; });
       state.active = "summers";
       save(); renderTimes(current()); renderVizHead(); setTargets(false);
     });
@@ -3206,12 +3280,12 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       icsEvent("how-many-weeks-sunday.ics", tx.ritIcsTitle, tx.ritIcsDesc + " " + APP_URL, nextDow(0), "1900", "FREQ=WEEKLY;BYDAY=SU");
       dom.ritStatus.textContent = tx.ritIcsDone;
     });
+    dom.momentGcal.addEventListener("click", function () { var e = momentEvent(); gcalOpen(e.title, e.desc, e.start, "1800", e.rr.r); });
+    dom.ritGcal.addEventListener("click", function () { var tx = t(); gcalOpen(tx.ritIcsTitle, tx.ritIcsDesc + " " + APP_URL, nextDow(0), "1900", "FREQ=WEEKLY;BYDAY=SU"); });
+    dom.ritExport.addEventListener("click", function () { dom.exportBtn.click(); });
     dom.momentIcs.addEventListener("click", function () {
-      var tx = t(), m = activeMoment(), c = current(), name = momentName(m);
-      var f = m.id === "summers" ? 1 : Math.max(1, m.f || 1), rr = rruleFor(f);
-      var cnt = momentCount(m, c, state.lifespan, parentAgeFor(c)).n;
-      var start = m.id === "summers" ? (function () { var y = new Date().getFullYear(), iso = y + "-07-01"; return iso > todayIso() ? iso : (y + 1) + "-07-01"; })() : nextDow(0);
-      icsEvent("how-many-weeks-" + (m.id.replace(/[^a-z0-9]/gi, "") || "moment") + ".ics", name, fill(tx.momIcsDesc, { n: fmt(cnt) }) + " " + APP_URL, start, "1800", rr.r);
+      var tx = t(), e = momentEvent(), m = e.m, rr = e.rr;
+      icsEvent("how-many-weeks-" + (m.id.replace(/[^a-z0-9]/gi, "") || "moment") + ".ics", e.title, e.desc, e.start, "1800", rr.r);
       dom.momentIcsStatus.textContent = fill(m.id === "summers" ? tx.momIcsDoneJul : tx.momIcsDone, { r: fill(tx.rr[rr.k + (rr.n === 1 ? "1" : "")], { n: rr.n || 1 }) });
     });
     dom.chapForm.addEventListener("submit", function (e) {
@@ -3384,7 +3458,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       langFr: $("lang-fr"), langEn: $("lang-en"),
       dobD: $("dob-d"), dobM: $("dob-m"), dobY: $("dob-y"), country: $("country"), sex: $("sex"), exampleGo: $("example-go"), prog: $("prog"),
       grandRow: $("grand-row"), grandAge: $("grand-age"), grandHint: $("grand-hint"), momentPlus: $("moment-plus"),
-      ritual: $("ritual"), ritWeek: $("rit-week"), ritWhich: $("rit-which"), ritQ: $("rit-q"), ritCats: $("rit-cats"), ritNote: $("rit-note"), ritNext: $("rit-next"), ritStatus: $("rit-status"), ritTally: $("rit-tally"), ritIcs: $("rit-ics"),
+      ritual: $("ritual"), ritWeek: $("rit-week"), ritWhich: $("rit-which"), ritQ: $("rit-q"), ritCats: $("rit-cats"), ritNote: $("rit-note"), ritNext: $("rit-next"), ritStatus: $("rit-status"), ritTally: $("rit-tally"), ritIcs: $("rit-ics"), ritGcal: $("rit-gcal"), ritBackup: $("rit-backup"), ritExport: $("rit-export"), momentGcal: $("moment-gcal"), momentRestore: $("moment-restore"),
       momentIcs: $("moment-ics"), momentIcsStatus: $("moment-ics-status"),
       chapForm: $("chap-form"), chapLabel: $("chap-label"), chapFrom: $("chap-from"), chapTo: $("chap-to"), chapErr: $("chap-err"), chapList: $("chap-list"),
       lives: $("lives"), olOut: $("ol-out"), olTl: $("ol-tl"), olSrc: $("ol-src"),
