@@ -107,7 +107,7 @@ a { color: inherit; }
   font: inherit; font-size: 13px; min-height: 32px; min-width: 40px; padding: 0 10px;
   border: 0; border-radius: 3px; background: transparent; color: var(--muted); cursor: pointer;
 }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button[aria-pressed="true"] { color: var(--blue); font-weight: 700; box-shadow: inset 0 -2px 0 var(--blue); }
 @media (min-width: 900px) {
   .nav { display: flex; }
   .seg { margin-left: 8px; }
@@ -180,7 +180,7 @@ a { color: inherit; }
 /* Hero scene */
 .scene-you { min-height: 0; padding-top: 22px; }
 .h1 {
-  margin: 8px 0 18px; font-family: var(--f-display); font-weight: 400; color: var(--blue);
+  margin: 8px 0 30px; font-family: var(--f-display); font-weight: 400; color: var(--blue);
   font-size: clamp(28px, 5.4vw, 42px); line-height: 1.75; text-wrap: balance;
   text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 0.22em; text-decoration-skip-ink: none;
 }
@@ -781,7 +781,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       unit: "semaines devant toi",
       sub: "soit {y} ans · tu vis ta semaine n° {n}",
       subOver: "Tu as dépassé l'espérance de vie choisie. Monte-la pour voir plus loin.",
-      start: "Lancer l'histoire ↓",
+      start: "Lancer l'histoire",
       privacyShort: "Rien de ce que tu tapes ne quitte ton navigateur. Pas de compte.",
       errFuture: "La date doit être dans le passé.",
       errRange: "Choisis entre 50 et 110 ans.",
@@ -803,7 +803,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       },
       p: {
         life: "Une ligne, c'est une année. Une case, c'est une semaine. {L} × 52 = {total} semaines. Une vie entière tient sur un écran.",
-        lived: "{pct} % de la grille. La case orange, c'est cette semaine : du {d1} au {d2}.",
+        lived: "{pct} % de la grille. La case rouge, c'est cette semaine : du {d1} au {d2}.",
         left: "Si chaque semaine était un pas, à 120 pas par minute, tu marcherais tout le reste de ta vie en {walk}.",
         leftOver: "Tu as dépassé l'espérance de vie choisie. Monte-la en haut de page pour voir plus loin.",
         rows: "Les trois premières, presque personne ne s'en souvient : le premier souvenir arrive en moyenne vers 3 ans et demi. Et si tu travailles de {ws} à {we} ans, ce bloc fait {work} semaines, soit {workPct} % de ta vie d'adulte.",
@@ -972,7 +972,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       olDied: "décès",
       olOffGrid: "Cette vie dépasse les {L} lignes de ta grille : les dernières années sont hors grille.",
       olSources: "Sources :",
-      olGoneOut: "{n} de ces {t} vies se sont arrêtées avant {a} ans, ton âge aujourd'hui. Chaque case orange en est une.",
+      olGoneOut: "{n} de ces {t} vies se sont arrêtées avant {a} ans, ton âge aujourd'hui. Chaque case rouge en est une.",
       olTypOut: "À {a} ans, la prochaine étape d'une vie française type, c'est : {what}, vers {at} ans.",
       olTypPast: "Tu as dépassé toutes les étapes de cette vie type. La suite t'appartient.",
       olTypLife: "espérance de vie à la naissance (ONU, 2023)",
@@ -1017,7 +1017,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       dobY: "Année",
       errDate: "Vérifie la date : un vrai jour, dans le passé.",
       exampleBtn: "Entrer ma date de naissance",
-      skip: "Aller à ma carte →",
+      skip: "Aller à ma carte",
       evAdd: "Marquer des repères sur ta grille",
       evLabel: "Repère",
       evDate: "Date",
@@ -1048,7 +1048,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       kidAdult: "18 ans ou plus",
       kidEmpty: "Ajoute tes enfants pour voir les semaines avant leurs 18 ans.",
       famTitle: "Ta famille, côte à côte",
-      famHint: "Chaque barre est une vie de {L} ans. En orange, le temps partagé avec toi. Le trait marque aujourd'hui.",
+      famHint: "Chaque barre est une vie de {L} ans. En rouge, le temps partagé avec toi. Le trait marque aujourd'hui.",
       famYou: "Toi",
       famParent: "Ton parent",
       famGrand: "Grand-parent",
@@ -1154,7 +1154,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       unit: "weeks ahead of you",
       sub: "that is {y} years · you are living week {n}",
       subOver: "You have passed the lifespan you chose. Raise it to see further.",
-      start: "Start the story ↓",
+      start: "Start the story",
       privacyShort: "Nothing you type leaves your browser. No account.",
       errFuture: "The date must be in the past.",
       errRange: "Pick between 50 and 110 years.",
@@ -1176,7 +1176,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       },
       p: {
         life: "One row is one year. One box is one week. {L} × 52 = {total} weeks. A whole life fits on one screen.",
-        lived: "{pct}% of the grid. The orange box is this week: {d1} to {d2}.",
+        lived: "{pct}% of the grid. The red box is this week: {d1} to {d2}.",
         left: "If every week were a step, at 120 steps a minute, you would walk the rest of your life in {walk}.",
         leftOver: "You have passed the lifespan you chose. Raise it at the top of the page to see further.",
         rows: "Almost nobody remembers the first three: the earliest memory comes at about three and a half on average. And if you work from {ws} to {we}, that block is {work} weeks, or {workPct}% of your adult life.",
@@ -1345,7 +1345,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       olDied: "died",
       olOffGrid: "This life went past the {L} rows of your grid: the last years are off the grid.",
       olSources: "Sources:",
-      olGoneOut: "{n} of these {t} lives ended before {a}, your age today. Each orange box is one of them.",
+      olGoneOut: "{n} of these {t} lives ended before {a}, your age today. Each red box is one of them.",
       olTypOut: "At {a}, the next step of a typical French life is {what}, around {at}.",
       olTypPast: "You are past every step of this typical life. The rest is yours.",
       olTypLife: "life expectancy at birth (UN, 2023)",
@@ -1390,7 +1390,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       dobY: "Year",
       errDate: "Check the date: a real day, in the past.",
       exampleBtn: "Enter my birth date",
-      skip: "Skip to my card →",
+      skip: "Skip to my card",
       evAdd: "Mark milestones on your grid",
       evLabel: "Milestone",
       evDate: "Date",
@@ -1421,7 +1421,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       kidAdult: "18 or older",
       kidEmpty: "Add your children to see the weeks before they turn 18.",
       famTitle: "Your family, side by side",
-      famHint: "Each bar is one life of {L} years. Orange is the time shared with you. The line marks today.",
+      famHint: "Each bar is one life of {L} years. Red is the time shared with you. The line marks today.",
       famYou: "You",
       famParent: "Your parent",
       famGrand: "Grandparent",
@@ -3022,10 +3022,10 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
     x.fillStyle = C.margin; x.fillRect(M - 28, 0, 3, H);
     x.textBaseline = "alphabetic";
 
-    x.fillStyle = C.accent; x.fillRect(M, 92, 22, 22);
     function sc(tt) { tt = String(tt || "").toLocaleLowerCase().replace(/\bi\b/g, "I"); return tt.charAt(0).toLocaleUpperCase() + tt.slice(1); }
-    x.fillStyle = C.ink; x.font = "700 28px " + MONO;
-    x.fillText(sc(cc.kicker), M + 40, 112);
+    x.fillStyle = C.blue; x.font = "400 40px " + DISPLAY;
+    var kt = sc(cc.kicker); x.fillText(kt, M, 118);
+    x.fillStyle = C.accent; x.fillRect(M, 140, Math.min(W - 2 * M, x.measureText(kt).width), 3);
 
     var bigSize = sq ? 210 : 250, bigY = sq ? 320 : 360;
     if ("fontStretch" in x) x.fontStretch = "condensed";
@@ -3050,12 +3050,12 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       if (goalSet[i]) { x.strokeStyle = C.accent; x.lineWidth = 2.5; x.strokeRect(M + w * p + off - 3, top + r * p + off - 3, cs + 6, cs + 6); }
     }
 
-    var sx = M + gridMaxW + 60, sy = top + 30, step = sq ? 118 : 140, num = sq ? 62 : 72, maxW = W - sx - M;
+    var sx = M + gridMaxW + 60, sy = top + 30, step = sq ? 128 : 152, num = sq ? 62 : 72, maxW = W - sx - M;
     cc.stats.forEach(function (s) {
-      x.fillStyle = C.muted; x.font = "400 23px " + MONO;
+      x.fillStyle = C.muted; x.font = "400 24px " + MONO;
       wrapLines(x, sc(s[0]), maxW, 1).forEach(function (ln) { x.fillText(ln, sx, sy); });
       if ("fontStretch" in x) x.fontStretch = "condensed";
-      x.fillStyle = s[2] ? C.accent : C.blue; x.font = "700 " + num + "px " + BODY; x.fillText(s[1], sx, sy + num + 4);
+      x.fillStyle = s[2] ? C.accent : C.blue; x.font = "400 " + Math.round(num * 0.72) + "px " + DISPLAY; x.fillText(s[1], sx, sy + num + 22);
       if ("fontStretch" in x) x.fontStretch = "normal";
       sy += step;
     });
