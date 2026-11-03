@@ -35,6 +35,7 @@
   --f-mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
   --bar-h: 56px;
   --ch0: #7FB3E0; --ch1: #F2C14E; --ch2: #8FD19E; --ch3: #C7A6F0;
+  --lg0: #F28C6B; --lg1: #F2C14E; --lg2: #5B8DEF; --lg3: #9B6BF2; --lg4: #3FBF7F; --lg5: #7FD4E0; --lg6: #A3ADBD;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -160,6 +161,14 @@ a { color: inherit; }
 .sw.ring { background: transparent; box-shadow: inset 0 0 0 2px var(--accent); }
 .sw.ch0 { background: var(--ch0); } .sw.ch1 { background: var(--ch1); } .sw.ch2 { background: var(--ch2); } .sw.ch3 { background: var(--ch3); }
 .sw.line { background: var(--ink); height: 2px; border-radius: 0; }
+.sw.lg0 { background: var(--lg0); } .sw.lg1 { background: var(--lg1); } .sw.lg2 { background: var(--lg2); } .sw.lg3 { background: var(--lg3); } .sw.lg4 { background: var(--lg4); } .sw.lg5 { background: var(--lg5); } .sw.lg6 { background: var(--lg6); }
+.ritual { margin-top: 22px; }
+.ritual h2 { margin: 0; font-family: var(--f-display); font-weight: 800; font-size: 24px; letter-spacing: -0.01em; }
+.ritual .wk { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.cat { --c: var(--line); }
+.cat::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; background: var(--c); vertical-align: -1px; }
+.tally { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); }
+.tally span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; background: var(--c); }
 
 .scenes { position: relative; z-index: 1; }
 .scene {
@@ -415,6 +424,17 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
           <p id="hero-unit" class="unit"></p>
           <p id="hero-sub" class="sub"></p>
         </div>
+        <section class="panel ritual" id="ritual" hidden aria-labelledby="rit-title">
+          <div><h2 id="rit-title" data-i18n="ritTitle"></h2><p class="wk" id="rit-week"></p></div>
+          <div class="chips" role="group" id="rit-which"></div>
+          <div class="field"><span class="label" id="rit-q"></span><div id="rit-cats" class="chips" role="group" aria-labelledby="rit-q"></div></div>
+          <div class="field"><label class="label" for="rit-note" data-i18n="ritNote"></label><input id="rit-note" type="text" maxlength="80" autocomplete="off"></div>
+          <div class="field"><label class="label" for="rit-next" data-i18n="ritNext"></label><input id="rit-next" type="text" maxlength="80" autocomplete="off"></div>
+          <p id="rit-status" class="status" role="status"></p>
+          <div class="tally" id="rit-tally"></div>
+          <div class="actions"><button id="rit-ics" class="btn ghost" type="button" data-i18n="ritIcs"></button></div>
+          <p class="hint" data-i18n="ritHint"></p>
+        </section>
         <a class="start" href="#s-life" data-i18n="start"></a><a class="skip" href="#s-card" data-i18n="skip"></a>
         <p class="privacy-line" data-i18n="privacyShort"></p>
       </article>
@@ -503,6 +523,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
           </div>
           <p id="moment-result" class="result" aria-live="polite"></p>
           <p id="moment-plus" class="hint"></p>
+          <div class="actions"><button id="moment-ics" class="btn ghost" type="button" data-i18n="momIcs"></button></div>
+          <p id="moment-ics-status" class="status" role="status"></p>
           <div class="actions"><button id="moment-remove" class="mini" type="button" hidden data-i18n="removeMoment"></button></div>
           <details class="add" id="add-details">
             <summary data-i18n="addMoment"></summary>
@@ -733,7 +755,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     ["US", "United States", "États-Unis", 79.30, 81.85, 76.86], ["VN", "Vietnam", "Viêt Nam", 74.59, 79.26, 69.88]
   ];
 
-  var R = { BLANK: 0, LIVED: 1, LEFT: 2, ACCENT: 3, NOW: 4, CH0: 5 };
+  var R = { BLANK: 0, LIVED: 1, LEFT: 2, ACCENT: 3, NOW: 4, CH0: 5, LOG0: 9 };
+  var CATS = ["family", "friends", "work", "project", "health", "rest", "drift"];
   var LAST_TIMES = [[4, 11], [5, 37], [6, 20], [7, 44], [9, 9], [10, 31], [12, 16], [14, 40]];
   var SAMPLE_CELL = [20, 38]; // the "1 week" cell shown in scene 02
 
@@ -862,6 +885,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["Les lignes", "Les 3 premières lignes sont marquées oubliées : le premier souvenir arrive en moyenne vers 3 ans et demi. Le bloc travail va de 22 à 65 ans par défaut, réglable dans « Tes proches », onglet Travail. La vie d'adulte commence à 18 ans."],
         ["Le ressenti", "Une année vaut 1 ÷ ton âge de ta vie vécue. C'est la loi proportionnelle proposée par Paul Janet en 1877."],
         ["Les fois", "Années restantes × fréquence par an. Pour tes parents, l'horizon s'arrête au plus court : ta vie ou la leur, avec la même espérance. La part déjà passée suppose que tu as vécu avec eux tous les jours jusqu'à 18 ans, comme le calcul de Tim Urban."],
+        ["Rendez-vous du dimanche", "Chaque semaine notée colore sa case sur ta grille, avec la couleur de la catégorie choisie. Le rappel est un événement d'agenda hebdomadaire que tu ajoutes toi-même. Les rendez-vous des moments suivent ta fréquence : 52 par an devient chaque semaine, 24 toutes les deux semaines, 12 chaque mois."],
         ["Autres vies", "Dates vérifiées une à une dans les sources listées sous chaque vie. Quand seule l'année est connue, le moment est placé au milieu de l'année. Âges calculés en semaines depuis la naissance. Vie française type : moyennes INSEE, DREES et ONU, pas une personne réelle."],
         ["Tes objectifs", "Chaque objectif s'allume sur la dernière semaine avant l'âge choisi."],
         ["Pays et sexe", "Espérance de vie à la naissance, Nations unies, World Population Prospects 2024, estimations 2023, arrondie à l'année. C'est une moyenne : pour une personne qui a déjà 35 ans, le vrai chiffre est un peu plus élevé."],
@@ -944,6 +968,28 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       lgTypEv: "Âges moyens",
       lgMoments: "Moments clés",
       lblYouAge: "Toi · {a} ans",
+      ritTitle: "Ton rendez-vous du dimanche",
+      ritWeek: "Semaine {n} de ta vie · du {d1} au {d2}",
+      ritThis: "Cette semaine",
+      ritLast: "La semaine dernière",
+      ritQ: "À quoi as-tu donné cette semaine ?",
+      ritQLast: "À quoi as-tu donné la semaine dernière ?",
+      ritNote: "Une ligne pour t'en souvenir (facultatif)",
+      ritNext: "À quoi veux-tu donner la semaine prochaine ?",
+      ritSaved: "Enregistré. La case est coloriée sur ta grille.",
+      ritIntent: "Dimanche dernier, tu avais dit : « {t} »",
+      ritTally: "52 dernières semaines · {n} notées :",
+      ritIcs: "Me le rappeler chaque dimanche (.ics)",
+      ritIcsTitle: "Combien de semaines : colorie la case de la semaine",
+      ritIcsDesc: "Deux minutes : à quoi as-tu donné cette semaine, et à quoi veux-tu donner la suivante ?",
+      ritIcsDone: "Rappel téléchargé : chaque dimanche à 19 h. Ouvre-le pour l'ajouter à ton agenda.",
+      ritHint: "Tout reste dans ce navigateur. Ta grille se remplit semaine après semaine.",
+      momIcs: "Le mettre dans mon agenda (.ics)",
+      momIcsDesc: "Encore environ {n} à ce rythme.",
+      momIcsDone: "Téléchargé : {r}, à partir de dimanche prochain à 18 h. Ouvre le fichier et ajuste le jour dans ton agenda.",
+      momIcsDoneJul: "Téléchargé : {r}, le 1er juillet à 18 h, pour poser les dates de l'été à l'avance.",
+      cats: {"family": "Famille", "friends": "Amis", "work": "Travail", "project": "Mon projet", "health": "Santé", "rest": "Repos", "drift": "À la dérive"},
+      rr: {"daily": "chaque jour", "weekly": "toutes les {n} semaines", "weekly1": "chaque semaine", "monthly": "tous les {n} mois", "monthly1": "chaque mois", "yearly": "une fois par an"},
       chDay: "Jour 2/30", chTag: ", un prototype gratuit par jour",
       chBy: "Conçu par",
       lblCountry: "Pays (moyenne ONU)",
@@ -1197,6 +1243,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         ["The rows", "The first 3 rows are marked forgotten: the earliest memory comes at about three and a half on average. The work block runs from 22 to 65 by default, adjustable in “Your people”, Work tab. Adult life starts at 18."],
         ["How it feels", "One year is worth 1 ÷ your age of the life you have lived. This is the proportional law Paul Janet proposed in 1877."],
         ["The times", "Years left × times per year. For your parents, the horizon ends at the shorter of your life or theirs, with the same lifespan. The share already spent assumes you lived with them every day until 18, as in Tim Urban's calculation."],
+        ["Sunday check-in", "Each logged week colours its box on your grid with the colour of the category you picked. The reminder is a weekly calendar event you add yourself. Moment reminders follow your frequency: 52 a year becomes weekly, 24 every two weeks, 12 monthly."],
         ["Other lives", "Dates checked one by one against the sources listed under each life. When only the year is known, the moment sits mid-year. Ages are counted in weeks from birth. Typical French life: INSEE, DREES and UN averages, not a real person."],
         ["Your goals", "Each goal lights up the last week before the age you chose."],
         ["Country and sex", "Life expectancy at birth, United Nations World Population Prospects 2024, 2023 estimates, rounded to the year. It is an average: for someone already 35, the real figure is a little higher."],
@@ -1279,6 +1326,28 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       lgTypEv: "Average ages",
       lgMoments: "Key moments",
       lblYouAge: "You · {a}",
+      ritTitle: "Your Sunday check-in",
+      ritWeek: "Week {n} of your life · {d1} to {d2}",
+      ritThis: "This week",
+      ritLast: "Last week",
+      ritQ: "What did you give this week to?",
+      ritQLast: "What did you give last week to?",
+      ritNote: "One line about it (optional)",
+      ritNext: "What do you want to give next week to?",
+      ritSaved: "Saved. The box is coloured on your grid.",
+      ritIntent: "Last Sunday you said: “{t}”",
+      ritTally: "Last 52 weeks · {n} logged:",
+      ritIcs: "Remind me every Sunday (.ics)",
+      ritIcsTitle: "How Many Weeks: colour this week's box",
+      ritIcsDesc: "Two minutes: what did you give this week to, and what do you want to give the next one to?",
+      ritIcsDone: "Reminder downloaded: every Sunday at 7 pm. Open it to add it to your calendar.",
+      ritHint: "Everything stays in this browser. Your grid fills up week after week.",
+      momIcs: "Put it in my calendar (.ics)",
+      momIcsDesc: "About {n} left at this pace.",
+      momIcsDone: "Downloaded: {r}, starting this coming Sunday at 6 pm. Open the file and adjust the day in your calendar.",
+      momIcsDoneJul: "Downloaded: {r}, on July 1 at 6 pm, so you plan the summer dates early.",
+      cats: {"family": "Family", "friends": "Friends", "work": "Work", "project": "My project", "health": "Health", "rest": "Rest", "drift": "Drifted"},
+      rr: {"daily": "every day", "weekly": "every {n} weeks", "weekly1": "every week", "monthly": "every {n} months", "monthly1": "every month", "yearly": "once a year"},
       chDay: "Day 2/30", chTag: ", one free prototype a day",
       chBy: "Made by",
       lblCountry: "Country (UN average)",
@@ -1563,12 +1632,12 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function freshState(lang) {
     var st = { lang: lang || "en", birth: null, lifespan: 80, moments: cloneMoments(DEFAULT_MOMENTS), active: "summers", parentAge: null, items: [],
       country: "", sex: "all", grandAge: null, events: [], tab: "friends", friendName: "", friendMet: "", kids: [], since: "", partnerBirth: "",
-      cardTheme: "me", cardFmt: "portrait", custody: 100, summerWeeks: 0, chapters: [], other: "child" };
+      cardTheme: "me", cardFmt: "portrait", custody: 100, summerWeeks: 0, chapters: [], other: "child", log: {}, next: null };
     for (var k in WORK_DEFAULTS) st[k] = WORK_DEFAULTS[k];
     return st;
   }
   var state = freshState("en");
-  var ui = { kbd: null, cardCv: null, scene: "you", cur: null, from: null, to: null, anim: 0, labelT: 1, hover: null, layout: null, colors: null, ticking: false, lastPointer: "mouse" };
+  var ui = { ritPrev: false, kbd: null, cardCv: null, scene: "you", cur: null, from: null, to: null, anim: 0, labelT: 1, hover: null, layout: null, colors: null, ticking: false, lastPointer: "mouse" };
   var dom = {};
 
   function cloneMoments(list) { return list.map(function (m) { return { id: m.id, f: m.f, fixed: !!m.fixed, name: m.name }; }); }
@@ -1611,7 +1680,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function payload() {
     var o = { v: 4, lang: state.lang, birth: state.birth, lifespan: state.lifespan, moments: state.moments, active: state.active, parentAge: state.parentAge, items: state.items,
       country: state.country, sex: state.sex, grandAge: state.grandAge, events: state.events, tab: state.tab, friendName: state.friendName, friendMet: state.friendMet,
-      kids: state.kids, chapters: state.chapters, other: state.other, custody: state.custody, summerWeeks: state.summerWeeks, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
+      kids: state.kids, log: state.log, next: state.next, chapters: state.chapters, other: state.other, custody: state.custody, summerWeeks: state.summerWeeks, since: state.since, partnerBirth: state.partnerBirth, cardTheme: state.cardTheme, cardFmt: state.cardFmt };
     for (var k in WORK_DEFAULTS) o[k] = state[k];
     return o;
   }
@@ -1661,6 +1730,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     if (validIso(saved.friendMet)) st.friendMet = saved.friendMet;
     if (Array.isArray(saved.kids)) st.kids = saved.kids.filter(function (k) { return k && typeof k.name === "string" && validIso(k.birth); }).slice(0, 4)
       .map(function (k) { return { id: String(k.id || Math.random().toString(36).slice(2)), name: k.name.slice(0, 30), birth: k.birth }; });
+    if (saved.log && typeof saved.log === "object") Object.keys(saved.log).slice(-6000).forEach(function (k) { var r = saved.log[k]; if (/^\d+$/.test(k) && r && CATS.indexOf(r.c) >= 0) st.log[k] = { c: r.c, n: typeof r.n === "string" ? r.n.slice(0, 80) : "" }; });
+    if (saved.next && Number.isInteger(saved.next.w) && typeof saved.next.t === "string") st.next = { w: saved.next.w, t: saved.next.t.slice(0, 80) };
     if (Array.isArray(saved.chapters)) st.chapters = saved.chapters.filter(function (c) { return c && typeof c.label === "string" && Number.isInteger(c.from) && Number.isInteger(c.to) && c.from >= 0 && c.to > c.from && c.to <= 110; }).slice(0, 8)
       .map(function (c) { return { id: String(c.id || Math.random().toString(36).slice(2)), label: c.label.slice(0, 30), from: c.from, to: c.to }; });
     if (typeof saved.other === "string" && (LBY[saved.other] || saved.other === "gone" || saved.other === "typical" || DUOS.some(function (d) { return d.id === saved.other; }))) st.other = saved.other;
@@ -1689,7 +1760,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
   function readColors() {
     var s = getComputedStyle(document.documentElement);
     function v(name) { return s.getPropertyValue(name).trim(); }
-    var roles = [hexToRgb(v("--c-blank")), hexToRgb(v("--c-lived")), hexToRgb(v("--c-left")), hexToRgb(v("--accent")), hexToRgb(v("--accent")), hexToRgb(v("--ch0")), hexToRgb(v("--ch1")), hexToRgb(v("--ch2")), hexToRgb(v("--ch3"))];
+    var roles = [hexToRgb(v("--c-blank")), hexToRgb(v("--c-lived")), hexToRgb(v("--c-left")), hexToRgb(v("--accent")), hexToRgb(v("--accent")), hexToRgb(v("--ch0")), hexToRgb(v("--ch1")), hexToRgb(v("--ch2")), hexToRgb(v("--ch3")), hexToRgb(v("--lg0")), hexToRgb(v("--lg1")), hexToRgb(v("--lg2")), hexToRgb(v("--lg3")), hexToRgb(v("--lg4")), hexToRgb(v("--lg5")), hexToRgb(v("--lg6"))];
     return { roles: roles, ink: v("--ink"), bg: v("--bg"), muted: v("--muted"), accent: v("--accent") };
   }
 
@@ -1770,7 +1841,9 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
         now();
         break;
       default:
-        base(R.LIVED, R.LEFT); now();
+        base(R.LIVED, R.LEFT);
+        Object.keys(state.log).forEach(function (k) { var w = +k, ci = CATS.indexOf(state.log[k].c); if (ci >= 0 && w >= 0 && w <= lived && w < total) a[w] = R.LOG0 + ci; });
+        now();
     }
     return a;
   }
@@ -1964,6 +2037,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       case "choose": return [["accent", lg.choose], ["now", lg.now]];
       default:
         var out = [["lived", lg.lived], ["now", lg.now], ["left", lg.left]];
+        var used = {}; Object.keys(state.log).forEach(function (k) { used[state.log[k].c] = 1; });
+        CATS.forEach(function (cat, ci) { if (used[cat]) out.push(["lg" + ci, t().cats[cat]]); });
         if (openGoals(c).length) out.push(["ring", lg.goal]);
         return out;
     }
@@ -2271,6 +2346,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
 
   function renderHero(c) {
     var tx = t();
+    renderRitual(c);
     dom.exampleNote.hidden = !!state.birth;
     dom.lifeRange.value = String(state.lifespan);
     if (document.activeElement !== dom.lifeNum) dom.lifeNum.value = String(state.lifespan);
@@ -2386,6 +2462,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     } else if (tx.res[m.id] && m.id !== "custom") html = fillN(tx.res[m.id], { n: fmt(cnt.n) });
     else html = fillN(tx.res.custom, { n: fmt(cnt.n), name: momentName(m) });
     dom.momentResult.innerHTML = html;
+    if (ui.lastMoment !== m.id) { dom.momentIcsStatus.textContent = ""; ui.lastMoment = m.id; }
     if (m.fixed || cnt.horizon <= 0 || (m.id === "grandparents" && state.grandAge == null)) dom.momentPlus.textContent = "";
     else {
       var more = momentCount({ id: m.id, f: (m.f || 0) + 1 }, c, state.lifespan, parentAgeFor(c)).n - cnt.n;
@@ -2569,6 +2646,44 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     dom.famHint.textContent = fill(tx.famHint, { L: L });
   }
 
+
+  // ---------- Sunday check-in ----------
+  function ritWeek(c) { return ui.ritPrev ? Math.max(0, c.lived - 1) : c.lived; }
+  function renderRitual(c) {
+    var tx = t();
+    dom.ritual.hidden = !state.birth || c.over;
+    if (dom.ritual.hidden) return;
+    var w = ritWeek(c), wd = weekDates(effectiveBirth(), w), rec = state.log[w] || {};
+    dom.ritWeek.textContent = fill(tx.ritWeek, { n: fmt(w + 1), d1: fmtDate(wd.start), d2: fmtDate(wd.end) });
+    chipRow(dom.ritWhich, [["this", tx.ritThis], ["last", tx.ritLast]], ui.ritPrev ? "last" : "this", function (k) { ui.ritPrev = k === "last"; renderRitual(current()); });
+    dom.ritQ.textContent = ui.ritPrev ? tx.ritQLast : tx.ritQ;
+    dom.ritCats.replaceChildren();
+    CATS.forEach(function (cat, ci) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "chip cat"; b.style.setProperty("--c", "var(--lg" + ci + ")");
+      b.textContent = tx.cats[cat]; b.setAttribute("aria-pressed", rec.c === cat ? "true" : "false");
+      b.addEventListener("click", function () {
+        var r = state.log[w] || {};
+        if (r.c === cat) delete state.log[w]; else state.log[w] = { c: cat, n: dom.ritNote.value.trim().slice(0, 80) };
+        save(); renderRitual(current()); renderVizHead(); setTargets(false);
+        dom.ritStatus.textContent = state.log[w] ? tx.ritSaved : "";
+      });
+      dom.ritCats.appendChild(b);
+    });
+    if (document.activeElement !== dom.ritNote) dom.ritNote.value = rec.n || "";
+    if (document.activeElement !== dom.ritNext) dom.ritNext.value = state.next && state.next.w === c.lived + 1 ? state.next.t : "";
+    var prevIntent = state.next && state.next.w === w && state.next.t ? state.next.t : "";
+    dom.ritStatus.textContent = prevIntent ? fill(tx.ritIntent, { t: prevIntent }) : "";
+    // Tally over the last 52 logged weeks.
+    var counts = {}, total = 0;
+    Object.keys(state.log).forEach(function (k) { if (+k > c.lived - 52) { counts[state.log[k].c] = (counts[state.log[k].c] || 0) + 1; total++; } });
+    dom.ritTally.replaceChildren();
+    if (total) {
+      var head = document.createElement("span"); head.style.setProperty("--c", "transparent"); head.textContent = fill(tx.ritTally, { n: total });
+      dom.ritTally.appendChild(head);
+      CATS.forEach(function (cat, ci) { if (counts[cat]) { var sp = document.createElement("span"); sp.style.setProperty("--c", "var(--lg" + ci + ")"); sp.textContent = tx.cats[cat] + " " + counts[cat]; dom.ritTally.appendChild(sp); } });
+    }
+  }
+
   // ---------- Chapters ----------
   function renderChapters() {
     var tx = t();
@@ -2655,6 +2770,30 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
     setTimeout(function () { URL.revokeObjectURL(url); }, 4000);
   }
   function icsEsc(s) { return String(s).replace(/\\/g, "\\\\").replace(/([,;])/g, "\\$1").replace(/\n/g, "\\n"); }
+  function icsEvent(name, title, desc, iso, hhmm, rrule) {
+    var p = parseYmd(iso);
+    var st = p.y + p2(p.m) + p2(p.d) + "T" + hhmm + "00";
+    var end = new Date(p.y, p.m - 1, p.d, parseInt(hhmm.slice(0, 2), 10), parseInt(hhmm.slice(2), 10) + 30);
+    var en = end.getFullYear() + p2(end.getMonth() + 1) + p2(end.getDate()) + "T" + p2(end.getHours()) + p2(end.getMinutes()) + "00";
+    var now = new Date(), stamp = now.getUTCFullYear() + p2(now.getUTCMonth() + 1) + p2(now.getUTCDate()) + "T" + p2(now.getUTCHours()) + p2(now.getUTCMinutes()) + p2(now.getUTCSeconds()) + "Z";
+    var lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//The Unfinished 30//How Many Weeks//EN", "CALSCALE:GREGORIAN", "BEGIN:VEVENT",
+      "UID:" + Date.now().toString(36) + Math.random().toString(36).slice(2) + "@the-unfinished-30", "DTSTAMP:" + stamp,
+      "DTSTART:" + st, "DTEND:" + en];
+    if (rrule) lines.push("RRULE:" + rrule);
+    lines.push("SUMMARY:" + icsEsc(title), "DESCRIPTION:" + icsEsc(desc), "URL:" + APP_URL, "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + icsEsc(title), "TRIGGER:-PT0M", "END:VALARM", "END:VEVENT", "END:VCALENDAR");
+    downloadBlob(new Blob([lines.join("\r\n") + "\r\n"], { type: "text/calendar" }), name);
+  }
+  function nextDow(dow) { var d = new Date(); var add = (dow - d.getDay() + 7) % 7 || 7; return ymd(new Date(d.getFullYear(), d.getMonth(), d.getDate() + add)); }
+  // Times a year -> a calendar rule close to that rhythm.
+  function rruleFor(f) {
+    f = Math.max(1, Math.min(365, f));
+    if (f >= 300) return { r: "FREQ=DAILY", k: "daily" };
+    if (f >= 26) { var iw = Math.max(1, Math.round(52 / f)); return { r: "FREQ=WEEKLY" + (iw > 1 ? ";INTERVAL=" + iw : ""), k: "weekly", n: iw }; }
+    var im = Math.max(1, Math.round(12 / f));
+    if (im >= 12) return { r: "FREQ=YEARLY", k: "yearly" };
+    return { r: "FREQ=MONTHLY" + (im > 1 ? ";INTERVAL=" + im : ""), k: "monthly", n: im };
+  }
+
   function icsFile(name, title, desc, iso, yearly) {
     var p = parseYmd(iso), d0 = new Date(p.y, p.m - 1, p.d), d1 = new Date(p.y, p.m - 1, p.d + 1);
     function dt(d) { return d.getFullYear() + p2(d.getMonth() + 1) + p2(d.getDate()); }
@@ -3060,6 +3199,21 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       else return;
       save(); renderTimes(current()); renderCircles(current()); setTargets(false);
     });
+    dom.ritNote.addEventListener("input", function () { var c = current(), w = ritWeek(c); if (state.log[w]) { state.log[w].n = dom.ritNote.value.trim().slice(0, 80); save(); } });
+    dom.ritNext.addEventListener("input", function () { var c = current(); state.next = { w: c.lived + 1, t: dom.ritNext.value.trim().slice(0, 80) }; save(); });
+    dom.ritIcs.addEventListener("click", function () {
+      var tx = t();
+      icsEvent("how-many-weeks-sunday.ics", tx.ritIcsTitle, tx.ritIcsDesc + " " + APP_URL, nextDow(0), "1900", "FREQ=WEEKLY;BYDAY=SU");
+      dom.ritStatus.textContent = tx.ritIcsDone;
+    });
+    dom.momentIcs.addEventListener("click", function () {
+      var tx = t(), m = activeMoment(), c = current(), name = momentName(m);
+      var f = m.id === "summers" ? 1 : Math.max(1, m.f || 1), rr = rruleFor(f);
+      var cnt = momentCount(m, c, state.lifespan, parentAgeFor(c)).n;
+      var start = m.id === "summers" ? (function () { var y = new Date().getFullYear(), iso = y + "-07-01"; return iso > todayIso() ? iso : (y + 1) + "-07-01"; })() : nextDow(0);
+      icsEvent("how-many-weeks-" + (m.id.replace(/[^a-z0-9]/gi, "") || "moment") + ".ics", name, fill(tx.momIcsDesc, { n: fmt(cnt) }) + " " + APP_URL, start, "1800", rr.r);
+      dom.momentIcsStatus.textContent = fill(m.id === "summers" ? tx.momIcsDoneJul : tx.momIcsDone, { r: fill(tx.rr[rr.k + (rr.n === 1 ? "1" : "")], { n: rr.n || 1 }) });
+    });
     dom.chapForm.addEventListener("submit", function (e) {
       e.preventDefault();
       var tx = t(), label = dom.chapLabel.value.trim(), a = parseInt(dom.chapFrom.value, 10), b = parseInt(dom.chapTo.value, 10);
@@ -3230,6 +3384,8 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg
       langFr: $("lang-fr"), langEn: $("lang-en"),
       dobD: $("dob-d"), dobM: $("dob-m"), dobY: $("dob-y"), country: $("country"), sex: $("sex"), exampleGo: $("example-go"), prog: $("prog"),
       grandRow: $("grand-row"), grandAge: $("grand-age"), grandHint: $("grand-hint"), momentPlus: $("moment-plus"),
+      ritual: $("ritual"), ritWeek: $("rit-week"), ritWhich: $("rit-which"), ritQ: $("rit-q"), ritCats: $("rit-cats"), ritNote: $("rit-note"), ritNext: $("rit-next"), ritStatus: $("rit-status"), ritTally: $("rit-tally"), ritIcs: $("rit-ics"),
+      momentIcs: $("moment-ics"), momentIcsStatus: $("moment-ics-status"),
       chapForm: $("chap-form"), chapLabel: $("chap-label"), chapFrom: $("chap-from"), chapTo: $("chap-to"), chapErr: $("chap-err"), chapList: $("chap-list"),
       lives: $("lives"), olOut: $("ol-out"), olTl: $("ol-tl"), olSrc: $("ol-src"),
       evForm: $("ev-form"), evLabel: $("ev-label"), evDate: $("ev-date"), evErr: $("ev-err"), evList: $("ev-list"),
