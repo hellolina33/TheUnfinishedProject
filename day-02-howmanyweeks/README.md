@@ -2,7 +2,8 @@
 
 Your life in weeks: how many are behind you, how many are ahead, and what can still fit into them.
 
-- One HTML file, no build step, no API key. Download it and open it in a browser.
+- `index.html` is the landing page (type a year, see your grid fill in), `app/index.html` is the tool. Both share the same saved data.
+- The tool is one HTML file, fonts included (Andika and Playwrite FR Trad, both SIL Open Font License), no build step, no API key. Download it and open it in a browser, even offline.
 - Everything you type stays in the browser (`localStorage`). Export and import a JSON file to move between devices.
 - The hosted page counts anonymous visits with Vercel Web Analytics (no cookies).
 - English by default, French available.
