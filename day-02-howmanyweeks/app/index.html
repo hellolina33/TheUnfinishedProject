@@ -485,18 +485,6 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
         <p class="body" id="p-left"></p>
       </article>
 
-      <article class="scene" data-scene="rows" id="s-rows">
-        <p class="kick" data-kick></p>
-        <h2 class="say" id="h-rows"></h2>
-        <p class="body" id="p-rows"></p>
-      </article>
-
-      <article class="scene" data-scene="feel" id="s-feel">
-        <p class="kick" data-kick></p>
-        <h2 class="say" id="h-feel"></h2>
-        <p class="body" id="p-feel"></p>
-      </article>
-
       <article class="scene" data-scene="times" id="s-times">
         <p class="kick" data-kick></p>
         <h2 class="say" id="h-times"></h2>
@@ -596,10 +584,16 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
         </div>
       </article>
 
-      <article class="scene" data-scene="last" id="s-last">
+      <article class="scene" data-scene="rows" id="s-rows">
         <p class="kick" data-kick></p>
-        <h2 class="say" id="h-last"></h2>
-        <p class="body" id="p-last"></p>
+        <h2 class="say" id="h-rows"></h2>
+        <p class="body" id="p-rows"></p>
+      </article>
+
+      <article class="scene" data-scene="feel" id="s-feel">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-feel"></h2>
+        <p class="body" id="p-feel"></p>
       </article>
 
       <article class="scene" data-scene="others" id="s-others">
@@ -612,6 +606,12 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
           <ul id="ol-tl" class="tl"></ul>
           <p id="ol-src" class="srcl"></p>
         </div>
+      </article>
+
+      <article class="scene" data-scene="last" id="s-last">
+        <p class="kick" data-kick></p>
+        <h2 class="say" id="h-last"></h2>
+        <p class="body" id="p-last"></p>
       </article>
 
       <article class="scene" data-scene="choose" id="s-choose">
@@ -733,7 +733,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
   var STEPS_PER_MIN = 120;
   var BOOKS_WORLD = 129864880;
   var WORK_START = 22, WORK_END = 65, ADULT = 18, FORGOT_ROWS = 3;
-  var SCENES = ["you", "life", "lived", "left", "rows", "feel", "times", "circles", "last", "others", "choose", "card"];
+  var SCENES = ["you", "life", "lived", "left", "times", "circles", "rows", "feel", "others", "last", "choose", "card"];
   var APP_URL = "https://the-unfinished-30.vercel.app/day-02-howmanyweeks/app/";
   var TABS = ["friends", "family", "couple", "work"];
   var THEMES = ["me", "friends", "family", "couple", "work"];
@@ -805,7 +805,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       p: {
         life: "Une ligne, c'est une année. Une case, c'est une semaine. {L} × 52 = {total} semaines. Une vie entière tient sur un écran.",
         lived: "{pct} % de la grille. La case rouge, c'est cette semaine : du {d1} au {d2}.",
-        left: "Si chaque semaine était un pas, à 120 pas par minute, tu marcherais tout le reste de ta vie en {walk}.",
+        left: "Ça fait {left} dimanches et environ {yl} étés. Colorie une case chaque dimanche et tu verras exactement où ils passent.",
         leftOver: "Tu as dépassé l'espérance de vie choisie. Monte-la en haut de page pour voir plus loin.",
         rows: "Les trois premières, presque personne ne s'en souvient : le premier souvenir arrive en moyenne vers 3 ans et demi. Et si tu travailles de {ws} à {we} ans, ce bloc fait {work} semaines, soit {workPct} % de ta vie d'adulte.",
         rowsLeft: " Il t'en reste {workLeft} à travailler.",
@@ -888,7 +888,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       method: [
         ["Semaines vécues", "Jours entre ta date de naissance et aujourd'hui, divisés par 7, arrondis vers le bas. Le calcul se fait en jours calendaires : les changements d'heure ne décalent rien."],
         ["La grille", "Une ligne par année, 52 cases par ligne. Total = espérance × 52. Une vraie année fait 52,18 semaines : sur 80 ans, la grille ignore environ 14 semaines."],
-        ["Les pas", "120 pas par minute, soit une marche soutenue. Minutes = semaines restantes ÷ 120."],
+        ["Dimanches et étés", "Une case, c'est une semaine, donc un dimanche. Étés comptés comme dans « Les fois »."],
         ["Les lignes", "Les 3 premières lignes sont marquées oubliées : le premier souvenir arrive en moyenne vers 3 ans et demi. Le bloc travail va de 22 à 65 ans par défaut, réglable dans « Tes proches », onglet Travail. La vie d'adulte commence à 18 ans."],
         ["Le ressenti", "Une année vaut 1 ÷ ton âge de ta vie vécue. C'est la loi proportionnelle proposée par Paul Janet en 1877."],
         ["Les fois", "Années restantes × fréquence par an. Pour tes parents, l'horizon s'arrête au plus court : ta vie ou la leur, avec la même espérance. La part déjà passée suppose que tu as vécu avec eux tous les jours jusqu'à 18 ans, comme le calcul de Tim Urban."],
@@ -1178,7 +1178,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       p: {
         life: "One row is one year. One box is one week. {L} × 52 = {total} weeks. A whole life fits on one screen.",
         lived: "{pct}% of the grid. The red box is this week: {d1} to {d2}.",
-        left: "If every week were a step, at 120 steps a minute, you would walk the rest of your life in {walk}.",
+        left: "That is {left} Sundays and about {yl} summers. Colour one box each Sunday and you will see exactly where they go.",
         leftOver: "You have passed the lifespan you chose. Raise it at the top of the page to see further.",
         rows: "Almost nobody remembers the first three: the earliest memory comes at about three and a half on average. And if you work from {ws} to {we}, that block is {work} weeks, or {workPct}% of your adult life.",
         rowsLeft: " You have {workLeft} of them left to work.",
@@ -1261,7 +1261,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
       method: [
         ["Weeks lived", "Days between your date of birth and today, divided by 7, rounded down. It counts calendar days, so clock changes never shift a week."],
         ["The grid", "One row per year, 52 boxes per row. Total = lifespan × 52. A real year is 52.18 weeks: over 80 years, the grid leaves out about 14 weeks."],
-        ["Steps", "120 steps a minute, a brisk walk. Minutes = weeks left ÷ 120."],
+        ["Sundays and summers", "One box is one week, so one Sunday. Summers counted the same way as in “The times”."],
         ["The rows", "The first 3 rows are marked forgotten: the earliest memory comes at about three and a half on average. The work block runs from 22 to 65 by default, adjustable in “Your people”, Work tab. Adult life starts at 18."],
         ["How it feels", "One year is worth 1 ÷ your age of the life you have lived. This is the proportional law Paul Janet proposed in 1877."],
         ["The times", "Years left × times per year. For your parents, the horizon ends at the shorter of your life or theirs, with the same lifespan. The share already spent assumes you lived with them every day until 18, as in Tim Urban's calculation."],
@@ -2403,7 +2403,7 @@ select { font: inherit; font-size: 16px; color: var(--ink); background: var(--pa
     var workLeft = Math.max(0, Math.min(workEnd * WPY, c.total) - Math.max(c.lived, state.workStart * WPY));
     var v = {
       L: state.lifespan, total: fmt(c.total), lived: fmt(c.lived), left: fmt(c.left),
-      pct: fmt1(c.pct), d1: fmtDate(wd.start), d2: fmtDate(wd.end), walk: walkText(c.left),
+      pct: fmt1(c.pct), d1: fmtDate(wd.start), d2: fmtDate(wd.end), walk: walkText(c.left), yl: fmt(momentCount({ id: "summers", f: 1 }, c, state.lifespan, parentAgeFor(c)).n),
       work: fmt(workWeeks), workPct: fmt(workWeeks / adultWeeks * 100), workLeft: fmt(workLeft),
       age: c.age, p: c.age > 0 ? fmt1(100 / c.age) : "100", ws: state.workStart, we: state.retire
     };
