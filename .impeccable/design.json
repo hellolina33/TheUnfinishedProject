@@ -1,0 +1,578 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-03T01:30:18+00:00",
+  "title": "Design System: How Many Weeks",
+  "extensions": {
+    "scope": "Day 2 of The Unfinished 30 only (day-02-howmanyweeks/index.html and day-02-howmanyweeks/app/index.html). Other days have their own looks. The shared challenge strip is a cross-day banner, not part of this world.",
+    "colorMeta": {
+      "fountain-blue": {
+        "role": "primary",
+        "displayName": "Fountain-Pen Blue",
+        "canonical": "#2350b8",
+        "oklch": "oklch(46.6% 0.172 263)",
+        "tonalRamp": [
+          "#060b16",
+          "#152443",
+          "#233f7a",
+          "#325bb5",
+          "#527edc",
+          "#82a4e8",
+          "#b4caf3",
+          "#e6efff"
+        ]
+      },
+      "fountain-blue-dark": {
+        "role": "primary",
+        "displayName": "Blotted Blue",
+        "canonical": "#1b3f94",
+        "oklch": "oklch(39.7% 0.146 264)",
+        "tonalRamp": [
+          "#070b14",
+          "#17243f",
+          "#284072",
+          "#3a5da9",
+          "#5a80cf",
+          "#88a5de",
+          "#b7caed",
+          "#e7effe"
+        ]
+      },
+      "fountain-blue-soft": {
+        "role": "primary",
+        "displayName": "Washed Blue",
+        "canonical": "#e8edfa",
+        "oklch": "oklch(94.6% 0.018 269)",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242528",
+          "#3f4248",
+          "#5d616b",
+          "#7e828c",
+          "#a2a5ac",
+          "#c7c9ce",
+          "#eeeef0"
+        ]
+      },
+      "fountain-blue-off": {
+        "role": "primary",
+        "displayName": "Faded Blue",
+        "canonical": "#8a9ccc",
+        "oklch": "oklch(69.6% 0.074 269)",
+        "tonalRamp": [
+          "#090b10",
+          "#1f2532",
+          "#38415b",
+          "#526086",
+          "#7281aa",
+          "#99a5c3",
+          "#c2c9db",
+          "#ebeef6"
+        ]
+      },
+      "teacher-red": {
+        "role": "secondary",
+        "displayName": "Teacher Red",
+        "canonical": "#d0273c",
+        "oklch": "oklch(55.9% 0.202 21)",
+        "tonalRamp": [
+          "#160606",
+          "#421315",
+          "#761b23",
+          "#af2132",
+          "#d74b52",
+          "#e98383",
+          "#f6b7b4",
+          "#ffe7e6"
+        ]
+      },
+      "margin-red": {
+        "role": "secondary",
+        "displayName": "Margin Red",
+        "canonical": "#e5536b",
+        "oklch": "oklch(64.3% 0.181 14)",
+        "tonalRamp": [
+          "#150608",
+          "#3f151b",
+          "#71212f",
+          "#a72d45",
+          "#cf5265",
+          "#e28790",
+          "#f1b8bc",
+          "#ffe8e9"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "canonical": "#fcfcfe",
+        "oklch": "oklch(99.2% 0.003 286)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424243",
+          "#616162",
+          "#828284",
+          "#a5a5a6",
+          "#c9c9ca",
+          "#eeeeef"
+        ]
+      },
+      "sheet": {
+        "role": "neutral",
+        "displayName": "Clean Sheet",
+        "canonical": "#ffffff",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Exercise Ink",
+        "canonical": "#1c2240",
+        "oklch": "oklch(26.3% 0.057 273)",
+        "tonalRamp": [
+          "#0a0b0f",
+          "#22242f",
+          "#3c4155",
+          "#58607e",
+          "#7881a1",
+          "#9ea4bc",
+          "#c4c9d7",
+          "#eceef4"
+        ]
+      },
+      "pencil": {
+        "role": "neutral",
+        "displayName": "Pencil Grey",
+        "canonical": "#4a5070",
+        "oklch": "oklch(43.9% 0.053 276)",
+        "tonalRamp": [
+          "#0a0b0f",
+          "#22242f",
+          "#3d4154",
+          "#5a5f7c",
+          "#7a809f",
+          "#9fa4ba",
+          "#c5c8d6",
+          "#edeef4"
+        ]
+      },
+      "seyes-violet": {
+        "role": "neutral",
+        "displayName": "Seyès Violet",
+        "canonical": "#cfc4e6",
+        "oklch": "oklch(84.0% 0.048 300)",
+        "tonalRamp": [
+          "#0c0a0e",
+          "#26232c",
+          "#443f50",
+          "#655c76",
+          "#867d98",
+          "#a8a1b5",
+          "#cbc7d3",
+          "#efedf3"
+        ]
+      },
+      "seyes-faint": {
+        "role": "neutral",
+        "displayName": "Seyès Faint",
+        "canonical": "#ece7f6",
+        "oklch": "oklch(93.6% 0.021 301)",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#262428",
+          "#434048",
+          "#635f6a",
+          "#84808c",
+          "#a6a3ac",
+          "#cac8cd",
+          "#efeef0"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Ruled Line",
+        "canonical": "#d9d2ec",
+        "oklch": "oklch(87.7% 0.036 298)",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#26242b",
+          "#43404d",
+          "#635e71",
+          "#847f93",
+          "#a6a2b2",
+          "#cac7d1",
+          "#efeef2"
+        ]
+      },
+      "field-stroke": {
+        "role": "neutral",
+        "displayName": "Field Stroke",
+        "canonical": "#7a74a0",
+        "oklch": "oklch(58.1% 0.067 290)",
+        "tonalRamp": [
+          "#0b0a0f",
+          "#252330",
+          "#423e57",
+          "#615c80",
+          "#827da3",
+          "#a4a1be",
+          "#c9c7d8",
+          "#eeedf5"
+        ]
+      },
+      "weeks-left": {
+        "role": "neutral",
+        "displayName": "Weeks Left",
+        "canonical": "#e4def2",
+        "oklch": "oklch(91.1% 0.028 300)",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#262429",
+          "#43404a",
+          "#635e6d",
+          "#847f8f",
+          "#a6a3af",
+          "#cac8cf",
+          "#efeef1"
+        ]
+      },
+      "weeks-blank": {
+        "role": "neutral",
+        "displayName": "Weeks Unset",
+        "canonical": "#c9cddc",
+        "oklch": "oklch(85.0% 0.021 274)",
+        "tonalRamp": [
+          "#0b0b0d",
+          "#242529",
+          "#404249",
+          "#5e616c",
+          "#7f828e",
+          "#a2a5ae",
+          "#c7c9ce",
+          "#eeeef1"
+        ]
+      },
+      "hl-family": {
+        "role": "tertiary",
+        "displayName": "Highlighter Family",
+        "canonical": "#ff8cc6",
+        "oklch": "oklch(78.1% 0.153 350)",
+        "tonalRamp": [
+          "#12070d",
+          "#391929",
+          "#662a49",
+          "#963b6c",
+          "#bc5d8e",
+          "#d28cae",
+          "#e6bbce",
+          "#fbe9f1"
+        ]
+      },
+      "hl-friends": {
+        "role": "tertiary",
+        "displayName": "Highlighter Friends",
+        "canonical": "#ffe45c",
+        "oklch": "oklch(91.7% 0.155 98)",
+        "tonalRamp": [
+          "#0e0b02",
+          "#2c2500",
+          "#504100",
+          "#766000",
+          "#988200",
+          "#b5a65d",
+          "#d3caa0",
+          "#f2efde"
+        ]
+      },
+      "hl-work": {
+        "role": "tertiary",
+        "displayName": "Highlighter Work",
+        "canonical": "#6ccff6",
+        "oklch": "oklch(80.9% 0.108 226)",
+        "tonalRamp": [
+          "#050d10",
+          "#0c2934",
+          "#0d495d",
+          "#016b8a",
+          "#388ead",
+          "#77aec5",
+          "#afcfdd",
+          "#e4f1f7"
+        ]
+      },
+      "hl-project": {
+        "role": "tertiary",
+        "displayName": "Highlighter Project",
+        "canonical": "#b98cff",
+        "oklch": "oklch(73.0% 0.166 300)",
+        "tonalRamp": [
+          "#0d0914",
+          "#2a1d3e",
+          "#4b3270",
+          "#7049a6",
+          "#916bcb",
+          "#af96dc",
+          "#cfc1eb",
+          "#f1ebfd"
+        ]
+      },
+      "hl-health": {
+        "role": "tertiary",
+        "displayName": "Highlighter Health",
+        "canonical": "#7fe07a",
+        "oklch": "oklch(82.3% 0.166 143)",
+        "tonalRamp": [
+          "#050e05",
+          "#112c10",
+          "#194f18",
+          "#1f751f",
+          "#469843",
+          "#7eb67a",
+          "#b3d4b0",
+          "#e5f3e4"
+        ]
+      },
+      "hl-rest": {
+        "role": "tertiary",
+        "displayName": "Highlighter Rest",
+        "canonical": "#ffae4d",
+        "oklch": "oklch(81.2% 0.145 68)",
+        "tonalRamp": [
+          "#110903",
+          "#361f04",
+          "#613700",
+          "#8f5000",
+          "#b37115",
+          "#cb9a66",
+          "#e1c3a5",
+          "#f9ecdf"
+        ]
+      },
+      "hl-drift": {
+        "role": "tertiary",
+        "displayName": "Highlighter Drift",
+        "canonical": "#c3c7d4",
+        "oklch": "oklch(83.0% 0.019 272)",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#242528",
+          "#404248",
+          "#5e616b",
+          "#7f828c",
+          "#a2a5ac",
+          "#c7c9ce",
+          "#eeeef0"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing h1, blue cursive with the Teacher Red underline."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section heads, blue cursive with the Teacher Red underline."
+      },
+      "result": {
+        "displayName": "Result",
+        "purpose": "The weeks-left number and other answers, Teacher Red cursive, tabular figures."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Scene sentences in the tool scroll story, blue cursive, numbers in red."
+      },
+      "body-lg": {
+        "displayName": "Body Lg",
+        "purpose": "Ledes, section text, the problem statement."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, buttons (700), form values."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Field labels, help lines, captions, footer."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Challenge strip text, week-box labels, legends."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Button background and press transitions."
+      },
+      {
+        "name": "dur-short",
+        "value": "220ms",
+        "purpose": "Default state transition length."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "transition-duration: 0.01ms; scroll-behavior: auto",
+        "purpose": "Applied under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "40rem"
+      },
+      {
+        "name": "tablet",
+        "value": "60rem"
+      },
+      {
+        "name": "split",
+        "value": "900px"
+      }
+    ],
+    "ruling": {
+      "square": "32px (28px under 40rem)",
+      "subLine": "square / 4",
+      "margin": "2px margin-red line at 72px (40px under 60rem, 18px under 40rem) on the landing; max(10px, 50% - 640px) in the tool"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one inked action per block: Count my weeks, Open the tool.",
+      "html": "<button class=\"ds-btn-primary\">Count my weeks</button> <button class=\"ds-btn-primary\" disabled>Count my weeks</button>",
+      "css": ".ds-btn-primary{font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 24px;background:#2350b8;color:#fff;border:0;border-radius:4px;font-weight:700;font-size:1rem;cursor:pointer;transition:background-color 220ms cubic-bezier(0.16,1,0.3,1),border-color 220ms cubic-bezier(0.16,1,0.3,1),transform 220ms cubic-bezier(0.16,1,0.3,1);}.ds-btn-primary:hover{background:#1b3f94}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:2px solid #2350b8;outline-offset:3px;}.ds-btn-primary:disabled{background:#8a9ccc;cursor:not-allowed}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions in the tool: exports, calendar links, card download.",
+      "html": "<button class=\"ds-btn-ghost\">Add to calendar</button>",
+      "css": ".ds-btn-ghost{font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;background:#fff;color:#2350b8;border:1px solid #2350b8;border-radius:4px;font-weight:700;font-size:15px;cursor:pointer;transition:background-color 220ms cubic-bezier(0.16,1,0.3,1),border-color 220ms cubic-bezier(0.16,1,0.3,1),transform 220ms cubic-bezier(0.16,1,0.3,1);}.ds-btn-ghost:hover{background:#e8edfa}.ds-btn-ghost:focus-visible{outline:2px solid #2350b8;outline-offset:3px;}"
+    },
+    {
+      "name": "Birth Date Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Day select, month select, four-digit year; the year alone is enough.",
+      "html": "<div class=\"ds-dob\"><span class=\"ds-lbl\">Born on</span><div class=\"ds-row\"><select class=\"ds-in\" aria-label=\"Day\"><option>Day</option></select><select class=\"ds-in\" aria-label=\"Month\"><option>Month</option></select><input class=\"ds-in\" aria-label=\"Year\" type=\"number\" placeholder=\"1990\"></div><p class=\"ds-help\">The year alone is enough. Nothing leaves your browser.</p></div>",
+      "css": ".ds-dob{font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;display:grid;gap:12px;max-width:460px;color:#1c2240}.ds-lbl,.ds-help{font-size:.875rem;color:#4a5070;margin:0}.ds-row{display:grid;grid-template-columns:72px minmax(0,1fr) 104px;gap:8px}.ds-in{font:inherit;font-size:1rem;min-height:48px;width:100%;min-width:0;padding:0 12px;color:#1c2240;background:#fff;border:1px solid #7a74a0;border-radius:4px;transition:background-color 220ms cubic-bezier(0.16,1,0.3,1),border-color 220ms cubic-bezier(0.16,1,0.3,1),transform 220ms cubic-bezier(0.16,1,0.3,1);}.ds-in:hover{border-color:#2350b8}.ds-in:focus-visible{outline:2px solid #2350b8;outline-offset:3px;border-color:#2350b8}"
+    },
+    {
+      "name": "Choice Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Pick one option inside a scene; category chips carry a highlighter square.",
+      "html": "<div class=\"ds-chips\"><button class=\"ds-chip\" aria-pressed=\"true\">Kids</button><button class=\"ds-chip\" aria-pressed=\"false\">Parents</button><button class=\"ds-chip ds-dot\" style=\"--c:#ff8cc6\" aria-pressed=\"false\">Family</button></div>",
+      "css": ".ds-chips{display:flex;flex-wrap:wrap;gap:8px}.ds-chip{font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;font-size:15px;min-height:42px;padding:0 14px;border-radius:4px;border:1px solid #cfc4e6;background:#fff;color:#1c2240;cursor:pointer;transition:background-color 220ms cubic-bezier(0.16,1,0.3,1),border-color 220ms cubic-bezier(0.16,1,0.3,1),transform 220ms cubic-bezier(0.16,1,0.3,1);}.ds-chip:hover{border-color:#2350b8}.ds-chip:focus-visible{outline:2px solid #2350b8;outline-offset:3px;}.ds-chip[aria-pressed=\"true\"]{background:#2350b8;border-color:#2350b8;color:#fff}.ds-dot::before{content:\"\";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px;background:var(--c)}"
+    },
+    {
+      "name": "Language Toggle",
+      "kind": "nav",
+      "refersTo": "chip",
+      "description": "EN/FR switch in the page head and the tool bar.",
+      "html": "<div class=\"ds-lang\" role=\"group\" aria-label=\"Language\"><button aria-pressed=\"true\">EN</button><button aria-pressed=\"false\">FR</button></div>",
+      "css": ".ds-lang{display:inline-flex;border:1px solid #d9d2ec;border-radius:4px;background:#fff}.ds-lang button{font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;min-height:36px;min-width:44px;padding:0 12px;border:0;background:transparent;color:#4a5070;cursor:pointer;font-size:.875rem}.ds-lang button:hover{color:#1c2240}.ds-lang button:focus-visible{outline:2px solid #2350b8;outline-offset:3px;}.ds-lang button[aria-pressed=\"true\"]{color:#2350b8;font-weight:700;box-shadow:inset 0 -2px 0 #2350b8}"
+    },
+    {
+      "name": "Page Head on Seyès Paper",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "The world itself: Seyès ruling, red margin, blue cursive title underlined in red, and the red result.",
+      "html": "<div class=\"ds-page\"><p class=\"ds-when\">mardi 3 novembre</p><h1 class=\"ds-title\">How many weeks do you have left?</h1><p class=\"ds-lede\">Your life in boxes, one per week.</p><p class=\"ds-res\">2,236 weeks ahead of you</p></div>",
+      "css": ".ds-page{position:relative;padding:24px 24px 24px 96px;color:#1c2240;font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;background-color:#fcfcfe;background-image:linear-gradient(to right,#cfc4e6 1px,transparent 1px),linear-gradient(to bottom,#cfc4e6 1px,transparent 1px),linear-gradient(to bottom,#ece7f6 1px,transparent 1px);background-size:32px 32px,32px 32px,32px 8px;background-position:73px 0,0 0,0 0}.ds-page::before{content:\"\";position:absolute;top:0;bottom:0;left:72px;width:2px;background:#e5536b}.ds-when{margin:0;text-align:right;font-family:'Playwrite FR Trad','Segoe Script',cursive;font-size:.875rem;color:#2350b8}.ds-title{margin:0;font-family:'Playwrite FR Trad','Segoe Script',cursive;font-weight:400;font-size:2.4rem;line-height:1.7;color:#2350b8;max-width:14ch;text-decoration:underline;text-decoration-color:#d0273c;text-decoration-thickness:2px;text-underline-offset:.22em;text-decoration-skip-ink:none}.ds-lede{margin:16px 0 0;font-size:1.25rem}.ds-res{margin:16px 0 0;font-family:'Playwrite FR Trad','Segoe Script',cursive;font-size:1.5rem;line-height:1.5;color:#d0273c;font-variant-numeric:tabular-nums}"
+    },
+    {
+      "name": "Worked Problem",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "A school maths problem: question in Andika, working in blue cursive, answer double-underlined in red.",
+      "html": "<div class=\"ds-prob\"><p class=\"ds-q\">My eldest turns 18 in 12 summers. We have 3 weeks of holidays together each summer. How many weeks are left?</p><p class=\"ds-work\">12 summers × 3 weeks = <span class=\"ds-ans\">36 weeks</span></p></div>",
+      "css": ".ds-prob{display:grid;gap:24px;max-width:760px;color:#1c2240;font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;}.ds-q{margin:0;font-size:1.25rem;line-height:1.6;max-width:52ch}.ds-work{margin:0;font-family:'Playwrite FR Trad','Segoe Script',cursive;font-size:clamp(1.35rem,1.4vw + 1rem,2rem);line-height:1.6;color:#2350b8;font-variant-numeric:tabular-nums}.ds-ans{color:#d0273c;text-decoration:underline double;text-decoration-color:#d0273c;text-decoration-thickness:1px;text-underline-offset:.2em;text-decoration-skip-ink:none}"
+    },
+    {
+      "name": "Week Swatch Row",
+      "kind": "custom",
+      "refersTo": "chip",
+      "description": "Example check-in weeks: highlighter-filled boxes, each named; this week is an empty box with a red border.",
+      "html": "<ul class=\"ds-weeks\"><li style=\"--c:#ff8cc6\"><i></i><span>Family</span></li><li style=\"--c:#6ccff6\"><i></i><span>Work</span></li><li style=\"--c:#b98cff\"><i></i><span>Project</span></li><li style=\"--c:#ffe45c\"><i></i><span>Friends</span></li><li style=\"--c:#c3c7d4\"><i></i><span>Drift</span></li><li style=\"--c:#ffae4d\"><i></i><span>Rest</span></li><li class=\"ds-now\"><i></i><span>Now</span></li></ul>",
+      "css": ".ds-weeks{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;max-width:560px;margin:0;padding:0;list-style:none;font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;}.ds-weeks li{display:grid;gap:8px;justify-items:center;font-size:.8125rem;color:#4a5070;text-align:center}.ds-weeks i{display:block;width:100%;aspect-ratio:1;border:1px solid #cfc4e6;border-radius:2px;background:var(--c)}.ds-weeks .ds-now i{border:2px solid #d0273c;background:#fff}"
+    },
+    {
+      "name": "Note Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "White sheet over the ruling with a 1px rule frame; holds forms and notes. No shadow.",
+      "html": "<div class=\"ds-panel\"><p class=\"ds-ptitle\">Sunday check-in</p><p class=\"ds-ptext\">Pick what this week went to.</p></div>",
+      "css": ".ds-panel{font-family:Andika,'Atkinson Hyperlegible',system-ui,sans-serif;padding:16px;display:grid;gap:8px;background:#fff;border:1px solid #d9d2ec;border-radius:4px;color:#1c2240;max-width:420px}.ds-ptitle{margin:0;font-family:'Playwrite FR Trad','Segoe Script',cursive;font-size:24px;line-height:1.6;color:#2350b8}.ds-ptext{margin:0;font-size:14px;color:#4a5070}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cahier Seyès",
+    "overview": "Your life is a page of a French squared exercise book, and you fill it in one box per week. The page is cool white paper ruled in violet Seyès squares, with three faint lines inside each square and a red margin line down the left. Headings are written in fountain-pen blue cursive and underlined in teacher red. Lived weeks fill in with the same blue ink. This week, and every number that answers a question, is marked in red, the way a teacher marks the answer.\n\nThe page is calm and school-like, not solemn. It refuses the black memento-mori grid poster and the cream-and-serif nostalgia page. Colour beyond blue and red comes only from highlighters, and only when a week is given to something: family, friends, work, a project, health, rest, drift. Density is low on the landing (one exercise per section, single column against the margin) and higher in the tool, where a sticky life grid sits beside the scrolling scenes.\n\nCursive is reserved. It carries titles, section heads, the worked problem and results. Everything you read at length or operate is in Andika, a schoolbook sans built for legibility.",
+    "keyCharacteristics": [
+      "Seyès ruling and a red margin line are the page itself, drawn in CSS behind every surface.",
+      "Fountain-pen blue for headings and lived weeks; teacher red for this week, results and title underlines.",
+      "Highlighter hues only for check-in categories, always named in text.",
+      "Playwrite FR Trad for titles and results only; Andika for UI and body.",
+      "4px corners, 1px rules, no shadows."
+    ],
+    "rules": [
+      {
+        "name": "The Two Inks Rule",
+        "body": "Blue writes, red marks. Blue is for what you wrote or lived; red is for what the teacher circled: this week, the answer, the underline. Never swap them.",
+        "section": "colors"
+      },
+      {
+        "name": "The Highlighter Rule",
+        "body": "Highlighter hues appear only to say what a week was given to, and every swatch carries its category name in text beside it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Cursive Is Handwriting Rule",
+        "body": "Playwrite FR Trad is used for titles, section heads, the worked problem, quotes, results and the date written at the top of the page, never for labels, buttons, inputs or paragraphs. Apart from that dated line (0.875rem, Fountain-Pen Blue, like the date on a school page), cursive stays at 19px or larger. Cursive needs line-height 1.45 or more so the ascenders and the red underline clear the next line.",
+        "section": "typography"
+      },
+      {
+        "name": "The Red Underline Rule",
+        "body": "Every h1 and h2 is underlined in Teacher Red: 2px, offset 0.22em, skip-ink off, like a ruler line under a heading. The worked answer gets a red double underline instead.",
+        "section": "typography"
+      },
+      {
+        "name": "The Paper Has No Height Rule",
+        "body": "Separate things with a 1px rule or a white sheet over the ruling, never with a drop shadow, blur or gradient fill.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** draw the Seyès ruling and the red margin line behind every surface of this product, including canvas exports.",
+      "**Do** write headings in Playwrite FR Trad, Fountain-Pen Blue, with the 2px Teacher Red underline at 0.22em offset.",
+      "**Do** fill lived weeks in Fountain-Pen Blue and circle this week in Teacher Red.",
+      "**Do** show every answer number in Teacher Red with tabular figures.",
+      "**Do** name every highlighter colour in text next to its swatch.",
+      "**Do** keep corners at 4px (2px for swatches and week boxes) and separate surfaces with 1px Ruled Line borders.",
+      "**Do** keep form fields at 16px text and 46–48px height."
+    ],
+    "donts": [
+      "**Don't** set labels, buttons, inputs or paragraphs in cursive, or cursive below 19px other than the dated line.",
+      "**Don't** use drop shadows, blurs or gradient fills for depth; the page is flat paper.",
+      "**Don't** fill large areas with Teacher Red; it marks, it does not paint.",
+      "**Don't** use highlighter hues for anything but what a week was given to.",
+      "**Don't** use a black grid, a dark page or cream paper with a serif; this world is cool white squared paper.",
+      "**Don't** take the challenge strip's navy and yellow into this world; that banner belongs to The Unfinished 30 across all days."
+    ]
+  }
+}

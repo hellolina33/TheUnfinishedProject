@@ -163,7 +163,7 @@ Two inks on squared paper, plus a pencil case of highlighters.
 - **Margin Red** (`margin-red`): the 2px vertical margin line only. Softer than Teacher Red so the margin reads as ruling, not as a mark.
 
 ### Tertiary: highlighters
-- **Family** (`hl-family`), **Friends** (`hl-friends`), **Work** (`hl-work`), **Project** (`hl-project`), **Health** (`hl-health`), **Rest** (`hl-rest`), **Drift** (`hl-drift`): the Sunday check-in categories, in this order. The tool's circles scenes reuse the same four hues for work, friends, health/family and couple. Friends yellow doubles as the text-selection colour.
+- **Family** (`hl-family`), **Friends** (`hl-friends`), **Work** (`hl-work`), **Project** (`hl-project`), **Health** (`hl-health`), **Rest** (`hl-rest`), **Drift** (`hl-drift`): the Sunday check-in categories, in this order. The tool's circles scenes (friends, family, couple, work) reuse four of the same hues. Friends yellow doubles as the text-selection colour.
 
 ### Neutral
 - **Cool Paper** (`paper`): the page background under the ruling.
@@ -199,7 +199,7 @@ Two inks on squared paper, plus a pencil case of highlighters.
 - **Caption** (400, 0.8125rem): the challenge strip, week-box labels, legends (12–13px in the tool).
 
 ### Named Rules
-**The Cursive Is Handwriting Rule.** Playwrite FR Trad is used for titles, section heads, the worked problem, quotes and results, never below 19px and never for labels, buttons, inputs or paragraphs. Cursive needs line-height 1.45 or more so the ascenders and the red underline clear the next line.
+**The Cursive Is Handwriting Rule.** Playwrite FR Trad is used for titles, section heads, the worked problem, quotes, results and the date written at the top of the page, never for labels, buttons, inputs or paragraphs. Apart from that dated line (0.875rem, Fountain-Pen Blue, like the date on a school page), cursive stays at 19px or larger. Cursive needs line-height 1.45 or more so the ascenders and the red underline clear the next line.
 
 **The Red Underline Rule.** Every h1 and h2 is underlined in Teacher Red: 2px, offset 0.22em, skip-ink off, like a ruler line under a heading. The worked answer gets a red double underline instead.
 
@@ -281,7 +281,7 @@ The exported card redraws the page: Cool Paper, Seyès ruling at 32/8px, a 3px m
 - **Do** keep form fields at 16px text and 46–48px height.
 
 ### Don't:
-- **Don't** set labels, buttons, inputs or paragraphs in cursive, or cursive below 19px.
+- **Don't** set labels, buttons, inputs or paragraphs in cursive, or cursive below 19px other than the dated line.
 - **Don't** use drop shadows, blurs or gradient fills for depth; the page is flat paper.
 - **Don't** fill large areas with Teacher Red; it marks, it does not paint.
 - **Don't** use highlighter hues for anything but what a week was given to.
