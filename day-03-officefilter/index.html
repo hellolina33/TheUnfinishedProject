@@ -143,6 +143,78 @@ footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 18px; justify-content: s
 footer a { color: var(--ink); font-weight: 600; }
 .unf { margin-top: 28px; font-size: 14px; color: var(--muted); }
 .unf summary { cursor: pointer; font-weight: 700; color: var(--ink); min-height: 32px; display: flex; align-items: center; }
+
+/* lives (free tries) */
+.lives { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 18px; padding: 12px 14px; background: var(--ink); color: #FAF6EE; border-radius: 14px; box-shadow: 4px 4px 0 var(--accent); max-width: 420px; }
+.lives .lv-lbl { font: 800 12px/1 var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: #FFB08F; flex-basis: 100%; }
+.lives .hearts { display: flex; gap: 6px; }
+.heart { width: 34px; height: 30px; display: block; }
+.heart rect { shape-rendering: crispEdges; }
+.heart.full rect { fill: var(--accent); }
+.heart.lost rect { fill: #4A4640; }
+.heart.pop { animation: hp 0.7s ease-out; }
+@keyframes hp { 0% { transform: scale(1); } 25% { transform: scale(1.5) rotate(-8deg); } 60% { transform: scale(0.8) rotate(6deg); } 100% { transform: scale(1); } }
+.lives .lv-count { font: 800 22px/1 var(--f-mono); letter-spacing: 0.02em; }
+.lives .lv-count small { font-size: 13px; color: #B9B1A5; font-weight: 700; }
+.lives .lv-msg { flex-basis: 100%; font-size: 13px; color: #D9D2C6; margin: 0; }
+.lives.over .lv-lbl { color: #FF8F7A; }
+.lives.over .lv-msg b { color: #FFFFFF; }
+.lives .lv-own { font: 800 18px/1.2 var(--f-mono); }
+.lives .btn { min-height: 38px; font-size: 14px; border-color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .heart.pop { animation: none; } }
+
+/* tabs (desktop only) */
+.tabs { display: none; gap: 8px; }
+.rail .notice { margin: 12px 0 0; }
+.tab { border: 2px solid var(--ink); background: var(--paper); border-radius: 999px; min-height: 38px; padding: 0 16px; font-weight: 800; font-size: 14px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.tab .bar { width: 16px; height: 5px; border-radius: 3px; background: var(--accent); }
+.tab[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+/* one-screen app layout on laptop */
+@media (min-width: 960px) and (min-height: 600px) {
+  .chbar .wrap { padding-block: 4px; }
+  header.top .wrap { padding-block: 8px; }
+  main.app { display: grid; grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); gap: 44px; height: calc(100dvh - 92px); min-height: 540px; padding-bottom: 14px; }
+  .rail { display: flex; flex-direction: column; min-height: 0; justify-content: center; padding-bottom: 20px; }
+  .hero { padding-block: 0; }
+  h1 { font-size: clamp(44px, 4.6vw, 68px); max-width: 8ch; }
+  .lead { font-size: 17px; margin-top: 14px; }
+  .unf { margin-top: 22px; }
+  .stage { display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow-y: auto; padding: 4px 8px 10px 4px; margin: -4px -8px 0 -4px; }
+  .settings { margin-top: 0; }
+  .composer { margin-top: 0; padding: 14px; box-shadow: 5px 5px 0 var(--ink); flex: none; }
+  .composer label.big { font-size: 17px; margin-bottom: 6px; }
+  #raw { min-height: 80px; height: 80px; font-size: 18px; padding: 10px 12px; resize: none; }
+  .examples { margin-top: 8px; }
+  .chip { min-height: 30px; padding: 3px 10px; font-size: 13px; }
+  .params { margin-top: 10px; gap: 8px; }
+  .params input, .params select { min-height: 38px; padding: 4px 10px; }
+  .ctx { margin-top: 4px; } .ctx summary { min-height: 28px; font-size: 13px; }
+  .go { margin-top: 8px; }
+  .btn { min-height: 46px; }
+  .rail .notice { font-size: 12px; margin-top: 12px; max-width: 420px; }
+  .tools { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+  .tools .revise { margin: 0; padding: 0; border: 0; background: none; border-radius: 0; margin-left: auto; gap: 6px; }
+  .tools .revise p { display: none; }
+  .card h3, .card .goal { display: none; }
+  .examples .chip:nth-of-type(n+4) { display: none; }
+  .examples { flex-wrap: nowrap; overflow: hidden; }
+  .examples .chip { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 0 1 auto; }
+  .status { margin-top: 0; }
+  .transform, .transform.show { display: none; }
+  .assume { margin: 0; }
+  .tabs { display: flex; }
+  .results { grid-template-columns: minmax(0, 1fr); margin-top: 0; }
+  .card:not(.sel) { display: none; }
+  .card.sel { padding: 16px; border-width: 2px; }
+  .card .text { font-size: 19px; padding: 14px; }
+  .card .selbtn { display: none; }
+  .revise { margin-top: 0; padding: 8px 12px; }
+  .revise p { flex-basis: auto; margin-right: 6px; }
+  .empty { margin-top: 0; padding: 14px 16px; }
+}
+@media (max-width: 959px) { .lives { max-width: none; } h1 { max-width: 12ch; } .stage { display: flex; flex-direction: column; } .tools { display: contents; } .results { order: 1; } .revise { order: 2; } }
+@media (min-width: 960px) and (min-height: 600px) { .tools:not(:has(.tab)) { display: none; } }
 </style>
 </head>
 <body>
@@ -155,11 +227,17 @@ footer a { color: var(--ink); font-weight: 600; }
   <div class="seg" role="group" aria-label="Interface language"><button type="button" id="ui-en" aria-pressed="true">EN</button><button type="button" id="ui-fr" aria-pressed="false">FR</button></div>
 </div></header>
 
-<main id="main" class="wrap">
+<main id="main" class="wrap app">
+ <aside class="rail">
   <section class="hero">
     <h1><span class="strike" data-i18n="h1a"></span> <span data-i18n="h1b"></span></h1>
     <p class="lead" data-i18n="lead"></p>
   </section>
+  <div class="lives" id="lives" hidden></div>
+  <p class="notice" id="notice"></p>
+  <details class="unf"><summary data-i18n="unfSum"></summary><p data-i18n="unfText"></p></details>
+ </aside>
+ <div class="stage">
 
   <section id="settings" class="settings" hidden aria-labelledby="set-title">
     <h2 id="set-title" data-i18n="setTitle"></h2>
@@ -192,7 +270,6 @@ footer a { color: var(--ink); font-weight: 600; }
       <button type="button" class="btn ghost" id="cancel" hidden data-i18n="cancel"></button>
       <button type="button" class="btn ghost sm" id="demo" data-i18n="demoBtn"></button>
     </div>
-    <p class="notice" id="notice" style="margin-top:10px"></p>
   </section>
 
   <div class="status" id="status" role="alert"></div>
@@ -202,18 +279,18 @@ footer a { color: var(--ink); font-weight: 600; }
   </div>
   <p class="demo-flag" id="demo-flag" hidden data-i18n="demoFlag"></p>
   <p class="assume" id="assume" hidden></p>
+  <div class="tools"><div class="tabs" id="tabs" role="group" aria-label="Tone"></div><div class="revise" id="revise" role="group" aria-labelledby="rev-lbl">
+      <p id="rev-lbl"></p>
+      <button type="button" class="btn sm ghost" data-rev="shorter" data-i18n="revShort"></button>
+      <button type="button" class="btn sm ghost" data-rev="warmer" data-i18n="revWarm"></button>
+      <button type="button" class="btn sm ghost" data-rev="firmer" data-i18n="revFirm"></button>
+    </div></div>
   <section class="results" id="results" aria-live="polite" aria-busy="false"></section>
 
-  <div class="revise" id="revise" role="group" aria-labelledby="rev-lbl">
-    <p id="rev-lbl"></p>
-    <button type="button" class="btn sm ghost" data-rev="shorter" data-i18n="revShort"></button>
-    <button type="button" class="btn sm ghost" data-rev="warmer" data-i18n="revWarm"></button>
-    <button type="button" class="btn sm ghost" data-rev="firmer" data-i18n="revFirm"></button>
-  </div>
 
   <div class="empty" id="empty"><b data-i18n="emptyB"></b> <span data-i18n="emptyT"></span></div>
 
-  <details class="unf"><summary data-i18n="unfSum"></summary><p data-i18n="unfText"></p></details>
+ </div>
 </main>
 
 <footer><div class="wrap">
@@ -250,7 +327,8 @@ footer a { color: var(--ink); font-weight: 600; }
       toneGoal: { diplomatic: "Keep the relationship", direct: "Get to the point", firm: "Set a clear limit, calmly" },
       emptyB: "Nothing sent yet.", emptyT: "Write your raw thought, pick a sample, or click “See a sample result” to see what you'll get.",
       errEmpty: "Write something first. Even something rude, it's between you and the filter.",
-      noticeFree: "Free trial: {n} left. When you click, your text is sent to Google Gemini through this site’s server. No account, no storage. After the trial, plug in your own key.",
+      noticeFree: "Your text goes to Google Gemini through this site’s server. No account, nothing stored.",
+      livesLbl: "Free lives", livesOver: "Game over.", livesOverMsg: "Plug in your own key to keep playing, no limit.", livesOwn: "your own key, no limit", livesBtn: "Use my own key", livesLeft: "{n} of {m} free tries left",
       noticeOver: "Free trial finished. Open “Your AI” to plug in your own key and keep going.",
       errTrialOver: "Your free tries are used up. Open “Your AI” and paste your own key to keep going.",
       errBusy: "The free trial is busy today. Try again tomorrow, or use your own key via “Your AI”.",
@@ -301,7 +379,8 @@ footer a { color: var(--ink); font-weight: 600; }
       toneGoal: { diplomatic: "Préserver la relation", direct: "Aller à l'essentiel", firm: "Poser une limite, sans agressivité" },
       emptyB: "Rien n'est encore parti.", emptyT: "Écris ta pensée brute, prends un exemple, ou clique sur « Voir un exemple de résultat » pour voir ce que tu obtiendras.",
       errEmpty: "Écris d'abord quelque chose. Même de pas très poli, ça reste entre toi et le filtre.",
-      noticeFree: "Essai gratuit : {n} restant(s). Au clic, ton texte est envoyé à Google Gemini via le serveur de ce site. Pas de compte, rien de stocké. Ensuite, branche ta propre clé.",
+      noticeFree: "Ton texte part chez Google Gemini via le serveur de ce site. Pas de compte, rien de stocké.",
+      livesLbl: "Vies gratuites", livesOver: "Game over.", livesOverMsg: "Branche ta propre clé pour continuer, sans limite.", livesOwn: "ta propre clé, sans limite", livesBtn: "Utiliser ma clé", livesLeft: "{n} essai(s) gratuit(s) sur {m}",
       noticeOver: "Essai gratuit terminé. Ouvre « Ton IA » pour brancher ta propre clé et continuer.",
       errTrialOver: "Tes essais gratuits sont épuisés. Ouvre « Ton IA » et colle ta propre clé pour continuer.",
       errBusy: "L'essai gratuit est saturé aujourd'hui. Réessaie demain ou utilise ta propre clé via « Ton IA ».",
@@ -436,7 +515,39 @@ footer a { color: var(--ink); font-weight: 600; }
     });
     $("ai-dot").classList.toggle("on", !!ui.key);
   }
+  var HEART = [[1,0],[2,0],[4,0],[5,0],[0,1],[1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[0,2],[1,2],[2,2],[3,2],[4,2],[5,2],[6,2],[1,3],[2,3],[3,3],[4,3],[5,3],[2,4],[3,4],[4,4],[3,5]];
+  function heartSvg(cls) {
+    return '<svg class="heart ' + cls + '" viewBox="0 0 7 6" aria-hidden="true">' + HEART.map(function (c) { return '<rect x="' + c[0] + '" y="' + c[1] + '" width="1" height="1"/>'; }).join("") + "</svg>";
+  }
+  function renderLives() {
+    var tx = t(), el = $("lives"), f = ui.free;
+    if (!ui.key && !f.total) { el.hidden = true; return; }
+    el.hidden = false; el.replaceChildren();
+    var lbl = document.createElement("span"); lbl.className = "lv-lbl"; lbl.textContent = tx.livesLbl;
+    if (ui.key) {
+      el.className = "lives own"; var o = document.createElement("span"); o.className = "lv-own"; o.textContent = "∞ " + tx.livesOwn; el.append(lbl, o); return;
+    }
+    var over = f.left <= 0;
+    el.className = "lives" + (over ? " over" : "");
+    el.setAttribute("role", "img"); el.setAttribute("aria-label", fill(tx.livesLeft, { n: f.left, m: f.total }));
+    var hs = document.createElement("span"); hs.className = "hearts";
+    var html = "";
+    for (var i = 0; i < f.total; i++) {
+      var full = i < f.left, popped = ui.prevLeft != null && ui.prevLeft > f.left && i >= f.left && i < ui.prevLeft;
+      html += heartSvg(full ? "full" : "lost" + (popped ? " pop" : ""));
+    }
+    hs.innerHTML = html;
+    var cnt = document.createElement("span"); cnt.className = "lv-count"; cnt.innerHTML = f.left + "<small>/" + f.total + "</small>";
+    el.append(lbl, hs, cnt);
+    if (over) {
+      var m = document.createElement("p"); m.className = "lv-msg"; m.innerHTML = "<b>" + esc(tx.livesOver) + "</b> "; m.appendChild(document.createTextNode(tx.livesOverMsg));
+      var b = document.createElement("button"); b.type = "button"; b.className = "btn primary sm"; b.textContent = tx.livesBtn; b.addEventListener("click", openSettings);
+      el.append(m, b);
+    }
+    ui.prevLeft = f.left;
+  }
   function renderNotice() {
+    renderLives();
     var tx = t(), n = $("notice");
     if (freeOn()) n.innerHTML = fill(tx.noticeFree, { n: ui.free.left });
     else if (!ui.key && ui.free.total) n.textContent = tx.noticeOver;
@@ -457,12 +568,12 @@ footer a { color: var(--ink); font-weight: 600; }
   function skeleton() {
     var r = $("results"); r.replaceChildren(); r.setAttribute("aria-busy", "true");
     ["diplomatic", "direct", "firm"].forEach(function (tone) {
-      var c = document.createElement("article"); c.className = "card skel in"; c.dataset.tone = tone;
+      var c = document.createElement("article"); c.className = "card skel in" + (tone === "direct" ? " sel" : ""); c.dataset.tone = tone;
       var h = document.createElement("h3"); h.innerHTML = '<span class="bar"></span>'; h.appendChild(document.createTextNode(t().tones[tone]));
       var p = document.createElement("p"); p.className = "text"; p.textContent = "…";
       c.append(h, p); r.appendChild(c);
     });
-    $("empty").hidden = true;
+    $("empty").hidden = true; $("tabs").replaceChildren();
   }
 
   function renderResults(animate) {
@@ -482,13 +593,20 @@ footer a { color: var(--ink); font-weight: 600; }
       var cp = document.createElement("button"); cp.type = "button"; cp.className = "btn sm"; cp.textContent = tx.copy;
       var ok = document.createElement("span"); ok.className = "copied"; ok.setAttribute("role", "status");
       cp.addEventListener("click", function () { copyText(o.text, ok, c); });
-      var sb = document.createElement("button"); sb.type = "button"; sb.className = "btn sm ghost";
+      var sb = document.createElement("button"); sb.type = "button"; sb.className = "btn sm ghost selbtn";
       sb.textContent = i === ui.sel ? tx.selected : tx.select; sb.setAttribute("aria-pressed", i === ui.sel ? "true" : "false");
       sb.addEventListener("click", function () { ui.sel = i; renderResults(false); });
       row.append(cp, sb, ok);
       c.append(h, g, p, w, row);
       r.appendChild(c);
       if (animate) setTimeout(function () { c.classList.add("in"); }, 250 + i * 160); else c.classList.add("in");
+    });
+    var tb = $("tabs"); tb.replaceChildren();
+    res.options.forEach(function (o, i) {
+      var b = document.createElement("button"); b.type = "button"; b.className = "tab"; b.setAttribute("aria-pressed", i === ui.sel ? "true" : "false");
+      b.innerHTML = '<span class="bar" aria-hidden="true" style="opacity:' + (o.tone === "diplomatic" ? 0.35 : o.tone === "direct" ? 0.65 : 1) + '"></span>'; b.appendChild(document.createTextNode(tx.tones[o.tone]));
+      b.addEventListener("click", function () { ui.sel = i; renderResults(false); });
+      tb.appendChild(b);
     });
     $("revise").classList.toggle("show", !ui.demo);
     $("rev-lbl").textContent = fill(tx.revLbl, { t: tx.tones[res.options[ui.sel].tone] });
@@ -698,6 +816,8 @@ footer a { color: var(--ink); font-weight: 600; }
   $("ui-en").addEventListener("click", function () { ui.lang = "en"; applyLang(); });
   $("ui-fr").addEventListener("click", function () { ui.lang = "fr"; applyLang(); });
   $("go").addEventListener("click", run);
+  $("raw").addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); run(); } });
+  if (window.matchMedia && matchMedia("(min-width: 960px) and (hover: hover)").matches) $("raw").focus();
   $("raw").addEventListener("keydown", function (e) { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); run(); } });
   $("cancel").addEventListener("click", function () { if (ui.ctrl) ui.ctrl.abort(); });
   $("demo").addEventListener("click", showDemo);
