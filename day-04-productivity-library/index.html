@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Productivity Library · The Unfinished 30, Day 4</title>
+<meta name="description" content="50 productivity frameworks, sourced and matched to your work. Each comes with a diagram and a downloadable slide template. Free, no account, nothing is sent anywhere.">
+<meta name="author" content="Salah Khenissi">
+<style>
+:root{--paper:#F3F3EF;--ink:#0D0D0D;--grey:#5C5C58;--rule:#CFCFC9;--signal:#FF4D1A;--white:#FFFFFF}
+*{box-sizing:border-box}
+html,body{background:var(--paper)}
+body{margin:0;color:var(--ink);font:17px/1.55 "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--ink)}
+a:focus-visible,button:focus-visible,.opt:focus-within{outline:3px solid var(--signal);outline-offset:2px}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.top{border-bottom:1px solid var(--ink)}
+.bar{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px 16px;padding:14px 16px}
+.brand{font-weight:800;text-decoration:none;letter-spacing:-.01em}
+.chal{font-size:14px;color:var(--grey)}
+h1{font-size:clamp(38px,6.6vw,80px);line-height:.96;letter-spacing:-.035em;font-weight:800;margin:30px 0 16px;max-width:16ch}
+h2{font-size:clamp(22px,3vw,30px);line-height:1.1;letter-spacing:-.02em;font-weight:800;margin:0 0 6px}
+h3{font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--grey);margin:0 0 10px;font-weight:700}
+p{margin:0 0 14px;text-wrap:pretty}
+li{text-wrap:pretty}
+.lede{font-size:clamp(18px,2vw,21px);max-width:46ch;margin:0 0 30px}
+.hint{color:var(--grey);font-size:14px}
+.crumb{font-size:14px;color:var(--grey);margin:24px 0 0}
+.crumb a{color:var(--grey)}
+.qform{margin-top:8px}
+fieldset{border:0;border-top:1px solid var(--ink);margin:0 0 28px;padding:14px 0 0;min-width:0}
+legend{font-weight:800;font-size:19px;letter-spacing:-.01em;padding:0;margin:0;width:100%}
+.tag{display:inline-block;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--grey);margin-left:10px;font-weight:700;vertical-align:middle}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(176px,1fr));gap:8px;margin-top:12px}
+.opt{position:relative;display:block;cursor:pointer;border:1px solid var(--ink);padding:12px 14px;background:var(--white)}
+.opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.opt b{display:block;font-size:16px;line-height:1.25}
+.opt small{display:block;color:var(--grey);font-size:13px;line-height:1.35;margin-top:3px}
+.opt.on{background:var(--ink);color:var(--paper)}
+.opt.on small{color:#C9C9C4}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px}
+.btn{display:inline-block;background:var(--signal);color:var(--ink);border:1px solid var(--signal);padding:14px 22px;font:700 16px/1 "Helvetica Neue",Helvetica,Arial,sans-serif;cursor:pointer;text-decoration:none}
+.btn:disabled{background:var(--rule);border-color:var(--rule);color:var(--grey);cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
+.list{border-top:1px solid var(--ink);margin-bottom:30px}
+.row{display:grid;grid-template-columns:1fr auto;gap:6px 20px;padding:18px 0;border-bottom:1px solid var(--rule);text-decoration:none;color:var(--ink)}
+.row:hover .rn{text-decoration:underline;text-underline-offset:3px}
+.rn{font-weight:800;font-size:21px;letter-spacing:-.02em;line-height:1.2}
+.rf{color:var(--grey);font-size:14px}
+.rw{grid-column:1/-1;margin:0;font-size:15px}
+.fit{grid-column:1/-1;margin:0;font-size:13px;color:var(--grey)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.badge{display:inline-block;border:1px solid var(--ink);font-size:12px;font-weight:700;padding:3px 8px;letter-spacing:.03em;text-transform:uppercase;white-space:nowrap}
+.badge.team{background:var(--ink);color:var(--paper)}
+.sec{border-top:1px solid var(--rule);padding:16px 0}
+.sec h2{font-size:12px;line-height:1.4;letter-spacing:.09em;text-transform:uppercase;color:var(--grey);margin:0 0 10px;font-weight:700}
+ol,ul{padding-left:22px;margin:0}
+li{margin:0 0 9px}
+.tool{display:grid;gap:30px;padding-top:12px}
+@media(min-width:880px){.tool{grid-template-columns:1.05fr .95fr;align-items:start}}
+.card{margin:0;border:1px solid var(--ink);background:var(--white);padding:16px}
+.card svg{display:block;width:100%;height:auto}
+.card figcaption{margin-top:10px}
+.src{color:var(--grey);font-size:14px}
+.dl{margin:22px 0 0;border-top:1px solid var(--ink);padding-top:18px}
+.section-head{border-top:1px solid var(--ink);padding-top:18px;margin-top:34px}
+.foot{border-top:1px solid var(--ink);margin-top:60px;padding:26px 16px 44px;font-size:15px}
+.foot ul{padding-left:20px}
+.foot li{margin-bottom:6px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="#/">Productivity Library</a>
+    <span class="chal">Day 4/30 · The Unfinished 30 · by Salah Khenissi</span>
+  </div>
+</header>
+
+<main id="app" class="wrap" style="padding-bottom:20px"></main>
+
+<footer class="foot wrap">
+  <h3>What is still unfinished</h3>
+  <ul>
+    <li>Fifty tools so far. The first plan was closer to a hundred; more families can follow.</li>
+    <li>Some origins have no verified author. Where that is so, the source line says it, rather than naming someone.</li>
+    <li>Templates are .pptx files built in your browser. Google Slides can import them; they are not native Slides files.</li>
+    <li>Diagrams show the shape of each tool, not every step. Redraw them if you change the structure.</li>
+    <li>No account, no server, nothing you type is sent anywhere. That also means there is no feedback loop yet.</li>
+  </ul>
+  <p>Part of The Unfinished 30, designed and built by <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a>. <a href="index.html" download="productivity-library.html">Download the HTML</a></p>
+</footer>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- data ---------- */
+
+var FAM = {prioritise:"Prioritise", organise:"Organise", focus:"Focus", decide:"Decide", review:"Review"};
+var FAM_HINT = {
+  prioritise:"Decide what matters first.",
+  organise:"Put work into a shape you can see.",
+  focus:"Get the hard work done without drifting.",
+  decide:"Choose with fewer regrets.",
+  review:"Learn from what you just finished."
+};
+var MODE = {solo:"Solo", team:"Team", both:"Solo or team"};
+var FM_LABEL = {casual:"casual", structured:"structured", formal:"formal"};
+
+var QUESTIONS = [
+  {key:"need", req:true, q:"What do you need to do?", opts:[
+    ["prioritise","Prioritise","Decide what matters first"],
+    ["organise","Organise","Put work into a clear shape"],
+    ["focus","Focus","Get deep work done"],
+    ["decide","Decide","Choose between options"],
+    ["review","Review","Learn from work you finished"]]},
+  {key:"who", req:true, q:"Who is it for?", opts:[
+    ["me","Just me","Works alone"],
+    ["team","My team","Needs a group"],
+    ["both","Me and my team","Works either way"]]},
+  {key:"time", req:true, q:"How much time do you have?", opts:[
+    ["short","Under 15 min",""],
+    ["medium","15 to 60 min",""],
+    ["long","More than an hour",""]]},
+  {key:"freq", req:false, q:"How often will you use it?", opts:[
+    ["once","Once","A single session"],
+    ["regular","Regularly","Weekly or daily"]]},
+  {key:"fm", req:false, q:"How formal should it be?", opts:[
+    ["casual","Casual","Notes, sticky notes"],
+    ["structured","Structured","Clear steps, a template"],
+    ["formal","Formal","Written down, for sign-off"]]},
+  {key:"aud", req:false, q:"Who will see the result?", opts:[
+    ["me","Nobody else","Just for me"],
+    ["manager","My manager","Internal"],
+    ["clients","Clients or stakeholders","External or formal"]]}
+];
+
+/* d = [kind, payload]. kinds: matrix, cycle, columns, flow, tree, timeline, bars, steps, grid */
+var TOOLS = [
+  /* PRIORITISE */
+  {id:"eisenhower",n:"Eisenhower Matrix",f:"prioritise",m:"both",t:30,rec:true,fm:"structured",out:["me","manager"],
+   d:["matrix",{x:"Urgent →",y:"Important ↑",q:["Schedule","Do now","Drop","Delegate"]}],
+   why:"Sorts a messy list into four actions, so the urgent does not crowd out the important.",
+   solo:["List every task on the table. Keep it to about fifteen items.","Ask two questions of each: is it important? is it urgent?","Put each task in one box. Do the top right now, schedule the top left, drop the bottom left.","Delegate the bottom right, or send a one-line reply that hands it back."],
+   team:["Each person runs the matrix on their own list first, for five minutes.","Compare the lists and move shared items into the same box.","Agree who owns each Delegate item before the meeting ends."],
+   ex:"A manager puts a client escalation top right, the quarterly plan top left, and two status emails bottom right.",
+   src:"Quote attributed to Dwight D. Eisenhower (1954 speech). Popularised by Stephen Covey, The 7 Habits of Highly Effective People (1989)."},
+  {id:"moscow",n:"MoSCoW Prioritisation",f:"prioritise",m:"both",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["columns",["Must have","Should have","Could have","Won’t have this time"]],
+   why:"Settles scope fast by sorting each item into one of four buckets, and says out loud what will not be done.",
+   solo:["List every item the goal needs.","Label each one: Must (the goal fails without it), Should, Could, or Won’t this round.","If the Musts alone take more time than you have, split the goal into two."],
+   team:["Write items on sticky notes. Each stakeholder places their own label.","Debate only the items where labels disagree.","Read the Won’t list aloud, so nobody thinks something was forgotten."],
+   ex:"A launch scope: login and payment are Must, dark mode is Could, a data export is Won’t this release.",
+   src:"Dai Clegg, for the DSDM agile method (1994)."},
+  {id:"ice",n:"ICE Scoring",f:"prioritise",m:"team",t:30,rec:true,fm:"casual",out:["me","manager"],
+   d:["grid",{cols:["Impact","Confidence","Ease"],rows:["Idea A","Idea B","Idea C"]}],
+   why:"Ranks a long list of ideas in minutes. Score each one from 1 to 10 on three factors and multiply them.",
+   solo:["Write every idea in one column.","Score Impact, Confidence and Ease from 1 to 10 each.","Multiply the three scores. Start with the highest."],
+   team:["Each person scores silently, then the scores are shown together.","Discuss only the ideas where scores differ by three or more.","Re-score once, then take the top three."],
+   ex:"Five growth experiments scored. One with 9 × 7 × 8 goes before one with 10 × 3 × 2.",
+   src:"Sean Ellis, growth-team practice, widely shared in the 2010s. No single published paper."},
+  {id:"rice",n:"RICE Scoring",f:"prioritise",m:"team",t:60,rec:true,fm:"structured",out:["manager","clients"],
+   d:["grid",{cols:["Reach","Impact","Confidence","Effort"],rows:["Feature A","Feature B"]}],
+   why:"Adds reach and effort to ICE, so a popular but expensive feature does not win by default.",
+   solo:["Estimate Reach: how many people it touches in a set period.","Score Impact, Confidence (as a percentage) and Effort in person-weeks.","Calculate Reach × Impact × Confidence ÷ Effort. Sort the list by the result."],
+   team:["Agree the time period and the Impact scale before anyone scores.","Each owner estimates the Effort of their own part.","Review the top five together and write down the assumptions."],
+   ex:"A small fix that reaches 2,000 users can outrank a large feature that reaches 300.",
+   src:"Sean McBride, Intercom blog (2016)."},
+  {id:"impact-effort",n:"Impact–Effort Matrix",f:"prioritise",m:"both",t:20,rec:true,fm:"casual",out:["me","manager"],
+   d:["matrix",{x:"Effort →",y:"Impact ↑",q:["Quick wins","Major projects","Fill-ins","Thankless tasks"]}],
+   why:"Puts ideas on two axes, so quick wins are visible at a glance and heavy work is weighed against its payoff.",
+   solo:["Write each task on its own card.","Place each card by Impact (up is high) and Effort (right is high).","Do the quick wins now. Schedule the major projects. Drop the thankless tasks."],
+   team:["Place the cards on a shared wall together. Disagreements become questions.","Name the quick wins and give each one an owner."],
+   ex:"A team places 'fix the onboarding email' as a quick win, and 'rebuild the CRM' as a major project.",
+   src:"No verified single author. A common two-by-two in product and consulting work."},
+  {id:"pareto",n:"Pareto Analysis (80/20)",f:"prioritise",m:"solo",t:30,rec:true,fm:"structured",out:["me","manager"],
+   d:["bars",[["Cause A",0,0.52],["Cause B",0,0.25],["Cause C",0,0.13],["Cause D",0,0.10]]],
+   why:"Shows which few causes produce most of the problem, so the effort goes where it counts.",
+   solo:["For two weeks, log the cause of each delay, error or complaint.","Count each cause and sort from largest to smallest.","Work on the top one or two causes. Count again after a month."],
+   team:["Pool the causes from everyone's log.","Vote on the top three causes and agree who fixes each one."],
+   ex:"Most missed deadlines came from late client feedback, not from slow drafting.",
+   src:"Vilfredo Pareto (1896, income distribution). The 80/20 name was given by Joseph Juran (1940s to 1950s)."},
+  {id:"weighted",n:"Weighted Decision Matrix",f:"prioritise",m:"both",t:45,rec:false,fm:"structured",out:["manager","clients"],
+   d:["grid",{cols:["Weight","Option A","Option B","Option C"],rows:["Criterion 1","Criterion 2","Criterion 3"]}],
+   why:"Compares options against criteria you weight yourself, so the trade-offs are written down, not felt.",
+   solo:["List the criteria that matter: cost, time, fit, and so on.","Give each criterion a weight from 1 to 5.","Score each option from 1 to 5 per criterion, multiply by the weight, and add up the totals."],
+   team:["Agree the criteria and weights before anyone sees the options.","Score separately, then compare totals and discuss the gaps."],
+   ex:"Three software tools compared on cost (weight 5), setup time (weight 3) and team fit (weight 4).",
+   src:"Pugh matrix, Stuart Pugh (engineering design, 1980s to 1990s). Weighted scoring is its common generalisation."},
+  {id:"ivy-lee",n:"Ivy Lee Method",f:"prioritise",m:"solo",t:10,rec:true,fm:"casual",out:["me"],
+   d:["flow",["Write six tasks for tomorrow","Rank them 1 to 6","Work on task 1 until it is done","Then task 2, and so on","Move unfinished tasks to tomorrow","Review the list each evening"]],
+   why:"Ends the day with six ranked tasks, so the next morning starts without a choice to make.",
+   solo:["Each evening, write the six most important tasks for tomorrow.","Rank them from 1 to 6.","Next morning, work on task 1 until it is done before opening task 2.","Move anything unfinished to tomorrow's list."],
+   team:["Each person shares their ranked top three at the start of the day.","Note who is blocked on whom, and fix it before lunch."],
+   ex:"Tomorrow: 1 client proposal, 2 budget sign-off, 3 onboarding plan, 4 reply to three candidates.",
+   src:"Ivy Lee and Charles Schwab, a 1918 anecdote repeated in many books. The details are not verified."},
+  {id:"big-rocks",n:"Big Rocks",f:"prioritise",m:"both",t:20,rec:true,fm:"casual",out:["me","manager"],
+   d:["steps",["Big rocks: your top goals","Pebbles: tasks that support them","Sand: everything else"]],
+   why:"Puts the important work in first, so the small tasks fill the gaps instead of blocking the big ones.",
+   solo:["Write your top three goals for the week, one per card. These are the big rocks.","Put them in the calendar before anything else.","Fill the remaining time with smaller tasks."],
+   team:["Each person names their week's big rocks at the first meeting.","Check the shared calendar, so no big rock collides with another."],
+   ex:"A week with a proposal, a hiring round and a training session blocked first. Email goes in the gaps.",
+   src:"Stephen Covey, The 7 Habits of Highly Effective People (1989), the jar and rocks story."},
+  {id:"opportunity",n:"Opportunity Scoring",f:"prioritise",m:"team",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["grid",{cols:["Importance","Satisfaction","Opportunity"],rows:["Outcome A","Outcome B","Outcome C"]}],
+   why:"Ranks customer needs by how important they are and how poorly they are served today.",
+   solo:["List the outcomes a customer wants, phrased as jobs they are trying to get done.","Rate Importance and current Satisfaction from 1 to 10.","Calculate Opportunity = Importance + max(Importance − Satisfaction, 0). Work on the highest."],
+   team:["Interview 10 to 20 customers before scoring.","Everyone scores on the same scale, using the same interview notes."],
+   ex:"'Export data in one click' scores 9 on importance and 3 on satisfaction: a high opportunity.",
+   src:"Tony Ulwick, Outcome-Driven Innovation, in What Customers Want (2005)."},
+
+  /* ORGANISE */
+  {id:"kanban",n:"Kanban Board",f:"organise",m:"both",t:30,rec:true,fm:"casual",out:["me","manager","clients"],
+   d:["columns",["To do","Doing","Done"]],
+   why:"Shows all work as cards in columns. A limit on Doing stops you starting ten things at once.",
+   solo:["Draw three columns: To do, Doing, Done.","Write each task on a card in To do.","Move one card to Doing. Keep Doing to two cards at most."],
+   team:["Add a Blocked column and a limit on Doing per person.","Review the board at the daily standup. Move cards, do not report them."],
+   ex:"Five cards in To do, two in Doing, and one blocked while waiting for legal.",
+   src:"David J. Anderson, Kanban (2010). Roots in the Toyota Production System (Taiichi Ohno)."},
+  {id:"gtd",n:"Capture, Clarify, Organise",f:"organise",m:"solo",t:30,rec:true,fm:"casual",out:["me"],
+   d:["flow",["Capture everything","Clarify: is it actionable?","Trash, someday or reference","Under two minutes? Do it","Otherwise schedule or delegate","Review weekly"]],
+   why:"Empties your head into one trusted list, then decides what each item needs next.",
+   solo:["Write everything on your mind into one inbox, on paper or in an app.","Process the inbox. Not actionable goes to trash, someday or reference.","If it takes under two minutes, do it now. Otherwise schedule it or delegate it.","Review all lists every week."],
+   team:["Each person keeps their own inbox. The team shares only the project lists.","Agree one place for team actions, so nothing waits in a private inbox."],
+   ex:"A pile of emails and notes reduced to fourteen next actions by Friday.",
+   src:"David Allen, Getting Things Done (2001)."},
+  {id:"time-blocking",n:"Time Blocking",f:"organise",m:"both",t:30,rec:true,fm:"casual",out:["me","manager"],
+   d:["timeline",["Deep work","Meetings","Admin","Calls","Plan tomorrow"]],
+   why:"Gives each type of work a fixed slot in the calendar, so tasks compete for time, not for your attention.",
+   solo:["Block the week: deep work, admin, meetings, breaks.","Put each task into the block that matches it.","When a block ends, stop, even if the task is not finished."],
+   team:["Share blocks: meeting-free mornings for focus work across the team.","Agree which blocks are open for interruptions."],
+   ex:"Mornings blocked for proposals. Afternoons open for calls.",
+   src:"No single inventor. Widely described in productivity writing, for example Cal Newport, Deep Work (2016)."},
+  {id:"weekly-review",n:"Weekly Review",f:"organise",m:"solo",t:30,rec:true,fm:"casual",out:["me"],
+   d:["cycle",["Clear inboxes","Review the calendar","Review the lists","Plan the next week"]],
+   why:"A fixed weekly session that keeps the other systems honest. Without it, lists go stale.",
+   solo:["Pick the same slot each week. Friday afternoon works for many people.","Clear inboxes and capture loose items.","Read last week's list: what got done, what did not, and why.","Choose three priorities for next week and block them in the calendar."],
+   team:["Run it as a 30-minute team review. Each person shares three priorities.","Write blockers and their owners in the shared tracker."],
+   ex:"Sunday evening: three priorities written, two items deleted from the someday list.",
+   src:"David Allen, Getting Things Done (2001)."},
+  {id:"gantt",n:"Gantt Chart",f:"organise",m:"team",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["bars",[["Research",0,0.25],["Design",0.2,0.55],["Build",0.5,0.9],["Test",0.8,1]]],
+   why:"Shows tasks as bars on a timeline, so overlaps and dependencies are visible before they cause a delay.",
+   solo:["List the tasks and estimate how long each one takes.","Set start and end dates. Put dependent tasks after the tasks they depend on.","Draw the bars on paper or in a spreadsheet, and update them weekly."],
+   team:["Agree the dependencies in a session with everyone who owns a task.","Find the critical path: the chain of tasks where one delay moves the end date."],
+   ex:"A six-week launch in which design cannot start before research ends.",
+   src:"Henry Laurence Gantt (1910s)."},
+  {id:"wbs",n:"Work Breakdown Structure",f:"organise",m:"team",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["tree",{root:"Project goal",kids:["Deliverable 1","Deliverable 2","Deliverable 3","Deliverable 4"]}],
+   why:"Breaks a big goal into deliverables, then into tasks, so nothing is forgotten.",
+   solo:["Write the goal at the top of a page.","Break it into three to six deliverables.","Break each deliverable into tasks you could finish in a day or two."],
+   team:["Build the tree on a wall with everyone who will do the work.","Agree what 'done' means for each task at the bottom of the tree."],
+   ex:"An office move: packing, IT setup, floor plan, and staff communication.",
+   src:"US Department of Defense (1960s). Later standardised in the PMI PMBOK Guide."},
+  {id:"raci",n:"RACI Matrix",f:"organise",m:"team",t:30,rec:false,fm:"formal",out:["manager","clients"],
+   d:["grid",{cols:["Responsible","Accountable","Consulted","Informed"],rows:["Task A","Task B","Task C"]}],
+   why:"Makes explicit who does the work, who signs it off, who is asked, and who is kept informed.",
+   solo:["List the deliverables and the people involved, including you.","For each deliverable, mark one R (does the work) and one A (signs it off).","Mark C (asked) and I (informed) where needed. Check that every row has exactly one A."],
+   team:["Fill the matrix in the kick-off meeting, with every named person present.","Review it whenever someone joins or leaves the team."],
+   ex:"For a webinar: marketing is Responsible, the head of communications is Accountable, and sales is Consulted.",
+   src:"No verified single author. A responsibility assignment matrix used in project management for decades."},
+  {id:"charter",n:"Project Charter",f:"organise",m:"team",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["columns",["Purpose","Scope","Success measures","Roles","Risks"]],
+   why:"One page that states why the project exists, what is in and out, and who decides when people disagree.",
+   solo:["Write one page: purpose, scope (in and out), one success measure, and the main risks.","Name the person who decides when there is a conflict.","Add a date to review the charter."],
+   team:["Draft it with the sponsor, then check it with the people who will do the work.","Get a clear yes in writing before the work starts."],
+   ex:"A charter for a training pilot: 40 staff, eight weeks, success means 30 people complete all modules.",
+   src:"Project Management Institute, PMBOK Guide (first edition 1996)."},
+  {id:"mind-map",n:"Mind Map",f:"organise",m:"both",t:15,rec:false,fm:"casual",out:["me","clients"],
+   d:["tree",{root:"Central topic",kids:["Branch 1","Branch 2","Branch 3","Branch 4"]}],
+   why:"Starts from one central idea and grows branches, so relationships that a list hides become visible.",
+   solo:["Write the topic in the centre of a blank page.","Add one branch per main idea, in one or two words.","Keep adding sub-branches until nothing new appears."],
+   team:["Each person draws one branch in turn, silently, for five minutes.","Then talk through the connections between branches."],
+   ex:"A product launch: branches for audience, channels, budget, risks and timeline.",
+   src:"Tony Buzan, Use Your Head (1974)."},
+  {id:"affinity",n:"Affinity Mapping",f:"organise",m:"both",t:15,rec:false,fm:"casual",out:["me","manager"],
+   d:["columns",["Cluster A","Cluster B","Cluster C"]],
+   why:"Groups loose notes into themes, so a pile of ideas becomes a few clear categories.",
+   solo:["Write each idea on its own note.","Group the notes that belong together, without naming the groups yet.","Name each group and count the notes in it."],
+   team:["Sort silently on a shared board, then discuss the groups.","Agree the group names together."],
+   ex:"Forty feedback notes sorted into three clusters: pricing, onboarding, and support.",
+   src:"Jiro Kawakita, KJ method (1960s)."},
+
+  /* FOCUS */
+  {id:"pomodoro",n:"Pomodoro Technique",f:"focus",m:"both",t:25,rec:true,fm:"casual",out:["me"],
+   d:["cycle",["Work 25 min","Break 5 min","Work 25 min","Break 5 min","Work 25 min","Long break"]],
+   why:"Turns a big block into short sprints with a visible end, which makes starting easier.",
+   solo:["Pick one task. Set a timer for 25 minutes.","Work only on that task until the timer rings.","Take a five-minute break. After four rounds, take a longer one."],
+   team:["Run the same timer for the whole team on a call. Cameras can stay off.","Agree a shared no-messages window for each round."],
+   ex:"Four 25-minute rounds to draft a report, then a longer break.",
+   src:"Francesco Cirillo, late 1980s."},
+  {id:"timeboxing",n:"Timeboxing",f:"focus",m:"both",t:45,rec:true,fm:"structured",out:["me","manager"],
+   d:["bars",[["Task A",0,0.5],["Task B",0.5,0.75],["Task C",0.75,1]]],
+   why:"Fixes the time you spend on something, not the result. When the box ends, you stop and decide.",
+   solo:["Decide how long the task gets before you start.","Set a timer. Work until it rings.","Then choose one: finish, extend once with a stated reason, or stop and log what is left."],
+   team:["Give each agenda item a fixed time in the meeting invitation.","At the end of each box, decide together what happens next."],
+   ex:"A 45-minute box for the first draft. At 45 minutes, send whatever exists.",
+   src:"James Martin, Rapid Application Development (1991). Used in the DSDM method."},
+  {id:"deep-work",n:"Deep Work Blocks",f:"focus",m:"solo",t:90,rec:true,fm:"casual",out:["me"],
+   d:["timeline",["Start","Focus block, 60 to 90 min","Break","Focus block, 60 to 90 min","Shallow tasks"]],
+   why:"Protects long stretches for work that needs full concentration, and moves shallow tasks elsewhere.",
+   solo:["Choose one block of 60 to 90 minutes a day for your hardest work.","Turn off notifications and close unrelated tabs.","Before you stop, write the next step on paper. It makes restarting faster."],
+   team:["Agree team focus windows, for example mornings with no meetings.","Use a shared status to show when someone is in a focus block."],
+   ex:"Ninety minutes on a proposal, phone in another room.",
+   src:"Cal Newport, Deep Work (2016)."},
+  {id:"chain",n:"Don’t Break the Chain",f:"focus",m:"solo",t:10,rec:true,fm:"casual",out:["me"],
+   d:["timeline",["Day 1","Day 2","Day 3","Day 4","Day 5","Day 6","Day 7"]],
+   why:"A visible streak makes a daily habit harder to skip, because the gap shows on the calendar.",
+   solo:["Choose one small daily action.","Mark a cross on a calendar each day you do it.","If you miss a day, restart the next day. Never miss twice in a row."],
+   team:["Share one calendar in the team channel. Each person marks their own days.","Celebrate streak lengths at the monthly review, not every day."],
+   ex:"A 30-day writing calendar with a cross on each day a draft was finished.",
+   src:"Attributed to Jerry Seinfeld. The anecdote was reported by Brad Isaacs (2007). The attribution is disputed."},
+  {id:"two-minute",n:"Two-Minute Rule",f:"focus",m:"solo",t:10,rec:true,fm:"casual",out:["me"],
+   d:["flow",["Task arrives","Under two minutes?","Yes: do it now","No: schedule or delegate"]],
+   why:"Clears small tasks as they come, so they stop waiting in a list where they grow.",
+   solo:["When a task appears, estimate how long it takes.","Under two minutes: do it at once.","Over two minutes: put it on the list or in the calendar."],
+   team:["Apply it to team requests. Answer quick questions in the thread instead of booking a call."],
+   ex:"Replying to a one-line question straight away, instead of adding it to the list.",
+   src:"David Allen, Getting Things Done (2001)."},
+  {id:"energy-audit",n:"Energy Audit",f:"focus",m:"solo",t:30,rec:true,fm:"casual",out:["me"],
+   d:["matrix",{x:"Energy drained →",y:"Energy gained ↑",q:["Protect it","Limit it","Drop or batch","Cut or fix"]}],
+   why:"Maps which activities drain your energy and which restore it, not just how long they take.",
+   solo:["For two weeks, note each activity and your energy afterwards: up, flat or down.","Place each activity on the grid by drain and gain.","Protect the work in the top left. Cut or fix the work in the bottom right."],
+   team:["Each person runs the audit. Compare the Cut or fix lists for shared causes.","Use the results to rebalance meeting load across the team."],
+   ex:"Two weekly reports drained energy with no gain. A coaching call gave energy back.",
+   src:"Jim Loehr and Tony Schwartz, The Power of Full Engagement (2003)."},
+  {id:"habit-stack",n:"Habit Stacking",f:"focus",m:"solo",t:10,rec:true,fm:"casual",out:["me"],
+   d:["flow",["Existing habit (after coffee)","New habit (two minutes)","Small reward or next step"]],
+   why:"Attaches a new habit to one you already have, so you do not need to remember to start it.",
+   solo:["Pick something you do every day without thinking: coffee, brushing your teeth.","Use the form: 'After I [existing habit], I will [new habit].'","Keep the new habit tiny, under two minutes, at first."],
+   team:["Attach a team habit to an existing meeting. For example, after the standup, each person writes one line of notes."],
+   ex:"After my first coffee, I write one line about the day's priority.",
+   src:"Popularised by BJ Fogg, Tiny Habits (2019), and James Clear, Atomic Habits (2018). No single inventor."},
+  {id:"maker-manager",n:"Maker’s and Manager’s Schedule",f:"focus",m:"both",t:30,rec:true,fm:"casual",out:["me","manager"],
+   d:["timeline",["Morning: maker work","Late morning: calls","Afternoon: meetings","End of day: admin"]],
+   why:"Explains why one meeting in the middle of an afternoon can cost a whole block of focused work.",
+   solo:["Decide whether your work needs long blocks (maker) or short, frequent slots (manager).","Batch the maker work into blocks with no meetings.","Keep meetings short and clustered, in the afternoon."],
+   team:["Agree meeting-free days or half-days for the team.","Use one shared rule for when a meeting may be booked."],
+   ex:"Developers keep Wednesdays free. Managers take meetings on Tuesday and Thursday.",
+   src:"Paul Graham, Maker’s Schedule, Manager’s Schedule (essay, 2009)."},
+  {id:"ultradian",n:"90-Minute Focus Cycles",f:"focus",m:"solo",t:90,rec:true,fm:"casual",out:["me"],
+   d:["timeline",["Focus 90","Rest 20","Focus 90","Rest 20"]],
+   why:"Matches demanding work to a rhythm many people notice in their own attention, with a real break at each end.",
+   solo:["Work in 90-minute blocks on demanding work.","Take a real break after each: stand, walk, do not check messages.","Schedule the hardest work for your usual peak hours."],
+   team:["Group the team's heavy tasks into the same cycles, so meetings land in the rest periods."],
+   ex:"Two focus cycles before lunch for the hardest piece of writing.",
+   src:"Nathaniel Kleitman, rest-activity cycle research (1950s to 1960s). The 90-minute block is a popular extension, not a settled finding."},
+  {id:"eat-the-frog",n:"Eat the Frog",f:"focus",m:"solo",t:15,rec:true,fm:"casual",out:["me"],
+   d:["flow",["Pick the task you most avoid","Do it first","Then the rest of the list"]],
+   why:"Starts the day with the task you would most like to put off, while your attention is still fresh.",
+   solo:["Each evening, choose the task you are most likely to avoid tomorrow.","Do it first thing, before email.","Then work through the rest of the list."],
+   team:["Each person names their 'frog' in the team channel at the start of the day.","At the end of the day, share the blocker, not only the result."],
+   ex:"Writing the difficult feedback before opening the inbox.",
+   src:"Brian Tracy, Eat That Frog! (2001). The phrase is also attributed to Mark Twain; that attribution is not verified."},
+
+  /* DECIDE */
+  {id:"pros-cons",n:"Pros and Cons",f:"decide",m:"both",t:15,rec:false,fm:"casual",out:["me","manager"],
+   d:["columns",["Pros","Cons"]],
+   why:"Puts both sides on paper, so a gut feeling has to justify itself.",
+   solo:["Draw two columns: pros and cons.","Write at least five items in each, even weak ones.","Mark the two strongest items on each side, and decide."],
+   team:["Each person writes their own list silently first.","Merge the lists, then discuss only the items where people disagree."],
+   ex:"Accepting an international transfer: pros (career, language), cons (distance from family, cost).",
+   src:"Benjamin Franklin, letter to Joseph Priestley (1772)."},
+  {id:"six-hats",n:"Six Thinking Hats",f:"decide",m:"team",t:60,rec:false,fm:"structured",out:["manager","clients"],
+   d:["columns",["White: facts","Red: feelings","Black: risks","Yellow: benefits","Green: ideas","Blue: process"]],
+   why:"Gives a group one way of thinking at a time, so critics and optimists stop talking over each other.",
+   solo:["Write the decision on a page.","Spend five minutes on each hat: facts, feelings, risks, benefits, ideas, process.","Decide after the blue hat, not before."],
+   team:["A facilitator calls each hat. Everyone speaks only in that mode.","Keep each hat's list on a shared board until the next hat starts."],
+   ex:"A pricing change: facts (churn data), risks (small customers), benefits (margin).",
+   src:"Edward de Bono, Six Thinking Hats (1985)."},
+  {id:"premortem",n:"Pre-mortem",f:"decide",m:"team",t:30,rec:false,fm:"structured",out:["manager","clients"],
+   d:["flow",["Imagine the decision has failed","Each person writes why","Group the causes","Assign a fix to each cause"]],
+   why:"Asks the team to assume failure in advance, which brings out risks people would hesitate to raise.",
+   solo:["Imagine it is a year from now and the decision failed.","Write three reasons it failed.","For each reason, decide one action that lowers the risk."],
+   team:["Each person writes their reason on a card, silently.","Read them out, group similar ones, and assign an owner to each group."],
+   ex:"A product launch fails because 'the sales team never got the demo'.",
+   src:"Gary Klein, Harvard Business Review (2007)."},
+  {id:"regret",n:"Regret Minimisation",f:"decide",m:"solo",t:20,rec:false,fm:"casual",out:["me"],
+   d:["timeline",["Now","Age 80: looking back"]],
+   why:"Places a large decision on a long time line, so the question becomes which regret you would rather avoid.",
+   solo:["Imagine you are 80, looking back on this decision.","Ask which choice you would regret not making.","Write the answer in one sentence, then check it against the facts."],
+   team:["Each person writes their answer, then the group discusses the reasons, not the answers."],
+   ex:"Start a company now, or stay in a stable role.",
+   src:"Often attributed to Jeff Bezos, who described it in interviews. No written source."},
+  {id:"second-order",n:"Second-Order Thinking",f:"decide",m:"both",t:30,rec:false,fm:"structured",out:["manager","clients"],
+   d:["tree",{root:"Decision",kids:["First-order effect","Second-order effect","Third-order effect"]}],
+   why:"Looks past the immediate result to what that result will cause next.",
+   solo:["Write the decision and its immediate effect (first order).","Ask 'and then what?' for the next two effects.","Decide only after you have looked at the second-order effects."],
+   team:["Each person traces one chain of effects. Compare where the chains end.","Name who is affected at each step."],
+   ex:"Cutting prices: first order, more sales. Second order, pressure on margins and on the support team.",
+   src:"A common idea in decision-making writing; Howard Marks’ investment memos use it. No verified first author."},
+  {id:"kano-grid",n:"Kano Model (feature grid)",f:"decide",m:"team",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["grid",{cols:["Feature","If missing","If present","Category"],rows:["Feature A","Feature B"]}],
+   why:"Separates features people expect from features that delight them, so you do not over-invest in basics.",
+   solo:["List the features. For each one, ask: how would I feel if it were present? If it were missing?","Classify each as must-have, performance, delighter, or indifferent.","Fund the must-haves first, then the delighters."],
+   team:["Survey 10 to 20 customers with the same two questions.","Compare the answers with what the team assumed."],
+   ex:"Fast loading is a must-have. A personal welcome message is a delighter.",
+   src:"Noriaki Kano and colleagues (1984)."},
+  {id:"cost-benefit",n:"Cost–Benefit Analysis",f:"decide",m:"team",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["grid",{cols:["Costs","Benefits","Net"],rows:["Option A","Option B"]}],
+   why:"Turns a choice into money, time or risk, so the trade-off can be compared side by side.",
+   solo:["List every cost (money, time, effort) over the period.","List every benefit in the same units.","Subtract costs from benefits, and compare the options."],
+   team:["Agree the time period and the unit before estimating.","Keep the estimates and their assumptions in one shared sheet."],
+   ex:"Automating a monthly report saves six hours a month, for a set-up cost of two days.",
+   src:"Jules Dupuit (1844, public works). Modern form in economics and public policy."},
+  {id:"expected-value",n:"Expected Value",f:"decide",m:"solo",t:20,rec:false,fm:"structured",out:["me","manager"],
+   d:["grid",{cols:["Probability","Value","Weighted"],rows:["Outcome A","Outcome B"]}],
+   why:"Weighs each possible result by its likelihood, so a risky option with a large upside is judged fairly.",
+   solo:["List each possible outcome with a probability. The probabilities add up to 100%.","Estimate the value of each outcome in one unit.","Multiply each probability by its value, then add the results. Compare the totals."],
+   team:["Agree the probabilities together, and write down who estimated each one.","Show the spread of outcomes, not only the average."],
+   ex:"A 30% chance of a 10,000 contract and a 70% chance of nothing: expected value 3,000.",
+   src:"Blaise Pascal and Pierre de Fermat, correspondence (1654)."},
+  {id:"dot-voting",n:"Dot Voting",f:"decide",m:"team",t:15,rec:true,fm:"casual",out:["manager","clients"],
+   d:["columns",["Idea A","Idea B","Idea C","Idea D"]],
+   why:"Shows a group's preferences in seconds. Each person spends a fixed number of dots.",
+   solo:["List the options and rank them by gut feeling, scoring each from 1 to 3.","Test the top two in a small way before choosing.","Write down why the other options were dropped."],
+   team:["Give each person three dots, or five for a long list.","Place the dots on the options. The top counts go to discussion.","Discuss the top three before deciding."],
+   ex:"Four ideas on a wall: two get most of the dots, and the group discusses only those.",
+   src:"Dave Gray, Gamestorming (2010)."},
+  {id:"reversibility",n:"One-Way or Two-Way Door",f:"decide",m:"both",t:10,rec:true,fm:"casual",out:["me","manager"],
+   d:["matrix",{x:"Reversible? No → Yes",y:"Cost of a mistake ↑",q:["Slow down","Test small","Decide now","Just decide"]}],
+   why:"Sorts decisions by how hard they are to undo, so reversible ones do not wait for a perfect answer.",
+   solo:["Write the decision and ask: can I undo this in a few weeks, at low cost?","If yes (a two-way door), decide quickly and learn from the result.","If no (a one-way door), gather evidence and sleep on it before you decide."],
+   team:["Name the owner of the decision and whether it is one-way.","Teams decide two-way doors locally, and bring one-way doors to the group."],
+   ex:"Trying a new tool for a month is a two-way door. Signing a three-year contract is a one-way door.",
+   src:"Jeff Bezos, Amazon shareholder letter (2015), on one-way and two-way doors."},
+
+  /* REVIEW */
+  {id:"four-ls",n:"4Ls Retrospective",f:"review",m:"team",t:45,rec:true,fm:"casual",out:["manager"],
+   d:["columns",["Liked","Learned","Lacked","Longed for"]],
+   why:"Adds 'lacked' and 'longed for' to a retrospective, so people name what was missing, not only what went wrong.",
+   solo:["Write one line per column about your last project or week.","Choose one 'lacked' item and one 'longed for' item to act on.","Put both actions in your calendar for next week."],
+   team:["Silent writing first, for five minutes. Then group the notes.","Give each action an owner and a due date."],
+   ex:"Liked: daily check-ins. Lacked: a clear owner for design. Longed for: a test environment.",
+   src:"No verified single author. Used in agile retrospectives since the 2000s."},
+  {id:"start-stop-continue",n:"Start, Stop, Continue",f:"review",m:"team",t:45,rec:true,fm:"casual",out:["manager"],
+   d:["columns",["Start","Stop","Continue"]],
+   why:"Turns feedback into three kinds of action: what to begin, what to end, and what to keep.",
+   solo:["Write three lists for the last week: start, stop, continue.","Pick one item from Start and one from Stop.","Test them next week, and note the result."],
+   team:["Silent writing, then cluster the notes and vote on the top three.","Assign an owner to each action, and review it at the next retrospective."],
+   ex:"Start: 15-minute written updates. Stop: status meetings. Continue: Friday demos.",
+   src:"No verified single author. Common in agile team retrospectives."},
+  {id:"plus-delta",n:"Plus / Delta",f:"review",m:"team",t:15,rec:true,fm:"casual",out:["manager"],
+   d:["columns",["Plus (keep)","Delta (change)"]],
+   why:"Two columns and no judgement: what worked, and what should change next time.",
+   solo:["Write what worked and what to change, for the last piece of work.","Make one change before the next piece of work."],
+   team:["Ask each person for one plus and one delta.","Group the deltas and assign one owner per change."],
+   ex:"Plus: a clear agenda. Delta: start the call with the decision, not the background.",
+   src:"No verified single author. Widely used in agile teams."},
+  {id:"sailboat",n:"Sailboat Retrospective",f:"review",m:"team",t:60,rec:false,fm:"casual",out:["manager"],
+   d:["columns",["Wind (helps us)","Anchors (slows us)","Rocks (risks)","Island (goal)"]],
+   why:"A picture of the team's journey: what speeds it up, what holds it back, and what lies ahead.",
+   solo:["Draw a boat on a page with those four parts.","Fill each part for a project you finished.","Pick one anchor you could remove."],
+   team:["Draw the boat on a shared board. Each person adds sticky notes.","Vote on the top anchor and the top rock."],
+   ex:"Wind: the design review loop. Anchor: waiting for legal. Rock: a vendor's deadline.",
+   src:"No verified single author. A common agile retrospective format."},
+  {id:"blameless",n:"Blameless Post-mortem",f:"review",m:"team",t:60,rec:false,fm:"formal",out:["manager","clients"],
+   d:["flow",["What happened","Timeline of events","Contributing factors","What we change","Owners and dates"]],
+   why:"Studies a failure by its systems, not its people, so the next incident is less likely and problems get reported sooner.",
+   solo:["Write the timeline of what happened, from the first sign to recovery.","List the contributing factors, not a single cause.","Write three changes, each with an owner and a date."],
+   team:["Hold the review within a week of the event.","The facilitator keeps the discussion on systems, not on who acted."],
+   ex:"A bad deploy: the review finds the test suite was skipped under time pressure.",
+   src:"John Allspaw and the Etsy engineering team, on blameless post-mortems (2012)."},
+  {id:"okr-review",n:"OKR Review",f:"review",m:"team",t:45,rec:true,fm:"formal",out:["manager","clients"],
+   d:["grid",{cols:["Key result 1","Key result 2","Score (0 to 1)"],rows:["Objective"]}],
+   why:"Checks progress toward a few measurable results each quarter, not a list of tasks.",
+   solo:["Write one objective and two or three key results, each with a number.","Score each key result from 0 to 1 at the end of the period.","Write one change for the next period."],
+   team:["Each owner scores their key results before the review.","Discuss only the scores below 0.6, and what would move them."],
+   ex:"Objective: onboard new clients faster. Key result: time to first session down from 14 days to 7 (an example).",
+   src:"Andy Grove, High Output Management (1983). John Doerr, Measure What Matters (2018)."},
+  {id:"lessons-log",n:"Lessons Learned Log",f:"review",m:"both",t:20,rec:true,fm:"structured",out:["manager"],
+   d:["grid",{cols:["What happened","Lesson","Next time we will"],rows:["Entry 1","Entry 2","Entry 3"]}],
+   why:"Keeps lessons in one place, written as actions, so the next project starts with them.",
+   solo:["Keep one document with three columns: what happened, the lesson, and the action.","Add an entry at the end of each piece of work.","Read the log before you start the next one."],
+   team:["Add entries during the retrospective, and keep the log in the team's shared folder.","Read the log at the kick-off of every new project."],
+   ex:"Happened: the brief changed twice. Lesson: lock the brief in writing. Next time: sign-off before work starts.",
+   src:"Standard project management practice, described in the PMI PMBOK Guide."},
+  {id:"monthly-review",n:"Monthly Review",f:"review",m:"solo",t:30,rec:true,fm:"casual",out:["me"],
+   d:["timeline",["Week 1","Week 2","Week 3","Week 4","Next month"]],
+   why:"Looks at four weeks at once, so patterns that a weekly review misses become visible.",
+   solo:["Once a month, read your four weekly reviews.","Write down three things that repeated, and one thing you would change.","Set the one goal for next month."],
+   team:["Run a monthly team meeting using the same three questions and a shared document."],
+   ex:"Three months in a row the Monday review slipped. The fix was moving it to Friday.",
+   src:"Adapted from the weekly review in David Allen, Getting Things Done (2001)."},
+  {id:"glad-sad-mad",n:"Glad, Sad, Mad",f:"review",m:"team",t:15,rec:true,fm:"casual",out:["manager"],
+   d:["columns",["Glad","Sad","Mad"]],
+   why:"A quick emotional check after a sprint or project, when the team needs to say how it felt, not only what happened.",
+   solo:["Write three lines: what made you glad, sad and mad.","Pick the item in Mad and decide what you will do about it."],
+   team:["Each person writes one note per column.","Group the notes, and choose one action from the Mad column."],
+   ex:"Glad: quick decisions. Sad: a missed demo. Mad: last-minute scope changes.",
+   src:"No verified single author. Common in agile retrospectives."},
+  {id:"after-action",n:"After-Action Review",f:"review",m:"team",t:45,rec:false,fm:"formal",out:["manager","clients"],
+   d:["flow",["What was supposed to happen?","What actually happened?","Why was there a difference?","Sustain or improve?"]],
+   why:"Four questions asked straight after an event, to learn from what went differently from the plan.",
+   solo:["Write what you planned to happen, and what happened.","Explain each difference in one sentence.","Choose one thing to sustain and one thing to improve."],
+   team:["Hold it within 24 hours, while people still remember the details.","Everyone speaks. The leader speaks last."],
+   ex:"A client workshop ran 30 minutes over. The reason: an unplanned Q&A.",
+   src:"US Army, After Action Review (formalised in the 1970s)."}
+];
+
+/* ---------- helpers ---------- */
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+function byId(id){for(var i=0;i<TOOLS.length;i++){if(TOOLS[i].id===id)return TOOLS[i];}return null;}
+function firstSentence(s){var m=String(s).match(/^.*?[.!?](\s|$)/);return m?m[0].trim():s;}
+function modeBadge(t){return '<span class="badge'+(t.m==="team"?" team":"")+'">'+MODE[t.m]+'</span>';}
+
+/* ---------- diagrams (black on white) ---------- */
+
+function wrapText(str,maxPx,fs){
+  var max=Math.max(6,Math.floor(maxPx/(fs*0.56)));
+  var words=String(str).split(/\s+/),lines=[],cur="";
+  for(var i=0;i<words.length;i++){
+    var next=cur?cur+" "+words[i]:words[i];
+    if(next.length<=max||!cur){cur=next;}else{lines.push(cur);cur=words[i];}
+  }
+  if(cur)lines.push(cur);
+  return lines;
+}
+function T(x,y,str,o){
+  o=o||{};
+  var fs=o.fs||14,w=o.w||120,anchor=o.anchor||"middle",max=o.max||3,weight=o.weight||400;
+  if(!str)return "";
+  var lines=wrapText(str,w,fs).slice(0,max);
+  var lh=fs*1.22,y0=y-(lines.length-1)*lh/2;
+  var spans="";
+  for(var i=0;i<lines.length;i++){spans+='<tspan x="'+x+'"'+(i?' dy="'+lh+'"':'')+'>'+esc(lines[i])+'</tspan>';}
+  return '<text x="'+x+'" y="'+y0.toFixed(1)+'" font-size="'+fs+'" font-weight="'+weight+'" text-anchor="'+anchor+'" dominant-baseline="central" fill="#0D0D0D" stroke="none">'+spans+'</text>';
+}
+var SVG_OPEN='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400" width="640" height="400" font-family="Helvetica, Arial, sans-serif" fill="none" stroke="#0D0D0D" stroke-width="1.5">'+
+  '<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0D0D0D" stroke="none"/></marker>'+
+  '<pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#0D0D0D" stroke-width="1.2"/></pattern></defs>';
+
+function diagramSVG(d,blank){
+  var kind=d[0],p=d[1],s="",i;
+  function L(arr,k){return blank?"Step "+(k+1):arr[k];}
+  if(kind==="matrix"){
+    s+='<rect x="90" y="36" width="500" height="290" fill="#FFFFFF"/><line x1="340" y1="36" x2="340" y2="326"/><line x1="90" y1="181" x2="590" y2="181"/>';
+    s+=T(106,72,p.q[0],{anchor:"start",w:220,fs:17,weight:700,max:2});
+    s+=T(356,72,p.q[1],{anchor:"start",w:220,fs:17,weight:700,max:2});
+    s+=T(106,216,p.q[2],{anchor:"start",w:220,fs:17,weight:700,max:2});
+    s+=T(356,216,p.q[3],{anchor:"start",w:220,fs:17,weight:700,max:2});
+    s+=T(340,366,p.x,{fs:16,w:480,max:1});
+    s+='<text transform="translate(50,181) rotate(-90)" text-anchor="middle" font-size="16" fill="#0D0D0D" stroke="none">'+esc(p.y)+'</text>';
+  }
+  else if(kind==="cycle"){
+    var n=p.length,cx=320,cy=200,R=130,r=56,pos=[];
+    for(i=0;i<n;i++){var a=-Math.PI/2+i*2*Math.PI/n;pos.push([cx+R*Math.cos(a),cy+R*Math.sin(a)]);}
+    for(i=0;i<n;i++){
+      var x1=pos[i][0],y1=pos[i][1],x2=pos[(i+1)%n][0],y2=pos[(i+1)%n][1];
+      var dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len;
+      s+='<line x1="'+(x1+ux*(r+4)).toFixed(1)+'" y1="'+(y1+uy*(r+4)).toFixed(1)+'" x2="'+(x2-ux*(r+8)).toFixed(1)+'" y2="'+(y2-uy*(r+8)).toFixed(1)+'" marker-end="url(#arr)"/>';
+    }
+    for(i=0;i<n;i++){s+='<circle cx="'+pos[i][0].toFixed(1)+'" cy="'+pos[i][1].toFixed(1)+'" r="'+r+'" fill="#FFFFFF"/>'+T(pos[i][0],pos[i][1],L(p,i),{w:100,fs:15,max:3});}
+  }
+  else if(kind==="columns"){
+    var k=p.length,gap=12,x0=24,cw=(592-gap*(k-1))/k;
+    for(i=0;i<k;i++){
+      var x=x0+i*(cw+gap);
+      s+='<rect x="'+x.toFixed(1)+'" y="30" width="'+cw.toFixed(1)+'" height="56" fill="#FFFFFF"/>'+T(x+cw/2,58,p[i],{w:cw-12,fs:k>4?14:16,weight:700,max:2});
+      var ys=[100,180,260];
+      for(var j=0;j<ys.length;j++){s+='<rect x="'+(x+8).toFixed(1)+'" y="'+ys[j]+'" width="'+(cw-16).toFixed(1)+'" height="60" fill="#FFFFFF"/>';}
+    }
+  }
+  else if(kind==="flow"){
+    var fn=p.length,fg=22,bh=Math.min(56,(340-(fn-1)*fg)/fn),top=(400-(fn*bh+(fn-1)*fg))/2;
+    for(i=0;i<fn;i++){
+      var fy=top+i*(bh+fg);
+      s+='<rect x="130" y="'+fy.toFixed(1)+'" width="380" height="'+bh.toFixed(1)+'" fill="#FFFFFF"/>'+T(320,fy+bh/2,L(p,i),{w:356,fs:17,max:2});
+      if(i<fn-1){s+='<line x1="320" y1="'+(fy+bh+2).toFixed(1)+'" x2="320" y2="'+(fy+bh+fg-2).toFixed(1)+'" marker-end="url(#arr)"/>';}
+    }
+  }
+  else if(kind==="tree"){
+    var kids=p.kids,kn=kids.length,kw=Math.min(150,(600-(kn-1)*12)/kn),total=kn*kw+(kn-1)*12,kx0=320-total/2,cyb=160,ky=214,kh=56;
+    s+='<rect x="200" y="36" width="240" height="56" fill="#FFFFFF"/>'+T(320,64,blank?"Topic":p.root,{w:220,fs:17,weight:700,max:2});
+    s+='<line x1="320" y1="92" x2="320" y2="'+cyb+'"/>';
+    var cxs=[];for(i=0;i<kn;i++){cxs.push(kx0+i*(kw+12)+kw/2);}
+    s+='<line x1="'+cxs[0].toFixed(1)+'" y1="'+cyb+'" x2="'+cxs[kn-1].toFixed(1)+'" y2="'+cyb+'"/>';
+    for(i=0;i<kn;i++){
+      s+='<line x1="'+cxs[i].toFixed(1)+'" y1="'+cyb+'" x2="'+cxs[i].toFixed(1)+'" y2="'+ky+'"/>';
+      s+='<rect x="'+(cxs[i]-kw/2).toFixed(1)+'" y="'+ky+'" width="'+kw.toFixed(1)+'" height="'+kh+'" fill="#FFFFFF"/>'+T(cxs[i],ky+kh/2,blank?"Branch "+(i+1):kids[i],{w:kw-14,fs:15,max:3});
+    }
+  }
+  else if(kind==="timeline"){
+    var tn=p.length,x0t=40,x1t=600,ty=200;
+    s+='<line x1="'+x0t+'" y1="'+ty+'" x2="'+x1t+'" y2="'+ty+'"/>';
+    for(i=0;i<tn;i++){
+      var tx=x0t+(i+0.5)*(x1t-x0t)/tn,up=(i%2===0),ly=up?128:272;
+      s+='<line x1="'+tx.toFixed(1)+'" y1="'+(up?ty-8:ty+8)+'" x2="'+tx.toFixed(1)+'" y2="'+(up?ly+18:ly-18)+'"/>';
+      s+='<circle cx="'+tx.toFixed(1)+'" cy="'+ty+'" r="6" fill="#FFFFFF"/>';
+      s+=T(tx,ly,L(p,i),{w:Math.min(150,2*(x1t-x0t)/tn-10),fs:15,max:3});
+    }
+  }
+  else if(kind==="bars"){
+    var bn=p.length,rowH=Math.min(64,300/bn),btop=(400-bn*rowH)/2+rowH/2,bx0=236,bw=380;
+    for(i=0;i<bn;i++){
+      var by=btop+i*rowH,row=p[i];
+      s+=T(24,by,blank?"Item "+(i+1):row[0],{anchor:"start",w:200,fs:16,max:2});
+      s+='<rect x="'+bx0+'" y="'+(by-11).toFixed(1)+'" width="'+bw+'" height="22" fill="#FFFFFF"/>';
+      if(!blank){s+='<rect x="'+(bx0+row[1]*bw).toFixed(1)+'" y="'+(by-11).toFixed(1)+'" width="'+((row[2]-row[1])*bw).toFixed(1)+'" height="22" fill="url(#hatch)"/>';}
+    }
+  }
+  else if(kind==="steps"){
+    var sn=p.length,sg=8,sw=(600-sg*(sn-1))/sn,base=372;
+    for(i=0;i<sn;i++){
+      var sh=300-i*(200/Math.max(sn-1,1)),sx=20+i*(sw+sg);
+      s+='<rect x="'+sx.toFixed(1)+'" y="'+(base-sh).toFixed(1)+'" width="'+sw.toFixed(1)+'" height="'+sh.toFixed(1)+'" fill="#FFFFFF"/>'+T(sx+sw/2,base-sh+44,L(p,i),{w:sw-16,fs:16,max:3});
+    }
+  }
+  else if(kind==="grid"){
+    var gc=p.cols.length,lw=170,gcw=(600-lw)/gc,hh=44,rows=p.rows,rh=Math.min(60,(340-hh)/rows.length),gx0=20,gy0=30,gh=hh+rh*rows.length;
+    s+='<rect x="'+gx0+'" y="'+gy0+'" width="600" height="'+gh+'" fill="#FFFFFF"/>';
+    s+='<line x1="'+gx0+'" y1="'+(gy0+hh)+'" x2="'+(gx0+600)+'" y2="'+(gy0+hh)+'"/>';
+    s+='<line x1="'+(gx0+lw)+'" y1="'+gy0+'" x2="'+(gx0+lw)+'" y2="'+(gy0+gh)+'"/>';
+    for(i=1;i<gc;i++){var gx=gx0+lw+i*gcw;s+='<line x1="'+gx.toFixed(1)+'" y1="'+gy0+'" x2="'+gx.toFixed(1)+'" y2="'+(gy0+gh)+'"/>';}
+    for(i=0;i<gc;i++){s+=T(gx0+lw+i*gcw+gcw/2,gy0+hh/2,p.cols[i],{w:gcw-12,fs:15,weight:700,max:2});}
+    for(i=0;i<rows.length;i++){
+      var ry=gy0+hh+i*rh;
+      if(i>0){s+='<line x1="'+gx0+'" y1="'+ry+'" x2="'+(gx0+600)+'" y2="'+ry+'"/>';}
+      s+=T(gx0+12,ry+rh/2,rows[i],{anchor:"start",w:lw-22,fs:16,weight:700,max:2});
+    }
+  }
+  return SVG_OPEN+s+'</svg>';
+}
+
+/* ---------- matching ---------- */
+
+function summary(p){
+  var parts=[];
+  var labels={me:"Just me",team:"My team",both:"Me and my team",short:"Under 15 min",medium:"15 to 60 min",long:"More than an hour",once:"Once",regular:"Regularly",casual:"Casual",structured:"Structured",formal:"Formal",manager:"My manager",clients:"Clients or stakeholders"};
+  if(p.who)parts.push(labels[p.who]);
+  if(p.time)parts.push(labels[p.time]);
+  if(p.freq)parts.push(labels[p.freq]);
+  if(p.fm)parts.push(labels[p.fm]);
+  if(p.aud)parts.push(labels[p.aud]);
+  return parts.join(" · ");
+}
+function match(p){
+  var maxT=p.time==="short"?15:(p.time==="medium"?60:9999);
+  var pool=TOOLS.filter(function(t){return t.f===p.need;});
+  var fitting=pool.filter(function(t){return t.t<=maxT;}),note="";
+  if(!fitting.length){fitting=pool;note="No tool in this family fits that much time, so all of them are shown.";}
+  var FORM=["casual","structured","formal"];
+  var scored=fitting.map(function(t){
+    var s=0,why=[];
+    if(p.who==="me"){if(t.m!=="team"){s+=3;why.push("works alone");}}
+    else if(p.who==="team"){if(t.m!=="solo"){s+=3;why.push("built for a team");}}
+    else if(p.who==="both"){if(t.m==="both"){s+=3;why.push("works alone or in a team");}else{s+=1;}}
+    if(p.freq==="regular"&&t.rec){s+=1;why.push("works as a habit");}
+    if(p.freq==="once"&&!t.rec){s+=1;why.push("a single session");}
+    if(p.fm){var d=Math.abs(FORM.indexOf(t.fm)-FORM.indexOf(p.fm));if(d===0){s+=2;why.push(FM_LABEL[t.fm]+" style");}else if(d===1){s+=1;}}
+    if(p.aud&&t.out.indexOf(p.aud)>-1){s+=2;why.push("fits your audience");}
+    return {t:t,s:s,why:why};
+  });
+  scored.sort(function(a,b){return (b.s-a.s)||(a.t.t-b.t.t)||a.t.n.localeCompare(b.t.n);});
+  return {list:scored,note:note};
+}
+
+/* ---------- views ---------- */
+
+var app=document.getElementById("app");
+
+function route(){
+  var h=location.hash.replace(/^#\/?/,"");
+  var parts=h.split("?");
+  var params={};
+  if(parts[1]){new URLSearchParams(parts[1]).forEach(function(v,k){params[k]=v;});}
+  return {path:parts[0]||"",params:params};
+}
+
+function qBlock(p){
+  return QUESTIONS.map(function(q){
+    var cur=p[q.key];
+    var opts=q.opts.map(function(o){
+      var on=cur===o[0];
+      return '<label class="opt'+(on?' on':'')+'"><input type="radio" name="'+q.key+'" value="'+o[0]+'"'+(on?' checked':'')+'><b>'+esc(o[1])+'</b>'+(o[2]?'<small>'+esc(o[2])+'</small>':'')+'</label>';
+    }).join("");
+    return '<fieldset><legend>'+esc(q.q)+(q.req?'<span class="tag">Required</span>':'<span class="tag">Optional</span>')+'</legend><div class="opts">'+opts+'</div></fieldset>';
+  }).join("");
+}
+
+function viewStart(p,warn){
+  return '<section><h1>50 productivity frameworks, matched to your work.</h1>'+
+    '<p class="lede">Answer a few questions. Each framework comes with what it is for, how to run it alone or with a team, a diagram, and a slide template you can download.</p></section>'+
+    '<form id="find" class="qform" novalidate>'+qBlock(p)+
+    '<div class="actions"><button class="btn" type="submit" id="go" disabled>Show my tools</button><a class="btn ghost" href="#/all">Browse all 50</a></div>'+
+    '<p class="hint" id="need-note">'+(warn||'Answer the three required questions to continue.')+'</p></form>';
+}
+
+function rowHTML(t,why){
+  return '<a class="row" href="#/tool/'+t.id+'">'+
+    '<div><span class="rn">'+esc(t.n)+'</span><div class="rf">'+FAM[t.f]+' · '+t.t+' min</div></div>'+
+    '<div class="meta">'+modeBadge(t)+'</div>'+
+    '<p class="rw">'+esc(firstSentence(t.why))+'</p>'+
+    (why&&why.length?'<p class="fit">Fits: '+esc(why.join(", "))+'</p>':'')+
+    '</a>';
+}
+
+function viewResults(p){
+  var m=match(p);
+  var name=FAM[p.need].toLowerCase();
+  return '<p class="crumb"><a href="#/">Change answers</a></p>'+
+    '<section><h1>'+m.list.length+' tools to '+name+'.</h1>'+
+    '<p class="lede">'+esc(summary(p))+'</p>'+
+    (m.note?'<p class="hint">'+esc(m.note)+'</p>':'')+'</section>'+
+    '<div class="list">'+m.list.map(function(x){return rowHTML(x.t,x.why);}).join("")+'</div>'+
+    '<p class="hint">Not what you need? <a href="#/all">Browse all 50 tools</a>.</p>';
+}
+
+function viewAll(){
+  var out='<p class="crumb"><a href="#/">Find tools by your situation</a></p><section><h1>All 50 tools.</h1><p class="lede">Grouped in five families. Each row shows whether the tool is for you alone, a team, or both.</p></section>';
+  Object.keys(FAM).forEach(function(f){
+    var list=TOOLS.filter(function(t){return t.f===f;});
+    out+='<section class="section-head"><h2>'+FAM[f]+'</h2><p class="hint">'+FAM_HINT[f]+'</p><div class="list">'+list.map(function(t){return rowHTML(t,null);}).join("")+'</div></section>';
+  });
+  return out;
+}
+
+function viewTool(id){
+  var t=byId(id);
+  if(!t)return viewStart({},"That tool does not exist. Answer the questions to find one.");
+  return '<p class="crumb"><a href="#/">Find tools</a> · <a href="#/all">All 50</a></p>'+
+    '<h1>'+esc(t.n)+'</h1>'+
+    '<div class="meta"><span class="rf">'+FAM[t.f]+'</span>'+modeBadge(t)+'<span class="rf">'+t.t+' min</span></div>'+
+    '<div class="tool" style="margin-top:22px">'+
+      '<div>'+
+        '<div class="sec"><h2>Why it works</h3><p>'+esc(t.why)+'</p></div>'+
+        '<div class="sec"><h2>Run it alone</h3><ol>'+t.solo.map(function(s){return '<li>'+esc(s)+'</li>';}).join("")+'</ol></div>'+
+        '<div class="sec"><h2>Run it with a team</h3><ol>'+t.team.map(function(s){return '<li>'+esc(s)+'</li>';}).join("")+'</ol></div>'+
+        '<div class="sec"><h2>Example</h3><p>'+esc(t.ex)+'</p></div>'+
+        '<div class="sec"><h2>Source</h3><p class="src">'+esc(t.src)+'</p></div>'+
+        '<div class="dl"><button class="btn" id="dl" type="button">Download slide template (.pptx)</button>'+
+          '<p class="hint" id="dlmsg">8 slides in English, with your LinkedIn on each. Built in your browser; nothing is uploaded.</p></div>'+
+      '</div>'+
+      '<figure class="card" aria-label="Diagram of '+esc(t.n)+'">'+diagramSVG(t.d,false)+
+        '<figcaption class="hint">Diagram: black and white, so you can copy it into your own tools.</figcaption></figure>'+
+    '</div>';
+}
+
+function render(){
+  var r=route(),html;
+  if(r.path==="results"){
+    var missing=["need","who","time"].filter(function(k){return !r.params[k];});
+    html=missing.length?viewStart(r.params,"Answer the three required questions to see tools."):viewResults(r.params);
+  }
+  else if(r.path==="all"){html=viewAll();}
+  else if(r.path.indexOf("tool/")===0){html=viewTool(r.path.slice(5));}
+  else{html=viewStart(r.params);}
+  app.innerHTML=html;
+  document.title=(r.path.indexOf("tool/")===0&&byId(r.path.slice(5))?byId(r.path.slice(5)).n+" · ":"")+"Productivity Library · Day 4/30";
+  wireForm();
+  wireDownload();
+}
+
+/* ---------- form ---------- */
+
+function refreshGo(){
+  var form=document.getElementById("find");if(!form)return;
+  var ok=["need","who","time"].every(function(k){return form.querySelector('input[name="'+k+'"]:checked');});
+  document.getElementById("go").disabled=!ok;
+  document.getElementById("need-note").style.display=ok?"none":"";
+}
+function wireForm(){
+  var form=document.getElementById("find");if(!form)return;
+  refreshGo();
+  form.addEventListener("change",function(e){
+    if(e.target.type!=="radio")return;
+    var fs=e.target.closest("fieldset");
+    fs.querySelectorAll(".opt").forEach(function(o){o.classList.toggle("on",o.contains(e.target));});
+    refreshGo();
+  });
+  form.addEventListener("submit",function(e){
+    e.preventDefault();
+    var data=new FormData(form),p={};
+    data.forEach(function(v,k){if(v)p[k]=v;});
+    location.hash="#/results?"+new URLSearchParams(p).toString();
+  });
+}
+
+/* ---------- slide template (.pptx, built in the browser) ---------- */
+
+var PPTX_SRC="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js";
+function loadPptx(){
+  return new Promise(function(resolve,reject){
+    var have=window.PptxGenJS||window.pptxgen;
+    if(have)return resolve(have);
+    var s=document.createElement("script");
+    s.src=PPTX_SRC;
+    s.onload=function(){var P=window.PptxGenJS||window.pptxgen;P?resolve(P):reject(new Error("no pptx"));};
+    s.onerror=function(){reject(new Error("load failed"));};
+    document.head.appendChild(s);
+  });
+}
+function svgPng(svg){
+  return new Promise(function(resolve,reject){
+    var img=new Image();
+    img.onload=function(){
+      var c=document.createElement("canvas");c.width=1280;c.height=800;
+      var x=c.getContext("2d");x.fillStyle="#FFFFFF";x.fillRect(0,0,c.width,c.height);
+      x.drawImage(img,0,0,c.width,c.height);
+      resolve(c.toDataURL("image/png"));
+    };
+    img.onerror=function(){reject(new Error("svg"));};
+    img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svg);
+  });
+}
+var INK="0D0D0D",GREY="5C5C58",ACC="FF4D1A",FF="Arial",LI="linkedin.com/in/salahkhenissi";
+function frame(pptx,t,n,title){
+  var s=pptx.addSlide();
+  s.background={color:"FFFFFF"};
+  s.addShape(pptx.ShapeType.rect,{x:0.6,y:0.5,w:0.6,h:0.09,fill:{color:ACC},line:{type:"none"}});
+  s.addText(FAM[t.f]+"  ·  "+MODE[t.m]+"  ·  "+t.t+" min",{x:0.6,y:0.68,w:9,h:0.35,fontFace:FF,fontSize:12,color:GREY,margin:0});
+  if(title)s.addText(title,{x:0.6,y:1.02,w:12,h:0.8,fontFace:FF,fontSize:34,bold:true,color:INK,margin:0});
+  s.addText("Salah Khenissi  ·  "+LI,{x:0.6,y:6.95,w:7,h:0.3,fontFace:FF,fontSize:10,color:GREY,margin:0});
+  s.addText("The Unfinished 30  ·  Day 4  ·  "+n+"/8",{x:6.7,y:6.95,w:6.03,h:0.3,fontFace:FF,fontSize:10,color:GREY,align:"right",margin:0});
+  return s;
+}
+function numbered(arr){return arr.map(function(x,i){return {text:(i+1)+". "+x,options:{breakLine:true,paraSpaceAfter:10}};});}
+function bullets(arr){return arr.map(function(x){return {text:x,options:{bullet:true,breakLine:true,paraSpaceAfter:12}};});}
+function buildSlides(pptx,t,img,blank){
+  var s1=frame(pptx,t,1,null);
+  s1.addText(t.n,{x:0.6,y:2.1,w:12,h:1.8,fontFace:FF,fontSize:60,bold:true,color:INK,margin:0,valign:"bottom"});
+  s1.addText("Slide template. Edit the text, and keep the source line on the last slide.",{x:0.6,y:4.1,w:9,h:0.6,fontFace:FF,fontSize:18,color:GREY,margin:0});
+
+  var s2=frame(pptx,t,2,"Why it works");
+  s2.addText(t.why,{x:0.6,y:2.1,w:11.8,h:2.8,fontFace:FF,fontSize:24,color:INK,margin:0,valign:"top"});
+  s2.addText("Source: "+t.src,{x:0.6,y:6.25,w:11.8,h:0.5,fontFace:FF,fontSize:12,color:GREY,margin:0,valign:"top"});
+
+  var s3=frame(pptx,t,3,"How it looks");
+  s3.addImage({data:img,x:2.87,y:1.9,w:7.6,h:4.75});
+
+  var s4=frame(pptx,t,4,"How to run it");
+  s4.addText("Alone",{x:0.6,y:2.0,w:5.8,h:0.4,fontFace:FF,fontSize:14,bold:true,color:GREY,margin:0});
+  s4.addText(numbered(t.solo),{x:0.6,y:2.45,w:5.8,h:4.2,fontFace:FF,fontSize:18,color:INK,margin:0,valign:"top"});
+  s4.addText("With a team",{x:6.9,y:2.0,w:5.8,h:0.4,fontFace:FF,fontSize:14,bold:true,color:GREY,margin:0});
+  s4.addText(numbered(t.team),{x:6.9,y:2.45,w:5.8,h:4.2,fontFace:FF,fontSize:18,color:INK,margin:0,valign:"top"});
+
+  var s5=frame(pptx,t,5,"Blank canvas");
+  s5.addImage({data:blank,x:2.99,y:1.9,w:7.36,h:4.6});
+  s5.addText("Blank version of the diagram. Replace the placeholders with your own steps.",{x:0.6,y:6.52,w:12,h:0.35,fontFace:FF,fontSize:12,color:GREY,margin:0});
+
+  var s6=frame(pptx,t,6,"Example");
+  s6.addText(t.ex,{x:0.6,y:2.1,w:11.8,h:2.6,fontFace:FF,fontSize:24,color:INK,margin:0,valign:"top"});
+  s6.addText("Replace this with a case from your own work.",{x:0.6,y:4.9,w:11.8,h:0.5,fontFace:FF,fontSize:16,color:GREY,margin:0});
+
+  var s7=frame(pptx,t,7,"Appendix for trainers");
+  s7.addText(bullets([
+    "Plan about "+t.t+" minutes. If you have less, run the first half of the steps only.",
+    "Solo steps work for one person. Team steps apply when the group runs it together.",
+    "Show the diagram first, then the steps. People remember the shape better than the list.",
+    "Ask people to write before they speak, so quieter voices are heard.",
+    "To customise: edit the text on each slide. The diagram is an image; if you change its structure, redraw it."
+  ]),{x:0.6,y:2.0,w:11.8,h:4.6,fontFace:FF,fontSize:18,color:INK,margin:0,valign:"top"});
+
+  var s8=frame(pptx,t,8,"Need tools like this for your team?");
+  s8.addText("I build small, free tools like this one, and I can build a version for your own team or company, in English or French.",{x:0.6,y:2.1,w:11.8,h:1.8,fontFace:FF,fontSize:24,color:INK,margin:0,valign:"top"});
+  s8.addText("Contact me on LinkedIn: linkedin.com/in/salahkhenissi",{x:0.6,y:4.2,w:11.8,h:0.6,fontFace:FF,fontSize:20,bold:true,color:INK,margin:0});
+}
+async function makeTemplate(t,btn){
+  var msg=document.getElementById("dlmsg");
+  btn.disabled=true;msg.textContent="Preparing the slides…";
+  try{
+    var P=await loadPptx();
+    var pptx=new P();
+    pptx.layout="LAYOUT_WIDE";
+    pptx.author="Salah Khenissi";
+    pptx.title=t.n+" template";
+    pptx.subject="The Unfinished 30, Day 4";
+    var img=await svgPng(diagramSVG(t.d,false));
+    var blank=await svgPng(diagramSVG(t.d,true));
+    buildSlides(pptx,t,img,blank);
+    await pptx.writeFile({fileName:t.id+"-template.pptx"});
+    msg.textContent="Done. Check your downloads.";
+  }catch(err){
+    msg.textContent="Could not build the slides. Check your connection and try again.";
+  }finally{
+    btn.disabled=false;
+  }
+}
+function wireDownload(){
+  var btn=document.getElementById("dl");if(!btn)return;
+  var id=route().path.slice(5),t=byId(id);
+  btn.addEventListener("click",function(){makeTemplate(t,btn);});
+}
+
+window.addEventListener("hashchange",render);
+if(!location.hash)location.hash="#/";
+render();
+})();
+</script>
+</body>
+</html>
