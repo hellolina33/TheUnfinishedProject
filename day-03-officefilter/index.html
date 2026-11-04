@@ -250,6 +250,10 @@ footer a { color: var(--ink); font-weight: 600; }
       toneGoal: { diplomatic: "Keep the relationship", direct: "Get to the point", firm: "Set a clear limit, calmly" },
       emptyB: "Nothing sent yet.", emptyT: "Write your raw thought, pick a sample, or click “See a sample result” to see what you'll get.",
       errEmpty: "Write something first. Even something rude, it's between you and the filter.",
+      noticeFree: "Free trial: {n} left. When you click, your text is sent to Google Gemini through this site’s server. No account, no storage. After the trial, plug in your own key.",
+      noticeOver: "Free trial finished. Open “Your AI” to plug in your own key and keep going.",
+      errTrialOver: "Your free tries are used up. Open “Your AI” and paste your own key to keep going.",
+      errBusy: "The free trial is busy today. Try again tomorrow, or use your own key via “Your AI”.",
       errNoKey: "Connect your AI first: open “Your AI”, choose a provider and paste your key.",
       errNet: "Network error. The provider could not be reached from this browser. If you use a custom endpoint, it must allow browser calls (CORS), or go through your own proxy.",
       errAuth: "The provider refused the key (401/403). Check the key, and that it matches the provider and the endpoint.",
@@ -262,7 +266,7 @@ footer a { color: var(--ink); font-weight: 600; }
       retry: "Try again", openAi: "Open “Your AI”",
       working: "Filtering…", revising: "Revising…",
       unfSum: "What's still unfinished",
-      unfText: "Three versions, one revision at a time, no history: reload and it's gone. The AI can still miss the tone in a sensitive situation, so read before you send. Browser calls depend on each provider allowing them; a custom endpoint may need your own proxy. Tested with simulated responses, not with every model.",
+      unfText: "Three versions, one revision at a time, no history: reload and it's gone. The AI can still miss the tone in a sensitive situation, so read before you send. The free trial is a handful of tries per visitor, counted with a cookie and an IP limit that a determined person can get around; it can run out for everyone on a busy day. Your own key goes straight from your browser to the provider. Browser calls depend on each provider allowing them; a custom endpoint may need your own proxy. Tested with simulated responses, not with every model.",
       dlHtml: "Download the HTML (runs locally)",
       to: { auto: "Auto", colleague: "A colleague", manager: "My manager", report: "Someone on my team", client: "A client" },
       ch: { auto: "Auto", email: "Email", chat: "Teams / Slack", oral: "Said out loud" },
@@ -297,6 +301,10 @@ footer a { color: var(--ink); font-weight: 600; }
       toneGoal: { diplomatic: "Préserver la relation", direct: "Aller à l'essentiel", firm: "Poser une limite, sans agressivité" },
       emptyB: "Rien n'est encore parti.", emptyT: "Écris ta pensée brute, prends un exemple, ou clique sur « Voir un exemple de résultat » pour voir ce que tu obtiendras.",
       errEmpty: "Écris d'abord quelque chose. Même de pas très poli, ça reste entre toi et le filtre.",
+      noticeFree: "Essai gratuit : {n} restant(s). Au clic, ton texte est envoyé à Google Gemini via le serveur de ce site. Pas de compte, rien de stocké. Ensuite, branche ta propre clé.",
+      noticeOver: "Essai gratuit terminé. Ouvre « Ton IA » pour brancher ta propre clé et continuer.",
+      errTrialOver: "Tes essais gratuits sont épuisés. Ouvre « Ton IA » et colle ta propre clé pour continuer.",
+      errBusy: "L'essai gratuit est saturé aujourd'hui. Réessaie demain ou utilise ta propre clé via « Ton IA ».",
       errNoKey: "Connecte d'abord ton IA : ouvre « Ton IA », choisis un fournisseur et colle ta clé.",
       errNet: "Erreur réseau. Le fournisseur n'a pas pu être joint depuis ce navigateur. Avec un endpoint personnalisé, il doit autoriser les appels depuis un navigateur (CORS), ou passer par ton propre proxy.",
       errAuth: "Le fournisseur a refusé la clé (401/403). Vérifie la clé, et qu'elle correspond au fournisseur et à l'endpoint.",
@@ -309,7 +317,7 @@ footer a { color: var(--ink); font-weight: 600; }
       retry: "Réessayer", openAi: "Ouvrir « Ton IA »",
       working: "Filtrage…", revising: "Révision…",
       unfSum: "Ce qui reste inachevé",
-      unfText: "Trois versions, une révision à la fois, pas d'historique : au rechargement, tout disparaît. L'IA peut encore rater le ton dans une situation délicate, donc relis avant d'envoyer. Les appels depuis le navigateur dépendent de chaque fournisseur ; un endpoint personnalisé peut demander ton propre proxy. Testé avec des réponses simulées, pas avec tous les modèles.",
+      unfText: "Trois versions, une révision à la fois, pas d'historique : au rechargement, tout disparaît. L'IA peut encore rater le ton dans une situation délicate, donc relis avant d'envoyer. L'essai gratuit, c'est quelques essais par visiteur, comptés par cookie et limite d'IP, contournables par quelqu'un de déterminé ; il peut s'épuiser pour tout le monde un jour chargé. Ta propre clé part directement de ton navigateur vers le fournisseur. Les appels depuis le navigateur dépendent de chaque fournisseur ; un endpoint personnalisé peut demander ton propre proxy. Testé avec des réponses simulées, pas avec tous les modèles.",
       dlHtml: "Télécharger le HTML (marche en local)",
       to: { auto: "Auto", colleague: "Un·e collègue", manager: "Mon manager", report: "Quelqu'un de mon équipe", client: "Un client" },
       ch: { auto: "Auto", email: "Email", chat: "Teams / Slack", oral: "À l'oral" },
@@ -360,7 +368,7 @@ footer a { color: var(--ink); font-weight: 600; }
   ].join("\n");
 
   /* ================= STATE ================= */
-  var ui = { lang: "en", prov: "anthropic", key: "", busy: false, ctrl: null, result: null, sel: 1, firstNoticeShown: false, demo: false, lastReq: null };
+  var ui = { lang: "en", prov: "anthropic", key: "", busy: false, ctrl: null, result: null, sel: 1, firstNoticeShown: false, demo: false, lastReq: null, free: { left: 0, total: 0 } };
   var $ = function (id) { return document.getElementById(id); };
   var t = function () { return T[ui.lang]; };
   function fill(s, v) { return s.replace(/\{(\w+)\}/g, function (_, k) { return v[k] != null ? v[k] : ""; }); }
@@ -430,7 +438,9 @@ footer a { color: var(--ink); font-weight: 600; }
   }
   function renderNotice() {
     var tx = t(), n = $("notice");
-    if (ui.key) n.innerHTML = fill(tx.noticeOn, { p: esc(PROV[ui.prov].n), h: esc(hostOf($("endpoint").value.trim() || "?")) });
+    if (freeOn()) n.innerHTML = fill(tx.noticeFree, { n: ui.free.left });
+    else if (!ui.key && ui.free.total) n.textContent = tx.noticeOver;
+    else if (ui.key) n.innerHTML = fill(tx.noticeOn, { p: esc(PROV[ui.prov].n), h: esc(hostOf($("endpoint").value.trim() || "?")) });
     else n.textContent = tx.noticeOff;
   }
   function status(kind, msg, actions) {
@@ -508,7 +518,25 @@ footer a { color: var(--ink); font-weight: 600; }
   }
 
   /* ================= AI CALL (isolated, swappable) ================= */
+  function freeOn() { return !ui.key && ui.free.left > 0; }
+  function callFree(system, user, signal) {
+    return fetch("/api/rewrite", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode: system === SYSTEM ? "main" : "revise", user: user }), signal: signal }).then(function (r) {
+      return r.json().catch(function () { return null; }).then(function (j) {
+        if (j && typeof j.left === "number") { ui.free.left = j.left; renderNotice(); }
+        if (!r.ok) { var err = new Error("free"); err.status = r.status; err.free = (j && j.error) || "x"; if (r.status === 429 && err.free === "trial_over") ui.free.left = 0; throw err; }
+        if (!j || typeof j.text !== "string") { var e2 = new Error("bad"); e2.bad = true; throw e2; }
+        return j.text;
+      });
+    });
+  }
+  function loadFree() {
+    if (!window.fetch) return;
+    fetch("/api/rewrite", { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).then(function (j) {
+      if (j && typeof j.left === "number") { ui.free = { left: j.left, total: j.total || j.left }; renderNotice(); }
+    }).catch(function () {});
+  }
   function callAI(system, user, signal) {
+    if (freeOn()) return callFree(system, user, signal);
     var p = PROV[ui.prov], url = $("endpoint").value.trim(), model = $("model").value.trim(), key = ui.key;
     var headers = { "content-type": "application/json" }, body, pick;
     if (p.fmt === "anthropic") {
@@ -575,6 +603,11 @@ footer a { color: var(--ink); font-weight: 600; }
     var tx = t();
     if (e && e.name === "AbortError") return tx.errCancel;
     if (e && e.bad) return tx.errBad;
+    if (e && e.free) {
+      if (e.free === "trial_over") return tx.errTrialOver;
+      if (e.free === "busy") return tx.errBusy;
+      return tx.errNet;
+    }
     if (e && e.status) {
       if (e.status === 401 || e.status === 403) return tx.errAuth;
       if (e.status === 429) return tx.errQuota;
@@ -598,7 +631,7 @@ footer a { color: var(--ink); font-weight: 600; }
     if (!window.fetch || !window.AbortController) { status("err", tx.errOld); return; }
     var raw = $("raw").value.trim();
     if (!raw) { status("err", tx.errEmpty); $("raw").focus(); return; }
-    if (!ui.key || !$("endpoint").value.trim() || !$("model").value.trim()) { status("err", tx.errNoKey, [[tx.openAi, openSettings]]); return; }
+    if (!freeOn() && (!ui.key || !$("endpoint").value.trim() || !$("model").value.trim())) { status("err", !ui.key && ui.free.total ? tx.errTrialOver : tx.errNoKey, [[tx.openAi, openSettings]]); return; }
     clearStatus();
     var req = { raw: raw, to: $("p-to").value, ch: $("p-ch").value, goal: $("p-goal").value, lang: $("p-lang").value, ctx: $("ctx").value.trim() };
     ui.lastReq = req; ui.demo = false;
@@ -612,14 +645,14 @@ footer a { color: var(--ink); font-weight: 600; }
     }).catch(function (e) {
       $("results").replaceChildren(); $("results").setAttribute("aria-busy", "false");
       if (!ui.result) $("empty").hidden = false; else renderResults(false);
-      status("err", errorText(e), e && e.name === "AbortError" ? [] : [[tx.retry, run]].concat(e && (e.status === 401 || e.status === 403) ? [[tx.openAi, openSettings]] : []));
+      status("err", errorText(e), e && e.name === "AbortError" ? [] : [[tx.retry, run]].concat(e && (e.status === 401 || e.status === 403 || e.free === "trial_over") ? [[tx.openAi, openSettings]] : []));
     }).then(function () { setBusy(false); ui.ctrl = null; });
   }
 
   function revise(kind) {
     var tx = t();
     if (ui.busy || !ui.result || ui.demo || !ui.lastReq) return;
-    if (!ui.key) { status("err", tx.errNoKey, [[tx.openAi, openSettings]]); return; }
+    if (!freeOn() && !ui.key) { status("err", ui.free.total ? tx.errTrialOver : tx.errNoKey, [[tx.openAi, openSettings]]); return; }
     clearStatus();
     var cur = ui.result.options[ui.sel], req = ui.lastReq;
     var user = userPayload(req) + "\n<selected_version tone=\"" + cur.tone + "\">\n" + cur.text + "\n</selected_version>\nRequested change: " + kind;
@@ -674,6 +707,7 @@ footer a { color: var(--ink); font-weight: 600; }
   window.OfficeFilter = { callAI: callAI, parseJSON: parseJSON, validateMain: validateMain, validateRev: validateRev, SYSTEM: SYSTEM, REVISE: REVISE };
 
   loadCfg();
+  loadFree();
   applyLang();
   $("p-lang").value = "en";
 })();
