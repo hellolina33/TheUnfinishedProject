@@ -76,7 +76,7 @@
         textFn(sl,blank?"":vals[z.i]||z.label,xx,Y+H,bw,.42,10,true);
         cumulative+=z.n/sum;
         let current={x:xx+bw/2,y:Y+H-H*.84*cumulative};
-        if(previous)sl.addShape(p.ShapeType.line,{x:previous.x,y:previous.y,w:current.x-previous.x,h:current.y-previous.y,line:{color:"161713",width:2}});
+        if(previous)sl.addShape(p.ShapeType.line,{x:previous.x,y:current.y,w:current.x-previous.x,h:previous.y-current.y,flipV:true,line:{color:"161713",width:2}});
         sl.addShape(p.ShapeType.ellipse,{x:current.x-.05,y:current.y-.05,w:.1,h:.1,fill:{color:"161713"},line:{color:"161713",width:1}});
         previous=current;
       });
