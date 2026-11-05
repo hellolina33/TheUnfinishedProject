@@ -71,6 +71,10 @@ li{margin:0 0 9px}
 .foot ul{padding-left:20px}
 .foot li{margin-bottom:6px}
 .hidden{display:none}
+.export-label{display:block;font-size:13px;font-weight:800;margin:0 0 8px;text-transform:uppercase}
+.export-controls{display:flex;align-items:stretch;flex-wrap:wrap;gap:8px}
+.export-controls select{min-width:180px;min-height:47px;font-size:15px;border:1px solid var(--ink);padding:10px 12px;background:var(--white);color:var(--ink)}
+@media(max-width:600px){.export-controls>*{width:100%}}
 </style>
 </head>
 <body>
@@ -747,8 +751,11 @@ function viewTool(id){
         '<div class="sec"><h2>Run it with a team</h3><ol>'+t.team.map(function(s){return '<li>'+esc(s)+'</li>';}).join("")+'</ol></div>'+
         '<div class="sec"><h2>Example</h3><p>'+esc(t.ex)+'</p></div>'+
         '<div class="sec"><h2>Source</h3><p class="src">'+esc(t.src)+'</p></div>'+
-        '<div class="dl"><button class="btn" id="dl" type="button">Download slide template (.pptx)</button>'+
-          '<p class="hint" id="dlmsg">8 slides in English, with your LinkedIn on each. Built in your browser; nothing is uploaded.</p></div>'+
+        '<div class="dl"><label for="export-ratio" class="export-label">Presentation format</label>'+
+          '<div class="export-controls"><select id="export-ratio" aria-label="Choose slide aspect ratio"><option value="16:9">16:9 · Landscape</option><option value="9:10">9:10 · Portrait</option><option value="9:16">9:16 · Mobile</option></select>'+
+          '<button class="btn" id="dl" type="button">Download editable PowerPoint (8 slides)</button>'+
+          '<button class="btn ghost" id="print-deck" type="button">Print / Save PDF</button></div>'+
+          '<p class="hint" id="dlmsg">Eight slides. Editable PowerPoint text and shapes; diagram images remain rasterized. For PDF, choose Save as PDF in the print dialog. Google Slides can import PPTX.</p></div>'+
       '</div>'+
       '<figure class="card" aria-label="Diagram of '+esc(t.n)+'">'+diagramSVG(t.d,false)+
         '<figcaption class="hint">Diagram: black and white, so you can copy it into your own tools.</figcaption></figure>'+
@@ -874,20 +881,40 @@ function buildSlides(pptx,t,img,blank){
   s8.addText("I build small, free tools like this one, and I can build a version for your own team or company, in English or French.",{x:0.6,y:2.1,w:11.8,h:1.8,fontFace:FF,fontSize:24,color:INK,margin:0,valign:"top"});
   s8.addText("Contact me on LinkedIn: linkedin.com/in/salahkhenissi",{x:0.6,y:4.2,w:11.8,h:0.6,fontFace:FF,fontSize:20,bold:true,color:INK,margin:0});
 }
+function buildPortraitSlides(pptx,t,img,blank,ratio){
+ var H=ratio==="9:10"?8.333:13.333, W=7.5, x=.48, w=6.54, compact=ratio==="9:10";
+ function tx(s,st,y,h,size,bold,color){s.addText(String(st),{x:x,y:y,w:w,h:h,fontFace:"Arial",fontSize:size,bold:!!bold,color:color||"0D0D0D",margin:0,valign:"top",fit:"shrink"});}
+ function page(n,title){var s=pptx.addSlide();s.background={color:"FFFFFF"};s.addShape(pptx.ShapeType.rect,{x:x,y:.36,w:.52,h:.08,line:{color:"FF4D1A",transparency:100},fill:{color:"FF4D1A"}});tx(s,"THE UNFINISHED 30 / DAY 04 / "+n+" OF 8",.56,.3,10,true,"5C5C58");if(title)tx(s,title,1.15,1.13,compact?29:35,true);s.addShape(pptx.ShapeType.line,{x:x,y:H-.62,w:w,h:0,line:{color:"CFCFC9",width:1}});tx(s,"SALAH KHENISSI · LINKEDIN.COM/IN/SALAHKHENISSI",H-.48,.28,9,true,"5C5C58");return s;}
+ function diagram(s,image,y){s.addImage({data:image,x:x,y:y,w:w,h:w*400/640});}
+ function list(s,arr,y,max,font,step){arr.slice(0,max).forEach(function(item,i){tx(s,(i+1)+". "+item,y+i*step,step-.06,font,false);});}
+ var s=page(1,"");tx(s,t.n,compact?2.3:3,compact?2.7:3.4,compact?42:49,true);tx(s,"A practical tool from the 50-method Productivity Library.",compact?5.7:8.3,1.4,compact?18:22);
+ s=page(2,"Why it works");tx(s,t.why,compact?2.75:3.5,compact?2.7:4.2,compact?21:26);tx(s,"SOURCE: "+t.src,compact?6.2:10,1.5,compact?12:16);
+ s=page(3,"The diagram");diagram(s,img,compact?3:4.25);
+ s=page(4,"How to use it");tx(s,"ALONE",compact?2.45:3,.3,13,true);list(s,t.solo,compact?2.85:3.55,4,compact?12:17,compact?.7:1.08);tx(s,"WITH A TEAM",compact?5.75:8.25,.3,13,true);list(s,t.team,compact?6.14:8.76,3,compact?11:16,compact?.55:1.02);
+ s=page(5,"Blank canvas");diagram(s,blank,compact?3:4.25);
+ s=page(6,"Worked example");tx(s,t.ex,compact?2.8:3.6,compact?3.3:5,compact?22:28);tx(s,"Replace the example with your own situation.",compact?6.4:10,1,compact?13:18);
+ s=page(7,"Tips and pitfalls");list(s,["Start with one real decision or outcome.","Give people time to think before discussing.","Agree an owner and a clear next step.","Adapt the method rather than chasing perfect scores."],compact?2.6:3.3,4,compact?17:22,compact?1.15:2);
+ s=page(8,"Take back control");tx(s,"Choose one method.\nTry it today.\nMake it yours.",compact?2.5:3.65,compact?3:5,compact?32:42,true);tx(s,"Need tools like this for your team? Contact me on LinkedIn.",compact?6.2:10,1.6,compact?17:22);
+}
+
 async function makeTemplate(t,btn){
   var msg=document.getElementById("dlmsg");
   btn.disabled=true;msg.textContent="Preparing the slides…";
   try{
     var P=await loadPptx();
     var pptx=new P();
-    pptx.layout="LAYOUT_WIDE";
+    var ratio=document.getElementById("export-ratio")?.value||"16:9";
+    if(ratio==="16:9")pptx.layout="LAYOUT_WIDE";
+    else{pptx.defineLayout({name:"PORTRAIT",width:7.5,height:ratio==="9:10"?8.333:13.333});pptx.layout="PORTRAIT";}
+    pptx._day4Ratio=ratio;
     pptx.author="Salah Khenissi";
     pptx.title=t.n+" template";
     pptx.subject="The Unfinished 30, Day 4";
     var img=await svgPng(diagramSVG(t.d,false));
     var blank=await svgPng(diagramSVG(t.d,true));
-    buildSlides(pptx,t,img,blank);
-    await pptx.writeFile({fileName:t.id+"-template.pptx"});
+    if(ratio==="16:9")buildSlides(pptx,t,img,blank);
+    else buildPortraitSlides(pptx,t,img,blank,ratio);
+    await pptx.writeFile({fileName:t.id+"-"+ratio.replace(":","x")+"-editable.pptx"});
     msg.textContent="Done. Check your downloads.";
   }catch(err){
     msg.textContent="Could not build the slides. Check your connection and try again.";
@@ -895,10 +922,32 @@ async function makeTemplate(t,btn){
     btn.disabled=false;
   }
 }
+function printDeck(t){
+ var ratio=document.getElementById("export-ratio")?.value||"16:9";
+ var sections=[
+ '<h1>'+esc(t.n)+'</h1><p>50 productivity methods. One practical toolbox.</p>',
+ '<h2>Why it works</h2><p>'+esc(t.why)+'</p><small>'+esc(t.src)+'</small>',
+ '<h2>The framework</h2>'+diagramSVG(t.d,false),
+ '<h2>How to use it</h2><h3>Alone</h3><ol>'+t.solo.map(function(v){return '<li>'+esc(v)+'</li>'}).join('')+'</ol><h3>With a team</h3><ol>'+t.team.map(function(v){return '<li>'+esc(v)+'</li>'}).join('')+'</ol>',
+ '<h2>Blank canvas</h2>'+diagramSVG(t.d,true),
+ '<h2>Example</h2><p>'+esc(t.ex)+'</p>',
+ '<h2>Tips and pitfalls</h2><ol><li>Use a real decision.</li><li>Write before discussing.</li><li>Assign clear owners.</li><li>Review the result.</li></ol>',
+ '<h2>Take back control</h2><p>Choose one method. Try it today. Make it yours.</p>'
+ ];
+ var size=ratio==="16:9"?"12in 6.75in":ratio==="9:10"?"7.5in 8.333in":"7.5in 13.333in";
+ var css="@page{size:"+size+";margin:0}*{box-sizing:border-box}body{margin:0;font-family:Arial;color:#0d0d0d}.slide{height:100vh;padding:6%;break-after:page;page-break-after:always;position:relative;overflow:hidden}.slide:last-child{break-after:auto}h1{font-size:64px}h2{font-size:43px}p,li{font-size:21px;line-height:1.45}svg{max-width:100%;max-height:55%;height:auto}small{font-size:13px}.tag,.foot{font:700 12px monospace}.foot{position:absolute;bottom:5%;left:6%;right:6%;border-top:1px solid #ccc;padding-top:10px}";
+ var html='<!doctype html><html><head><meta charset="utf-8"><title>'+esc(t.n)+' PDF</title><style>'+css+'</style></head><body>'+sections.map(function(h,i){return '<section class="slide"><div class="tag">THE UNFINISHED 30 / DAY 04 / '+(i+1)+' OF 8</div>'+h+'<div class="foot">SALAH KHENISSI · LINKEDIN.COM/IN/SALAHKHENISSI</div></section>'}).join('')+'</body></html>';
+ var win=window.open('','_blank');if(!win){alert("Allow popups to print your slides.");return;}
+ win.document.open();win.document.write(html);win.document.close();
+ win.onload=function(){win.focus();win.print();};
+}
+
 function wireDownload(){
   var btn=document.getElementById("dl");if(!btn)return;
   var id=route().path.slice(5),t=byId(id);
   btn.addEventListener("click",function(){makeTemplate(t,btn);});
+  var printBtn=document.getElementById("print-deck");
+  if(printBtn)printBtn.addEventListener("click",function(){printDeck(t);});
 }
 
 window.addEventListener("hashchange",render);
