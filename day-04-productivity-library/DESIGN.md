@@ -39,7 +39,7 @@ Use grouped, labelled fields for input, a readable HTML results table and a nati
 
 ## Task-first navigation
 
-The primary menu has two destinations: Start here and Methods. More contains offline download, support, sources and language. Home shows two concrete goals for the chosen student, manager or professional profile. A journey identifies the needed inputs, the first useful output and optional next steps; method screens retain that context. Search leads the catalogue, with refinements grouped separately. Avoid repeating the same choice in several competing blocks.
+The primary menu has two destinations: Start here and Methods. More contains offline download, support and sources. French and English are always visible in the header. Home shows five concrete goals for the chosen student, manager or professional profile. A journey identifies the needed inputs, the first useful output and optional next steps; method screens retain that context. Search leads the catalogue, with refinements grouped separately. Avoid repeating the same choice in several competing blocks.
 
 ## Axes
 

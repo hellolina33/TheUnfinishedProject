@@ -89,6 +89,11 @@ for (const kit of kits) {
     )
       throw Error("Incomplete journey " + kit.id);
 }
+for (const role of ["student", "manager", "professional"])
+  if (
+    kits.filter((kit) => kit.featured && kit.roles.includes(role)).length !== 5
+  )
+    throw Error("Expected five needs for " + role);
 write(
   "journeys.js",
   "window.ProductivityJourneys=" + JSON.stringify(kits) + ";\n",

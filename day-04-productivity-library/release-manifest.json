@@ -1,5 +1,5 @@
 {
-  "version": "9713cb53a608",
+  "version": "7e5182032dab",
   "files": [
     {
       "path": "methods.js",
@@ -21,15 +21,15 @@
     },
     {
       "path": "router.js",
-      "asset": "assets/router-a3fe00191fd8.js",
-      "sha256": "a3fe00191fd84469054fc9ae1bb7370628f66325cac6127ee9e79102d9672713",
-      "bytes": 5000
+      "asset": "assets/router-0bdd2b3bafd2.js",
+      "sha256": "0bdd2b3bafd217b564b32d287281382ae90b6f29091427b848a1fddae59e2996",
+      "bytes": 5110
     },
     {
       "path": "journeys.js",
-      "asset": "assets/journeys-81bdd85e367b.js",
-      "sha256": "81bdd85e367bb67b5ef3b5fdc444363298f68dd73e18119805c22f89d38d6487",
-      "bytes": 6316
+      "asset": "assets/journeys-a8b36cbeb998.js",
+      "sha256": "a8b36cbeb9987d14ac902edeec99f241ae254a4dda65d9f06474be478c33fd3b",
+      "bytes": 14678
     },
     {
       "path": "workspace.js",
@@ -45,9 +45,9 @@
     },
     {
       "path": "learning.js",
-      "asset": "assets/learning-1a64052b9f7e.js",
-      "sha256": "1a64052b9f7e7510a1eb06ad8f8aeaa8e1891ffa47ea26753104cedb1c5eac0a",
-      "bytes": 13182
+      "asset": "assets/learning-e66b5444a41d.js",
+      "sha256": "e66b5444a41d629a56da3767be4123a5e7fa32b9ace9e23601ca4471889e7676",
+      "bytes": 11782
     },
     {
       "path": "distribution.js",
@@ -63,15 +63,15 @@
     },
     {
       "path": "studio.js",
-      "asset": "assets/studio-51afab4d87ac.js",
-      "sha256": "51afab4d87ac15b191f12c3226755709e2c665b5ae7d7347f465218e47fcd6f6",
-      "bytes": 108264
+      "asset": "assets/studio-31bbaa2ad4e1.js",
+      "sha256": "31bbaa2ad4e191ec8c07f339f7e9d5604d08bca2c438916f467a62bea6b2a71d",
+      "bytes": 106915
     },
     {
       "path": "studio.css",
-      "asset": "assets/studio-ac6340a06146.css",
-      "sha256": "ac6340a06146f26fa0a19a2fcfe130d01b5c86003cb15cb86e809d2b18c5002d",
-      "bytes": 36013
+      "asset": "assets/studio-a448df255dc2.css",
+      "sha256": "a448df255dc2c8d8e972cc8cfa2d4aeb71b8c8f676e3673ee4bae844cea914c6",
+      "bytes": 36832
     },
     {
       "path": "vendor/pptxgen.bundle.js",

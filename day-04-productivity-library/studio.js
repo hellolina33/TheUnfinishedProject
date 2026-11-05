@@ -688,7 +688,6 @@
     journeyRetained:
       "Your answers stay in this tab while you move between the steps.",
     journeyReview: "Review my journey",
-    testApp: "Help test the app",
     extraFilters: "Refine the results",
     chooseHelp: "Help me choose",
     deckContents: "Slide contents",
@@ -731,7 +730,6 @@
     journeyRetained:
       "Tes réponses restent dans cet onglet pendant que tu passes d’une étape à l’autre.",
     journeyReview: "Revenir au bilan du parcours",
-    testApp: "Participer au test de l’application",
     extraFilters: "Affiner les résultats",
     chooseHelp: "Aide-moi à choisir",
     deckContents: "Plan des diapositives",
@@ -819,10 +817,6 @@
   function answers(x) {
     return s.answers[x.id] || {};
   }
-  const sessionCounts = {};
-  const count = (event) => {
-    sessionCounts[event] = (sessionCounts[event] || 0) + 1;
-  };
   const hasAnswer = (value) =>
     typeof value === "string" && Boolean(value.trim());
   const engine = window.ProductivityEngine,
@@ -886,11 +880,11 @@
     <header class="s-wrap"><div class="s-top">
       <a class="s-brand" href="#/">${logo}<span>${t("brand")}</span></a>
       <nav class="s-nav" aria-label="${t("brand")}"><a href="#/" ${selected === "" ? 'aria-current="page"' : ""}>${t("navStart")}</a><a href="#/all" ${selected === "all" ? 'aria-current="page"' : ""}>${t("navMethods")}</a></nav>
+      <div class="s-header-tools"><nav class="s-languages" aria-label="${s.lang === "fr" ? "Langue" : "Language"}">${["fr", "en"].map((language) => `<button type="button" data-act="lang" data-language="${language}" lang="${language}" aria-label="${language === "fr" ? "Français" : "English"}" aria-pressed="${s.lang === language}">${language.toUpperCase()}</button>`).join("")}</nav>
       <details class="s-utility"><summary>${t("navMore")} <span aria-hidden="true">⌄</span></summary><div class="s-utility-panel">
         <button data-act="html">${t("downloadApp")} ↓</button>
         <a href="#/help">${t("navHelp")}</a><a href="#/sources">${t("navSources")}</a>
-        <button data-act="lang" aria-label="${t("language")}">${s.lang === "en" ? "Passer en français" : "Switch to English"}</button>
-      </div></details>
+      </div></details></div>
     </div></header>`;
   }
   function footer() {
@@ -956,7 +950,7 @@
       <div class="s-faq">${faq.map((key) => `<details><summary>${t("faq" + key + "Q")}</summary><p>${t("faq" + key + "A")}</p></details>`).join("")}</div>
       ${hasLegacy ? `<section class="s-helpbox"><h3>${t("legacyTitle")}</h3><p>${t("legacyHelp")}</p><button class="s-btn outline tiny" data-act="remove-legacy">${t("legacyRemove")}</button></section>` : ""}
       <section class="s-helpbox"><h3>${t("supportTitle")}</h3><p>${t("supportCopy")}</p><div class="s-btns"><a class="s-btn outline tiny" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">${t("supportContact")} ↗</a><a class="s-btn outline tiny" href="https://github.com/hellolina33/TheUnfinishedProject/issues" target="_blank" rel="noopener">${t("supportReport")} ↗</a></div></section>
-    <p class="s-support-pilot"><a href="#/pilot">${t("testApp")}</a></p></section>`;
+    </section>`;
     return section === "sources" ? sources : help;
   }
   const journeyById = (id) =>
@@ -979,8 +973,6 @@
       return `<section class="s-wrap s-section s-choicepage" id="find" tabindex="-1"><a class="s-textlink" href="#/all">← ${t("navMethods")}</a><h1>${t("quizTitle")}</h1><p>${t("quizSub")}</p>${quiz()}</section>`;
     if (["sources", "help"].includes(route.section))
       return landingSupport(route.section);
-    if (route.section === "pilot")
-      return `<section class="s-wrap s-section s-choicepage" id="pilot" tabindex="-1"><h1>${window.ProductivityLearning.content[s.lang].pilot}</h1><p>${window.ProductivityLearning.content[s.lang].pilotCopy}</p><label for="pilot-notes">${window.ProductivityLearning.content[s.lang].notes}</label><textarea id="pilot-notes" rows="5" maxlength="5000"></textarea><div class="s-btns"><button class="s-btn outline" data-pilot="notes">${window.ProductivityLearning.content[s.lang].pilotExport}</button><button class="s-btn outline" data-pilot="counts">${window.ProductivityLearning.content[s.lang].metrics}</button></div></section>`;
     return `<section class="s-wrap s-hero s-taskhome">
       <div class="s-taskintro"><p class="s-kicker">${t("taskEyebrow")}</p><h1>${t("taskTitle")}</h1><p class="s-lead">${t("taskLead")}</p></div>
       <div class="s-startchooser"><div class="s-personas" role="group" aria-label="${t("profileQuestion")}">${["student", "manager", "professional"].map((role) => `<button data-persona="${role}" aria-pressed="${s.persona === role}">${t("profile" + role)}</button>`).join("")}</div>
@@ -1732,7 +1724,7 @@
         });
         pdf.save(file + ".pdf");
       }
-      count("download_" + kind);
+
       notify(t(kind + "Done"));
     } catch (error) {
       notify(
@@ -1760,7 +1752,6 @@
       "https://the-unfinished-30.vercel.app",
     ).href;
     try {
-      count("share_link");
       if (navigator.share)
         await navigator.share({ title: x?.n || t("brand"), url });
       else {
@@ -1802,7 +1793,7 @@
           "downloads/productivity-studio-" + lang + ".html",
         );
         download("productivity-studio-" + lang + ".html", html, "text/html");
-        count("download_html");
+
         return;
       } catch (e) {
         notify(t("htmlError"));
@@ -1939,7 +1930,7 @@
     }
     if (act === "update") {
       s.work[x.id] = engine.validate(w);
-      count("calculate");
+
       updateWorkResult(x);
       const result = document.querySelector(".w-result");
       result?.focus();
@@ -2147,28 +2138,6 @@
     }
   }
   app.addEventListener("click", async (e) => {
-    const pilot = e.target.closest("[data-pilot]");
-    if (pilot) {
-      const notes = document.getElementById("pilot-notes")?.value || "";
-      download(
-        "studio-test-" + s.lang + ".json",
-        JSON.stringify(
-          pilot.dataset.pilot === "notes"
-            ? {
-                tasks: [
-                  "Find a method",
-                  "Complete a worksheet",
-                  "Transmit the result",
-                ],
-                notes,
-              }
-            : { counts: sessionCounts },
-          null,
-          2,
-        ),
-        "application/json",
-      );
-    }
     const share = e.target.closest("[data-distribute]");
     if (share) {
       const x = byId(s.id);
@@ -2178,7 +2147,6 @@
           blob = await window.ProductivityDistribution.image(x, s.lang, url);
         if (blob)
           download(x.id + "-" + s.lang + "-example.png", blob, "image/png");
-        count("share_example");
       } catch (error) {
         notify(t("htmlError"));
       }
@@ -2187,7 +2155,7 @@
   app.addEventListener("submit", (e) => {
     if (e.target.id !== "studio-quiz") return;
     e.preventDefault();
-    count("recommendation");
+
     navigate({ v: "results" });
   });
   let catalogueScroll = 0;
@@ -2323,11 +2291,15 @@
         );
     }
     if (act === "lang") {
-      s.lang = s.lang === "en" ? "fr" : "en";
+      const language = b.dataset.language;
+      if (!["fr", "en"].includes(language) || language === s.lang) return;
+      s.lang = language;
       if (/^https?:$/.test(location.protocol))
         history.replaceState(null, "", router.url(currentRoute(), s.lang));
       render();
-      app.querySelector(".s-utility summary")?.focus();
+      app
+        .querySelector(`[data-act="lang"][data-language="${language}"]`)
+        ?.focus();
     }
     if (act === "tab") {
       s.tab = b.dataset.val;
@@ -2347,7 +2319,6 @@
       document.getElementById("search-tools")?.focus();
     }
     if (act === "example-workspace") {
-      count("example");
       if (hasAnswers(x) && !window.confirm(t("clearConfirm"))) return;
       if (engine.supported.includes(x.id)) s.work[x.id] = engine.sample(x);
       else

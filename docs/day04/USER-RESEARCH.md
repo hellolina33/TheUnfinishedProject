@@ -8,6 +8,6 @@ Recruit people from at least three groups: students, team leads and product prac
 4. Prepare a short retrospective, select one action and carry it into Eisenhower.
 5. Send an editable result, reopen a backup and use the downloaded app without a connection.
 
-For each mission record completion, elapsed time, the first point of confusion and the participant's explanation of the result. Record the participant's own words with permission. Export notes from the optional test section of the site if desired. Repeat the same mission after a fix. Automated browser tests support these missions but cannot establish success with people.
+For each mission record completion, elapsed time, the first point of confusion and the participant's explanation of the result. Record the participant's own words with permission. Keep research notes separately with the participant’s agreement; the public test section has been removed. Repeat the same mission after a fix. Automated browser tests support these missions but cannot establish success with people.
 
 Human sessions and channel experiments require actual participants and actual traffic. No conversion, keyword volume, sharing rate or usability improvement is assumed from the code tests.

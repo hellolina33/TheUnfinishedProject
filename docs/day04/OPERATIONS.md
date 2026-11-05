@@ -1,6 +1,6 @@
 # Publishing and recovering Day 04
 
-Run npm ci, npm run validate:day04 and npm run test:browser before release. The build validates the 50 bilingual source records, generates localized HTML, creates hashed assets and builds the two offline apps and six situation kits. Vercel runs the build and Node checks before exposing a deployment.
+Run npm ci, npm run validate:day04 and npm run test:browser before release. The build validates the 50 bilingual source records, generates localized HTML, creates hashed assets and builds the two offline apps and the situation kits defined in data/journeys.json. Vercel runs the build and Node checks before exposing a deployment.
 
 The static deployment output is public/. The build copies the challenge landing page, all day folders, images, icons, robots.txt and sitemap.xml into it. Repository settings, development dependencies, scripts, tests and API source are excluded. The existing root api/ functions remain handled by Vercel separately.
 

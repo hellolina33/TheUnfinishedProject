@@ -418,7 +418,20 @@ body[data-embed] #app{padding-top:10px!important}
  .studio .s-journeycontext{margin-top:18px;padding:12px;font-size:12px}
  .studio .s-journeycontext+.s-breadcrumb{display:none}
 }
-</style></head><body data-version="9713cb53a608"><div id="app"></div><script type="text/plain" id="offline-notices">Third-party notices. JSZip is used under its MIT license option.
+
+/* Keep language choice visible independently of the secondary menu. */
+.studio .s-header-tools{display:flex;align-items:center;justify-self:end;gap:16px}
+.studio .s-languages{display:flex;align-items:center;gap:4px}
+.studio .s-languages button{min-width:36px;min-height:44px;padding:8px 6px;border:0;border-bottom:2px solid transparent;background:none;color:var(--s-muted);font-size:12px;font-weight:700}
+.studio .s-languages button[aria-pressed=true]{border-bottom-color:var(--s-accent);color:var(--s-ink)}
+.studio .s-languages button:hover{color:var(--s-ink)}
+@media(max-width:700px){
+ .studio .s-header-tools{display:contents}
+ .studio .s-languages{grid-column:2;grid-row:1;justify-self:end}
+ .studio .s-top .s-nav{grid-column:1;grid-row:2;gap:8px}
+ .studio .s-utility{grid-column:2;grid-row:2;justify-self:end}
+}
+</style></head><body data-version="7e5182032dab"><div id="app"></div><script type="text/plain" id="offline-notices">Third-party notices. JSZip is used under its MIT license option.
 
 pptxgenjs 4.0.1
 The MIT License (MIT)
@@ -1761,7 +1774,8 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
           ...viewParams(params),
         };
       if (path.startsWith("kit/")) return { v: "kit", id: path.slice(4) };
-      if (["find", "sources", "help", "pilot"].includes(path))
+      if (path === "pilot") return { v: "home", section: "help" };
+      if (["find", "sources", "help"].includes(path))
         return { v: "home", section: path };
       if (["all", "results"].includes(path)) return { v: path };
       if (path === "") return { v: "home" };
@@ -1786,10 +1800,10 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
     if (/\/(?:library|bibliotheque)\/$/.test(path)) return { v: "all" };
     if (/\/(?:results|resultats)\/$/.test(path)) return { v: "results" };
     if (/^file:/.test(location.protocol || "")) return { v: "home" };
+    const section = new URLSearchParams(location.search || "").get("section");
     return {
       v: "home",
-      section:
-        new URLSearchParams(location.search || "").get("section") || undefined,
+      section: section === "pilot" ? "help" : section || undefined,
     };
   }
   function url(state, language) {
@@ -1858,7 +1872,7 @@ function(t){t.__bidiEngine__=t.prototype.__bidiEngine__=function(t){var n,r,i,a,
   }
   return { root, lang, route, url, sync };
 })();
-</script><script>window.ProductivityJourneys=[{"id":"study","en":"Plan my revision","fr":"Planifier mes révisions","roles":["student"],"ids":["time-blocking","pomodoro","weekly-review"],"featured":true,"intro":{"en":"Have your exam date, the topics to cover and your available hours ready.","fr":"Prépare ta date d’examen, les chapitres à revoir et tes créneaux disponibles."},"result":{"en":"A realistic study schedule and a first focused session.","fr":"Un planning réaliste et une première séance de travail définie."},"steps":{"en":["Reserve time for the topics that need work.","Choose one topic for a focused work block.","Adjust the next week from what you actually finished."],"fr":["Réserve des créneaux pour les chapitres à travailler.","Choisis un chapitre pour un bloc de travail concentré.","Ajuste la semaine suivante à partir du travail réellement terminé."]}},{"id":"group-project","en":"Organise a group assignment","fr":"Organiser un projet de groupe","roles":["student"],"ids":["smart","raci","kanban"],"featured":true,"intro":{"en":"Bring the assignment brief, its deadline and the names of the group members.","fr":"Rassemble la consigne, la date de rendu et les noms des membres du groupe."},"result":{"en":"A clear deliverable, shared responsibilities and visible next tasks.","fr":"Un livrable clair, des responsabilités réparties et les prochaines tâches visibles."},"steps":{"en":["Define what must be delivered and how it will be assessed.","Agree who does the work and who makes each decision.","Make the remaining tasks visible to the group."],"fr":["Définis ce qui doit être rendu et les critères de réussite.","Convenez de qui réalise le travail et de qui décide.","Rends les tâches restantes visibles pour le groupe."]}},{"id":"team-priorities","en":"Set priorities with my team","fr":"Choisir les priorités de mon équipe","roles":["manager"],"ids":["impact-effort","moscow","daci"],"featured":true,"intro":{"en":"List the proposals, the available capacity and the result the team must achieve.","fr":"Liste les propositions, la capacité disponible et le résultat attendu de l’équipe."},"result":{"en":"A shortlist, an explicit scope and a named decision owner.","fr":"Une sélection de priorités, un périmètre explicite et un responsable de la décision."},"steps":{"en":["Compare the impact and effort of each proposal.","Separate what must be delivered from what can wait.","Name the decision owner and the people to consult."],"fr":["Compare l’impact et l’effort de chaque proposition.","Distingue ce qui doit être livré de ce qui peut attendre.","Nomme le responsable de la décision et les personnes à consulter."]}},{"id":"retro","en":"Run a useful retrospective","fr":"Préparer une rétrospective utile","roles":["manager"],"ids":["four-ls","start-stop-continue","eisenhower"],"featured":true,"intro":{"en":"Pick a period to review and bring concrete observations from the team.","fr":"Choisis la période à examiner et rassemble des observations concrètes de l’équipe."},"result":{"en":"One improvement to try, with an owner and a review date.","fr":"Une amélioration à tester, avec un responsable et une date de bilan."},"steps":{"en":["Gather observations without jumping straight to solutions.","Turn recurring themes into changes the team can try.","Select an action and decide when it will happen."],"fr":["Recueille les observations avant de proposer des solutions.","Transforme les thèmes récurrents en changements à tester.","Retiens une action et décide quand elle sera réalisée."]}},{"id":"daily-planning","en":"Sort out an overloaded day","fr":"Trier une journée trop chargée","roles":["professional"],"ids":["eisenhower","timeboxing","shutdown"],"featured":true,"intro":{"en":"Write down the tasks competing for your time, their real deadlines and the time you have.","fr":"Note les tâches qui se disputent ton temps, leurs vraies échéances et le temps disponible."},"result":{"en":"A short priority list, time set aside and a clear stopping point.","fr":"Des priorités claires, des créneaux réservés et une fin de journée définie."},"steps":{"en":["Decide what to do, schedule, delegate or remove.","Give the selected task a time limit and a finish condition.","Close the day and leave a clear next step for tomorrow."],"fr":["Décide quoi faire, planifier, déléguer ou retirer.","Fixe une durée et une condition de fin pour la tâche retenue.","Clôture la journée et prépare une prochaine action pour demain."]}},{"id":"vendors","en":"Explain a choice to a client","fr":"Justifier un choix à un client","roles":["professional"],"ids":["weighted","premortem","daci"],"featured":true,"intro":{"en":"Bring the alternatives, the client’s constraints and the criteria that matter to the decision.","fr":"Rassemble les options, les contraintes du client et les critères qui comptent pour la décision."},"result":{"en":"A recommendation with explicit criteria, risks and a decision process.","fr":"Une recommandation avec ses critères, ses risques et son circuit de décision."},"steps":{"en":["Compare the alternatives against weighted criteria.","Check what could make the preferred option fail.","Agree who decides and what evidence they need."],"fr":["Compare les options selon des critères pondérés.","Examine ce qui pourrait faire échouer l’option préférée.","Convenez de qui décide et des éléments nécessaires à cette décision."]}},{"id":"backlog","en":"Prioritise a product backlog","fr":"Prioriser un backlog produit","roles":["manager"],"ids":["impact-effort","rice","premortem"],"featured":false,"intro":{"en":"Use a common time period and list the product ideas, estimates and assumptions.","fr":"Fixe une période commune et liste les idées produit, les estimations et leurs hypothèses."},"result":{"en":"A ranked backlog with assumptions to check before committing.","fr":"Un backlog classé et des hypothèses à vérifier avant de s’engager."},"steps":{"en":["Shortlist ideas by impact and effort.","Compare reach, impact, confidence and effort.","Check the risks of the preferred idea."],"fr":["Présélectionne les idées selon l’impact et l’effort.","Compare la portée, l’impact, la confiance et l’effort.","Vérifie les risques de l’idée retenue."]}}];
+</script><script>window.ProductivityJourneys=[{"id":"study","en":"Plan my revision","fr":"Planifier mes révisions","roles":["student"],"ids":["time-blocking","pomodoro","weekly-review"],"featured":true,"intro":{"en":"Have your exam date, the topics to cover and your available hours ready.","fr":"Prépare ta date d’examen, les chapitres à revoir et tes créneaux disponibles."},"result":{"en":"A realistic study schedule and a first focused session.","fr":"Un planning réaliste et une première séance de travail définie."},"steps":{"en":["Reserve time for the topics that need work.","Choose one topic for a focused work block.","Adjust the next week from what you actually finished."],"fr":["Réserve des créneaux pour les chapitres à travailler.","Choisis un chapitre pour un bloc de travail concentré.","Ajuste la semaine suivante à partir du travail réellement terminé."]}},{"id":"group-project","en":"Organise a group assignment","fr":"Organiser un projet de groupe","roles":["student"],"ids":["smart","raci","kanban"],"featured":true,"intro":{"en":"Bring the assignment brief, its deadline and the names of the group members.","fr":"Rassemble la consigne, la date de rendu et les noms des membres du groupe."},"result":{"en":"A clear deliverable, shared responsibilities and visible next tasks.","fr":"Un livrable clair, des responsabilités réparties et les prochaines tâches visibles."},"steps":{"en":["Define what must be delivered and how it will be assessed.","Agree who does the work and who makes each decision.","Make the remaining tasks visible to the group."],"fr":["Définis ce qui doit être rendu et les critères de réussite.","Convenez de qui réalise le travail et de qui décide.","Rends les tâches restantes visibles pour le groupe."]}},{"id":"team-priorities","en":"Set priorities with my team","fr":"Choisir les priorités de mon équipe","roles":["manager"],"ids":["impact-effort","moscow","daci"],"featured":true,"intro":{"en":"List the proposals, the available capacity and the result the team must achieve.","fr":"Liste les propositions, la capacité disponible et le résultat attendu de l’équipe."},"result":{"en":"A shortlist, an explicit scope and a named decision owner.","fr":"Une sélection de priorités, un périmètre explicite et un responsable de la décision."},"steps":{"en":["Compare the impact and effort of each proposal.","Separate what must be delivered from what can wait.","Name the decision owner and the people to consult."],"fr":["Compare l’impact et l’effort de chaque proposition.","Distingue ce qui doit être livré de ce qui peut attendre.","Nomme le responsable de la décision et les personnes à consulter."]}},{"id":"retro","en":"Run a useful retrospective","fr":"Préparer une rétrospective utile","roles":["manager"],"ids":["four-ls","start-stop-continue","eisenhower"],"featured":true,"intro":{"en":"Pick a period to review and bring concrete observations from the team.","fr":"Choisis la période à examiner et rassemble des observations concrètes de l’équipe."},"result":{"en":"One improvement to try, with an owner and a review date.","fr":"Une amélioration à tester, avec un responsable et une date de bilan."},"steps":{"en":["Gather observations without jumping straight to solutions.","Turn recurring themes into changes the team can try.","Select an action and decide when it will happen."],"fr":["Recueille les observations avant de proposer des solutions.","Transforme les thèmes récurrents en changements à tester.","Retiens une action et décide quand elle sera réalisée."]}},{"id":"daily-planning","en":"Sort out an overloaded day","fr":"Trier une journée trop chargée","roles":["professional"],"ids":["eisenhower","timeboxing","shutdown"],"featured":true,"intro":{"en":"Write down the tasks competing for your time, their real deadlines and the time you have.","fr":"Note les tâches qui se disputent ton temps, leurs vraies échéances et le temps disponible."},"result":{"en":"A short priority list, time set aside and a clear stopping point.","fr":"Des priorités claires, des créneaux réservés et une fin de journée définie."},"steps":{"en":["Decide what to do, schedule, delegate or remove.","Give the selected task a time limit and a finish condition.","Close the day and leave a clear next step for tomorrow."],"fr":["Décide quoi faire, planifier, déléguer ou retirer.","Fixe une durée et une condition de fin pour la tâche retenue.","Clôture la journée et prépare une prochaine action pour demain."]}},{"id":"vendors","en":"Explain a choice to a client","fr":"Justifier un choix à un client","roles":["professional"],"ids":["weighted","premortem","daci"],"featured":true,"intro":{"en":"Bring the alternatives, the client’s constraints and the criteria that matter to the decision.","fr":"Rassemble les options, les contraintes du client et les critères qui comptent pour la décision."},"result":{"en":"A recommendation with explicit criteria, risks and a decision process.","fr":"Une recommandation avec ses critères, ses risques et son circuit de décision."},"steps":{"en":["Compare the alternatives against weighted criteria.","Check what could make the preferred option fail.","Agree who decides and what evidence they need."],"fr":["Compare les options selon des critères pondérés.","Examine ce qui pourrait faire échouer l’option préférée.","Convenez de qui décide et des éléments nécessaires à cette décision."]}},{"id":"backlog","en":"Prioritise a product backlog","fr":"Prioriser un backlog produit","roles":["manager"],"ids":["impact-effort","rice","premortem"],"featured":false,"intro":{"en":"Use a common time period and list the product ideas, estimates and assumptions.","fr":"Fixe une période commune et liste les idées produit, les estimations et leurs hypothèses."},"result":{"en":"A ranked backlog with assumptions to check before committing.","fr":"Un backlog classé et des hypothèses à vérifier avant de s’engager."},"steps":{"en":["Shortlist ideas by impact and effort.","Compare reach, impact, confidence and effort.","Check the risks of the preferred idea."],"fr":["Présélectionne les idées selon l’impact et l’effort.","Compare la portée, l’impact, la confiance et l’effort.","Vérifie les risques de l’idée retenue."]}},{"id":"get-started","en":"Stop putting off an assignment","fr":"Me mettre au travail sur un devoir","roles":["student"],"ids":["eat-the-frog","implementation","pomodoro"],"featured":true,"intro":{"en":"Bring the assignment, its deadline and the next small action you have been avoiding.","fr":"Prépare la consigne, la date de rendu et la petite action que tu repousses."},"result":{"en":"A concrete first action, a starting cue and a focused work block.","fr":"Une première action concrète, un déclencheur pour commencer et un bloc de travail concentré."},"steps":{"en":["Pick the task that would make the biggest difference today.","Decide exactly when and where you will start.","Work on that action for one focused block."],"fr":["Choisis la tâche qui ferait le plus avancer ton devoir aujourd’hui.","Décide précisément quand et où tu commenceras.","Travaille sur cette action pendant un premier bloc concentré."]}},{"id":"study-choice","en":"Choose a topic or an internship","fr":"Choisir un sujet ou un stage","roles":["student"],"ids":["weighted","101010","premortem"],"featured":true,"intro":{"en":"List the options, the application or decision deadline and what matters to your studies.","fr":"Liste les options, la date de décision et ce qui compte pour tes études."},"result":{"en":"A reasoned choice with clear criteria and risks to check.","fr":"Un choix argumenté, avec des critères clairs et des risques à vérifier."},"steps":{"en":["Compare the options using criteria that matter to you.","Consider the consequences over three time horizons.","Check what could make your preferred option go wrong."],"fr":["Compare les options selon les critères qui comptent pour toi.","Examine les conséquences à trois horizons de temps.","Vérifie ce qui pourrait faire échouer l’option que tu préfères."]}},{"id":"learn-from-feedback","en":"Improve after an assignment","fr":"Améliorer mon prochain devoir","roles":["student"],"ids":["after-action","five-whys","pdca"],"featured":true,"intro":{"en":"Have the assignment, the assessment criteria and the feedback you received ready.","fr":"Rassemble le devoir, les critères d’évaluation et les retours reçus."},"result":{"en":"One change to try on the next assignment and a way to check it.","fr":"Un changement à essayer au prochain devoir et une manière de le vérifier."},"steps":{"en":["Compare what you intended with what actually happened.","Investigate one recurring difficulty without jumping to conclusions.","Try one improvement and check the next result."],"fr":["Compare ce que tu voulais faire avec ce qui s’est réellement passé.","Examine une difficulté récurrente sans conclure trop vite.","Teste une amélioration et vérifie le résultat suivant."]}},{"id":"delegate","en":"Delegate with clear expectations","fr":"Déléguer avec des attentes claires","roles":["manager"],"ids":["smart","raci","kanban"],"featured":true,"intro":{"en":"Choose a deliverable to delegate, its deadline and the people involved.","fr":"Choisis un livrable à déléguer, son échéance et les personnes concernées."},"result":{"en":"An agreed result, clear responsibilities and visible progress.","fr":"Un résultat convenu, des responsabilités claires et un suivi visible."},"steps":{"en":["Agree what a successful deliverable looks like.","Clarify who does, approves and contributes to the work.","Make the next actions and their progress visible."],"fr":["Convenez de ce qui caractérise un livrable réussi.","Clarifie qui réalise, qui valide et qui contribue au travail.","Rends les prochaines actions et leur avancement visibles."]}},{"id":"team-decision","en":"Prepare a difficult team decision","fr":"Préparer une décision difficile","roles":["manager"],"ids":["cynefin","six-hats","daci"],"featured":true,"intro":{"en":"Bring the decision to make, the known facts, the uncertainties and the people affected.","fr":"Prépare la décision à prendre, les faits connus, les incertitudes et les personnes concernées."},"result":{"en":"A decision framed around the context, different perspectives and a named owner.","fr":"Une décision cadrée selon le contexte, des points de vue examinés et un responsable nommé."},"steps":{"en":["Identify the kind of situation and what evidence is needed.","Examine the options from different perspectives.","Agree who decides, who contributes and by when."],"fr":["Identifie le type de situation et les éléments à réunir.","Examine les options selon plusieurs points de vue.","Convenez de qui décide, qui contribue et à quelle date."]}},{"id":"project-risks","en":"Anticipate project risks","fr":"Anticiper les risques d’un projet","roles":["manager"],"ids":["premortem","impact-effort","pdca"],"featured":true,"intro":{"en":"Bring the project goal, the main assumptions and the constraints on time and capacity.","fr":"Prépare l’objectif du projet, ses principales hypothèses et les contraintes de temps et de capacité."},"result":{"en":"Priority risks, practical prevention actions and a small test to run.","fr":"Des risques prioritaires, des actions de prévention et un premier test à mener."},"steps":{"en":["Imagine the project has failed and list plausible reasons.","Select prevention actions by impact and effort.","Try one action, measure it and adjust the plan."],"fr":["Imagine que le projet a échoué et relève les raisons plausibles.","Sélectionne les actions de prévention selon leur impact et leur effort.","Teste une action, mesure son effet et ajuste le plan."]}},{"id":"deliver-on-time","en":"Plan a deliverable with a deadline","fr":"Tenir l’échéance d’un livrable","roles":["professional"],"ids":["smart","time-blocking","kanban"],"featured":true,"intro":{"en":"Bring the requested deliverable, its deadline, the acceptance criteria and your available time.","fr":"Rassemble le livrable demandé, son échéance, les critères d’acceptation et ton temps disponible."},"result":{"en":"A clear finish condition, time reserved and visible next tasks.","fr":"Une condition de fin claire, des créneaux réservés et les prochaines tâches visibles."},"steps":{"en":["Define the deliverable and how it will be accepted.","Reserve realistic time for the work.","Track the remaining tasks and blockers."],"fr":["Définis le livrable et ses critères d’acceptation.","Réserve des créneaux réalistes pour le réaliser.","Suis les tâches restantes et les points de blocage."]}},{"id":"focus-session","en":"Focus despite interruptions","fr":"Me concentrer malgré les interruptions","roles":["professional"],"ids":["deep-work","timeboxing","shutdown"],"featured":true,"intro":{"en":"Choose one demanding task, note the interruptions you expect and the time you can protect.","fr":"Choisis une tâche exigeante, note les interruptions prévisibles et le temps que tu peux protéger."},"result":{"en":"One protected work session, a finish condition and a clear next step.","fr":"Une séance de travail protégée, une condition de fin et une prochaine action claire."},"steps":{"en":["Define one result and remove avoidable distractions.","Set a time limit and decide what counts as finished.","Close the session and leave a clear restart point."],"fr":["Définis un résultat et écarte les distractions évitables.","Fixe une durée et décide de ce qui comptera comme terminé.","Clôture la séance et prépare un point de reprise clair."]}},{"id":"recurring-problem","en":"Solve a recurring work problem","fr":"Débloquer un problème récurrent","roles":["professional"],"ids":["pareto","five-whys","pdca"],"featured":true,"intro":{"en":"Bring observations from one common period, consistent categories and a measurable problem.","fr":"Rassemble des observations sur une même période, des catégories cohérentes et un problème mesurable."},"result":{"en":"Priority causes, a hypothesis to test and a follow-up measure.","fr":"Des causes prioritaires, une hypothèse à tester et une mesure de suivi."},"steps":{"en":["Find which causes contribute most to the measured problem.","Investigate one priority cause and check the evidence.","Test one change and compare the result."],"fr":["Repère les causes qui contribuent le plus au problème mesuré.","Examine une cause prioritaire et vérifie les éléments disponibles.","Teste un changement et compare le résultat."]}}];
 </script><script>/* Session-only editors. Dynamic values remain text or validated numbers. */
 window.ProductivityWorkspace = (() => {
   "use strict";
@@ -2663,14 +2677,7 @@ window.ProductivityWorkspace = (() => {
         "Copy this code to show the worksheet on a website. It loads the published guide. Personal answers remain in the visitor’s tab.",
       privacy:
         "Share the method link or the public example. Your worksheet answers are excluded.",
-      pilot: "Help test the studio",
-      pilotCopy:
-        "Try finding a method, completing a worksheet and sending its result to someone. Record where you first got stuck. You can export your notes and decide whether to send them.",
-      pilotExport: "Download test notes",
-      notes: "Your test notes",
-      metricHelp:
-        "Session counters contain event names only. They stay in this tab and can be exported voluntarily.",
-      metrics: "Download session counts",
+      notes: "Your notes",
     },
     fr: {
       quick: "En une minute",
@@ -2704,14 +2711,7 @@ window.ProductivityWorkspace = (() => {
         "Copie ce code pour montrer le canevas sur un site. Il charge le guide publié. Les réponses personnelles restent dans l’onglet du visiteur.",
       privacy:
         "Partage le lien de la méthode ou le cas public. Tes réponses au canevas sont exclues.",
-      pilot: "Participer au test de l’atelier",
-      pilotCopy:
-        "Essaie de trouver une méthode, de remplir un canevas et de transmettre son résultat. Note le premier blocage. Tu peux exporter tes notes et décider de les envoyer.",
-      pilotExport: "Télécharger les notes de test",
-      notes: "Tes notes de test",
-      metricHelp:
-        "Les compteurs de session contiennent uniquement des noms d’événements. Ils restent dans cet onglet et peuvent être exportés à ta demande.",
-      metrics: "Télécharger les compteurs de session",
+      notes: "Tes notes",
     },
   };
   const secondary = {
@@ -2839,8 +2839,7 @@ window.ProductivityWorkspace = (() => {
     glossary[lang],
   )
     .map(([word, meaning]) => `<div><dt>${word}</dt><dd>${meaning}</dd></div>`)
-    .join("")}</dl></section>
-  <section class="s-wrap s-section" id="pilot"><h2>${t("pilot")}</h2><p>${t("pilotCopy")}</p><label>${t("notes")}<textarea id="pilot-notes" rows="4" maxlength="5000"></textarea></label><div class="s-btns"><button class="s-btn outline tiny" data-pilot="notes">${t("pilotExport")}</button><button class="s-btn outline tiny" data-pilot="counts">${t("metrics")}</button></div><p>${t("metricHelp")}</p></section>`;
+    .join("")}</dl></section>`;
   }
   function kitPage(id, methods, lang, esc, link) {
     const kit = kits.find((item) => item.id === id);
@@ -4861,7 +4860,6 @@ window.ProductivityDeck = (() => {
     journeyRetained:
       "Your answers stay in this tab while you move between the steps.",
     journeyReview: "Review my journey",
-    testApp: "Help test the app",
     extraFilters: "Refine the results",
     chooseHelp: "Help me choose",
     deckContents: "Slide contents",
@@ -4904,7 +4902,6 @@ window.ProductivityDeck = (() => {
     journeyRetained:
       "Tes réponses restent dans cet onglet pendant que tu passes d’une étape à l’autre.",
     journeyReview: "Revenir au bilan du parcours",
-    testApp: "Participer au test de l’application",
     extraFilters: "Affiner les résultats",
     chooseHelp: "Aide-moi à choisir",
     deckContents: "Plan des diapositives",
@@ -4992,10 +4989,6 @@ window.ProductivityDeck = (() => {
   function answers(x) {
     return s.answers[x.id] || {};
   }
-  const sessionCounts = {};
-  const count = (event) => {
-    sessionCounts[event] = (sessionCounts[event] || 0) + 1;
-  };
   const hasAnswer = (value) =>
     typeof value === "string" && Boolean(value.trim());
   const engine = window.ProductivityEngine,
@@ -5059,11 +5052,11 @@ window.ProductivityDeck = (() => {
     <header class="s-wrap"><div class="s-top">
       <a class="s-brand" href="#/">${logo}<span>${t("brand")}</span></a>
       <nav class="s-nav" aria-label="${t("brand")}"><a href="#/" ${selected === "" ? 'aria-current="page"' : ""}>${t("navStart")}</a><a href="#/all" ${selected === "all" ? 'aria-current="page"' : ""}>${t("navMethods")}</a></nav>
+      <div class="s-header-tools"><nav class="s-languages" aria-label="${s.lang === "fr" ? "Langue" : "Language"}">${["fr", "en"].map((language) => `<button type="button" data-act="lang" data-language="${language}" lang="${language}" aria-label="${language === "fr" ? "Français" : "English"}" aria-pressed="${s.lang === language}">${language.toUpperCase()}</button>`).join("")}</nav>
       <details class="s-utility"><summary>${t("navMore")} <span aria-hidden="true">⌄</span></summary><div class="s-utility-panel">
         <button data-act="html">${t("downloadApp")} ↓</button>
         <a href="#/help">${t("navHelp")}</a><a href="#/sources">${t("navSources")}</a>
-        <button data-act="lang" aria-label="${t("language")}">${s.lang === "en" ? "Passer en français" : "Switch to English"}</button>
-      </div></details>
+      </div></details></div>
     </div></header>`;
   }
   function footer() {
@@ -5129,7 +5122,7 @@ window.ProductivityDeck = (() => {
       <div class="s-faq">${faq.map((key) => `<details><summary>${t("faq" + key + "Q")}</summary><p>${t("faq" + key + "A")}</p></details>`).join("")}</div>
       ${hasLegacy ? `<section class="s-helpbox"><h3>${t("legacyTitle")}</h3><p>${t("legacyHelp")}</p><button class="s-btn outline tiny" data-act="remove-legacy">${t("legacyRemove")}</button></section>` : ""}
       <section class="s-helpbox"><h3>${t("supportTitle")}</h3><p>${t("supportCopy")}</p><div class="s-btns"><a class="s-btn outline tiny" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">${t("supportContact")} ↗</a><a class="s-btn outline tiny" href="https://github.com/hellolina33/TheUnfinishedProject/issues" target="_blank" rel="noopener">${t("supportReport")} ↗</a></div></section>
-    <p class="s-support-pilot"><a href="#/pilot">${t("testApp")}</a></p></section>`;
+    </section>`;
     return section === "sources" ? sources : help;
   }
   const journeyById = (id) =>
@@ -5152,8 +5145,6 @@ window.ProductivityDeck = (() => {
       return `<section class="s-wrap s-section s-choicepage" id="find" tabindex="-1"><a class="s-textlink" href="#/all">← ${t("navMethods")}</a><h1>${t("quizTitle")}</h1><p>${t("quizSub")}</p>${quiz()}</section>`;
     if (["sources", "help"].includes(route.section))
       return landingSupport(route.section);
-    if (route.section === "pilot")
-      return `<section class="s-wrap s-section s-choicepage" id="pilot" tabindex="-1"><h1>${window.ProductivityLearning.content[s.lang].pilot}</h1><p>${window.ProductivityLearning.content[s.lang].pilotCopy}</p><label for="pilot-notes">${window.ProductivityLearning.content[s.lang].notes}</label><textarea id="pilot-notes" rows="5" maxlength="5000"></textarea><div class="s-btns"><button class="s-btn outline" data-pilot="notes">${window.ProductivityLearning.content[s.lang].pilotExport}</button><button class="s-btn outline" data-pilot="counts">${window.ProductivityLearning.content[s.lang].metrics}</button></div></section>`;
     return `<section class="s-wrap s-hero s-taskhome">
       <div class="s-taskintro"><p class="s-kicker">${t("taskEyebrow")}</p><h1>${t("taskTitle")}</h1><p class="s-lead">${t("taskLead")}</p></div>
       <div class="s-startchooser"><div class="s-personas" role="group" aria-label="${t("profileQuestion")}">${["student", "manager", "professional"].map((role) => `<button data-persona="${role}" aria-pressed="${s.persona === role}">${t("profile" + role)}</button>`).join("")}</div>
@@ -5905,7 +5896,7 @@ window.ProductivityDeck = (() => {
         });
         pdf.save(file + ".pdf");
       }
-      count("download_" + kind);
+
       notify(t(kind + "Done"));
     } catch (error) {
       notify(
@@ -5933,7 +5924,6 @@ window.ProductivityDeck = (() => {
       "https://the-unfinished-30.vercel.app",
     ).href;
     try {
-      count("share_link");
       if (navigator.share)
         await navigator.share({ title: x?.n || t("brand"), url });
       else {
@@ -5975,7 +5965,7 @@ window.ProductivityDeck = (() => {
           "downloads/productivity-studio-" + lang + ".html",
         );
         download("productivity-studio-" + lang + ".html", html, "text/html");
-        count("download_html");
+
         return;
       } catch (e) {
         notify(t("htmlError"));
@@ -6112,7 +6102,7 @@ window.ProductivityDeck = (() => {
     }
     if (act === "update") {
       s.work[x.id] = engine.validate(w);
-      count("calculate");
+
       updateWorkResult(x);
       const result = document.querySelector(".w-result");
       result?.focus();
@@ -6320,28 +6310,6 @@ window.ProductivityDeck = (() => {
     }
   }
   app.addEventListener("click", async (e) => {
-    const pilot = e.target.closest("[data-pilot]");
-    if (pilot) {
-      const notes = document.getElementById("pilot-notes")?.value || "";
-      download(
-        "studio-test-" + s.lang + ".json",
-        JSON.stringify(
-          pilot.dataset.pilot === "notes"
-            ? {
-                tasks: [
-                  "Find a method",
-                  "Complete a worksheet",
-                  "Transmit the result",
-                ],
-                notes,
-              }
-            : { counts: sessionCounts },
-          null,
-          2,
-        ),
-        "application/json",
-      );
-    }
     const share = e.target.closest("[data-distribute]");
     if (share) {
       const x = byId(s.id);
@@ -6351,7 +6319,6 @@ window.ProductivityDeck = (() => {
           blob = await window.ProductivityDistribution.image(x, s.lang, url);
         if (blob)
           download(x.id + "-" + s.lang + "-example.png", blob, "image/png");
-        count("share_example");
       } catch (error) {
         notify(t("htmlError"));
       }
@@ -6360,7 +6327,7 @@ window.ProductivityDeck = (() => {
   app.addEventListener("submit", (e) => {
     if (e.target.id !== "studio-quiz") return;
     e.preventDefault();
-    count("recommendation");
+
     navigate({ v: "results" });
   });
   let catalogueScroll = 0;
@@ -6496,11 +6463,15 @@ window.ProductivityDeck = (() => {
         );
     }
     if (act === "lang") {
-      s.lang = s.lang === "en" ? "fr" : "en";
+      const language = b.dataset.language;
+      if (!["fr", "en"].includes(language) || language === s.lang) return;
+      s.lang = language;
       if (/^https?:$/.test(location.protocol))
         history.replaceState(null, "", router.url(currentRoute(), s.lang));
       render();
-      app.querySelector(".s-utility summary")?.focus();
+      app
+        .querySelector(`[data-act="lang"][data-language="${language}"]`)
+        ?.focus();
     }
     if (act === "tab") {
       s.tab = b.dataset.val;
@@ -6520,7 +6491,6 @@ window.ProductivityDeck = (() => {
       document.getElementById("search-tools")?.focus();
     }
     if (act === "example-workspace") {
-      count("example");
       if (hasAnswers(x) && !window.confirm(t("clearConfirm"))) return;
       if (engine.supported.includes(x.id)) s.work[x.id] = engine.sample(x);
       else
