@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1672" height="941" viewBox="0 0 1672 941">
+  <defs>
+    <pattern id="rain" width="78" height="104" patternUnits="userSpaceOnUse" patternTransform="rotate(19)">
+      <path d="M12 12v36m38 18v24" stroke="#C4DFF0" stroke-width="4" stroke-linecap="round" opacity=".38"/>
+    </pattern>
+    <g id="reel">
+      <circle r="46" fill="#F4E2BA" stroke="#241E21" stroke-width="7"/>
+      <circle r="26" fill="#291F24" stroke="#B99369" stroke-width="5" stroke-dasharray="6 8"/>
+      <circle r="9" fill="#F4E2BA"/>
+    </g>
+  </defs>
+
+  <rect width="1672" height="941" fill="#21283C"/>
+  <rect x="82" y="60" width="1508" height="715" rx="30" fill="#110F1C"/>
+  <rect x="101" y="77" width="1470" height="690" rx="24" fill="#3A5670"/>
+  <path d="M101 660V501l148-81 113 55 223-189 211 197 172-107 144 88 146-116 313 151v161Z" fill="#304760"/>
+  <path d="M101 681V564l204-91 110 112 162-50 204 81 214-129 98 57 207-115 271 133v119Z" fill="#293A51"/>
+  <circle cx="1255" cy="205" r="70" fill="#E9D9A3"/>
+  <path d="M1243 139a70 70 0 0 0 58 113 70 70 0 1 1-58-113Z" fill="#D1BD8A"/>
+  <rect x="101" y="77" width="1470" height="690" rx="24" fill="url(#rain)"/>
+  <path d="M1137 79v640M104 391h1464" stroke="#1C2436" stroke-width="22"/>
+  <path d="M1130 79v640M104 385h1464" stroke="#62778A" stroke-width="3"/>
+  <path d="M0 720h1672v221H0Z" fill="#55413B"/>
+  <path d="M0 720h1672v39H0Z" fill="#88634F"/>
+  <path d="M0 789h1672M0 879h1672" stroke="#674C42" stroke-width="4"/>
+  <ellipse cx="791" cy="802" rx="617" ry="60" fill="#191422" opacity=".52"/>
+
+  <g transform="translate(1118 607) rotate(4 214 98)" stroke="#241E21" stroke-width="8">
+    <rect x="8" y="19" width="430" height="186" rx="23" fill="#211B20" opacity=".6"/>
+    <rect width="430" height="186" rx="23" fill="#AE9D87"/>
+    <rect x="23" y="24" width="384" height="90" rx="12" fill="#273630"/>
+    <path d="M42 72h39l11-17 15 30 20-46 21 53 16-20h44l13-24 14 34 11-10h38l17-26 16 44 17-18h46"
+          fill="none" stroke="#C9E499" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M32 146h162m-162 15h162" stroke="#746256" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="363" cy="149" r="20" fill="#F6DDBC"/>
+    <path d="M363 147l9-8" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(269 237) rotate(-8 430 258)" stroke="#241E21" stroke-width="10">
+    <rect x="20" y="29" width="866" height="514" rx="42" fill="#191422" opacity=".72"/>
+    <rect x="2" y="15" width="866" height="514" rx="42" fill="#9D856D"/>
+    <rect width="866" height="510" rx="42" fill="#F4E2BA"/>
+    <rect x="55" y="46" width="756" height="329" rx="21" fill="#F8EBD0"/>
+    <path d="M61 81h744v108H61Z" stroke="none" fill="#D36B3D"/>
+    <path d="M61 187h744v12H61Z" stroke="none" fill="#AB4C33"/>
+    <path d="M102 115c-11 17-21 31-21 42a21 21 0 0 0 42 0c0-11-10-25-21-42Z" fill="#F8EBD0" stroke-width="6"/>
+    <text x="146" y="155" fill="#241E21" stroke="none" font-family="Georgia, serif" font-size="67" font-weight="700" letter-spacing="-2">Rain Room</text>
+    <text x="760" y="147" fill="#241E21" stroke="none" font-family="sans-serif" font-size="30" font-weight="700" text-anchor="end">A</text>
+    <rect x="212" y="224" width="442" height="110" rx="55" fill="#5A4642"/>
+    <rect x="362" y="244" width="141" height="70" rx="8" fill="#241E21" stroke="#B99369" stroke-width="6"/>
+    <path d="M391 249v60m12-60v60m12-60v60m12-60v60m12-60v60m12-60v60m12-60v60" stroke="#76513B" stroke-width="3"/>
+    <use href="#reel" x="272" y="279"/>
+    <use href="#reel" x="593" y="279"/>
+    <path d="M239 504l42-106h304l42 106" fill="#CEB494" stroke-linejoin="round"/>
+    <circle cx="321" cy="462" r="14" fill="#46352F" stroke-width="4"/>
+    <circle cx="545" cy="462" r="14" fill="#46352F" stroke-width="4"/>
+    <rect x="371" y="447" width="124" height="23" rx="10" fill="#46352F" stroke-width="4"/>
+    <g fill="#A98F77" stroke-width="4">
+      <circle cx="28" cy="32" r="8"/><circle cx="838" cy="32" r="8"/>
+      <circle cx="28" cy="477" r="8"/><circle cx="838" cy="477" r="8"/>
+    </g>
+  </g>
+</svg>

@@ -32,8 +32,8 @@ for(const file of ['methods.js','deck.js','studio.js']){
   if(!html.includes('src="'+file+'"'))throw Error('Missing script '+file);
 }
 if(!html.includes('src="studio.js"'))throw Error('Studio script missing');
-const main=fs.readFileSync(path.join(base,'index.html'),'utf8');
-if(!main.includes("n: 4, name: 'Productivity Library'"))throw Error('Challenge Day 04 missing');
+const catalogue=fs.readFileSync(path.join(base,'showcase','prototypes.js'),'utf8');
+if(!catalogue.includes("n: 4, name: 'Productivity Library'"))throw Error('Challenge Day 04 missing');
 // Test 50 methods × 2 languages × 3 ratios × 2 exports with deterministic stand-ins.
 // These checks validate JS control flow, eight pages, and native shape calls.
 // They are not a substitute for real binary or visual quality assurance.
