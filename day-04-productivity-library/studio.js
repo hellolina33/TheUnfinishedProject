@@ -68,7 +68,19 @@
   function spec(){return s.ratio==="16:9"?{w:13.333,h:7.5}:s.ratio==="9:10"?{w:7.5,h:8.333}:{w:7.5,h:13.333}}
   function nativeDiagram(p,sl,x,blank,box,create,textFn){let [X,Y,W,H]=box;let labs=fieldNames(x).slice(0,7),kind=x.d[0],vals=answers(x);
     if(kind==="matrix"){labs.slice(0,4).forEach((z,i)=>{let xx=X+(i%2)*W/2,yy=Y+Math.floor(i/2)*H/2;create(sl,xx,yy,W/2,H/2,i===0?"FFE1D6":"FFFDF9");textFn(sl,z,xx+.12,yy+.14,W/2-.24,.38,15,true);if(!blank)textFn(sl,vals[i]||"",xx+.12,yy+.63,W/2-.24,H/2-.67,13,false)})}
-    else if(kind==="bars"){let sorted=x.d[1].map((z,i)=>({label:z[0],n:z[2]-z[1],i})).sort((a,b)=>b.n-a.n),sum=sorted.reduce((n,z)=>n+z.n,0)||1;sorted.forEach((z,i)=>{let bw=W/(sorted.length+1),hh=H*.86*z.n/sum,xx=X+i*W/sorted.length+.11;create(sl,xx,Y+H-hh,bw,hh,i?"D6D5CE":"FF5A32");textFn(sl,vals[z.i]||z.label,xx,Y+H,bw,.42,10,true)})}
+    else if(kind==="bars"){
+      let sorted=x.d[1].map((z,i)=>({label:z[0],n:z[2]-z[1],i})).sort((a,b)=>b.n-a.n),sum=sorted.reduce((n,z)=>n+z.n,0)||1,cumulative=0,previous=null;
+      sorted.forEach((z,i)=>{
+        let bw=W/(sorted.length+1),hh=H*.83*z.n/sum,xx=X+i*W/sorted.length+.11;
+        create(sl,xx,Y+H-hh,bw,hh,i?"D6D5CE":"FF5A32");
+        textFn(sl,blank?"":vals[z.i]||z.label,xx,Y+H,bw,.42,10,true);
+        cumulative+=z.n/sum;
+        let current={x:xx+bw/2,y:Y+H-H*.84*cumulative};
+        if(previous)sl.addShape(p.ShapeType.line,{x:previous.x,y:previous.y,w:current.x-previous.x,h:current.y-previous.y,line:{color:"161713",width:2}});
+        sl.addShape(p.ShapeType.ellipse,{x:current.x-.05,y:current.y-.05,w:.1,h:.1,fill:{color:"161713"},line:{color:"161713",width:1}});
+        previous=current;
+      });
+    }
     else{let n=labs.length,cols=kind==="columns"||kind==="steps",cw=cols?W/n:W,rh=cols?H:H/n;labs.forEach((z,i)=>{let xx=X+(cols?i*cw:0),yy=Y+(cols?0:i*rh);create(sl,xx,yy,cw*(cols?.96:1),rh*(cols?1:.93),"FFFDF9");textFn(sl,z,xx+.1,yy+.12,cw-.2,Math.min(.4,rh*.35),13,true);if(!blank)textFn(sl,vals[i]||"",xx+.1,yy+Math.min(.48,rh*.4),cw-.2,Math.max(.3,rh*.44),11,false)})}
   }
   async function exportPptx(x){let b=app.querySelector('[data-act="pptx"]');if(b)b.disabled=true;notify("Building editable PowerPoint…");try{
@@ -87,7 +99,25 @@
     await loadLibrary("https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js",()=>!!(window.jspdf&&window.jspdf.jsPDF));
     let {w:W,h:H}=spec(),pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"in",format:[W,H]}),rows=slideData(x),pad=W<9?.5:.7,room=W-2*pad;
     rows.forEach((z,i)=>{if(i)pdf.addPage([W,H],W>H?"landscape":"portrait");pdf.setDrawColor(255,90,50);pdf.setLineWidth(.05);pdf.line(pad,.42,pad+.5,.42);pdf.setFont("helvetica","bold");pdf.setFontSize(9);pdf.setTextColor(85,86,80);pdf.text("THE UNFINISHED 30 / DAY 04",pad,.68);pdf.text((i+1)+" / 8",W-pad,.68,{align:"right"});pdf.setDrawColor(214,214,207);pdf.setLineWidth(.01);pdf.line(pad,H-.63,W-pad,H-.63);pdf.setFontSize(8);pdf.text("SALAH KHENISSI / LINKEDIN.COM/IN/SALAHKHENISSI",pad,H-.47);pdf.setTextColor(22,23,19);pdf.setFontSize(W<9?26:33);pdf.text(pdf.splitTextToSize(z.h,room).slice(0,3),pad,1.65);
-      if(i===2||i===4){let labs=fieldNames(x).slice(0,7),vals=answers(x),y=W<9?3.45:2.85,n=labs.length,cw=room/(x.d[0]==="matrix"?2:1),rh=W<9?Math.min(.8,(H-y-1)/n):Math.min(.5,(H-y-1)/n);labs.slice(0,9).forEach((name,j)=>{let xx=x.d[0]==="matrix"?pad+j%2*cw:pad,yy=x.d[0]==="matrix"?y+Math.floor(j/2)*rh:y+j*rh;pdf.rect(xx,yy,cw,rh);pdf.setFontSize(10);pdf.text(textShort(name,23),xx+.12,yy+.27);if(i===2&&vals[j]){pdf.setFontSize(8);pdf.text(textShort(vals[j],30),xx+.12,yy+.49)}})}
+      if(i===2||i===4){
+        let labs=fieldNames(x).slice(0,7),vals=answers(x),y=W<9?3.45:2.85,n=labs.length,cw=room/(x.d[0]==="matrix"?2:1),rh=W<9?Math.min(.8,(H-y-1)/n):Math.min(.5,(H-y-1)/n);
+        if(x.d[0]==="bars"){
+          let rows=x.d[1].map((item,j)=>({label:item[0],v:Math.max(0,item[2]-item[1]),j})).sort((a,b)=>b.v-a.v);
+          let sum=rows.reduce((total,item)=>total+item.v,0)||1;
+          let chartH=Math.min(W<9?2.25:2.8,H-y-1.5),barW=room/(rows.length+1),cumulative=0,last=null;
+          pdf.setLineWidth(.012);pdf.setDrawColor(22,23,19);
+          rows.forEach((item,j)=>{
+            let xx=pad+j*(room/rows.length)+.08,hh=chartH*(item.v/sum)*.88;
+            pdf.setFillColor(j?218:255,j?217:90,j?210:50);pdf.rect(xx,y+chartH-hh,barW,hh,"FD");
+            pdf.setFontSize(9);pdf.setTextColor(22,23,19);pdf.text(textShort(i===4?"":vals[item.j]||item.label,12),xx,y+chartH+.3);
+            cumulative+=item.v/sum;let current={x:xx+barW/2,y:y+chartH-cumulative*chartH*.88};
+            if(last){pdf.setLineWidth(.025);pdf.line(last.x,last.y,current.x,current.y)}
+            pdf.circle(current.x,current.y,.04,"F");last=current;
+          });
+        }else{
+          labs.slice(0,9).forEach((name,j)=>{let xx=x.d[0]==="matrix"?pad+j%2*cw:pad,yy=x.d[0]==="matrix"?y+Math.floor(j/2)*rh:y+j*rh;pdf.rect(xx,yy,cw,rh);pdf.setFontSize(10);pdf.text(textShort(name,23),xx+.12,yy+.27);if(i===2&&vals[j]){pdf.setFontSize(8);pdf.text(textShort(vals[j],30),xx+.12,yy+.49)}});
+        }
+      }
       else{pdf.setFont("helvetica","normal");pdf.setFontSize(W<9?16:21);pdf.text(pdf.splitTextToSize(textShort(z.b,500),room).slice(0,W<9?21:11),pad,W<9?3.45:3.0)}
     });pdf.save("day04-"+x.id+"-"+s.ratio.replace(":","x")+".pdf");notify("8-page PDF downloaded.");track("pdf_download");}catch(e){notify("PDF export failed: "+e.message)}finally{if(b)b.disabled=false}}
   function feedback(kind){try{let saved=JSON.parse(localStorage.getItem("u30studio-feedback")||"{}");saved[s.id]=kind;localStorage.setItem("u30studio-feedback",JSON.stringify(saved))}catch(e){}notify("Thank you for the feedback.");track("feedback_"+kind)}
