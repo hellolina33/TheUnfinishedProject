@@ -335,6 +335,22 @@ for (const lang of ["en", "fr"]) {
   write("downloads/productivity-studio-" + lang + ".html", offline);
   for (const kit of kits) {
     const href = prefix + lang + "/kits/" + kit.id + "/";
+    const kitTitle = esc(kit[lang] + " · Productivity Studio");
+    const methodNames = kit.ids
+      .map((id) => {
+        const method = data.find((item) => item.id === id);
+        return lang === "fr" ? method.fr.n : method.n;
+      })
+      .join(", ");
+    const kitDescription = esc(
+      lang === "fr"
+        ? "Un parcours avec " +
+            methodNames +
+            ". Guides, exemples et application HTML hors ligne dans un kit gratuit."
+        : "A guided workflow with " +
+            methodNames +
+            ". Guides, examples and the offline HTML app in one free kit.",
+    );
     let html = page(lang, "home");
     for (const language of ["en", "fr"])
       html = html
@@ -361,9 +377,29 @@ for (const lang of ["en", "fr"]) {
         .join("") +
       "</ol></main>";
     html = html
+      .replace(/<title>.*?<\/title>/, "<title>" + kitTitle + "</title>")
       .replace(
-        /<title>.*?<\/title>/,
-        "<title>" + esc(kit[lang]) + " · Productivity Studio</title>",
+        /<meta property="og:title" content="[^"]*">/,
+        '<meta property="og:title" content="' + kitTitle + '">',
+      )
+      .replace(
+        /<meta name="description" content="[^"]*">/,
+        '<meta name="description" content="' + kitDescription + '">',
+      )
+      .replace(
+        /<meta property="og:description" content="[^"]*">/,
+        '<meta property="og:description" content="' + kitDescription + '">',
+      )
+      .replace(
+        /<meta property="og:image" content="[^"]*">/,
+        '<meta property="og:image" content="' +
+          site +
+          prefix +
+          "social/" +
+          lang +
+          "-" +
+          kit.ids[0] +
+          '.png">',
       )
       .replace(
         /<div id="app">[\s\S]*?<\/div>/,

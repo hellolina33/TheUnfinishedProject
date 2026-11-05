@@ -25,7 +25,7 @@ https://the-unfinished-30.vercel.app/day-04-productivity-library/fr/outils/paret
 
 Two product ideas can reach very different numbers of users and still be difficult to compare.
 
-In this fictional RICE example, A scores 160 and B scores 100. The result depends on a common reach period, the confidence estimate and the effort unit.
+In the main fictional RICE example, A scores 160 and B scores 80. The result depends on a common reach period, the confidence estimate and the effort unit.
 
 Productivity Studio lets you change the inputs, see what would change the winner, and download an editable result.
 

@@ -2,7 +2,7 @@
 
 Les statuts distinguent l’implémentation des fonctions, les validations encore partielles et les opérations qui exigent des comptes ou des personnes réelles. Les tests de code ne prouvent aucune progression de trafic, de conversion ou de viralité.
 
-89 points implémentés, 7 points partiellement validés et 4 points préparés en attente d’accès ou de participants. Les fonctions restent soumises au résultat des vérifications de publication consignées dans le rapport de livraison.
+90 points implémentés, 6 points partiellement validés et 4 points préparés en attente d’accès ou de participants. Les fonctions restent soumises au résultat des vérifications de publication consignées dans le rapport de livraison.
 
 | N° | Amélioration | Statut | Preuve ou limite |
 | --- | --- | --- | --- |
@@ -74,7 +74,7 @@ Les statuts distinguent l’implémentation des fonctions, les validations encor
 | 66 | Absence de fuite des réponses | Implémenté | package-lock.json · vercel.json · .github/SECURITY.md |
 | 67 | Sécurité des documents générés | Implémenté | package-lock.json · vercel.json · .github/SECURITY.md |
 | 68 | En-têtes et intégration externe | Implémenté | package-lock.json · vercel.json · .github/SECURITY.md |
-| 69 | Protection de publication et signalement | Partiel | Tests avant build, audits et procédure de signalement intégrés. Les règles de protection de branche relèvent des réglages du dépôt. |
+| 69 | Protection de publication et signalement | Implémenté | Branche main protégée : demande de fusion, contrôle GitHub Actions verify requis et à jour, administrateurs inclus, suppression et push forcé interdits. Signalement privé documenté. |
 | 70 | Conditions d’un futur backend partagé | Implémenté | package-lock.json · vercel.json · .github/SECURITY.md |
 | 71 | Recherche par problème | Implémenté | search.js · router.js · tests/day04/engine.test.mjs |
 | 72 | Tolérance aux fautes et variantes | Implémenté | search.js · router.js · tests/day04/engine.test.mjs |
