@@ -1,0 +1,395 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rain Room · The Unfinished 30</title>
+<meta name="author" content="Salah Khenissi">
+<meta name="description" content="Rain, soft jazz and noise to work to. Mix your own focus room, set a timer, press play. Every sound is generated live in your browser. Day 5 of The Unfinished 30.">
+<meta property="og:title" content="Rain Room: rain, jazz and noise to work to">
+<meta property="og:description" content="Mix your own focus room. Every sound is generated live in your browser. Day 5 of The Unfinished 30, by Salah Khenissi.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0B0F1A">
+<link rel="icon" href="/day-05-rainroom/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/day-05-rainroom/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/day-05-rainroom/apple-touch-icon.png">
+<script defer src="/_vercel/insights/script.js"></script>
+<style>
+:root{
+  --night:#0B0F1A; --glass:rgba(18,26,46,.72); --line:rgba(237,231,219,.14);
+  --text:#EDE7DB; --muted:#9AA1B5; --lamp:#FFB547; --lamp-ink:#1A1206; --cool:#7FB2FF;
+  --f:"Avenir Next","Segoe UI",system-ui,-apple-system,Roboto,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--night);color:var(--text);font:16px/1.5 var(--f);min-height:100dvh;overflow-x:clip}
+a{color:inherit}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--lamp);outline-offset:3px;border-radius:8px}
+[hidden]{display:none!important}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.wrap{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left))}
+.chal{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;font-size:13px;color:var(--muted);padding:14px 0}
+.chal a{color:var(--lamp);font-weight:600;text-decoration:none}
+.lang{display:inline-flex;gap:2px;border:1px solid var(--line);border-radius:999px;padding:2px}
+.lang button{border:0;background:none;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;min-height:28px}
+.lang button[aria-pressed="true"]{background:var(--text);color:var(--night)}
+
+.top{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;align-items:end;padding:6vh 0 28px}
+h1{font-size:clamp(52px,9vw,112px);line-height:.9;letter-spacing:-.04em;font-weight:800}
+h1 em{font-style:normal;color:var(--lamp)}
+.lead{margin-top:16px;color:var(--muted);font-size:18px;max-width:40ch;text-wrap:pretty}
+.player{display:flex;align-items:center;gap:20px;justify-self:end}
+.play{width:132px;height:132px;border-radius:50%;border:0;background:var(--lamp);color:var(--lamp-ink);cursor:pointer;display:grid;place-items:center;box-shadow:0 0 0 10px rgba(255,181,71,.12),0 0 80px rgba(255,181,71,.35);transition:transform .15s}
+.play:active{transform:scale(.96)}
+.play svg{width:46px;height:46px}
+.now{font-size:14px;color:var(--muted);max-width:26ch}
+.now b{display:block;color:var(--text);font-size:16px}
+@media (max-width:760px){.top{grid-template-columns:minmax(0,1fr);gap:22px;padding-top:3vh}.player{justify-self:start}.play{width:104px;height:104px}}
+
+.panel{background:var(--glass);border:1px solid var(--line);border-radius:24px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);padding:22px}
+.row-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.row-h h2{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.presets{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:rgba(255,255,255,.03);border-radius:999px;padding:8px 14px;font-size:14px;font-weight:600;cursor:pointer;min-height:40px}
+.chip:hover{border-color:rgba(237,231,219,.35)}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--night);border-color:var(--text)}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;margin-top:16px}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.mix{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.mix{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ch{border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(255,255,255,.02);display:grid;gap:10px;transition:border-color .2s,background .2s}
+.ch.on{border-color:rgba(255,181,71,.45);background:rgba(255,181,71,.06)}
+.ch .h{display:flex;align-items:center;gap:10px}
+.ch .ic{width:30px;height:30px;flex:none;color:var(--muted)}
+.ch.on .ic{color:var(--lamp)}
+.ch .nm{font-weight:700;font-size:15px}
+.ch .vl{margin-left:auto;font:600 12px var(--mono);color:var(--muted)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--lamp) var(--p,0%),rgba(237,231,219,.16) var(--p,0%))}
+input[type=range]::-moz-range-track{height:6px;border-radius:3px;background:rgba(237,231,219,.16)}
+input[type=range]::-moz-range-progress{height:6px;border-radius:3px;background:var(--lamp)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--text);margin-top:-7px;border:0}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--text);border:0}
+
+.side{display:grid;gap:16px;align-content:start}
+.timer .opts{display:flex;gap:8px;flex-wrap:wrap}
+.clock{font:700 56px/1 var(--mono);letter-spacing:-.02em;margin:14px 0 4px}
+.hint{font-size:13px;color:var(--muted)}
+.master{display:grid;gap:6px}
+.kbd{font:600 12px var(--mono);border:1px solid var(--line);border-radius:6px;padding:1px 6px}
+
+.foot{position:relative;z-index:1;padding:40px 0 48px;color:var(--muted);font-size:14px}
+.foot details{border-top:1px solid var(--line);padding-top:16px;max-width:70ch}
+.foot summary{cursor:pointer;color:var(--text);font-weight:700;min-height:32px}
+.foot p{margin-top:10px;text-wrap:pretty}
+.foot .by{margin-top:22px;display:flex;gap:8px 18px;flex-wrap:wrap}
+.foot a{color:var(--text)}
+@media (prefers-reduced-motion:reduce){.play{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <div class="chal"><span><a href="https://the-unfinished-30.vercel.app/" target="_blank" rel="noopener">The Unfinished 30</a> · <span data-t="day">Day 5/30, one free prototype a day</span></span>
+    <span class="lang" role="group" aria-label="Language"><button type="button" id="l-en" aria-pressed="true">EN</button><button type="button" id="l-fr" aria-pressed="false">FR</button></span></div>
+
+  <header class="top">
+    <div>
+      <h1>Rain <em>Room</em></h1>
+      <p class="lead" data-t="lead">Rain on the window, a little jazz, the noise you like. Mix your focus room, set a timer, get to work.</p>
+    </div>
+    <div class="player">
+      <button type="button" class="play" id="play" aria-label="Play"><svg viewBox="0 0 24 24" id="play-ic" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg></button>
+      <p class="now" id="now" aria-live="polite"><b data-t="ready">Press play</b><span data-t="readySub">Every sound is generated live in your browser.</span></p>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel" aria-labelledby="pr-h">
+      <div class="row-h"><h2 id="pr-h" data-t="moods">Moods</h2></div>
+      <div class="presets" id="presets"></div>
+    </section>
+
+    <div class="grid">
+      <section class="panel" aria-labelledby="mx-h">
+        <div class="row-h"><h2 id="mx-h" data-t="mixer">Your mix</h2><button type="button" class="chip" id="silence" data-t="silence">Mute all</button></div>
+        <div class="mix" id="mix"></div>
+      </section>
+      <div class="side">
+        <section class="panel timer" aria-labelledby="tm-h">
+          <div class="row-h"><h2 id="tm-h" data-t="timer">Focus timer</h2></div>
+          <div class="opts" id="tops"></div>
+          <div class="clock" id="clock" aria-live="off" style="opacity:.3">00:00</div>
+          <p class="hint" data-t="timerHint">The sound fades out when time is up.</p>
+        </section>
+        <section class="panel master">
+          <div class="row-h" style="margin-bottom:0"><h2 data-t="volume">Volume</h2><span class="hint"><span class="kbd">Space</span> <span data-t="space">play / pause</span></span></div>
+          <input type="range" id="vol" min="0" max="100" value="80" aria-label="Master volume">
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<footer class="foot"><div class="wrap">
+  <details><summary data-t="unfSum">What is still unfinished</summary>
+    <p data-t="unf">Every sound is made by code, not recorded: the rain and the fire are shaped noise, and the jazz is a small program that improvises piano, bass and brushes. It will never sound like a real trio. Your mix is saved in this browser only. On phones, the sound may stop when the screen locks. No downloads, no playlists, no account.</p>
+  </details>
+  <div class="by"><span><span data-t="made">Designed and built by</span> <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span><a href="/day-05-rainroom/" download="rain-room.html" data-t="dl">Download the HTML</a><span>© 2026 Salah Khenissi</span></div>
+</div></footer>
+
+<script>
+(function(){
+"use strict";
+/* ================= TEXT ================= */
+var T={en:{day:"Day 5/30, one free prototype a day",lead:"Rain on the window, a little jazz, the noise you like. Mix your focus room, set a timer, get to work.",ready:"Press play",readySub:"Every sound is generated live in your browser.",moods:"Moods",mixer:"Your mix",silence:"Mute all",timer:"Focus timer",timerHint:"The sound fades out when time is up.",volume:"Volume",space:"play / pause",unfSum:"What is still unfinished",unf:"Every sound is made by code, not recorded: the rain and the fire are shaped noise, and the jazz is a small program that improvises piano, bass and brushes. It will never sound like a real trio. Your mix is saved in this browser only. On phones, the sound may stop when the screen locks. No downloads, no playlists, no account.",made:"Designed and built by",dl:"Download the HTML",playing:"Playing",paused:"Paused",off:"Off",min:"min",jazzNow:"Jazz in {k}, {b} BPM, never the same twice",mixNow:"{n} sound(s) in the mix",nothing:"Turn a sound up in the mix",done:"Time is up. Take a break.",
+  ch:{rain:"Rain",thunder:"Thunder",jazz:"Jazz",fire:"Fireplace",waves:"Waves",vinyl:"Vinyl",white:"White noise",pink:"Pink noise",brown:"Brown noise"},
+  pre:{jr:"Jazz & rain",deep:"Deep focus",storm:"Storm",fire:"Fireside",sea:"Seaside",white:"Pure white"}},
+ fr:{day:"Jour 5/30, un prototype gratuit par jour",lead:"La pluie sur la vitre, un peu de jazz, le bruit que tu aimes. Compose ta pièce, lance un minuteur, au travail.",ready:"Appuie sur lecture",readySub:"Chaque son est généré en direct dans ton navigateur.",moods:"Ambiances",mixer:"Ton mix",silence:"Tout couper",timer:"Minuteur",timerHint:"Le son s'éteint en douceur à la fin.",volume:"Volume",space:"lecture / pause",unfSum:"Ce qui n'est pas fini",unf:"Chaque son est fabriqué par du code, pas enregistré : la pluie et le feu sont du bruit sculpté, et le jazz est un petit programme qui improvise piano, contrebasse et balais. Ça ne sonnera jamais comme un vrai trio. Ton mix est gardé dans ce navigateur seulement. Sur téléphone, le son peut s'arrêter quand l'écran se verrouille. Pas de téléchargement, pas de playlist, pas de compte.",made:"Conçu et construit par",dl:"Télécharger le HTML",playing:"Lecture",paused:"En pause",off:"Off",min:"min",jazzNow:"Jazz en {k}, {b} BPM, jamais deux fois pareil",mixNow:"{n} son(s) dans le mix",nothing:"Monte un son dans le mix",done:"C'est l'heure de la pause.",
+  ch:{rain:"Pluie",thunder:"Orage",jazz:"Jazz",fire:"Feu de bois",waves:"Vagues",vinyl:"Vinyle",white:"Bruit blanc",pink:"Bruit rose",brown:"Bruit brun"},
+  pre:{jr:"Jazz & pluie",deep:"Concentration",storm:"Orage",fire:"Coin du feu",sea:"Bord de mer",white:"Blanc pur"}}};
+var lang="en"; var tx=function(){return T[lang]};
+function fill(s,v){return s.replace(/\{(\w+)\}/g,function(_,k){return v[k]})}
+
+/* ================= CHANNELS ================= */
+var ICON={
+ rain:'<path d="M7 13a5 5 0 1 1 9.6-2A3.5 3.5 0 1 1 17 18H8a4 4 0 0 1-1-5z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 21l1-2M13 21l1-2M17 21l1-2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ thunder:'<path d="M13 2L5 14h6l-2 8 9-12h-6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+ jazz:'<path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>',
+ fire:'<path d="M12 22c4 0 7-2.6 7-6.5 0-3.8-3-6-4.5-9.5-.9 2.2-2.2 3.4-3.5 4-1-1.8-1.3-3.5-1-6C6.8 6.6 5 10.4 5 15.5 5 19.4 8 22 12 22z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>',
+ waves:'<path d="M2 9c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2M2 15c2.5 0 2.5-2 5-2s2.5 2 5 2 2.5-2 5-2 2.5 2 5 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ vinyl:'<circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 6a6 6 0 0 1 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ white:'<path d="M3 12h2l1.5-5 2 10 2-12 2 14 2-11 2 8 1.5-4H21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>',
+ pink:'<path d="M3 12c2-6 4 6 6 0s4 6 6 0 4 6 6 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+ brown:'<path d="M3 12c3-5 6 5 9 0s6 5 9 0" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'};
+var IDS=["rain","jazz","thunder","fire","waves","vinyl","white","pink","brown"];
+var PRESETS=[["jr",{rain:55,jazz:50,thunder:20,vinyl:20}],["deep",{brown:60,rain:20}],["storm",{rain:80,thunder:60,waves:10}],["fire",{fire:60,jazz:35,rain:25}],["sea",{waves:70,pink:12}],["white",{white:45}]];
+var GAIN={rain:.9,jazz:.75,thunder:1.2,fire:.9,waves:.8,vinyl:.5,white:.75,pink:.35,brown:.75};
+var vol={}; IDS.forEach(function(k){vol[k]=0}); var preset="jr";
+try{var sv=JSON.parse(localStorage.getItem("rainroom_v1")||"null");if(sv&&sv.vol){IDS.forEach(function(k){vol[k]=+sv.vol[k]||0});preset=sv.preset||"";if(sv.lang==="fr")lang="fr";if(sv.master!=null)document.getElementById("vol").value=sv.master}else PRESETS[0][1]&&Object.keys(PRESETS[0][1]).forEach(function(k){vol[k]=PRESETS[0][1][k]})}catch(e){Object.keys(PRESETS[0][1]).forEach(function(k){vol[k]=PRESETS[0][1][k]})}
+function save(){try{localStorage.setItem("rainroom_v1",JSON.stringify({vol:vol,preset:preset,lang:lang,master:+document.getElementById("vol").value}))}catch(e){}}
+
+/* ================= AUDIO ENGINE ================= */
+var ctx=null, master=null, bus={}, playing=false, jazz=null, thunderT=0;
+function noiseBuf(kind,sec){
+  var n=Math.floor(ctx.sampleRate*sec), b=ctx.createBuffer(2,n,ctx.sampleRate);
+  for(var c=0;c<2;c++){var d=b.getChannelData(c),b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0,last=0;
+    for(var i=0;i<n;i++){var w=Math.random()*2-1;
+      if(kind==="white")d[i]=w*.5;
+      else if(kind==="pink"){b0=.99886*b0+w*.0555179;b1=.99332*b1+w*.0750759;b2=.969*b2+w*.153852;b3=.8665*b3+w*.3104856;b4=.55*b4+w*.5329522;b5=-.7616*b5-w*.016898;d[i]=(b0+b1+b2+b3+b4+b5+b6+w*.5362)*.11;b6=w*.115926}
+      else {last=(last+.02*w)/1.02;d[i]=last*3.5}}
+    // crossfade loop edges
+    var f=Math.floor(ctx.sampleRate*.05);for(var j=0;j<f;j++){var a=j/f;d[j]=d[j]*a+d[n-f+j]*(1-a)}}
+  return b}
+function eventsBuf(sec,rate,make){ // sparse events (drops, crackles) baked into a loop
+  var sr=ctx.sampleRate,n=Math.floor(sr*sec),b=ctx.createBuffer(2,n,sr),L=b.getChannelData(0),R=b.getChannelData(1);
+  var count=Math.floor(sec*rate);
+  for(var e=0;e<count;e++){var at=Math.floor(Math.random()*n),pan=Math.random(),ev=make(sr);
+    for(var i=0;i<ev.length&&at+i<n;i++){L[at+i]+=ev[i]*(1-pan);R[at+i]+=ev[i]*pan}}
+  return b}
+function drop(sr){var len=Math.floor(sr*(.004+Math.random()*.02)),a=new Float32Array(len),f=1800+Math.random()*4000,amp=.05+Math.random()*.25*(Math.random()<.1?3:1);
+  for(var i=0;i<len;i++){var t=i/sr;a[i]=(Math.random()*2-1)*.6*Math.exp(-t*400)*amp+Math.sin(2*Math.PI*f*t)*Math.exp(-t*300)*amp*.5}return a}
+function crackle(sr){var len=Math.floor(sr*(.002+Math.random()*.012)),a=new Float32Array(len),amp=.1+Math.pow(Math.random(),3)*.9;
+  for(var i=0;i<len;i++)a[i]=(Math.random()*2-1)*amp*Math.exp(-i/sr*600);return a}
+function tick(sr){var a=new Float32Array(Math.floor(sr*.0015)),amp=.05+Math.pow(Math.random(),4)*.5;for(var i=0;i<a.length;i++)a[i]=(Math.random()*2-1)*amp;return a}
+function loop(buf,dest){var s=ctx.createBufferSource();s.buffer=buf;s.loop=true;s.connect(dest);s.start(ctx.currentTime+Math.random()*.1, Math.random()*buf.duration);return s}
+function filt(type,f,q){var x=ctx.createBiquadFilter();x.type=type;x.frequency.value=f;if(q)x.Q.value=q;return x}
+function chain(){for(var i=0;i<arguments.length-1;i++)arguments[i].connect(arguments[i+1]);return arguments[arguments.length-1]}
+
+function initAudio(){
+  var AC=window.AudioContext||window.webkitAudioContext; ctx=new AC();
+  master=ctx.createGain(); master.gain.value=0;
+  var comp=ctx.createDynamicsCompressor(); comp.threshold.value=-14; comp.ratio.value=3;
+  chain(master,comp,ctx.destination);
+  IDS.forEach(function(k){bus[k]=ctx.createGain();bus[k].gain.value=0;bus[k].connect(master)});
+  var pink=noiseBuf("pink",8), brown=noiseBuf("brown",8), white=noiseBuf("white",6);
+  // rain: body + drops + low rumble
+  loop(pink,chain(filt("highpass",500),filt("lowpass",6500),gainNode(.9),bus.rain));
+  loop(eventsBuf(9,260,drop),chain(filt("highpass",900),gainNode(.9),bus.rain));
+  loop(brown,chain(filt("lowpass",220),gainNode(.5),bus.rain));
+  // fire: low roar + crackles
+  loop(brown,chain(filt("lowpass",420),gainNode(.6),bus.fire));
+  loop(eventsBuf(11,18,crackle),chain(filt("bandpass",2600,.6),gainNode(1.6),bus.fire));
+  loop(eventsBuf(7,40,crackle),chain(filt("highpass",3000),gainNode(.4),bus.fire));
+  // waves: noise through a slowly breathing filter + gain
+  var wg=ctx.createGain(); wg.gain.value=.45; var wl=filt("lowpass",700);
+  loop(pink,chain(wl,wg,bus.waves));
+  var lfo=ctx.createOscillator(); lfo.frequency.value=1/9; var lg=ctx.createGain(); lg.gain.value=.4; chain(lfo,lg,wg.gain);
+  var lfo2=ctx.createOscillator(); lfo2.frequency.value=1/9; var lg2=ctx.createGain(); lg2.gain.value=500; chain(lfo2,lg2,wl.frequency); lfo.start(); lfo2.start();
+  // vinyl
+  loop(eventsBuf(10,90,tick),chain(filt("bandpass",3200,.7),gainNode(1.2),bus.vinyl));
+  loop(pink,chain(filt("bandpass",1200,.4),gainNode(.05),bus.vinyl));
+  // pure noises
+  loop(white,bus.white); loop(pink,bus.pink); loop(brown,chain(filt("lowpass",900),bus.brown));
+  // thunder bus prepared; strikes scheduled in tick()
+  jazz=new Jazz(bus.jazz);
+  IDS.forEach(function(k){setVol(k,vol[k],true)});
+  setInterval(pump,250);
+}
+function gainNode(v){var g=ctx.createGain();g.gain.value=v;return g}
+function thunder(at){
+  var len=5+Math.random()*4, sr=ctx.sampleRate, n=Math.floor(sr*len), b=ctx.createBuffer(2,n,sr);
+  for(var c=0;c<2;c++){var d=b.getChannelData(c),last=0,crack=Math.random()*.6;
+    for(var i=0;i<n;i++){var t=i/sr,w=Math.random()*2-1;last=(last+.03*w)/1.03;
+      var env=Math.min(1,t/.08)*Math.exp(-t*(.9+Math.random()*.0))*(1+.6*Math.sin(t*3.1+c)*Math.sin(t*1.7));
+      d[i]=last*6*env+(t<.25?w*crack*Math.exp(-t*14):0)}}
+  var s=ctx.createBufferSource();s.buffer=b;var lp=filt("lowpass",380+Math.random()*500);chain(s,lp,bus.thunder);s.start(at)}
+function pump(){ if(!playing)return; var now=ctx.currentTime;
+  if(vol.thunder>0&&now>thunderT){thunder(now+.2);thunderT=now+25+Math.random()*45}
+  if(vol.jazz>0)jazz.schedule(now+2.5); else jazz.skip(now) }
+
+/* ---------- generative jazz trio ---------- */
+var KEYS=[["D",50],["F",53],["Bb",46],["Eb",51],["G",55],["C",48],["A",57]];
+// progressions in semitones from key root: [root offset, quality]
+var PROGS=[
+ [[2,"m9"],[7,"13"],[0,"maj9"],[9,"7b9"]],
+ [[0,"maj9"],[9,"m9"],[2,"m9"],[7,"13"]],
+ [[2,"m9"],[7,"13"],[0,"maj9"],[0,"maj9"]],
+ [[4,"m7"],[9,"7b9"],[2,"m9"],[7,"13"]],
+ [[0,"maj9"],[5,"maj9"],[4,"m7"],[9,"7b9"]]];
+var VOICE={m9:[3,10,14,17],"13":[4,10,14,21],maj9:[4,11,14,19],"7b9":[4,10,13,19],m7:[3,7,10,14]};
+var SCALE={m9:[0,2,3,5,7,9,10],"13":[0,2,4,7,9,10],maj9:[0,2,4,7,9,11],"7b9":[0,1,4,7,10],m7:[0,2,3,5,7,10]};
+function mtof(m){return 440*Math.pow(2,(m-69)/12)}
+function Jazz(out){
+  this.out=ctx.createGain(); this.out.gain.value=.9;
+  var lp=filt("lowpass",5200), sh=ctx.createWaveShaper(); var cur=new Float32Array(1024);for(var i=0;i<1024;i++){var x=i/511.5-1;cur[i]=Math.tanh(x*1.4)}sh.curve=cur;
+  chain(this.out,sh,lp,out);
+  this.rev=ctx.createConvolver(); this.rev.buffer=this.ir(2.4); var rg=gainNode(.22); chain(this.out,this.rev,rg,out);
+  this.next=0; this.bar=0; this.newChorus(); this.lastMel=0;
+}
+Jazz.prototype.ir=function(sec){var sr=ctx.sampleRate,n=Math.floor(sr*sec),b=ctx.createBuffer(2,n,sr);for(var c=0;c<2;c++){var d=b.getChannelData(c);for(var i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3)}return b};
+Jazz.prototype.newChorus=function(){var k=KEYS[Math.floor(Math.random()*KEYS.length)];this.key=k;this.prog=PROGS[Math.floor(Math.random()*PROGS.length)];this.bpm=66+Math.floor(Math.random()*16);this.bar=0;this.choruses=(this.choruses||0)+1;updateNow()};
+Jazz.prototype.skip=function(now){this.next=Math.max(this.next,now+.1)};
+Jazz.prototype.schedule=function(until){
+  if(this.next<ctx.currentTime)this.next=ctx.currentTime+.15;
+  while(this.next<until){this.playBar(this.next);this.next+=4*60/this.bpm;this.bar++;if(this.bar>=8){if(Math.random()<.6)this.newChorus();else this.bar=0}}
+};
+Jazz.prototype.playBar=function(t0){
+  var beat=60/this.bpm, sw=beat*0.62, ch=this.prog[Math.floor(this.bar/2)%4], nx=this.prog[(Math.floor(this.bar/2)+(this.bar%2))%4];
+  var root=this.key[1]+ch[0], q=ch[1], half=this.bar%2;
+  // piano comping: Charleston-ish, varied
+  var hits=[[0,.55],[1+0.62,.42]]; if(Math.random()<.35)hits=[[0.62,.5],[2,.4],[3+.62,.3]]; if(Math.random()<.2)hits=[[0,.5],[2+.62,.4]];
+  var self=this;
+  hits.forEach(function(h){VOICE[q].forEach(function(iv,j){self.rhodes(root+iv-(iv>16?12:0),t0+self.swingT(h[0],beat),beat*(1.2+Math.random()*.6),h[1]*(.8+Math.random()*.3)*(j?1:.9))})});
+  // sparse melody
+  var sc=SCALE[q], m=this.lastMel||root+24+sc[2];
+  for(var e=0;e<8;e++){ if(Math.random()<(half?.38:.22)){ var cand=sc.map(function(s){var base=root+24+s;return [base,base+12]}).reduce(function(a,b){return a.concat(b)},[]).filter(function(n){return Math.abs(n-m)<=5&&n<=root+38&&n>=root+19});
+      if(cand.length){m=cand[Math.floor(Math.random()*cand.length)];this.rhodes(m,t0+this.swingT(e/2,beat),beat*.9,.35+Math.random()*.25)} } }
+  this.lastMel=m;
+  // walking bass
+  var tones=[0,VOICE[q][0]%12,7,VOICE[q][1]%12], target=this.key[1]+nx[0];
+  for(var b=0;b<4;b++){var n;
+    if(b===0)n=root; else if(b===3)n=(Math.random()<.6? target+(Math.random()<.5?1:-1):root+tones[Math.floor(Math.random()*4)]);
+    else n=root+tones[1+Math.floor(Math.random()*3)];
+    while(n>root+10)n-=12; this.bass(n-12,t0+b*beat,beat*.92,b===0?.95:.8)}
+  // brushes: swish on 2 & 4, ride swing pattern
+  for(var s=0;s<4;s++){ this.ride(t0+s*beat,.18+(s%2)*.06); if(s===1||s===3){this.ride(t0+s*beat+sw,.11);this.swish(t0+s*beat,.32)} }
+  if(Math.random()<.25)this.kick(t0+(Math.random()<.5?0:2*beat));
+};
+Jazz.prototype.swingT=function(pos,beat){var b=Math.floor(pos),f=pos-b;return (b+(f>0?0.62:0))*beat};
+Jazz.prototype.rhodes=function(m,t,dur,v){
+  var f=mtof(m), c=ctx.createOscillator(), mo=ctx.createOscillator(), mg=ctx.createGain(), g=ctx.createGain(), tr=ctx.createGain();
+  c.frequency.value=f; mo.frequency.value=f; c.detune.value=(Math.random()-.5)*8;
+  mg.gain.setValueAtTime(f*1.4*v,t); mg.gain.exponentialRampToValueAtTime(f*.15+1,t+.8);
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.09*v,t+.006); g.gain.exponentialRampToValueAtTime(.035*v+.0001,t+.5); g.gain.setValueAtTime(.035*v+.0001,t+dur); g.gain.exponentialRampToValueAtTime(.0001,t+dur+1.2);
+  mo.connect(mg); mg.connect(c.frequency); c.connect(g); g.connect(this.out);
+  var bell=ctx.createOscillator(), bg=ctx.createGain(); bell.frequency.value=f*4.01; bg.gain.setValueAtTime(.012*v,t); bg.gain.exponentialRampToValueAtTime(.0001,t+.25); bell.connect(bg); bg.connect(this.out);
+  [c,mo,bell].forEach(function(o){o.start(t);o.stop(t+dur+1.4)});
+};
+Jazz.prototype.bass=function(m,t,dur,v){
+  var f=mtof(m), o=ctx.createOscillator(), o2=ctx.createOscillator(), g=ctx.createGain(), lp=filt("lowpass",520);
+  o.type="triangle"; o.frequency.value=f; o2.frequency.value=f;
+  g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.32*v,t+.012); g.gain.exponentialRampToValueAtTime(.12*v,t+.18); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(lp); o2.connect(lp); lp.connect(g); g.connect(this.out); o.start(t); o2.start(t); o.stop(t+dur+.05); o2.stop(t+dur+.05);
+};
+Jazz.prototype.noise=function(){if(!this.nb){this.nb=noiseBuf("white",2)}return this.nb};
+Jazz.prototype.ride=function(t,v){var s=ctx.createBufferSource();s.buffer=this.noise();var hp=filt("highpass",6500),bp=filt("bandpass",8500,1.5),g=ctx.createGain();
+  g.gain.setValueAtTime(v*.5,t);g.gain.exponentialRampToValueAtTime(.0001,t+.35);chain(s,hp,bp,g,this.out);s.start(t,Math.random());s.stop(t+.4)};
+Jazz.prototype.swish=function(t,v){var s=ctx.createBufferSource();s.buffer=this.noise();var bp=filt("bandpass",2200,.6),g=ctx.createGain();
+  g.gain.setValueAtTime(0,t-.04);g.gain.linearRampToValueAtTime(v*.5,t+.05);g.gain.exponentialRampToValueAtTime(.0001,t+.32);chain(s,bp,g,this.out);s.start(t-.04,Math.random());s.stop(t+.36)};
+Jazz.prototype.kick=function(t){var o=ctx.createOscillator(),g=ctx.createGain();o.frequency.setValueAtTime(90,t);o.frequency.exponentialRampToValueAtTime(45,t+.15);g.gain.setValueAtTime(.25,t);g.gain.exponentialRampToValueAtTime(.0001,t+.3);o.connect(g);g.connect(this.out);o.start(t);o.stop(t+.32)};
+
+/* ================= UI ================= */
+var $=function(id){return document.getElementById(id)};
+function setVol(k,v,instant){vol[k]=v; var el=$("r-"+k); if(el){el.value=v;el.style.setProperty("--p",v+"%");$("v-"+k).textContent=v;el.closest(".ch").classList.toggle("on",v>0)}
+  if(ctx){var target=Math.pow(v/100,2)*GAIN[k];bus[k].gain.cancelScheduledValues(ctx.currentTime);bus[k].gain.setTargetAtTime(target,ctx.currentTime,instant?.02:.25)}
+  if(k==="jazz"&&ctx&&v===0)jazz.skip(ctx.currentTime);
+  updateNow()}
+function renderMix(){var m=$("mix");m.replaceChildren();var t=tx();
+  IDS.forEach(function(k){var d=document.createElement("div");d.className="ch";
+    d.innerHTML='<div class="h"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true">'+ICON[k]+'</svg><span class="nm" id="n-'+k+'"></span><span class="vl" id="v-'+k+'"></span></div><input type="range" min="0" max="100" id="r-'+k+'">';
+    m.appendChild(d); $("n-"+k).textContent=t.ch[k]; var r=$("r-"+k); r.setAttribute("aria-label",t.ch[k]);
+    r.addEventListener("input",function(){preset="";markPreset();setVol(k,+this.value);save()}); setVol(k,vol[k],true)})}
+function renderPresets(){var p=$("presets");p.replaceChildren();PRESETS.forEach(function(pr){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=tx().pre[pr[0]];b.dataset.p=pr[0];
+  b.addEventListener("click",function(){preset=pr[0];IDS.forEach(function(k){setVol(k,pr[1][k]||0)});markPreset();save();if(!playing)toggle()});p.appendChild(b)});markPreset()}
+function markPreset(){document.querySelectorAll("#presets .chip").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.p===preset?"true":"false")})}
+function updateNow(){var t=tx(),n=$("now");if(!n)return;var on=IDS.filter(function(k){return vol[k]>0});
+  var b=document.createElement("b"),s=document.createElement("span");
+  if(!playing){b.textContent=ctx?t.paused:t.ready;s.textContent=ctx?fill(t.mixNow,{n:on.length}).replace("(s)",on.length===1?"":"s"):t.readySub}
+  else if(!on.length){b.textContent=t.playing;s.textContent=t.nothing}
+  else{b.textContent=on.map(function(k){return t.ch[k]}).join(" · ");s.textContent=vol.jazz>0&&jazz?fill(t.jazzNow,{k:jazz.key[0],b:jazz.bpm}):fill(t.mixNow,{n:on.length}).replace("(s)",on.length===1?"":"s")}
+  n.replaceChildren(b,s)}
+function masterLevel(){return Math.pow(+$("vol").value/100,1.5)}
+function toggle(){
+  if(!ctx)initAudio();
+  playing=!playing;
+  if(playing){ctx.resume();master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setTargetAtTime(masterLevel(),ctx.currentTime,.4);}
+  else{master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setTargetAtTime(0,ctx.currentTime,.15);setTimeout(function(){if(!playing)ctx.suspend()},700)}
+  $("play").setAttribute("aria-label",playing?"Pause":"Play");
+  $("play-ic").innerHTML=playing?'<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/>':'<path d="M7 4.5v15l13-7.5z" fill="currentColor"/>';
+  if("mediaSession" in navigator){try{navigator.mediaSession.playbackState=playing?"playing":"paused"}catch(e){}}
+  updateNow()}
+$("play").addEventListener("click",toggle);
+window.__rr={ctx:function(){return ctx},master:function(){return master},setVol:setVol};
+$("vol").addEventListener("input",function(){this.style.setProperty("--p",this.value+"%");if(ctx&&playing)master.gain.setTargetAtTime(masterLevel(),ctx.currentTime,.1);save()});
+$("vol").style.setProperty("--p",$("vol").value+"%");
+$("silence").addEventListener("click",function(){preset="";markPreset();IDS.forEach(function(k){setVol(k,0)});save()});
+document.addEventListener("keydown",function(e){if(e.code==="Space"&&!/INPUT|BUTTON|TEXTAREA|SUMMARY/.test(e.target.tagName)){e.preventDefault();toggle()}});
+if("mediaSession" in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:"Rain Room",artist:"The Unfinished 30"});navigator.mediaSession.setActionHandler("play",function(){if(!playing)toggle()});navigator.mediaSession.setActionHandler("pause",function(){if(playing)toggle()})}catch(e){}}
+
+/* timer */
+var endAt=0, tmin=0;
+function renderTimer(){var o=$("tops");o.replaceChildren();[0,25,50,90].forEach(function(m){var b=document.createElement("button");b.type="button";b.className="chip";b.textContent=m?m+" "+tx().min:tx().off;b.setAttribute("aria-pressed",m===tmin?"true":"false");
+  b.addEventListener("click",function(){tmin=m;endAt=m?Date.now()+m*60000:0;renderTimer();if(m&&!playing)toggle();clock()});o.appendChild(b)})}
+function clock(){var c=$("clock");if(!endAt){c.textContent="00:00";c.style.opacity=.3;return}c.style.opacity=1;var left=Math.max(0,endAt-Date.now()),s=Math.ceil(left/1000);
+  c.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+  if(playing&&ctx&&left<10000)master.gain.setTargetAtTime(masterLevel()*left/10000,ctx.currentTime,.3);
+  if(left<=0){endAt=0;tmin=0;renderTimer();if(playing)toggle();var n=$("now");n.firstChild&&(n.firstChild.textContent=tx().done)}}
+setInterval(clock,500);
+
+/* language */
+function applyLang(){document.documentElement.lang=lang;document.querySelectorAll("[data-t]").forEach(function(e){var v=tx()[e.dataset.t];if(typeof v==="string")e.textContent=v});
+  $("l-en").setAttribute("aria-pressed",lang==="en");$("l-fr").setAttribute("aria-pressed",lang==="fr");renderMix();renderPresets();renderTimer();updateNow()}
+$("l-en").addEventListener("click",function(){lang="en";applyLang();save()});$("l-fr").addEventListener("click",function(){lang="fr";applyLang();save()});
+applyLang();
+
+/* ================= SKY: rain on the window ================= */
+var cv=$("sky"),g=cv.getContext("2d"),W,H,dpr,lights=[],streaks=[],beads=[];
+var still=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function rs(){dpr=Math.min(2,window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;g.setTransform(dpr,0,0,dpr,0,0);
+  lights=[];for(var i=0;i<38;i++)lights.push({x:Math.random()*W,y:H*.35+Math.random()*H*.75,r:14+Math.random()*60,c:Math.random()<.7?"255,181,71":(Math.random()<.5?"127,178,255":"255,120,90"),a:.05+Math.random()*.16,ph:Math.random()*6});
+  beads=[];for(var j=0;j<90;j++)beads.push(newBead(true))}
+function newBead(any){return{x:Math.random()*W,y:any?Math.random()*H:-10,r:1+Math.random()*3.2,v:Math.random()<.15?40+Math.random()*120:0,life:Math.random()*8}}
+function frame(ts){var t=ts/1000,rain=vol.rain/100;
+  var bg=g.createLinearGradient(0,0,0,H);bg.addColorStop(0,"#070A13");bg.addColorStop(1,"#121A2E");g.fillStyle=bg;g.fillRect(0,0,W,H);
+  lights.forEach(function(l){var a=l.a*(.75+.25*Math.sin(t*.4+l.ph));var gr=g.createRadialGradient(l.x,l.y,0,l.x,l.y,l.r);gr.addColorStop(0,"rgba("+l.c+","+a+")");gr.addColorStop(1,"rgba("+l.c+",0)");g.fillStyle=gr;g.beginPath();g.arc(l.x,l.y,l.r,0,7);g.fill()});
+  // falling rain outside
+  var n=Math.floor(40+rain*220);g.strokeStyle="rgba(190,205,235,"+(.05+rain*.12)+")";g.lineWidth=1;g.beginPath();
+  for(var i=0;i<n;i++){var sx=(i*97.3+t*60)%(W+100)-50,sp=600+(i%7)*90,sy=((i*233.7+t*sp)%(H+80))-40;g.moveTo(sx,sy);g.lineTo(sx-6,sy+22)}g.stroke();
+  // beads on the glass
+  beads.forEach(function(b,k){if(b.v){b.y+=b.v/60;b.x+=Math.sin(t*3+k)*.2;if(b.y>H+10)beads[k]=newBead(false)}
+    else if(Math.random()<.0008*(1+rain*4))b.v=60+Math.random()*120;
+    g.fillStyle="rgba(220,230,255,"+(.10+rain*.12)+")";g.beginPath();g.arc(b.x,b.y,b.r,0,7);g.fill();
+    g.fillStyle="rgba(255,255,255,"+(.16+rain*.1)+")";g.beginPath();g.arc(b.x-b.r*.3,b.y-b.r*.3,b.r*.35,0,7);g.fill();
+    if(b.v){g.strokeStyle="rgba(220,230,255,.07)";g.lineWidth=b.r*.8;g.beginPath();g.moveTo(b.x,b.y-b.r);g.lineTo(b.x,b.y-b.r-40);g.stroke()}});
+  if(!still)requestAnimationFrame(frame)}
+addEventListener("resize",function(){rs();if(still)frame(0)});rs();requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
