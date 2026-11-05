@@ -76,6 +76,13 @@ li{margin:0 0 9px}
 .export-controls select{min-width:180px;min-height:47px;font-size:15px;border:1px solid var(--ink);padding:10px 12px;background:var(--white);color:var(--ink)}
 @media(max-width:600px){.export-controls>*{width:100%}}
 </style>
+<link rel="stylesheet" href="studio.css">
+<meta property="og:title" content="50 Tools. Less Chaos. — Productivity Studio | Day 04">
+<meta property="og:description" content="50 free productivity tools. Find your framework, fill the canvas, preview eight slides and export editable PowerPoint or PDF.">
+<meta property="og:image" content="https://the-unfinished-30.vercel.app/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://the-unfinished-30.vercel.app/day-04-productivity-library/">
 </head>
 <body>
 <header class="top">
@@ -950,10 +957,12 @@ function wireDownload(){
   if(printBtn)printBtn.addEventListener("click",function(){printDeck(t);});
 }
 
-window.addEventListener("hashchange",render);
+/* Studio v2 controls the router and hashchange events. */
 if(!location.hash)location.hash="#/";
+window.__PRODUCTIVITY_INTERNALS={TOOLS:TOOLS};
 render();
 })();
 </script>
+<script src="studio.js" defer></script>
 </body>
 </html>
