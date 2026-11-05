@@ -438,6 +438,27 @@ fs.writeFileSync(
   "robots.txt",
   "User-agent: *\nAllow: /\nSitemap: " + site + "/sitemap.xml\n",
 );
+// Publish only site files. Development tools and API source stay outside public/.
+const publicRoot = path.resolve("public");
+fs.rmSync(publicRoot, { recursive: true, force: true });
+fs.mkdirSync(publicRoot, { recursive: true });
+for (const entry of fs.readdirSync(".")) {
+  if (
+    /^day-\d+-/.test(entry) ||
+    entry === "images" ||
+    [
+      "index.html",
+      "favicon.ico",
+      "favicon.svg",
+      "apple-touch-icon.png",
+      "og.jpg",
+      "robots.txt",
+      "sitemap.xml",
+    ].includes(entry)
+  ) {
+    fs.cpSync(entry, path.join(publicRoot, entry), { recursive: true });
+  }
+}
 console.log(
   "Built Day 04 " +
     version +

@@ -2,6 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": true,
   "buildCommand": "npm run validate:day04",
+  "outputDirectory": "public",
   "headers": [
     {
       "source": "/day-04-productivity-library/(.*)",
