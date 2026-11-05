@@ -1,0 +1,101 @@
+{
+  "version": "b8b2eb284203",
+  "files": [
+    {
+      "path": "methods.js",
+      "asset": "assets/methods-a9d46b4921a6.js",
+      "sha256": "a9d46b4921a60b0a23eb47b5158d7d0b00eb3b1c903707cb2afb9a63be779b75",
+      "bytes": 164035
+    },
+    {
+      "path": "engine.js",
+      "asset": "assets/engine-a79f25b323a2.js",
+      "sha256": "a79f25b323a2a9ead74c3c0a154c59285c7af39e2e2886e48cb21474e31eb5f8",
+      "bytes": 13750
+    },
+    {
+      "path": "search.js",
+      "asset": "assets/search-3c163afbfe65.js",
+      "sha256": "3c163afbfe65a166d56b2f0f4b6ccf450dae84a7bf43a497bebfddd43fc55fbb",
+      "bytes": 6840
+    },
+    {
+      "path": "router.js",
+      "asset": "assets/router-c4a5f7645ec7.js",
+      "sha256": "c4a5f7645ec70c7daf61bcc4f9c21a472854effe3c6f8c0a27947ade4ab798c8",
+      "bytes": 4257
+    },
+    {
+      "path": "workspace.js",
+      "asset": "assets/workspace-f5ea9983cdbd.js",
+      "sha256": "f5ea9983cdbdb9a340d8851f5d31c9d8db9228dadb0dcab03354939cea365288",
+      "bytes": 17987
+    },
+    {
+      "path": "reuse.js",
+      "asset": "assets/reuse-f814032acf83.js",
+      "sha256": "f814032acf8316eded8eb469e96ad9b40e1c0772a84b3fd2afbc71f17adf5e50",
+      "bytes": 6859
+    },
+    {
+      "path": "learning.js",
+      "asset": "assets/learning-1a64052b9f7e.js",
+      "sha256": "1a64052b9f7e7510a1eb06ad8f8aeaa8e1891ffa47ea26753104cedb1c5eac0a",
+      "bytes": 13182
+    },
+    {
+      "path": "distribution.js",
+      "asset": "assets/distribution-606b19b127ca.js",
+      "sha256": "606b19b127cae4639ef1f6e688ed9569c1c83b80f07eb5aaa3dcb6630eef4b74",
+      "bytes": 3066
+    },
+    {
+      "path": "deck.js",
+      "asset": "assets/deck-3060caa9897f.js",
+      "sha256": "3060caa9897f766a7783e2af97dc22dee13906893c7d11d2ce6252a17b9e7018",
+      "bytes": 28152
+    },
+    {
+      "path": "studio.js",
+      "asset": "assets/studio-5dd02ac1f54a.js",
+      "sha256": "5dd02ac1f54a6944a69fcd3073c05ebd46121b5a1816cbc078ef1629b8311a86",
+      "bytes": 97674
+    },
+    {
+      "path": "studio.css",
+      "asset": "assets/studio-4342f97c332d.css",
+      "sha256": "4342f97c332dbe21c8f6e755171888c7f8e04649258b8c7494349a2ace0b8002",
+      "bytes": 27755
+    },
+    {
+      "path": "vendor/pptxgen.bundle.js",
+      "asset": "assets/pptxgen.bundle-f5a38b9844f8.js",
+      "sha256": "f5a38b9844f8f0e1595019c3d1f360ff222f898d4b8dd43906bd43e94ad0c81b",
+      "bytes": 460846
+    },
+    {
+      "path": "vendor/jspdf.umd.min.js",
+      "asset": "assets/jspdf.umd.min-b141da2ed6d6.js",
+      "sha256": "b141da2ed6d6be3b550dbc63de4f0dbb63366966bee44eb4e5a6f73632feb107",
+      "bytes": 420109
+    },
+    {
+      "path": "vendor/NOTICES.txt",
+      "asset": "assets/NOTICES-facba96f05c6.txt",
+      "sha256": "facba96f05c6267901ee3feeae39da01e7728aa2675d0075e522a6431d0878be",
+      "bytes": 11306
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "pptxgenjs",
+      "version": "4.0.1",
+      "license": "MIT"
+    },
+    {
+      "name": "jspdf",
+      "version": "4.2.1",
+      "license": "MIT"
+    }
+  ]
+}

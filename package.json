@@ -1,0 +1,36 @@
+{
+  "name": "unfinished-productivity-studio",
+  "version": "1.0.0",
+  "description": "30 days. One working prototype a day. Free. By [Salah Khenissi](https://www.linkedin.com/in/salahkhenissi/).",
+  "scripts": {
+    "build:day04": "node scripts/build-day04.mjs",
+    "test:day04": "node --test tests/day04/*.test.mjs",
+    "test:browser": "playwright test --config=tests/day04/playwright.config.mjs",
+    "check:day04": "node scripts/check-day04.mjs",
+    "verify:release": "node scripts/verify-day04-release.mjs",
+    "validate:day04": "npm run build:day04 && npm run test:day04 && npm run check:day04"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hellolina33/TheUnfinishedProject.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/hellolina33/TheUnfinishedProject/issues"
+  },
+  "homepage": "https://github.com/hellolina33/TheUnfinishedProject#readme",
+  "devDependencies": {
+    "@playwright/test": "1.61.1",
+    "@resvg/resvg-js": "2.6.2",
+    "axe-core": "4.11.1",
+    "jspdf": "4.2.1",
+    "pptxgenjs": "4.0.1",
+    "prettier": "3.6.2"
+  },
+  "overrides": {
+    "image-size": "2.0.4"
+  },
+  "private": true
+}

@@ -24,14 +24,14 @@ for(const t of data){
   const file=path.join(folder,'tools',t.id,'index.html');
   if(!fs.existsSync(file))throw Error('Missing share page '+t.id);
   const page=fs.readFileSync(file,'utf8');
-  if(!page.includes('#/tool/'+t.id))throw Error('Share page link missing '+t.id);
+  if(!page.includes('/tools/'+t.id+'/'))throw Error('Share page link missing '+t.id);
 }
 new vm.Script(js); // Catch JS syntax regressions.
 if(!css.includes('.s-slide'))throw Error('Slide styles missing');
 for(const file of ['methods.js','deck.js','studio.js']){
-  if(!html.includes('src="'+file+'"'))throw Error('Missing script '+file);
+  if(!html.includes('/assets/'+file.split('.')[0]+'-'))throw Error('Missing script '+file);
 }
-if(!html.includes('src="studio.js"'))throw Error('Studio script missing');
+if(!html.includes('/assets/studio-'))throw Error('Studio script missing');
 const main=fs.readFileSync(path.join(base,'index.html'),'utf8');
 if(!main.includes("n: 4, name: 'Productivity Library'"))throw Error('Challenge Day 04 missing');
 // Test 50 methods × 2 languages × 3 ratios × 2 exports with deterministic stand-ins.
@@ -47,17 +47,18 @@ for(const tool of data)for(const lang of ['en','fr'])for(const ratio of ['16:9',
     async writeFile({fileName}){output.push({kind:'pptx',fileName,pages:this.slides.length,shapes:this.slides.reduce((n,s)=>n+s.shapes,0)});}
   }
   class StubPdf{
-    constructor(){this.pages=1;}setProperties(){}addPage(){this.pages++}
+    constructor(){this.pages=1;}setProperties(){}link(){}addPage(){this.pages++}
     setDrawColor(){}setLineWidth(){}line(){}setFont(){}setFontSize(){}setTextColor(){}text(){}rect(){}circle(){}setFillColor(){}
     splitTextToSize(s){return[String(s)]}
     save(fileName){output.push({kind:'pdf',fileName,pages:this.pages})}
   }
   const app={_html:'',set innerHTML(x){this._html=x},get innerHTML(){return this._html},addEventListener(name,handler){handlers[name]=handler},querySelector(){return null}};
-  const context={window:{__PRODUCTIVITY_INTERNALS:{TOOLS:data},PptxGenJS:StubPpt,jspdf:{jsPDF:StubPdf},addEventListener(){}},
+  const context={window:{__PRODUCTIVITY_INTERNALS:{TOOLS:data},PptxGenJS:StubPpt,confirm(){return true},jspdf:{jsPDF:StubPdf},addEventListener(){}},
     document:{documentElement:{lang},getElementById(id){return id==='app'?app:null},addEventListener(){},body:{append(){}},createElement(){return {remove(){},setAttribute(){}}}},
     localStorage:{getItem(){return null},setItem(){throw Error("Unexpected browser storage write")}},
     location:{hash:'#/tool/'+tool.id,href:'https://example.com/#/tool/'+tool.id},
-    navigator:{},setTimeout(){},console};
+    navigator:{},URL,URLSearchParams,Intl,TextEncoder,setTimeout(){},console};
+  for(const file of ['engine.js','search.js','router.js','workspace.js','reuse.js','learning.js','distribution.js'])vm.runInNewContext(fs.readFileSync(path.join(folder,file),'utf8'),context,{timeout:1500});
   vm.runInNewContext(deck,context,{timeout:1500});
   vm.runInNewContext(js,context,{timeout:1500});
   if(context.document.documentElement.lang!==lang || !app.innerHTML.includes(lang==='fr'?tool.fr.n:tool.n)){
@@ -68,7 +69,7 @@ for(const tool of data)for(const lang of ['en','fr'])for(const ratio of ['16:9',
   }
   await handlers.change({target:{id:"ratio",value:ratio}});
   for(const action of ['pptx','pdf']){
-    handlers.click({target:{closest(sel){return sel==='[data-family]'?null:{dataset:{act:action}}}}});
+    handlers.click({target:{closest(sel){return sel==='[data-act]'?{dataset:{act:action}}:null}}});
     await new Promise(resolve=>setImmediate(resolve));
   }
   if(output.length!==2)throw Error('Missing export: '+tool.id+' '+ratio);

@@ -1,3 +1,7 @@
 .hallmark/
 .impeccable/review/
 .impeccable/questions/
+
+node_modules/
+test-results/
+playwright-report/

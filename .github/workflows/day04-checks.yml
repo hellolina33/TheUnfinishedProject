@@ -1,24 +1,24 @@
-name: Day 04 Productivity Studio checks
+name: Day 04 release checks
 on:
   push:
     branches: [main]
-    paths:
-      - 'day-04-productivity-library/**'
-      - 'scripts/check-day04.mjs'
-      - 'index.html'
-      - '.github/workflows/day04-checks.yml'
+    paths: ['day-04-productivity-library/**', 'scripts/**', 'tests/day04/**', 'package*.json', 'vercel.json', '.github/workflows/day04-checks.yml']
   pull_request:
-    paths:
-      - 'day-04-productivity-library/**'
-      - 'scripts/check-day04.mjs'
-      - 'index.html'
+    paths: ['day-04-productivity-library/**', 'scripts/**', 'tests/day04/**', 'package*.json', 'vercel.json', '.github/workflows/day04-checks.yml']
 permissions:
   contents: read
 jobs:
-  smoke:
+  verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Validate 50 tools and 600 export flows
-        run: node scripts/check-day04.mjs
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm audit --audit-level=moderate
+      - run: npm run validate:day04
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run test:browser
