@@ -190,6 +190,23 @@ details.cust[open]>summary::after{content:"−"}
   .cust{position:absolute;left:auto;right:0;top:0;bottom:0;width:100%;max-height:none;border-radius:20px}
 }
 @media (min-width:900px) and (max-height:700px){.intro p{display:none}.screen svg{max-height:max(70px,calc(100dvh - 470px))}.sub{display:none}}
+
+/* always-visible mix panel */
+.mixp{margin-top:16px;background:#2E2621;border:1px solid #4A3E34;border-radius:18px;display:flex;flex-direction:column;min-height:0}
+.mixhead{display:flex;align-items:center;justify-content:space-between;padding:12px 16px 6px}
+.mixhead h2{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#C9BBA5}
+.link{border:0;background:none;color:#9E907C;font-weight:700;font-size:12px;cursor:pointer;text-decoration:underline;min-height:30px}
+.mscroll{padding:4px 16px 14px;display:grid;gap:8px;overflow:auto;min-height:0}
+.row,.mrow{grid-template-columns:28px minmax(0,8em) minmax(0,1fr) 2.6em 32px!important}
+.mrow select{min-height:36px;border-radius:9px;border:1px solid #5A4B3E;background:#3A312A;color:var(--body);font-weight:700;padding:0 8px;width:100%}
+.active{display:grid;gap:6px}
+.addbtn{border:1px dashed #6A5A4B;background:transparent;color:var(--mustard);border-radius:12px;min-height:44px;font-weight:800;cursor:pointer}
+.addbtn[aria-expanded="true"]{border-style:solid;background:#3A312A}
+.more{border-top:1px solid #4A3E34;padding-top:8px}
+.more>summary{cursor:pointer;color:#9E907C;font-weight:700;font-size:13px;min-height:30px}
+.more>*+*{margin-top:10px}
+.empty{padding:6px 0}
+@media (min-width:900px){.right{justify-content:flex-start;padding-top:46px}.mixp{flex:1}}
 </style>
 </head>
 <body>
@@ -237,23 +254,21 @@ details.cust[open]>summary::after{content:"−"}
   </div><div class="right">
   <section class="sec" aria-labelledby="md-h"><h2 id="md-h" data-t="moods"></h2><p class="sub" data-t="moodsSub"></p><div class="tapes" id="tapes"></div></section>
 
-  <button type="button" class="custbtn" id="open-cust" aria-controls="cust" aria-expanded="false"><span data-t="custom"></span><small data-t="customSub"></small><b aria-hidden="true">+</b></button>
-  <div class="cust" id="cust" role="dialog" aria-labelledby="cust-h" hidden>
-    <div class="custhead"><h2 id="cust-h" data-t="custom"></h2><button type="button" class="x" id="close-cust" data-t="close"></button></div>
-    <div class="cbody">
-      <h3 data-t="music"></h3>
-      <div class="styles" id="styles"></div>
-      <div class="row" id="music-row"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="nm" data-t="musicVol"></span><input type="range" class="hslider" id="r-music" min="0" max="100"><span class="v" id="v-music"></span><span></span></div>
-      <h3 data-t="yourSounds"></h3>
-      <div id="active" style="display:grid;gap:6px"></div>
-      <h3 data-t="addSound"></h3>
-      <div class="addgrid" id="addgrid"></div>
-      <h3 data-t="extras"></h3>
-      <div class="switch"><div><b data-t="tapeFx"></b><p data-t="tapeFxSub"></p></div><button type="button" class="tog" id="k-tape" role="switch" aria-checked="true" aria-label="Tape"></button></div>
-      <div class="cmin"><label for="cmin" data-t="customMin"></label><input id="cmin" type="number" min="1" max="300" placeholder="40" inputmode="numeric"><button type="button" class="chip" id="cgo" data-t="start"></button></div>
-      <p class="hint"><span class="kbd">Space</span> <span data-t="space"></span> · <span class="kbd">← →</span> <span data-t="arrows"></span></p>
+  <section class="mixp" aria-labelledby="mix-h">
+    <div class="mixhead"><h2 id="mix-h" data-t="yourMix"></h2><button type="button" class="link" id="silence" data-t="clearAll"></button></div>
+    <div class="mscroll">
+      <div class="row mrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V5l11-2v13" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <select id="style" aria-label="Music style"></select><input type="range" class="hslider" id="r-music" min="0" max="100" aria-label="Music volume"><span class="v" id="v-music"></span><span></span></div>
+      <div id="active" class="active"></div>
+      <button type="button" class="addbtn" id="add-toggle" aria-expanded="false" aria-controls="addgrid"><span aria-hidden="true">+</span> <span data-t="addSound"></span></button>
+      <div class="addgrid" id="addgrid" hidden></div>
+      <details class="more"><summary data-t="more"></summary>
+        <div class="switch"><div><b data-t="tapeFx"></b><p data-t="tapeFxSub"></p></div><button type="button" class="tog" id="k-tape" role="switch" aria-checked="true" aria-label="Tape"></button></div>
+        <div class="cmin"><label for="cmin" data-t="customMin"></label><input id="cmin" type="number" min="1" max="300" placeholder="40" inputmode="numeric"><button type="button" class="chip" id="cgo" data-t="start"></button></div>
+        <p class="hint"><span class="kbd">Space</span> <span data-t="space"></span> · <span class="kbd">← →</span> <span data-t="arrows"></span></p>
+      </details>
     </div>
-  </div>
+  </section>
   </div></div>
 </div>
 
@@ -285,12 +300,12 @@ fr:{day:"Jour 5/30, un prototype gratuit par jour",lead:"Un baladeur pour bosser
  pre:{jr:"Jazz & pluie",lofi:"Révisions lo-fi",cafe:"Coffee shop",deep:"Concentration",train:"Train de nuit",forest:"Forêt",fire:"Coin du feu",sea:"Bord de mer",storm:"Nuit d'orage",boat:"Bateau lent"}}};
 Object.assign(T.en,{lead:"Pick a tape, press play, get to work. Real rain and café recordings, live piano, bass and guitar that never repeat.",play:"Play",pause:"Pause",timer:"Timer",off:"Off",pomo:"Pomodoro",
  moods:"Pick a tape",moodsSub:"Each tape is a ready-made mix of music and sounds.",custom:"Customize",customSub:"Music, sounds, tape effect",music:"Music",none:"No music",musicVol:"Volume",
- yourSounds:"In your mix",addSound:"Add a sound",extras:"Extras",tapeFx:"Cassette effect",tapeFxSub:"Warm, slightly wobbly tape sound on the music.",customMin:"Timer in minutes",noSounds:"No sound yet. Tap a sound below to add it.",
- loading:"LOADING…",close:"Done",musicOff:"MUSIC OFF",noSound:"NO SOUND",noTimer:"NO TIMER",focus:"FOCUS",brk:"BREAK",done:"DONE",remove:"Remove"});
+ yourSounds:"In your mix",addSound:"Add a sound",extras:"Extras",tapeFx:"Cassette effect",tapeFxSub:"Warm, slightly wobbly tape sound on the music.",customMin:"Timer in minutes",noSounds:"Only music for now. Add rain, café or nature sounds below.",
+ loading:"LOADING…",close:"Done",yourMix:"Your mix",clearAll:"Clear all",more:"More options",pressPlay:"PRESS ▶ TO START",ends:"ENDS",musicOff:"MUSIC OFF",noSound:"NO SOUND",noTimer:"NO TIMER",focus:"FOCUS",brk:"BREAK",done:"DONE",remove:"Remove"});
 Object.assign(T.fr,{lead:"Choisis une cassette, appuie sur lecture, au travail. De vrais enregistrements de pluie et de café, un piano, une contrebasse et une guitare qui ne se répètent jamais.",play:"Lecture",pause:"Pause",timer:"Minuteur",off:"Off",pomo:"Pomodoro",
  moods:"Choisis une cassette",moodsSub:"Chaque cassette est un mix prêt à l'emploi de musique et de sons.",custom:"Personnaliser",customSub:"Musique, sons, effet cassette",music:"Musique",none:"Pas de musique",musicVol:"Volume",
- yourSounds:"Dans ton mix",addSound:"Ajouter un son",extras:"Options",tapeFx:"Effet cassette",tapeFxSub:"Son de bande chaud et un peu flottant sur la musique.",customMin:"Minuteur en minutes",noSounds:"Aucun son pour l'instant. Touche un son ci-dessous pour l'ajouter.",
- loading:"CHARGEMENT…",close:"OK",musicOff:"MUSIQUE OFF",noSound:"AUCUN SON",noTimer:"PAS DE MINUTEUR",focus:"FOCUS",brk:"PAUSE",done:"FINI",remove:"Retirer"});
+ yourSounds:"Dans ton mix",addSound:"Ajouter un son",extras:"Options",tapeFx:"Effet cassette",tapeFxSub:"Son de bande chaud et un peu flottant sur la musique.",customMin:"Minuteur en minutes",noSounds:"Que de la musique pour l'instant. Ajoute pluie, café ou nature ci-dessous.",
+ loading:"CHARGEMENT…",close:"OK",yourMix:"Ton mix",clearAll:"Tout retirer",more:"Plus d'options",pressPlay:"APPUIE SUR ▶",ends:"FIN",musicOff:"MUSIQUE OFF",noSound:"AUCUN SON",noTimer:"PAS DE MINUTEUR",focus:"FOCUS",brk:"PAUSE",done:"FINI",remove:"Retirer"});
 var lang="en",tx=function(){return T[lang]};
 
 var P='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
@@ -307,12 +322,12 @@ var IDS=[];CATS.forEach(function(c){IDS=IDS.concat(c[1])});
 var FILE={rain:1,storm:1,wind:1,waves:1,stream:1,birds:1,crickets:1,cafe:1,fire:1,train:1,city:1,boat:1};
 var GAIN={rain:9.5,storm:2.5,wind:3.9,waves:5.2,stream:25,birds:12,crickets:5.3,cafe:2.5,fire:16,train:10,city:3.6,boat:8,vinyl:.55,clock:4,keys:10,white:.6,pink:.8,brown:.8};
 var STYLES=["jazz","lofi","bossa","piano","ambient"];
-var PRESETS=[["jr","jazz",55,{rain:55,vinyl:20},"#E0602A"],["lofi","lofi",60,{rain:30,vinyl:40},"#9A6FB0"],["cafe","bossa",40,{cafe:55,rain:15},"#E6A93A"],["deep","ambient",25,{brown:45,rain:25},"#2F6F6A"],["train","ambient",30,{train:55,rain:35},"#4F6DA8"],["forest","piano",0,{birds:50,stream:45,wind:15},"#5E8C3A"],["fire","piano",40,{fire:60,rain:25,clock:15},"#C2452A"],["storm","jazz",0,{storm:70,rain:35,wind:30},"#4A4A5E"]];
+var PRESETS=[["jr","jazz",55,{rain:50},"#E0602A"],["lofi","lofi",60,{rain:30},"#9A6FB0"],["cafe","bossa",40,{cafe:55,rain:15},"#E6A93A"],["deep","ambient",25,{brown:45,rain:25},"#2F6F6A"],["train","ambient",30,{train:55,rain:35},"#4F6DA8"],["forest","piano",0,{birds:50,stream:45,wind:15},"#5E8C3A"],["fire","piano",40,{fire:60,rain:25,clock:15},"#C2452A"],["storm","jazz",0,{storm:70,rain:35,wind:30},"#4A4A5E"]];
 var S={vol:{},style:"jazz",music:55,preset:"jr",master:80,tape:true};
 IDS.forEach(function(k){S.vol[k]=0});
 (function(){var p=PRESETS[0];Object.keys(p[3]).forEach(function(k){S.vol[k]=p[3][k]});
- try{var v=JSON.parse(localStorage.getItem("rainroom_v3")||"null");if(v){IDS.forEach(function(k){S.vol[k]=+(v.vol&&v.vol[k])||0});if(STYLES.indexOf(v.style)>=0)S.style=v.style;S.music=+v.music||0;S.preset=v.preset||"";S.master=v.master!=null?+v.master:80;S.tape=v.tape!==false;if(v.lang==="fr")lang="fr"}}catch(e){}})();
-function save(){try{localStorage.setItem("rainroom_v3",JSON.stringify({vol:S.vol,style:S.style,music:S.music,preset:S.preset,master:S.master,tape:S.tape,lang:lang}))}catch(e){}}
+ try{var v=JSON.parse(localStorage.getItem("rainroom_v4")||"null");if(v){IDS.forEach(function(k){S.vol[k]=+(v.vol&&v.vol[k])||0});if(STYLES.indexOf(v.style)>=0)S.style=v.style;S.music=+v.music||0;S.preset=v.preset||"";S.master=v.master!=null?+v.master:80;S.tape=v.tape!==false;if(v.lang==="fr")lang="fr"}}catch(e){}})();
+function save(){try{localStorage.setItem("rainroom_v4",JSON.stringify({vol:S.vol,style:S.style,music:S.music,preset:S.preset,master:S.master,tape:S.tape,lang:lang}))}catch(e){}}
 
 /* ================= AUDIO CORE ================= */
 var ctx=null,master,bus={},built={},loading={},playing=false,musicBus,musicIn,engine=null,anL,anR,wowDepth,hissG,rnd=Math.random;
@@ -441,7 +456,7 @@ function initAudio(){
   applyTape();IDS.forEach(function(k){applyVol(k,true)});applyMusic(true);
   setInterval(pump,250);
 }
-function applyTape(){if(!ctx)return;wowDepth.gain.setTargetAtTime(S.tape?.0016:0,ctx.currentTime,.2);hissG.gain.setTargetAtTime(S.tape?.006:0,ctx.currentTime,.2)}
+function applyTape(){if(!ctx)return;wowDepth.gain.setTargetAtTime(S.tape?.0016:0,ctx.currentTime,.2);hissG.gain.setTargetAtTime(0,ctx.currentTime,.02)}
 function applyVol(k,inst){if(!ctx)return;ensure(k);var tg=Math.pow(S.vol[k]/100,2)*GAIN[k];bus[k].gain.cancelScheduledValues(ctx.currentTime);bus[k].gain.setTargetAtTime(tg,ctx.currentTime,inst?.02:.25)}
 function applyMusic(inst){if(!ctx)return;musicBus.gain.setTargetAtTime(Math.pow(S.music/100,2)*1.1,ctx.currentTime,inst?.02:.25);
   if(S.music>0&&(!engine||engine.style!==S.style)){if(engine)engine.stop();engine=new Engine(S.style)}if(S.music===0&&engine){engine.stop();engine=null}renderLCD()}
@@ -465,21 +480,21 @@ function renderActive(){var w=$("active"),t=tx(),on=IDS.filter(function(k){retur
 function renderAddGrid(){var g=$("addgrid"),t=tx();g.replaceChildren();IDS.forEach(function(k){var b=document.createElement("button");b.type="button";b.className="add";b.dataset.k=k;
   b.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true">'+ICON[k]+'</svg><span></span>';b.querySelector("span").textContent=t.ch[k];
   b.addEventListener("click",function(){S.preset="";markTapes();setVol(k,S.vol[k]>0?0:50);save();if(!playing&&S.vol[k]>0)toggle()});g.appendChild(b)});renderAdd()}
-function renderStyles(){var w=$("styles"),t=tx();if(!w)return;w.replaceChildren();STYLES.concat(["none"]).forEach(function(s){var b=document.createElement("button");b.type="button";b.className="chip";
-  var on=s==="none"?S.music===0:(S.music>0&&S.style===s);b.setAttribute("aria-pressed",on?"true":"false");b.textContent=s==="none"?t.none:t.st[s][0];
-  b.addEventListener("click",function(){S.preset="";markTapes();if(s==="none")setMusic(0);else{S.style=s;if(S.music===0)S.music=50;setMusic(S.music);if(!playing)toggle()}save()});w.appendChild(b)});
-  $("music-row").style.display=S.music>0?"":"none"}
+function renderStyles(){var sel=$("style"),t=tx();sel.replaceChildren();STYLES.concat(["none"]).forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=k==="none"?t.none:t.st[k][0];o.title=k==="none"?"":t.st[k][1];sel.appendChild(o)});
+  sel.value=S.music>0?S.style:"none";var on=S.music>0;$("r-music").style.visibility=on?"":"hidden";$("v-music").style.visibility=on?"":"hidden"}
+$("style").addEventListener("change",function(){S.preset="";markTapes();if(this.value==="none")setMusic(0);else{S.style=this.value;if(S.music===0)S.music=50;setMusic(S.music);if(!playing)toggle()}save()});
+$("add-toggle").addEventListener("click",function(){var g=$("addgrid"),o=g.hidden;g.hidden=!o;this.setAttribute("aria-expanded",o?"true":"false");if(o)g.scrollIntoView({block:"nearest",behavior:"smooth"})});
 function stepStyle(d){var i=STYLES.indexOf(S.style);S.style=STYLES[(i+d+STYLES.length)%STYLES.length];S.preset="";markTapes();if(S.music===0)S.music=50;setMusic(S.music);save();if(!playing)toggle()}
 function renderTapes(){var w=$("tapes"),t=tx();w.replaceChildren();PRESETS.forEach(function(p){var b=document.createElement("button");b.type="button";b.className="tape";b.dataset.p=p[0];b.style.setProperty("--c",p[4]);
   b.innerHTML='<div class="lbl"><b></b><small></small></div><div class="win"><i></i><i></i></div>';b.querySelector("b").textContent=t.pre[p[0]];
   b.querySelector("small").textContent=p[2]>0?t.st[p[1]][0]:Object.keys(p[3]).map(function(k){return t.ch[k]}).slice(0,2).join(" + ");
-  b.addEventListener("click",function(){S.preset=p[0];S.style=p[1];IDS.forEach(function(k){setVol(k,p[3][k]||0)});setMusic(p[2]);markTapes();save();if(!playing)toggle()});w.appendChild(b)});markTapes()}
+  b.addEventListener("click",function(){if(S.preset===p[0]&&ctx){toggle();return}S.preset=p[0];S.style=p[1];IDS.forEach(function(k){setVol(k,p[3][k]||0)});setMusic(p[2]);markTapes();save();if(!playing)toggle()});w.appendChild(b)});markTapes()}
 function markTapes(){document.querySelectorAll(".tape").forEach(function(b){b.setAttribute("aria-pressed",b.dataset.p===S.preset?"true":"false")});
   var p=PRESETS.filter(function(x){return x[0]===S.preset})[0];$("cas-sub").textContent=(p?tx().pre[p[0]]:"my mix").toLowerCase()}
 function renderLCD(){var t=tx();if(!$("lc-music"))return;
   var anyLoad=Object.keys(loading).some(function(k){return loading[k]})||(engine&&!engine.ready&&S.music>0);
   var mus=S.music>0?(t.st[S.style][0].toUpperCase()+(engine&&engine.ready?" · "+engine.key[0]+" · "+engine.bpm+" BPM":"")):t.musicOff;
-  $("lc-music").textContent=(playing?(anyLoad?"… ":"▶ "):"❚❚ ")+(playing&&anyLoad?t.loading:mus);
+  $("lc-music").textContent=!ctx?t.pressPlay:(playing?(anyLoad?"… ":"▶ "):"❚❚ ")+(playing&&anyLoad?t.loading:mus);
   var on=IDS.filter(function(k){return S.vol[k]>0});$("lc-mix").textContent=on.length?on.map(function(k){return t.ch[k].toUpperCase()}).join(" · "):t.noSound}
 function masterLevel(){return Math.pow(S.master/100,1.5)}
 function toggle(){if(!ctx)initAudio();playing=!playing;
@@ -489,14 +504,12 @@ function toggle(){if(!ctx)initAudio();playing=!playing;
   $("play-ic").innerHTML=playing?'<path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" fill="currentColor"/>':'<path d="M7 4.5v15l13-7.5z" fill="currentColor"/>';$("k-play").setAttribute("aria-label",playing?tx().pause:tx().play);
   if("mediaSession" in navigator){try{navigator.mediaSession.playbackState=playing?"playing":"paused"}catch(e){}}renderLCD()}
 $("k-play").addEventListener("click",toggle);
-function openCust(o){var c=$("cust");c.hidden=!o;$("open-cust").setAttribute("aria-expanded",o?"true":"false");if(o)$("close-cust").focus();else $("open-cust").focus()}
-$("open-cust").addEventListener("click",function(){openCust($("cust").hidden)});$("close-cust").addEventListener("click",function(){openCust(false)});
-document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!$("cust").hidden)openCust(false)});
 
 $("k-tape").addEventListener("click",function(){S.tape=!S.tape;this.setAttribute("aria-checked",S.tape);applyTape();save()});$("k-tape").setAttribute("aria-checked",S.tape);
 $("vol").value=S.master;paint($("vol"));
 $("vol").addEventListener("input",function(){S.master=+this.value;paint(this);if(ctx&&playing)master.gain.setTargetAtTime(masterLevel()*timerFade(),ctx.currentTime,.1);save()});
 $("r-music").addEventListener("input",function(){S.preset="";markTapes();paint(this);S.music=+this.value;$("v-music").textContent=this.value;applyMusic();renderLCD();if(S.music===0)renderStyles();save()});
+$("silence").addEventListener("click",function(){S.preset="";markTapes();IDS.forEach(function(k){setVol(k,0)});setMusic(0);save()});
 document.addEventListener("keydown",function(e){if(/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;if(e.code==="Space"&&!/BUTTON|SUMMARY/.test(e.target.tagName)){e.preventDefault();toggle()}else if(e.key==="ArrowRight")stepStyle(1);else if(e.key==="ArrowLeft")stepStyle(-1)});
 if("mediaSession" in navigator){try{navigator.mediaSession.metadata=new MediaMetadata({title:"Rain Room",artist:"The Unfinished 30"});navigator.mediaSession.setActionHandler("play",function(){if(!playing)toggle()});navigator.mediaSession.setActionHandler("pause",function(){if(playing)toggle()});navigator.mediaSession.setActionHandler("nexttrack",function(){stepStyle(1)});navigator.mediaSession.setActionHandler("previoustrack",function(){stepStyle(-1)})}catch(e){}}
 window.__rr={ctx:function(){return ctx},master:function(){return master},setVol:setVol,setMusic:setMusic,pick:function(s){S.style=s;applyMusic()},eng:function(){return engine}};
@@ -521,9 +534,9 @@ function renderTimer(){var o=$("tops"),t=tx();o.replaceChildren();var opts=[[0,t
 $("cgo").addEventListener("click",function(){var v=Math.round(+$("cmin").value);if(v>0&&v<=300)startTimer(v)});
 $("cmin").addEventListener("keydown",function(e){if(e.key==="Enter")$("cgo").click()});
 function tickTimer(){var t=tx(),c=$("lc-time"),ph=$("lc-ph");
-  if(!TM.end){c.textContent="--:--";c.classList.add("dim");if(ph.textContent!==t.done)ph.textContent=t.noTimer;return}c.classList.remove("dim");
+  if(!TM.end){document.title=(playing?"▶ ":"")+"Rain Room · The Unfinished 30";c.textContent="--:--";c.classList.add("dim");if(ph.textContent!==t.done)ph.textContent=t.noTimer;return}c.classList.remove("dim");
   var left=Math.max(0,TM.phaseEnd-Date.now()),s=Math.ceil(left/1000);c.textContent=String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
-  var p=TM.phases[TM.idx];ph.textContent=(p[1]==="focus"?t.focus:t.brk)+(TM.phases.length>1?" "+(Math.floor(TM.idx/2)+1)+"/4":"");
+  var p=TM.phases[TM.idx],et=new Date(TM.end);ph.textContent=(p[1]==="focus"?t.focus:t.brk)+(TM.phases.length>1?" "+(Math.floor(TM.idx/2)+1)+"/4":"")+" · "+t.ends+" "+String(et.getHours()).padStart(2,"0")+":"+String(et.getMinutes()).padStart(2,"0");document.title=c.textContent+" · "+(p[1]==="focus"?t.focus:t.brk)+" · Rain Room";
   if(playing&&ctx&&TM.end-Date.now()<10000)master.gain.setTargetAtTime(masterLevel()*timerFade(),ctx.currentTime,.3);
   if(left<=0){TM.idx++;if(TM.idx<TM.phases.length){chime(TM.phases[TM.idx][1]==="brk"?1:2);beginPhase()}else{chime(3);TM.end=0;TM.mode=0;setTimeout(function(){if(playing)toggle()},2600);renderTimer();ph.textContent=t.done}}}
 setInterval(tickTimer,500);
