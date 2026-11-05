@@ -236,5 +236,311 @@
         "Vérifie les risques de l’idée retenue."
       ]
     }
+  },
+  {
+    "id": "get-started",
+    "en": "Stop putting off an assignment",
+    "fr": "Me mettre au travail sur un devoir",
+    "roles": [
+      "student"
+    ],
+    "ids": [
+      "eat-the-frog",
+      "implementation",
+      "pomodoro"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Bring the assignment, its deadline and the next small action you have been avoiding.",
+      "fr": "Prépare la consigne, la date de rendu et la petite action que tu repousses."
+    },
+    "result": {
+      "en": "A concrete first action, a starting cue and a focused work block.",
+      "fr": "Une première action concrète, un déclencheur pour commencer et un bloc de travail concentré."
+    },
+    "steps": {
+      "en": [
+        "Pick the task that would make the biggest difference today.",
+        "Decide exactly when and where you will start.",
+        "Work on that action for one focused block."
+      ],
+      "fr": [
+        "Choisis la tâche qui ferait le plus avancer ton devoir aujourd’hui.",
+        "Décide précisément quand et où tu commenceras.",
+        "Travaille sur cette action pendant un premier bloc concentré."
+      ]
+    }
+  },
+  {
+    "id": "study-choice",
+    "en": "Choose a topic or an internship",
+    "fr": "Choisir un sujet ou un stage",
+    "roles": [
+      "student"
+    ],
+    "ids": [
+      "weighted",
+      "101010",
+      "premortem"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "List the options, the application or decision deadline and what matters to your studies.",
+      "fr": "Liste les options, la date de décision et ce qui compte pour tes études."
+    },
+    "result": {
+      "en": "A reasoned choice with clear criteria and risks to check.",
+      "fr": "Un choix argumenté, avec des critères clairs et des risques à vérifier."
+    },
+    "steps": {
+      "en": [
+        "Compare the options using criteria that matter to you.",
+        "Consider the consequences over three time horizons.",
+        "Check what could make your preferred option go wrong."
+      ],
+      "fr": [
+        "Compare les options selon les critères qui comptent pour toi.",
+        "Examine les conséquences à trois horizons de temps.",
+        "Vérifie ce qui pourrait faire échouer l’option que tu préfères."
+      ]
+    }
+  },
+  {
+    "id": "learn-from-feedback",
+    "en": "Improve after an assignment",
+    "fr": "Améliorer mon prochain devoir",
+    "roles": [
+      "student"
+    ],
+    "ids": [
+      "after-action",
+      "five-whys",
+      "pdca"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Have the assignment, the assessment criteria and the feedback you received ready.",
+      "fr": "Rassemble le devoir, les critères d’évaluation et les retours reçus."
+    },
+    "result": {
+      "en": "One change to try on the next assignment and a way to check it.",
+      "fr": "Un changement à essayer au prochain devoir et une manière de le vérifier."
+    },
+    "steps": {
+      "en": [
+        "Compare what you intended with what actually happened.",
+        "Investigate one recurring difficulty without jumping to conclusions.",
+        "Try one improvement and check the next result."
+      ],
+      "fr": [
+        "Compare ce que tu voulais faire avec ce qui s’est réellement passé.",
+        "Examine une difficulté récurrente sans conclure trop vite.",
+        "Teste une amélioration et vérifie le résultat suivant."
+      ]
+    }
+  },
+  {
+    "id": "delegate",
+    "en": "Delegate with clear expectations",
+    "fr": "Déléguer avec des attentes claires",
+    "roles": [
+      "manager"
+    ],
+    "ids": [
+      "smart",
+      "raci",
+      "kanban"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Choose a deliverable to delegate, its deadline and the people involved.",
+      "fr": "Choisis un livrable à déléguer, son échéance et les personnes concernées."
+    },
+    "result": {
+      "en": "An agreed result, clear responsibilities and visible progress.",
+      "fr": "Un résultat convenu, des responsabilités claires et un suivi visible."
+    },
+    "steps": {
+      "en": [
+        "Agree what a successful deliverable looks like.",
+        "Clarify who does, approves and contributes to the work.",
+        "Make the next actions and their progress visible."
+      ],
+      "fr": [
+        "Convenez de ce qui caractérise un livrable réussi.",
+        "Clarifie qui réalise, qui valide et qui contribue au travail.",
+        "Rends les prochaines actions et leur avancement visibles."
+      ]
+    }
+  },
+  {
+    "id": "team-decision",
+    "en": "Prepare a difficult team decision",
+    "fr": "Préparer une décision difficile",
+    "roles": [
+      "manager"
+    ],
+    "ids": [
+      "cynefin",
+      "six-hats",
+      "daci"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Bring the decision to make, the known facts, the uncertainties and the people affected.",
+      "fr": "Prépare la décision à prendre, les faits connus, les incertitudes et les personnes concernées."
+    },
+    "result": {
+      "en": "A decision framed around the context, different perspectives and a named owner.",
+      "fr": "Une décision cadrée selon le contexte, des points de vue examinés et un responsable nommé."
+    },
+    "steps": {
+      "en": [
+        "Identify the kind of situation and what evidence is needed.",
+        "Examine the options from different perspectives.",
+        "Agree who decides, who contributes and by when."
+      ],
+      "fr": [
+        "Identifie le type de situation et les éléments à réunir.",
+        "Examine les options selon plusieurs points de vue.",
+        "Convenez de qui décide, qui contribue et à quelle date."
+      ]
+    }
+  },
+  {
+    "id": "project-risks",
+    "en": "Anticipate project risks",
+    "fr": "Anticiper les risques d’un projet",
+    "roles": [
+      "manager"
+    ],
+    "ids": [
+      "premortem",
+      "impact-effort",
+      "pdca"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Bring the project goal, the main assumptions and the constraints on time and capacity.",
+      "fr": "Prépare l’objectif du projet, ses principales hypothèses et les contraintes de temps et de capacité."
+    },
+    "result": {
+      "en": "Priority risks, practical prevention actions and a small test to run.",
+      "fr": "Des risques prioritaires, des actions de prévention et un premier test à mener."
+    },
+    "steps": {
+      "en": [
+        "Imagine the project has failed and list plausible reasons.",
+        "Select prevention actions by impact and effort.",
+        "Try one action, measure it and adjust the plan."
+      ],
+      "fr": [
+        "Imagine que le projet a échoué et relève les raisons plausibles.",
+        "Sélectionne les actions de prévention selon leur impact et leur effort.",
+        "Teste une action, mesure son effet et ajuste le plan."
+      ]
+    }
+  },
+  {
+    "id": "deliver-on-time",
+    "en": "Plan a deliverable with a deadline",
+    "fr": "Tenir l’échéance d’un livrable",
+    "roles": [
+      "professional"
+    ],
+    "ids": [
+      "smart",
+      "time-blocking",
+      "kanban"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Bring the requested deliverable, its deadline, the acceptance criteria and your available time.",
+      "fr": "Rassemble le livrable demandé, son échéance, les critères d’acceptation et ton temps disponible."
+    },
+    "result": {
+      "en": "A clear finish condition, time reserved and visible next tasks.",
+      "fr": "Une condition de fin claire, des créneaux réservés et les prochaines tâches visibles."
+    },
+    "steps": {
+      "en": [
+        "Define the deliverable and how it will be accepted.",
+        "Reserve realistic time for the work.",
+        "Track the remaining tasks and blockers."
+      ],
+      "fr": [
+        "Définis le livrable et ses critères d’acceptation.",
+        "Réserve des créneaux réalistes pour le réaliser.",
+        "Suis les tâches restantes et les points de blocage."
+      ]
+    }
+  },
+  {
+    "id": "focus-session",
+    "en": "Focus despite interruptions",
+    "fr": "Me concentrer malgré les interruptions",
+    "roles": [
+      "professional"
+    ],
+    "ids": [
+      "deep-work",
+      "timeboxing",
+      "shutdown"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Choose one demanding task, note the interruptions you expect and the time you can protect.",
+      "fr": "Choisis une tâche exigeante, note les interruptions prévisibles et le temps que tu peux protéger."
+    },
+    "result": {
+      "en": "One protected work session, a finish condition and a clear next step.",
+      "fr": "Une séance de travail protégée, une condition de fin et une prochaine action claire."
+    },
+    "steps": {
+      "en": [
+        "Define one result and remove avoidable distractions.",
+        "Set a time limit and decide what counts as finished.",
+        "Close the session and leave a clear restart point."
+      ],
+      "fr": [
+        "Définis un résultat et écarte les distractions évitables.",
+        "Fixe une durée et décide de ce qui comptera comme terminé.",
+        "Clôture la séance et prépare un point de reprise clair."
+      ]
+    }
+  },
+  {
+    "id": "recurring-problem",
+    "en": "Solve a recurring work problem",
+    "fr": "Débloquer un problème récurrent",
+    "roles": [
+      "professional"
+    ],
+    "ids": [
+      "pareto",
+      "five-whys",
+      "pdca"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Bring observations from one common period, consistent categories and a measurable problem.",
+      "fr": "Rassemble des observations sur une même période, des catégories cohérentes et un problème mesurable."
+    },
+    "result": {
+      "en": "Priority causes, a hypothesis to test and a follow-up measure.",
+      "fr": "Des causes prioritaires, une hypothèse à tester et une mesure de suivi."
+    },
+    "steps": {
+      "en": [
+        "Find which causes contribute most to the measured problem.",
+        "Investigate one priority cause and check the evidence.",
+        "Test one change and compare the result."
+      ],
+      "fr": [
+        "Repère les causes qui contribuent le plus au problème mesuré.",
+        "Examine une cause prioritaire et vérifie les éléments disponibles.",
+        "Teste un changement et compare le résultat."
+      ]
+    }
   }
 ]

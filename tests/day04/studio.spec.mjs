@@ -334,7 +334,7 @@ for (const journey of [
     await page.goto(base + "fr/");
     await expect(page.locator("header .s-nav a")).toHaveCount(2);
     await page.locator(`[data-persona=${journey.role}]`).click();
-    await expect(page.locator(".s-journeychoice")).toHaveCount(2);
+    await expect(page.locator(".s-journeychoice")).toHaveCount(5);
     await page.locator(`.s-journeychoice[href*="/${journey.id}/"]`).click();
     await expect(page.locator(".s-journeysteps>li")).toHaveCount(3);
     await page.locator(".s-journeysteps a").first().click();
@@ -390,8 +390,8 @@ test("The compact mobile menu, support pages and language switch remain usable",
   await page.locator('header a[href="#/help"]').click();
   await expect(page.locator("#help")).toBeVisible();
   await expect(page.locator(".s-taskhome")).toHaveCount(0);
-  await page.locator(".s-utility summary").click();
-  await page.locator("header [data-act=lang]").click();
+  await expect(page.locator("header [data-act=lang]")).toHaveCount(2);
+  await page.locator("header [data-act=lang][data-language=en]").click();
   await expect(page.locator("html")).toHaveAttribute("lang", "en");
   await page.getByRole("link", { name: "Start here", exact: true }).click();
   await page.locator("[data-persona=student]").click();
@@ -415,4 +415,83 @@ test("A guide example really fills the worksheet and slide state survives a relo
   await page.reload();
   await expect(page.locator(".s-slide")).toHaveAttribute("data-ratio", "9:16");
   await expect(page.locator(".s-count")).toContainText("3 / 8");
+});
+
+test("Each persona has five bilingual needs and the test-notes section is removed", async ({
+  page,
+}) => {
+  for (const language of ["fr", "en"]) {
+    await page.goto(base + language + "/");
+    for (const role of ["student", "manager", "professional"]) {
+      await page.locator(`[data-persona=${role}]`).click();
+      await expect(page.locator(".s-journeychoice")).toHaveCount(5);
+      const links = await page
+        .locator(".s-journeychoice")
+        .evaluateAll((items) =>
+          items.map((el) => ({
+            href: el.getAttribute("href"),
+            title: el.querySelector("h3").textContent,
+          })),
+        );
+      expect(new Set(links.map((link) => link.href)).size).toBe(5);
+      await page.locator(".s-journeychoice").last().click();
+      await expect(page.locator(".s-journeysteps>li")).toHaveCount(3);
+      await expect(page.locator("h1")).toHaveText(links.at(-1).title);
+      await page
+        .getByRole("link", {
+          name: language === "fr" ? "Commencer" : "Start here",
+          exact: true,
+        })
+        .click();
+    }
+    await page.goto(base + language + "/?section=pilot");
+    await expect(page.locator("#help")).toBeVisible();
+    await expect(
+      page.locator('#pilot,#pilot-notes,[data-pilot],a[href="#/pilot"]'),
+    ).toHaveCount(0);
+    await page.goto(base + language + "/#/pilot");
+    await expect(page.locator("#help")).toBeVisible();
+    await expect(page.locator("#pilot,#pilot-notes,[data-pilot]")).toHaveCount(
+      0,
+    );
+  }
+});
+
+test("FR and EN stay visible in the header and preserve the active journey", async ({
+  page,
+}) => {
+  for (const width of [320, 390, 1280]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto(base + "fr/");
+    for (const lang of ["fr", "en"])
+      await expect(
+        page.locator(`header [data-act=lang][data-language=${lang}]`),
+      ).toBeVisible();
+    await expect(page.locator(".s-utility")).not.toHaveAttribute("open", "");
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+  }
+  await page.locator("[data-persona=student]").click();
+  await page.locator('.s-journeychoice[href*="study-choice"]').click();
+  await page.locator(".s-journeysteps a").first().click();
+  await page
+    .locator("[data-work=decision]")
+    .fill("Choix conservé dans les deux langues");
+  await page.locator("header [data-language=en]").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await expect(page).toHaveURL(/\/en\/tools\/weighted\/.*journey=study-choice/);
+  await expect(page.locator("[data-work=decision]")).toHaveValue(
+    "Choix conservé dans les deux langues",
+  );
+  await page.locator("header [data-language=en]").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.locator("header [data-language=fr]").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "fr");
+  await expect(page.locator("header [data-language=fr]")).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
 });

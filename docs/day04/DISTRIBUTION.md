@@ -4,7 +4,7 @@ Run three separate pilots using the same public method example. Channel A is a L
 
 Use a canonical method link and its generated social image. A participant should reach the demonstrated method, try the same example and then use a blank worksheet. A useful activation is producing a valid result or downloading an editable result. A click on Share alone does not establish referral growth.
 
-Optional session counters contain event names only, stay in memory and can be exported by the participant. For a volunteer pilot, compare the number of participants who share, the number of referred recipients and the recipients who activate. Do not infer missing counts and do not collect worksheet answers. A persistent analytics backend would require a separate explicit data and retention decision.
+For a volunteer pilot, record completion and sharing manually with participants’ permission. The public test-notes form and session-counter export have been removed from the app. Do not infer missing counts and do not collect worksheet answers. A persistent analytics backend would require a separate explicit data and retention decision.
 
 Suggested initial keyword groups are implemented through the localized method pages and situation kits. Validate their impressions and clicks through Search Console owned by the site operator. No search-volume claim is made for these hypotheses.
 
@@ -39,4 +39,4 @@ Use the method link and public example image for the community's language. Follo
 
 ## Facilitator resource
 
-Use one of the three downloadable situation kits. Explain the expected outcome before starting. Let participants work independently, compare results and end with a named action and review date. The kit includes the offline app, public example images, source notes and an ordered set of method guides.
+Use one of the downloadable situation kits. Explain the expected outcome before starting. Let participants work independently, compare results and end with a named action and review date. The kit includes the offline app, public example images, source notes and an ordered set of method guides.

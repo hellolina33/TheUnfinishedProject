@@ -17,7 +17,7 @@ Les parcours ci-dessous sont des hypothèses de conception pour les trois public
 | Professionnel, journée saturée | Faire une sélection et protéger son temps | Eisenhower → timeboxing → clôture de journée | Priorités, limites de durée, prochaine action | L’entrée décrit la situation vécue plutôt qu’une famille de frameworks. |
 | Professionnel, recommandation à un client | Expliquer et défendre un choix | Matrice pondérée → prémortem → DACI | Critères, risques et décision explicites | Les réponses sont conservées entre les étapes et réunies dans un bilan téléchargeable. |
 
-Le parcours spécialisé de priorisation de backlog reste accessible à son adresse existante. Il complète ces six entrées sans ajouter un choix de premier niveau.
+Le parcours spécialisé de priorisation de backlog reste accessible à son adresse existante. Il complète les quinze entrées par besoin sans ajouter un choix de premier niveau.
 
 ## User flows mis en place
 
@@ -40,8 +40,8 @@ L’étape en cours et le retour au parcours apparaissent sur chaque fiche ouver
 ## Hiérarchie de l’interface
 
 - Menu principal : **Commencer**, **Méthodes**. Le logo ramène à l’accueil.
-- Menu **Plus** : téléchargement HTML, aide, sources et changement de langue. Il se ferme au clic extérieur et avec Échap.
-- Accueil : un profil et deux situations concrètes, puis un accès direct au catalogue. Les longues sections annexes quittent cet écran.
+- Menu **Plus** : téléchargement HTML, aide et sources. **FR / EN** restent directement visibles dans l’en-tête. Il se ferme au clic extérieur et avec Échap.
+- Accueil : un profil et cinq situations concrètes, puis un accès direct au catalogue. Les longues sections annexes quittent cet écran.
 - Catalogue : recherche en premier. Familles, préférences et suggestions sont regroupées dans « Affiner les résultats » ; les filtres actifs restent réinitialisables.
 - Fiche : titre plus compact et trois espaces conservés, guide, canevas et présentation. Comparaisons, exercices et partage détaillé sont consultables à la demande.
 - Présentation : l’aperçu et les exports sont prioritaires. Le plan des huit diapositives est replié par défaut.
@@ -61,3 +61,14 @@ Ces éléments utilisent les mêmes instructions de dessin pour l’écran, le P
 Les scénarios navigateur couvrent les trois profils : choix du besoin, ouverture de la première méthode, saisie, étape suivante, retour et export d’un bilan contenant les réponses. Ils couvrent aussi le menu mobile, l’aide, la langue, le mode hors ligne, les sauvegardes et les exports existants. Le contrôle des axes vérifie la place des dimensions, leurs extrémités, les deux échelles Pareto et le texte natif des exports.
 
 Les résultats chiffrés et les liens de publication sont consignés dans le rapport de livraison. Les tests sur appareils physiques et avec de vrais participants restent à effectuer.
+
+
+## Extension à cinq besoins par persona
+
+| Persona | Cinq besoins affichés |
+| --- | --- |
+| Étudiant | Planifier mes révisions ; organiser un projet de groupe ; me mettre au travail sur un devoir ; choisir un sujet ou un stage ; améliorer mon prochain devoir. |
+| Manager | Choisir les priorités de mon équipe ; préparer une rétrospective utile ; déléguer avec des attentes claires ; préparer une décision difficile ; anticiper les risques d’un projet. |
+| Professionnel | Trier une journée trop chargée ; justifier un choix à un client ; tenir l’échéance d’un livrable ; me concentrer malgré les interruptions ; débloquer un problème récurrent. |
+
+Chaque nouveau besoin a ses préparatifs, son résultat attendu et trois méthodes ordonnées en français et en anglais. La section publique « Help test the studio », ses notes et ses compteurs ont été retirés. Les anciens liens vers cette section ouvrent l’aide. Le protocole de recherche reste dans la documentation du dépôt.

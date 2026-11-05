@@ -36,7 +36,8 @@ window.ProductivityRouter = (() => {
           ...viewParams(params),
         };
       if (path.startsWith("kit/")) return { v: "kit", id: path.slice(4) };
-      if (["find", "sources", "help", "pilot"].includes(path))
+      if (path === "pilot") return { v: "home", section: "help" };
+      if (["find", "sources", "help"].includes(path))
         return { v: "home", section: path };
       if (["all", "results"].includes(path)) return { v: path };
       if (path === "") return { v: "home" };
@@ -61,10 +62,10 @@ window.ProductivityRouter = (() => {
     if (/\/(?:library|bibliotheque)\/$/.test(path)) return { v: "all" };
     if (/\/(?:results|resultats)\/$/.test(path)) return { v: "results" };
     if (/^file:/.test(location.protocol || "")) return { v: "home" };
+    const section = new URLSearchParams(location.search || "").get("section");
     return {
       v: "home",
-      section:
-        new URLSearchParams(location.search || "").get("section") || undefined,
+      section: section === "pilot" ? "help" : section || undefined,
     };
   }
   function url(state, language) {

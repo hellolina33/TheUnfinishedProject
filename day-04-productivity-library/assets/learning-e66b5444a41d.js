@@ -33,14 +33,7 @@ window.ProductivityLearning = (() => {
         "Copy this code to show the worksheet on a website. It loads the published guide. Personal answers remain in the visitor’s tab.",
       privacy:
         "Share the method link or the public example. Your worksheet answers are excluded.",
-      pilot: "Help test the studio",
-      pilotCopy:
-        "Try finding a method, completing a worksheet and sending its result to someone. Record where you first got stuck. You can export your notes and decide whether to send them.",
-      pilotExport: "Download test notes",
-      notes: "Your test notes",
-      metricHelp:
-        "Session counters contain event names only. They stay in this tab and can be exported voluntarily.",
-      metrics: "Download session counts",
+      notes: "Your notes",
     },
     fr: {
       quick: "En une minute",
@@ -74,14 +67,7 @@ window.ProductivityLearning = (() => {
         "Copie ce code pour montrer le canevas sur un site. Il charge le guide publié. Les réponses personnelles restent dans l’onglet du visiteur.",
       privacy:
         "Partage le lien de la méthode ou le cas public. Tes réponses au canevas sont exclues.",
-      pilot: "Participer au test de l’atelier",
-      pilotCopy:
-        "Essaie de trouver une méthode, de remplir un canevas et de transmettre son résultat. Note le premier blocage. Tu peux exporter tes notes et décider de les envoyer.",
-      pilotExport: "Télécharger les notes de test",
-      notes: "Tes notes de test",
-      metricHelp:
-        "Les compteurs de session contiennent uniquement des noms d’événements. Ils restent dans cet onglet et peuvent être exportés à ta demande.",
-      metrics: "Télécharger les compteurs de session",
+      notes: "Tes notes",
     },
   };
   const secondary = {
@@ -209,8 +195,7 @@ window.ProductivityLearning = (() => {
     glossary[lang],
   )
     .map(([word, meaning]) => `<div><dt>${word}</dt><dd>${meaning}</dd></div>`)
-    .join("")}</dl></section>
-  <section class="s-wrap s-section" id="pilot"><h2>${t("pilot")}</h2><p>${t("pilotCopy")}</p><label>${t("notes")}<textarea id="pilot-notes" rows="4" maxlength="5000"></textarea></label><div class="s-btns"><button class="s-btn outline tiny" data-pilot="notes">${t("pilotExport")}</button><button class="s-btn outline tiny" data-pilot="counts">${t("metrics")}</button></div><p>${t("metricHelp")}</p></section>`;
+    .join("")}</dl></section>`;
   }
   function kitPage(id, methods, lang, esc, link) {
     const kit = kits.find((item) => item.id === id);
