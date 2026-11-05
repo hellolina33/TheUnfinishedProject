@@ -1,5 +1,5 @@
 {
-  "version": "b8b2eb284203",
+  "version": "7389dbff27e8",
   "files": [
     {
       "path": "methods.js",
@@ -27,9 +27,9 @@
     },
     {
       "path": "workspace.js",
-      "asset": "assets/workspace-f5ea9983cdbd.js",
-      "sha256": "f5ea9983cdbdb9a340d8851f5d31c9d8db9228dadb0dcab03354939cea365288",
-      "bytes": 17987
+      "asset": "assets/workspace-7371a5100726.js",
+      "sha256": "7371a5100726a16e30e6095d254063bb9dd0ef8cb40b3b8b3edc8bb781f4b3ca",
+      "bytes": 18011
     },
     {
       "path": "reuse.js",

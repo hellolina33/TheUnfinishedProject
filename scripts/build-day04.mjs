@@ -399,6 +399,10 @@ for (const lang of ["en", "fr"]) {
         fs.readFileSync(path.join(root, "social/" + lang + "-" + id + ".png")),
       );
     }
+    // Stable ZIP timestamps keep repeated builds and repository outputs identical.
+    zip.forEach((_, file) => {
+      file.date = new Date("2026-01-01T00:00:00.000Z");
+    });
     write(
       "downloads/kit-" + kit.id + "-" + lang + ".zip",
       await zip.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }),
