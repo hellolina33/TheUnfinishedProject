@@ -4,131 +4,288 @@
   if(!c||!Array.isArray(c.TOOLS))return;
   const tools=c.TOOLS, app=document.getElementById("app"), names={prioritise:"Prioritise",organise:"Organise",focus:"Focus",decide:"Decide",review:"Review"},frnames={prioritise:"Prioriser",organise:"S'organiser",focus:"Se concentrer",decide:"Décider",review:"Faire le bilan"};
   const L={
-    en:{home:"Home",all:"All 50 tools",find:"Find my tools",try:"Try Pareto",lead:"Find the right framework. Make it yours. Walk away with an editable deck.",sub:"A free toolbox for students, makers and managers. No account. Your work stays on your device.",who:"Who is it for?",need:"What do you want to do?",time:"How much time do you have?",me:"Just me",team:"My team",both:"Either",short:"Under 15 min",medium:"15–60 min",long:"More than 60 min",more:"More preferences",freq:"How often?",once:"Once",regular:"Regularly",style:"Working style",casual:"Informal",structured:"Structured",formal:"Formal",rec:"Recommended for you",search:"Search by method or problem…",why:"Why it works",learn:"Learn",practice:"Try it",slides:"8 slides",alone:"On your own",asTeam:"With a team",example:"Worked example",src:"Source & attribution",status:"Attribution to be verified against the original publications.",canvas:"Your working canvas",hint:"Edit your own answers. Saved only on this device.",filled:"See example",blank:"Blank canvas",download:"Export answers",import:"Import answers",reset:"Clear",format:"Slide format",pptx:"Editable PowerPoint",pdf:"PDF (8 pages)",fullscreen:"Full screen",share:"Share",previous:"Previous",next:"Next",back:"All methods",nothing:"No method matched. Adjust the filters.",take:"Take back control",copy:"Copy link",langNote:"Method explanations are in English. Interface controls are bilingual.",downloadApp:"Download app HTML",goBack:"The Unfinished 30",tip:"Practice with a concrete decision, then review what changed."},
-    fr:{home:"Accueil",all:"Les 50 outils",find:"Trouver mes outils",try:"Essayer Pareto",lead:"Trouve la bonne méthode. Adapte-la. Repars avec un PowerPoint modifiable.",sub:"Une boîte à outils gratuite pour les étudiants et les managers. Aucun compte. Tes réponses restent sur ton appareil.",who:"Pour qui ?",need:"Quel est ton besoin ?",time:"Combien de temps as-tu ?",me:"Moi",team:"Mon équipe",both:"Les deux",short:"Moins de 15 min",medium:"15 à 60 min",long:"Plus d'une heure",more:"Plus de préférences",freq:"Fréquence",once:"Une fois",regular:"Régulièrement",style:"Type d'animation",casual:"Informel",structured:"Structuré",formal:"Formel",rec:"Recommandés pour toi",search:"Rechercher un outil ou un problème…",why:"Pourquoi ça marche",learn:"Comprendre",practice:"Utiliser",slides:"8 slides",alone:"Seul",asTeam:"Avec une équipe",example:"Exemple rempli",src:"Source et attribution",status:"Attribution à vérifier dans les sources originales.",canvas:"Ton canevas",hint:"Écris tes réponses. Elles restent sur cet appareil.",filled:"Exemple",blank:"Canevas vierge",download:"Exporter mes réponses",import:"Importer",reset:"Effacer",format:"Format",pptx:"PowerPoint modifiable",pdf:"PDF (8 pages)",fullscreen:"Plein écran",share:"Partager",previous:"Précédente",next:"Suivante",back:"Tous les outils",nothing:"Aucun résultat. Modifie les filtres.",take:"Reprends le contrôle",copy:"Copier le lien",langNote:"Les explications des méthodes sont en anglais. Les commandes sont bilingues.",downloadApp:"Télécharger le HTML",goBack:"The Unfinished 30",tip:"Teste avec une vraie décision, puis évalue le résultat."}
+    en:{home:"Home",all:"All 50 tools",find:"Find my tools",try:"Try Pareto",lead:"Find the right framework. Make it yours. Walk away with an editable deck.",sub:"A free toolbox for students, makers and managers. No account. Your work stays on your device.",who:"Who is it for?",need:"What do you want to do?",time:"How much time do you have?",me:"Just me",team:"My team",both:"Either",short:"Under 15 min",medium:"15–60 min",long:"More than 60 min",more:"More preferences",freq:"How often?",once:"Once",regular:"Regularly",style:"Working style",casual:"Informal",structured:"Structured",formal:"Formal",rec:"Recommended for you",search:"Search by method or problem…",why:"Why it works",learn:"Learn",practice:"Try it",slides:"8 slides",alone:"On your own",asTeam:"With a team",example:"Worked example",src:"Source & attribution",status:"Attribution to be verified against the original publications.",canvas:"Your working canvas",hint:"Edit your own answers. Saved only on this device.",filled:"See example",blank:"Blank canvas",download:"Export answers",import:"Import answers",reset:"Clear",format:"Slide format",pptx:"Editable PowerPoint",pdf:"PDF (8 pages)",fullscreen:"Full screen",share:"Share",previous:"Previous",next:"Next",back:"All methods",nothing:"No method matched. Adjust the filters.",take:"Take back control",copy:"Copy link",downloadApp:"Download app HTML",goBack:"The Unfinished 30",tip:"Practice with a concrete decision, then review what changed."},
+    fr:{home:"Accueil",all:"Les 50 outils",find:"Trouver mes outils",try:"Essayer Pareto",lead:"Trouve la bonne méthode. Adapte-la. Repars avec un PowerPoint modifiable.",sub:"Une boîte à outils gratuite pour les étudiants et les managers. Aucun compte. Tes réponses restent sur ton appareil.",who:"Pour qui ?",need:"Quel est ton besoin ?",time:"Combien de temps as-tu ?",me:"Moi",team:"Mon équipe",both:"Les deux",short:"Moins de 15 min",medium:"15 à 60 min",long:"Plus d'une heure",more:"Plus de préférences",freq:"Fréquence",once:"Une fois",regular:"Régulièrement",style:"Type d'animation",casual:"Informel",structured:"Structuré",formal:"Formel",rec:"Recommandés pour toi",search:"Rechercher un outil ou un problème…",why:"Pourquoi ça marche",learn:"Comprendre",practice:"Utiliser",slides:"8 diapositives",alone:"Seul",asTeam:"Avec une équipe",example:"Exemple rempli",src:"Source et attribution",status:"Attribution à vérifier dans les sources originales.",canvas:"Ton canevas",hint:"Écris tes réponses. Elles restent sur cet appareil.",filled:"Exemple",blank:"Canevas vierge",download:"Exporter mes réponses",import:"Importer",reset:"Effacer",format:"Format",pptx:"PowerPoint modifiable",pdf:"PDF (8 pages)",fullscreen:"Plein écran",share:"Partager",previous:"Précédente",next:"Suivante",back:"Tous les outils",nothing:"Aucun résultat. Modifie les filtres.",take:"Reprends le contrôle",copy:"Copier le lien",downloadApp:"Télécharger le HTML",goBack:"The Unfinished 30",tip:"Teste avec une vraie décision, puis évalue le résultat."}
   };
+  Object.assign(L.en, {
+  "brand": "Productivity Studio",
+  "day": "Day 04",
+  "challenge": "day 4 of 30, one free prototype a day",
+  "madeBy": "Made by",
+  "language": "Switch to French",
+  "skip": "Skip to content",
+  "credit": "50 frameworks to use and adapt. Original layouts by Salah Khenissi.",
+  "explore": "Explore",
+  "paretoArt": "Illustration of the Pareto principle",
+  "paretoIndex": "Tool 02 of 50 / Pareto",
+  "paretoLead": "Find the few causes that matter most.",
+  "headline": "50 tools.",
+  "headline2": "Less chaos.",
+  "methods": "Methods",
+  "families": "Families",
+  "slidesEach": "Slides per tool",
+  "formats": "Formats",
+  "free": "Free · local storage",
+  "findIt": "Find a method",
+  "quizTitle": "What do you need to solve?",
+  "quizSub": "Three questions to narrow the list.",
+  "tryIt": "Try a method",
+  "startHere": "Start with these three.",
+  "fitsTime": "Fits your time",
+  "fitsAudience": "Fits the audience",
+  "recommendations": "Recommendations",
+  "otherMatches": "Other matches",
+  "library": "Reference library",
+  "maxDuration": "Maximum duration",
+  "anyDuration": "Any duration",
+  "anyStyle": "Any style",
+  "allFamilies": "All families",
+  "of50": "of 50",
+  "readSource": "Read source",
+  "timing": "Workshop timing",
+  "timingBefore": "Allow about",
+  "timingAfter": "minutes per team step, with time at the end to agree on the decision.",
+  "placeholder": "Write your answer…",
+  "viewMine": "My answers",
+  "preview": "Preview the eight slides before downloading.",
+  "helpful": "Was this helpful?",
+  "yes": "Yes",
+  "notYet": "Not yet",
+  "thanks": "Thanks for the feedback.",
+  "copied": "Link copied.",
+  "offline": "An internet connection is required to load the export library.",
+  "pptxWorking": "Building editable PowerPoint…",
+  "pdfWorking": "Building PDF…",
+  "pptxDone": "Eight editable slides downloaded.",
+  "pdfDone": "Eight PDF pages downloaded.",
+  "pptxError": "PowerPoint export failed.",
+  "pdfError": "PDF export failed.",
+  "htmlError": "HTML download unavailable.",
+  "invalid": "This file does not contain valid answers for this method.",
+  "answer": "Answer",
+  "rowNote": "Row note",
+  "cumulative": "Share of incidents and cumulative total",
+  "timeScale": "Relative duration",
+  "problem": "When to use it",
+  "method": "The framework",
+  "whenPrompt": "Which situation are you trying to change?",
+  "successPrompt": "What would tell you that it improved?",
+  "soloTitle": "Run it on your own",
+  "canvasTitle": "Fill in your working canvas",
+  "exampleTitle": "See the framework in use",
+  "examplePrompt": "Read the entries in order and identify what you would change in your own situation.",
+  "teamTitle": "Guide the team through it",
+  "nextStep": "Next step",
+  "reviewTitle": "Leave with a decision and a review date",
+  "nextPrompt": "Action · Write the first concrete change you will make.",
+  "ownerPrompt": "Owner · Name who will do it and by when.",
+  "reviewPrompt": "Review · Choose a date and a sign that it worked."
+});
+  Object.assign(L.fr, {
+  "brand": "Atelier de productivité",
+  "day": "Jour 04",
+  "challenge": "jour 4 sur 30, un prototype gratuit par jour",
+  "madeBy": "Créé par",
+  "language": "Passer en anglais",
+  "skip": "Aller au contenu",
+  "credit": "50 méthodes à utiliser et à adapter. Mises en page originales de Salah Khenissi.",
+  "explore": "Découvrir",
+  "paretoArt": "Illustration du principe de Pareto",
+  "paretoIndex": "Outil 02 sur 50 / Pareto",
+  "paretoLead": "Repère les quelques causes qui pèsent le plus.",
+  "headline": "50 outils.",
+  "headline2": "Moins de chaos.",
+  "methods": "Méthodes",
+  "families": "Familles",
+  "slidesEach": "Diapositives par outil",
+  "formats": "Formats",
+  "free": "Gratuit · stockage local",
+  "findIt": "Choisir une méthode",
+  "quizTitle": "Quel problème veux-tu résoudre ?",
+  "quizSub": "Trois questions pour affiner la liste.",
+  "tryIt": "Tester une méthode",
+  "startHere": "Commence par ces trois méthodes.",
+  "fitsTime": "Adapté au temps disponible",
+  "fitsAudience": "Adapté aux participants",
+  "recommendations": "Recommandations",
+  "otherMatches": "Autres méthodes adaptées",
+  "library": "Bibliothèque de méthodes",
+  "maxDuration": "Durée maximale",
+  "anyDuration": "Toutes les durées",
+  "anyStyle": "Tous les styles",
+  "allFamilies": "Toutes les familles",
+  "of50": "sur 50",
+  "readSource": "Lire la source",
+  "timing": "Durée de l’atelier",
+  "timingBefore": "Prévois environ",
+  "timingAfter": "minutes par étape en équipe et un temps final pour décider.",
+  "placeholder": "Écris ta réponse…",
+  "viewMine": "Mes réponses",
+  "preview": "Parcours les huit diapositives avant de télécharger.",
+  "helpful": "Cette méthode t’a aidé ?",
+  "yes": "Oui",
+  "notYet": "Pas encore",
+  "thanks": "Merci pour ton retour.",
+  "copied": "Lien copié.",
+  "offline": "Une connexion est nécessaire pour charger la bibliothèque d’export.",
+  "pptxWorking": "Création du PowerPoint modifiable…",
+  "pdfWorking": "Création du PDF…",
+  "pptxDone": "Huit diapositives modifiables téléchargées.",
+  "pdfDone": "Huit pages PDF téléchargées.",
+  "pptxError": "Échec de l’export PowerPoint.",
+  "pdfError": "Échec de l’export PDF.",
+  "htmlError": "Le téléchargement HTML a échoué.",
+  "invalid": "Ce fichier ne contient pas de réponses valides pour cette méthode.",
+  "answer": "Réponse",
+  "rowNote": "Note de ligne",
+  "cumulative": "Part des incidents et total cumulé",
+  "timeScale": "Durée relative",
+  "problem": "Quand l’utiliser",
+  "method": "La méthode",
+  "whenPrompt": "Quelle situation veux-tu faire évoluer ?",
+  "successPrompt": "À quoi verras-tu qu’elle s’est améliorée ?",
+  "soloTitle": "Applique la méthode seul",
+  "canvasTitle": "Complète ton canevas",
+  "exampleTitle": "Observe la méthode en pratique",
+  "examplePrompt": "Lis les entrées dans l’ordre et repère ce que tu adapterais à ta situation.",
+  "teamTitle": "Anime la séance en équipe",
+  "nextStep": "Prochaine étape",
+  "reviewTitle": "Décide d’une action et d’une date de bilan",
+  "nextPrompt": "Action · Note le premier changement concret.",
+  "ownerPrompt": "Responsable · Note qui agit et pour quand.",
+  "reviewPrompt": "Bilan · Fixe une date et un signe de réussite."
+});
   let stored={};try{stored=JSON.parse(localStorage.getItem("u30studio")||"{}")||{}}catch(e){}
-  const s={lang:stored.lang||"en",need:stored.need||"prioritise",who:stored.who||"both",time:stored.time||"medium",freq:stored.freq||"regular",fm:stored.fm||"structured",ratio:stored.ratio||"16:9",answers:stored.answers||{},family:"all",query:"",audience:"all",duration:"all",difficulty:"all",tab:"learn",current:0,example:false,id:""};
-  const t=k=>L[s.lang][k]||k, esc=x=>String(x==null?"":x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])), byId=id=>tools.find(x=>x.id===id), family=k=>s.lang==="fr"?frnames[k]:names[k];
+  const s={lang:["en","fr"].includes(stored.lang)?stored.lang:(document.documentElement.lang==="fr"?"fr":"en"),need:stored.need||"prioritise",who:stored.who||"both",time:stored.time||"medium",freq:stored.freq||"regular",fm:stored.fm||"structured",ratio:stored.ratio||"16:9",answers:stored.answers||{},family:"all",query:"",audience:"all",duration:"all",difficulty:"all",tab:"learn",current:0,example:false,id:""};
+  const deck=window.ProductivityDeck;
+  const t=k=>L[s.lang][k]||k, esc=x=>String(x==null?"":x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])), byId=id=>localizedTools().find(x=>x.id===id), family=k=>s.lang==="fr"?frnames[k]:names[k];
   const save=()=>{try{localStorage.setItem("u30studio",JSON.stringify({lang:s.lang,need:s.need,who:s.who,time:s.time,freq:s.freq,fm:s.fm,ratio:s.ratio,answers:s.answers}))}catch(e){}};
   const textShort=(x,max)=>{x=String(x||"").replace(/\s+/g," ").trim();return x.length>max?x.slice(0,max-1).replace(/\s+\S*$/,"")+"…":x};
   const link=x=>"#/tool/"+encodeURIComponent(x.id);
-  function fieldNames(x){const d=x.d,p=d[1];if(d[0]==="matrix")return p.q;if(["cycle","columns","flow","steps","timeline"].includes(d[0]))return p;if(d[0]==="grid")return p.rows;if(d[0]==="bars")return p.map(v=>v[0]);if(d[0]==="tree")return p.kids;return ["Goal","Action","Owner"]}
-  function answers(x){return s.answers[x.id]||{}}
-  function examples(x){const presets={pareto:["Late feedback","Approval delays","Dependencies","Rework"],eisenhower:["Schedule strategy","Resolve escalation","Stop duplicate report","Delegate status updates"],swot:["Expert team","Market demand","Limited budget","Emerging competitors"]};const l=fieldNames(x);return Object.fromEntries(l.map((_,i)=>[i,(presets[x.id]||[])[i]||["First outcome","Next experiment","Useful change","Follow-up action"][i%4]]))}
-  const displayVals=x=>s.example?examples(x):answers(x);
-  function svgText(x,y,z,size=17,width=18,anchor="start"){let chunks=[],current="";String(z||"").split(/\s+/).forEach(w=>{if((current+" "+w).trim().length>width&&current){chunks.push(current);current=w}else current=(current+" "+w).trim()});if(current)chunks.push(current);return '<text x="'+x+'" y="'+y+'" font-size="'+size+'" font-family="Arial" font-weight="700" text-anchor="'+anchor+'" fill="#161713">'+chunks.slice(0,3).map((v,i)=>'<tspan x="'+x+'" dy="'+(i?size*1.25:0)+'">'+esc(v)+'</tspan>').join("")+"</text>"}
-  function diagram(x,values={},blank=false){
-    const k=x.d[0],p=x.d[1],labs=fieldNames(x),val=i=>blank?"":values[i]||"",rect=(a,b,w,h)=>'<rect x="'+a+'" y="'+b+'" width="'+w+'" height="'+h+'" fill="#fffdfa" stroke="#161713" stroke-width="2"/>';
-    let v="";
-    if(k==="matrix"){v+=rect(105,45,490,310)+'<path d="M350 45V355 M105 200H595" stroke="#161713" stroke-width="2"/>';labs.slice(0,4).forEach((l,i)=>{let a=120+(i%2)*245,b=72+Math.floor(i/2)*155;v+=svgText(a,b,l,19,19)+svgText(a,b+53,val(i),15,21)})}
-    else if(k==="bars"){const a=p.map((z,i)=>({name:z[0],v:z[2]-z[1],i})).sort((a,b)=>b.v-a.v),sum=a.reduce((v,z)=>v+z.v,0)||1;let cum=0,pts=[];v+='<path d="M70 40V350H625" stroke="#161713" stroke-width="2" fill="none"/>';a.forEach((z,j)=>{let xx=100+j*122,hh=260*z.v/sum;cum+=z.v/sum;v+='<rect x="'+xx+'" y="'+(349-hh)+'" width="82" height="'+hh+'" fill="'+(j?"#d6d5ce":"#ff5a32")+'" stroke="#161713"/>'+svgText(xx,390,blank?"":val(z.i)||z.name,12,13);pts.push((xx+41)+","+(350-cum*290))});v+='<polyline points="'+pts.join(" ")+'" fill="none" stroke="#161713" stroke-width="4"/>'}
-    else if(k==="grid"){v+=rect(30,40,620,335);let rh=335/(labs.length+1);v+=svgText(46,68,"CRITERIA",14,15);labs.forEach((z,i)=>{let y=40+rh*(i+1);v+='<path d="M30 '+y+'H650" stroke="#cfcfc7" stroke-width="1"/>'+svgText(46,y+rh*.57,z,14,20)+svgText(330,y+rh*.57,val(i),13,27)})}
-    else if(k==="tree"){v+=rect(235,23,220,60)+svgText(345,60,p.root,17,25,"middle")+'<path d="M345 83V122H40 M345 122H640" fill="none" stroke="#161713"/>';let w=612/labs.length;labs.forEach((z,i)=>{let xx=34+i*w;v+=rect(xx,155,w-8,205)+svgText(xx+8,184,z,14,13)+svgText(xx+8,239,val(i),13,15)})}
-    else {let cols=k==="columns"||k==="steps",n=Math.min(labs.length,7),cw=cols?615/n:600,rh=cols?300:300/n;labs.slice(0,n).forEach((z,i)=>{let xx=cols?35+i*cw:40,yy=cols?55:52+i*rh;v+=rect(xx,yy,cols?cw-7:cw,cols?rh:rh-7)+svgText(xx+13,yy+31,z,cols?13:16,cols?10:34)+svgText(xx+13,yy+(cols?96:55),val(i),cols?12:13,cols?11:37)})}
-    return '<svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="'+esc(x.n)+' editable worksheet diagram"><rect width="680" height="420" fill="#fffdfa"/>'+v+"</svg>"
+  function localizedTools(){
+    return tools.map((x,i)=>({...x,...(s.lang==="fr"?x.fr:{}),number:i+1}));
   }
-  function header(){return '<div class="s-wrap"><nav class="s-top"><a class="s-brand" href="#/">THE UNFINISHED 30 <span style="color:#ff5a32">/ DAY 04</span></a><div class="s-nav"><a href="#/">'+t("home")+'</a><a href="#/all">'+t("all")+'</a><a href="https://the-unfinished-30.vercel.app/">'+t("goBack")+'</a><button data-act="lang" aria-label="Change language">'+(s.lang==="en"?"FR":"EN")+"</button></div></nav></div>"}
-  function footer(){return '<div class="s-wrap"><div class="s-bottombar"><p>Made by Salah Khenissi. 50 frameworks. Free to use and adapt. Original design and reusable tools.<br>'+t("langNote")+'</p><div class="s-btns"><a class="s-btn outline tiny" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">LinkedIn ↗</a><button class="s-btn outline tiny" data-act="html">'+t("downloadApp")+"</button></div></div></div>"}
+  const fieldNames=deck.fieldNames;
+  function answers(x){return s.answers[x.id]||{}}
+  function diagram(x,values={},blank=false){
+    const w=9,h=5.5;
+    return deck.svg(deck.framework(x,values,[.15,.13,w-.30,h-.26],t,blank),w,h,esc,x.n);
+  }
+  function header(){
+    return `<div class="s-challenge"><div class="s-wrap">
+      <span><a href="https://the-unfinished-30.vercel.app/">The Unfinished 30</a> · ${t("challenge")}</span>
+      <span>${t("madeBy")} <a href="https://www.linkedin.com/in/salahkhenissi/">Salah Khenissi</a></span>
+    </div></div>
+    <header class="s-wrap"><div class="s-top">
+      <a class="s-brand" href="#/">${t("brand")}</a>
+      <nav class="s-nav" aria-label="${t("brand")}"><a href="#/">${t("home")}</a><a href="#/all">${t("all")}</a><button data-act="lang" aria-label="${t("language")}">${s.lang==="en"?"FR":"EN"}</button></nav>
+    </div></header>`;
+  }
+  function footer(){return `<footer class="s-wrap"><div class="s-bottombar"><p>${t("credit")}</p><div class="s-btns"><a class="s-btn outline tiny" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">LinkedIn ↗</a><button class="s-btn outline tiny" data-act="html">${t("downloadApp")}</button></div></div></footer>`}
   function quiz(){const choices=(key,values)=>'<div class="s-opts">'+values.map(z=>'<label class="s-opt"><input type="radio" name="'+key+'" value="'+esc(z[0])+'" '+(s[key]===z[0]?"checked":"")+'><span>'+esc(z[1])+"</span></label>").join("")+"</div>";
     return '<form id="studio-quiz"><div class="s-quiz"><div class="s-field"><span class="s-label">01 / '+t("need")+"</span>"+choices("need",Object.keys(names).map(x=>[x,family(x)]))+'</div><div class="s-field"><span class="s-label">02 / '+t("who")+"</span>"+choices("who",[["me",t("me")],["team",t("team")],["both",t("both")]])+'</div><div class="s-field"><span class="s-label">03 / '+t("time")+"</span>"+choices("time",[["short",t("short")],["medium",t("medium")],["long",t("long")]])+'</div></div><details class="s-advanced"><summary>'+t("more")+'</summary><div class="s-advancedgrid"><div class="s-field"><span class="s-label">'+t("freq")+"</span>"+choices("freq",[["once",t("once")],["regular",t("regular")]])+'</div><div class="s-field"><span class="s-label">'+t("style")+"</span>"+choices("fm",[["casual",t("casual")],["structured",t("structured")],["formal",t("formal")]])+'</div></div></details><div class="s-btns"><button class="s-btn orange" type="submit">'+t("find")+' →</button><a class="s-btn outline" href="#/all">'+t("all")+"</a></div></form>"
   }
-  function card(x,reason=""){return '<a class="s-card" href="'+link(x)+'"><div class="s-cardtop"><span>'+family(x.f)+'</span><span>'+x.t+' MIN</span></div><h3>'+esc(x.n)+'</h3><p>'+esc(textShort(x.why,150))+'</p><div class="s-cardbottom"><span>'+esc(x.m==="solo"?t("me"):x.m==="team"?t("team"):t("both"))+'</span><span>EXPLORE ↗</span></div>'+(reason?'<div class="s-rec">'+esc(reason)+'</div>':"")+"</a>"}
-  function art(){let x=byId("pareto");return '<div class="s-art" aria-label="Original Pareto illustration"><div class="s-arthead"><span>TOOL 02 OF 50 / PARETO</span><span>SOLO + TEAM</span></div><div class="s-artbody"><div><div class="s-artbig">80<br>/ 20<span style="color:#ff5a32">.</span></div><p>Find the vital few.<br>Choose what matters.</p></div><div>'+diagram(x,{},true)+"</div></div></div>"}
-  function home(){return '<div class="s-wrap"><section class="s-hero"><div><div class="s-kicker">THE UNFINISHED 30 / DAY 04</div><h1>50 tools.<br><span class="s-serif">Less chaos.</span></h1><p class="s-lead">'+t("lead")+'</p><p class="s-sub">'+t("sub")+'</p><div class="s-btns"><a class="s-btn orange" href="#/tool/pareto">'+t("try")+' ↗</a><a class="s-btn outline" href="#/all">'+t("all")+'</a></div></div>'+art()+'</section><div class="s-statline"><span><b>50</b> METHODS</span><span><b>5</b> FAMILIES</span><span><b>8</b> SLIDES PER TOOL</span><span><b>3</b> FORMATS</span><span>FREE + LOCAL-FIRST</span></div></div><section class="s-wrap s-section" id="find"><div class="s-sectionhead"><div><div class="s-kicker">FIND IT</div><h2>Tell me what you need to solve.</h2></div><p>Three questions, no account, no endless onboarding.</p></div>'+quiz()+'</section><section class="s-wrap s-section" style="padding-top:0"><div class="s-sectionhead"><div><div class="s-kicker">TRY IT</div><h2>Start with these.</h2></div></div><div class="s-grid">'+["pareto","eisenhower","pomodoro"].map(i=>card(byId(i))).join("")+"</div></section>"}
-  function scored(x){let n=x.f===s.need?8:0,why=[];let max=s.time==="short"?15:s.time==="medium"?60:1e4;if(x.t<=max){n+=3;why.push("Fits your time")}else n-=5;if(s.who==="me"&&x.m!=="team"||s.who==="team"&&x.m!=="solo"){n+=4;why.push("Fits the audience")}else if(s.who!=="both")n-=7;if(s.who==="both"&&x.m==="both")n+=2;if(s.freq==="regular"&&x.rec)n++;if(s.fm===x.fm)n+=2;return {n,why:why.join(" · ")}}
-  function results(){let list=tools.filter(x=>x.f===s.need&&(s.who==="both"||s.who==="team"&&x.m!=="solo"||s.who==="me"&&x.m!=="team")).map(x=>({x,s:scored(x)})).sort((a,b)=>b.s.n-a.s.n);return '<section class="s-wrap s-section"><div class="s-kicker">RECOMMENDATIONS</div><h1 style="font-size:clamp(44px,6vw,75px);margin:20px 0">'+t("rec")+'</h1><p class="s-visual-note">'+family(s.need)+' · '+t(s.who)+' · '+t(s.time)+'</p><div class="s-grid" style="margin-top:22px">'+list.slice(0,3).map(z=>card(z.x,z.s.why)).join("")+'</div><div class="s-sectionhead" style="margin-top:60px"><h2>'+t("all")+'</h2></div><div class="s-grid">'+list.slice(3).map(z=>card(z.x)).join("")+"</div></section>"}
-  function filtered(){return tools.filter(x=>(s.family==="all"||s.family===x.f)&&(s.audience==="all"||s.audience==="solo"&&x.m!=="team"||s.audience==="team"&&x.m!=="solo")&&(s.duration==="all"||x.t<=Number(s.duration))&&(s.difficulty==="all"||x.fm===s.difficulty)&&(!s.query||[x.n,x.why,x.ex,x.f].join(" ").toLowerCase().includes(s.query.toLowerCase())))}
+  function card(x,reason=""){return '<a class="s-card" href="'+link(x)+'"><div class="s-cardtop"><span>'+family(x.f)+'</span><span>'+x.t+' MIN</span></div><h3>'+esc(x.n)+'</h3><p>'+esc(textShort(x.why,150))+'</p><div class="s-cardbottom"><span>'+esc(x.m==="solo"?t("me"):x.m==="team"?t("team"):t("both"))+'</span><span>'+t("explore")+' ↗</span></div>'+(reason?'<div class="s-rec">'+esc(reason)+'</div>':"")+"</a>"}
+  function art(){let x=byId("pareto");return '<div class="s-art" aria-label="'+t("paretoArt")+'"><div class="s-arthead"><span>'+t("paretoIndex")+'</span><span>'+t("both")+'</span></div><div class="s-artbody"><div><div class="s-artbig">80<br>/ 20<span style="color:#ff5a32">.</span></div><p>'+t("paretoLead")+'</p></div><div>'+diagram(x)+"</div></div></div>"}
+  function home(){return '<div class="s-wrap"><section class="s-hero"><div><div class="s-kicker">THE UNFINISHED 30 / '+t("day")+'</div><h1>'+t("headline")+'<br><span class="s-serif">'+t("headline2")+'</span></h1><p class="s-lead">'+t("lead")+'</p><p class="s-sub">'+t("sub")+'</p><div class="s-btns"><a class="s-btn orange" href="#/tool/pareto">'+t("try")+' ↗</a><a class="s-btn outline" href="#/all">'+t("all")+'</a></div></div>'+art()+'</section><div class="s-statline"><span><b>50</b> '+t("methods")+'</span><span><b>5</b> '+t("families")+'</span><span><b>8</b> '+t("slidesEach")+'</span><span><b>3</b> '+t("formats")+'</span><span>'+t("free")+'</span></div></div><section class="s-wrap s-section" id="find"><div class="s-sectionhead"><div><div class="s-kicker">'+t("findIt")+'</div><h2>'+t("quizTitle")+'</h2></div><p>'+t("quizSub")+'</p></div>'+quiz()+'</section><section class="s-wrap s-section" style="padding-top:0"><div class="s-sectionhead"><div><div class="s-kicker">'+t("tryIt")+'</div><h2>'+t("startHere")+'</h2></div></div><div class="s-grid">'+["pareto","eisenhower","pomodoro"].map(i=>card(byId(i))).join("")+"</div></section>"}
+  function scored(x){let n=x.f===s.need?8:0,why=[];let max=s.time==="short"?15:s.time==="medium"?60:1e4;if(x.t<=max){n+=3;why.push(t("fitsTime"))}else n-=5;if(s.who==="me"&&x.m!=="team"||s.who==="team"&&x.m!=="solo"){n+=4;why.push(t("fitsAudience"))}else if(s.who!=="both")n-=7;if(s.who==="both"&&x.m==="both")n+=2;if(s.freq==="regular"&&x.rec)n++;if(s.fm===x.fm)n+=2;return {n,why:why.join(" · ")}}
+  function results(){let list=localizedTools().filter(x=>x.f===s.need&&(s.who==="both"||s.who==="team"&&x.m!=="solo"||s.who==="me"&&x.m!=="team")).map(x=>({x,s:scored(x)})).sort((a,b)=>b.s.n-a.s.n);return '<section class="s-wrap s-section"><div class="s-kicker">'+t("recommendations")+'</div><h1 style="font-size:clamp(44px,6vw,75px);margin:20px 0">'+t("rec")+'</h1><p class="s-visual-note">'+family(s.need)+' · '+t(s.who)+' · '+t(s.time)+'</p><div class="s-grid" style="margin-top:22px">'+list.slice(0,3).map(z=>card(z.x,z.s.why)).join("")+'</div><div class="s-sectionhead" style="margin-top:60px"><h2>'+t("otherMatches")+'</h2></div><div class="s-grid">'+list.slice(3).map(z=>card(z.x)).join("")+"</div></section>"}
+  function filtered(){return localizedTools().filter(x=>(s.family==="all"||s.family===x.f)&&(s.audience==="all"||s.audience==="solo"&&x.m!=="team"||s.audience==="team"&&x.m!=="solo")&&(s.duration==="all"||x.t<=Number(s.duration))&&(s.difficulty==="all"||x.fm===s.difficulty)&&(!s.query||[x.n,x.why,x.ex,family(x.f),tools[x.number-1].n].join(" ").normalize("NFD").replace(/\p{M}/gu,"").toLowerCase().includes(s.query.normalize("NFD").replace(/\p{M}/gu,"").toLowerCase())))}
   function cards(){let a=filtered();return a.length?a.map(x=>card(x)).join(""):'<div class="s-empty">'+t("nothing")+"</div>"}
-  function all(){return '<section class="s-wrap s-section"><div class="s-kicker">REFERENCE LIBRARY</div><h1 style="font-size:clamp(45px,8vw,90px);margin:16px 0">'+t("all")+'<span style="color:#ff5a32">.</span></h1><div class="s-toolbar"><input id="search-tools" type="search" class="s-search" aria-label="'+t("search")+'" placeholder="'+t("search")+'" value="'+esc(s.query)+'"><select class="s-select" id="audience" aria-label="'+t("who")+'"><option value="all">SOLO + TEAM</option><option value="solo">SOLO</option><option value="team">TEAM</option></select><select class="s-select" id="duration" aria-label="Maximum duration"><option value="all">ANY DURATION</option><option value="15">≤ 15 MIN</option><option value="30">≤ 30 MIN</option><option value="60">≤ 60 MIN</option></select><select class="s-select" id="difficulty" aria-label="Working style"><option value="all">ANY STYLE</option><option value="casual">CASUAL</option><option value="structured">STRUCTURED</option><option value="formal">FORMAL</option></select><span id="counter" aria-live="polite">50 / 50</span></div><div class="s-filters">'+[["all","All"],...Object.keys(names).map(z=>[z,family(z)])].map(z=>'<button class="s-filter" data-family="'+z[0]+'" aria-pressed="'+String(s.family===z[0])+'">'+z[1]+"</button>").join("")+'</div><div class="s-grid" id="cards">'+cards()+"</div></section>"}
+  function all(){return '<section class="s-wrap s-section"><div class="s-kicker">'+t("library")+'</div><h1 style="font-size:clamp(45px,8vw,90px);margin:16px 0">'+t("all")+'<span style="color:#ff5a32">.</span></h1><div class="s-toolbar"><input id="search-tools" type="search" class="s-search" aria-label="'+t("search")+'" placeholder="'+t("search")+'" value="'+esc(s.query)+'"><select class="s-select" id="audience" aria-label="'+t("who")+'"><option value="all">'+t("both")+'</option><option value="solo">'+t("me")+'</option><option value="team">'+t("team")+'</option></select><select class="s-select" id="duration" aria-label="'+t("maxDuration")+'"><option value="all">'+t("anyDuration")+'</option><option value="15">≤ 15 MIN</option><option value="30">≤ 30 MIN</option><option value="60">≤ 60 MIN</option></select><select class="s-select" id="difficulty" aria-label="'+t("style")+'"><option value="all">'+t("anyStyle")+'</option><option value="casual">'+t("casual")+'</option><option value="structured">'+t("structured")+'</option><option value="formal">'+t("formal")+'</option></select><span id="counter" aria-live="polite">'+filtered().length+' / 50</span></div><div class="s-filters">'+[["all",t("allFamilies")],...Object.keys(names).map(z=>[z,family(z)])].map(z=>'<button class="s-filter" data-family="'+z[0]+'" aria-pressed="'+String(s.family===z[0])+'">'+z[1]+"</button>").join("")+'</div><div class="s-grid" id="cards">'+cards()+"</div></section>"}
   const VERIFIED_LINKS={"pareto":"https://asq.org/quality-resources/pareto","pomodoro":"https://www.pomodorotechnique.com/","smart":"https://openurl.ebsco.com/contentitem/edb%3A6043491","cynefin":"https://thecynefin.co/team/dave-snowden/","rice":"https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/","gtd":"https://gettingthingsdone.com/","pdca":"https://asq.org/quality-resources/pdca-cycle"};
   function sourceUrl(x){return VERIFIED_LINKS[x.id]||null}
-  function learn(x){return '<div class="s-learning"><section class="s-panel"><div class="s-kicker">'+family(x.f)+'</div><h2 style="font-size:32px;margin:14px 0 17px">'+t("why")+'</h2><p>'+esc(x.why)+'</p><h4>'+t("alone")+'</h4><ol class="s-steps">'+x.solo.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol><h4>'+t("asTeam")+'</h4><ol class="s-steps">'+x.team.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol></section><aside class="s-panel"><h3>'+t("example")+'</h3><p>'+esc(x.ex)+'</p><div style="margin-top:20px">'+diagram(x,{},true)+'</div><h4>Three ways to use it</h4><div style="font-size:13px;line-height:1.65">Student: simplify an assignment.<br>Professional: test your weekly priorities.<br>Manager: guide a group discussion.</div><h4>Workshop timing</h4><p>Plan about '+Math.max(2,Math.round(x.t/Math.max(1,x.team.length)))+' minutes for each team step, plus the final decision.</p><h4>'+t("src")+'</h4><div class="s-source">'+esc(x.src)+(sourceUrl(x)?'<br><a href="'+esc(sourceUrl(x))+'" target="_blank" rel="noopener noreferrer">Read source ↗</a>':'')+'<br><br>'+t("status")+'</div><div class="s-btns"><button class="s-btn orange tiny" data-act="tab" data-val="practice">'+t("practice")+' →</button></div></aside></div>'}
-  function worksheet(x){const labels=fieldNames(x),values=answers(x);return '<div class="s-canvaslayout"><div class="s-canvaspaper"><div class="s-viewtoolbar"><span class="s-kicker">'+t("canvas")+'</span><button class="s-btn outline tiny" data-act="example">'+(s.example?t("blank"):t("filled"))+'</button></div><div id="diagram">'+diagram(x,s.example?examples(x):values,false)+'</div><p class="s-source">'+t("tip")+'</p></div><aside class="s-panel"><div class="s-worksheet"><h3>'+t("canvas")+'</h3><p class="s-smallnote">'+t("hint")+'</p>'+labels.map((z,i)=>'<div><label for="input-'+i+'">'+esc(z)+'</label><textarea id="input-'+i+'" data-field="'+i+'" rows="2" placeholder="Your '+esc(z.toLowerCase())+'…">'+esc(values[i]||"")+"</textarea></div>").join("")+'<div class="s-btns"><button class="s-btn outline tiny" data-act="json">'+t("download")+'</button><button class="s-btn outline tiny" data-act="import">'+t("import")+'</button><button class="s-btn outline tiny" data-act="clear">'+t("reset")+'</button></div><input id="import-file" type="file" accept="application/json" hidden></div></aside></div>'}
-  function slideContent(x,n){let data=answers(x),d=diagram(x,data,n===4);let html="";
-    if(n===0)html='<div class="s-kicker">'+family(x.f)+'</div><h2>'+esc(x.n)+'</h2><p>One method. One clear next step. One editable canvas.</p><div class="s-slideaccent" style="color:#ff5a32">↗</div>';
-    if(n===1)html='<div class="s-kicker">01 / THE PROBLEM</div><h2>Why it matters.</h2><p>'+esc(textShort(x.why,s.ratio==="16:9"?230:145))+'</p>';
-    if(n===2)html='<div class="s-kicker">02 / THE METHOD</div><h2>'+esc(x.n)+'</h2>'+d;
-    if(n===3)html='<div class="s-kicker">03 / HOW TO</div><h2>Four steps to start.</h2><div class="s-step-grid">'+x.solo.slice(0,4).map((v,i)=>'<div><b>0'+(i+1)+'</b> '+esc(textShort(v,s.ratio==="16:9"?112:64))+"</div>").join("")+"</div>";
-    if(n===4)html='<div class="s-kicker">04 / THE CANVAS</div><h2>Make it yours.</h2>'+d+'<div class="s-slideprompt">Fill the canvas in the Practice tab.</div>';
-    if(n===5)html='<div class="s-kicker">05 / EXAMPLE</div><h2>What it can look like.</h2><div class="s-example">'+esc(textShort(x.ex,s.ratio==="16:9"?260:150))+"</div>";
-    if(n===6)html='<div class="s-kicker">06 / TEAM TIPS</div><h2>Facilitate it well.</h2><div class="s-step-grid">'+x.team.slice(0,3).map((v,i)=>'<div><b>0'+(i+1)+'</b> '+esc(textShort(v,s.ratio==="16:9"?115:70))+"</div>").join("")+"</div>";
-    if(n===7)html='<div class="s-kicker">07 / TAKE BACK CONTROL</div><h2>Try it. Change it. Make it yours.</h2><p>50 tools. 8 slides each. The Unfinished 30.</p>';
-    return '<div class="s-slide" data-ratio="'+s.ratio+'" id="slide-canvas"><div class="s-slidebar"></div><div class="s-slideheader"><span>THE UNFINISHED 30 / TOOLBOX</span><span>'+(n+1)+' / 8</span></div><div class="s-slideinner">'+html+'</div><div class="s-slidefoot"><span>SALAH KHENISSI</span><span>LINKEDIN.COM/IN/SALAHKHENISSI</span></div></div>'
+  function learn(x){return '<div class="s-learning"><section class="s-panel"><div class="s-kicker">'+family(x.f)+'</div><h2 style="font-size:32px;margin:14px 0 17px">'+t("why")+'</h2><p>'+esc(x.why)+'</p><h4>'+t("alone")+'</h4><ol class="s-steps">'+x.solo.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol><h4>'+t("asTeam")+'</h4><ol class="s-steps">'+x.team.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol></section><aside class="s-panel"><h3>'+t("example")+'</h3><p>'+esc(x.ex)+'</p><div style="margin-top:20px">'+diagram(x,x.sampleCells||x.sample)+'</div><h4>'+t("timing")+'</h4><p>'+t("timingBefore")+' '+Math.max(2,Math.round(x.t/Math.max(1,x.team.length)))+' '+t("timingAfter")+'</p><h4>'+t("src")+'</h4><div class="s-source">'+esc(x.src)+(sourceUrl(x)?'<br><a href="'+esc(sourceUrl(x))+'" target="_blank" rel="noopener noreferrer">'+t("readSource")+' ↗</a>':'')+'<br><br>'+t("status")+'</div><div class="s-btns"><button class="s-btn orange tiny" data-act="tab" data-val="practice">'+t("practice")+' →</button></div></aside></div>'}
+  function worksheet(x){
+    const labels=fieldNames(x),values=answers(x),grid=x.d[0]==="grid";
+    const input=(label,key)=>`<div><label for="input-${key}">${esc(label)}</label><textarea id="input-${key}" data-field="${key}" rows="2" maxlength="240" placeholder="${t("placeholder")}">${esc(values[key]||"")}</textarea></div>`;
+    const fields=labels.map((label,i)=>{
+      if(!grid) return input(label,i);
+      return `<fieldset><legend>${esc(label)}</legend>${x.d[1].cols.map((col,j)=>input(col,"c"+i+"-"+j)).join("")}${values[i]?input(t("rowNote"),i):""}</fieldset>`;
+    }).join("");
+    return `<div class="s-canvaslayout"><div class="s-canvaspaper">
+      <div class="s-viewtoolbar"><span class="s-kicker">${t("canvas")}</span><button class="s-btn outline tiny" data-act="example">${s.example?t("viewMine"):t("filled")}</button></div>
+      <div id="diagram">${diagram(x,s.example?(x.sampleCells||x.sample):values,!s.example)}</div><p class="s-source">${t("tip")}</p>
+    </div><aside class="s-panel"><div class="s-worksheet"><h3>${t("canvas")}</h3><p class="s-smallnote">${t("hint")}</p>${fields}
+      <div class="s-btns"><button class="s-btn outline tiny" data-act="json">${t("download")}</button><button class="s-btn outline tiny" data-act="import">${t("import")}</button><button class="s-btn outline tiny" data-act="clear">${t("reset")}</button></div>
+      <input id="import-file" type="file" accept="application/json" hidden></div></aside></div>`;
   }
-  function slides(x){return '<div class="s-viewtoolbar"><div><label class="s-kicker" for="ratio">'+t("format")+'</label><select class="s-select" id="ratio">'+["16:9","9:10","9:16"].map(v=>'<option value="'+v+'" '+(s.ratio===v?"selected":"")+">"+v+"</option>").join("")+'</select></div><div><button class="s-btn outline tiny" data-act="fullscreen">'+t("fullscreen")+'</button><button class="s-btn outline tiny" data-act="share">'+t("share")+"</button></div></div><div class=\"s-viewframe\" id=\"viewframe\">"+slideContent(x,s.current)+'</div><div class="s-viewnav"><button class="s-btn outline tiny" data-act="previous">← '+t("previous")+'</button><strong class="s-count" aria-live="polite">'+(s.current+1)+' / 8</strong><button class="s-btn outline tiny" data-act="next">'+t("next")+' →</button></div><div class="s-thumbs">'+Array.from({length:8},(_,i)=>'<button class="s-thumb" data-act="slide" data-val="'+i+'" aria-current="'+String(s.current===i)+'">'+("0"+(i+1)).slice(-2)+"</button>").join("")+'</div><div class="s-exportrow"><span id="export-status" class="s-status" role="status">Preview editable content before exporting.</span><button class="s-btn orange" data-act="pptx">'+t("pptx")+' ↓</button><button class="s-btn outline" data-act="pdf">'+t("pdf")+" ↓</button></div>"
+  function slideContent(x,n){
+    const [w,h]=deck.spec(s.ratio);
+    return `<div class="s-slide" data-ratio="${s.ratio}" id="slide-canvas">${deck.svg(deck.compose(x,s.ratio,answers(x),t,family(x.f))[n],w,h,esc,x.n+" · "+(n+1)+" / 8")}</div>`;
   }
-  function detail(x){return '<div class="s-wrap"><div class="s-breadcrumb"><a href="#/all">'+t("back")+'</a><span>/</span><span>'+family(x.f)+'</span><span>/</span><strong>'+esc(x.n)+'</strong></div><header class="s-detailhead"><div><div class="s-kicker">PRODUCTIVITY STUDIO / '+("0"+(tools.indexOf(x)+1)).slice(-2)+' OF 50</div><h1>'+esc(x.n)+'<span style="color:#ff5a32">.</span></h1><p>'+esc(x.why)+'</p><div class="s-detailmeta"><span class="s-badge">'+family(x.f)+'</span><span class="s-badge">'+x.t+' MIN</span><span class="s-badge">'+t(x.m==="solo"?"me":x.m==="team"?"team":"both")+'</span></div></div><button class="s-btn orange tiny" data-act="tab" data-val="slides">'+t("slides")+' →</button></header><div class="s-tabbar" role="tablist">'+[["learn",t("learn")],["practice",t("practice")],["slides",t("slides")]].map(z=>'<button role="tab" class="s-tab" data-act="tab" data-val="'+z[0]+'" aria-selected="'+String(s.tab===z[0])+'">'+z[1]+"</button>").join("")+'</div><div id="tabpanel" role="tabpanel">'+(s.tab==="learn"?learn(x):s.tab==="practice"?worksheet(x):slides(x))+"</div></div>"}
-  function currentRoute(){let hash=decodeURIComponent(location.hash||"").replace(/^#\/?/,"");if(hash.indexOf("tool/")===0)return {v:"tool",id:hash.slice(5).split("?")[0]};if(hash==="all")return {v:"all"};if(hash.startsWith("results"))return {v:"results"};return {v:"home"}}
-  function render(){let route=currentRoute();s.id=route.id||"";let x=byId(s.id);app.innerHTML='<div class="studio"><a class="s-screenreader" href="#studio-main">Skip to content</a>'+header()+'<main id="studio-main">'+(route.v==="tool"&&x?detail(x):route.v==="all"?all():route.v==="results"?results():home())+'</main>'+footer()+'</div>';document.title=(x?x.n+" · ":"")+"Productivity Library / Day 04 — The Unfinished 30";if(route.v==="tool"){let pane=document.getElementById("tabpanel");if(pane&&typeof pane.insertAdjacentHTML==="function"){pane.insertAdjacentHTML("afterend",'<section class="s-section" style="padding:32px 0"><span class="s-kicker">WAS THIS HELPFUL?</span><div class="s-btns"><button class="s-btn outline tiny" data-act="feedback" data-val="yes">Yes</button><button class="s-btn outline tiny" data-act="feedback" data-val="no">Not yet</button></div></section>')}}let v=document.getElementById("viewframe");if(v){let touch=0;v.addEventListener("touchstart",e=>touch=e.changedTouches[0].screenX,{passive:true});v.addEventListener("touchend",e=>{if(Math.abs(e.changedTouches[0].screenX-touch)>40){s.current=(s.current+(e.changedTouches[0].screenX<touch?1:7))%8;render()}},{passive:true})}}
+  function slides(x){return '<div class="s-viewtoolbar"><div><label class="s-kicker" for="ratio">'+t("format")+'</label><select class="s-select" id="ratio">'+["16:9","9:10","9:16"].map(v=>'<option value="'+v+'" '+(s.ratio===v?"selected":"")+">"+v+"</option>").join("")+'</select></div><div><button class="s-btn outline tiny" data-act="fullscreen">'+t("fullscreen")+'</button><button class="s-btn outline tiny" data-act="share">'+t("share")+"</button></div></div><div class=\"s-viewframe\" id=\"viewframe\">"+slideContent(x,s.current)+'</div><div class="s-viewnav"><button class="s-btn outline tiny" data-act="previous">← '+t("previous")+'</button><strong class="s-count" aria-live="polite">'+(s.current+1)+' / 8</strong><button class="s-btn outline tiny" data-act="next">'+t("next")+' →</button></div><div class="s-thumbs">'+Array.from({length:8},(_,i)=>'<button class="s-thumb" data-act="slide" data-val="'+i+'" aria-current="'+String(s.current===i)+'">'+("0"+(i+1)).slice(-2)+"</button>").join("")+'</div><div class="s-exportrow"><span id="export-status" class="s-status" role="status">'+t("preview")+'</span><button class="s-btn orange" data-act="pptx">'+t("pptx")+' ↓</button><button class="s-btn outline" data-act="pdf">'+t("pdf")+" ↓</button></div>"
+  }
+  function detail(x){return '<div class="s-wrap"><div class="s-breadcrumb"><a href="#/all">'+t("back")+'</a><span>/</span><span>'+family(x.f)+'</span><span>/</span><strong>'+esc(x.n)+'</strong></div><section class="s-detailhead"><div><div class="s-kicker">'+t("brand")+' / '+("0"+(x.number)).slice(-2)+' '+t("of50")+'</div><h1>'+esc(x.n)+'<span style="color:#ff5a32">.</span></h1><p>'+esc(x.why)+'</p><div class="s-detailmeta"><span class="s-badge">'+family(x.f)+'</span><span class="s-badge">'+x.t+' MIN</span><span class="s-badge">'+t(x.m==="solo"?"me":x.m==="team"?"team":"both")+'</span></div></div><button class="s-btn orange tiny" data-act="tab" data-val="slides">'+t("slides")+' →</button></section><div class="s-tabbar" role="tablist">'+[["learn",t("learn")],["practice",t("practice")],["slides",t("slides")]].map(z=>'<button role="tab" class="s-tab" data-act="tab" data-val="'+z[0]+'" aria-selected="'+String(s.tab===z[0])+'">'+z[1]+"</button>").join("")+'</div><div id="tabpanel" role="tabpanel">'+(s.tab==="learn"?learn(x):s.tab==="practice"?worksheet(x):slides(x))+"</div></div>"}
+  function currentRoute(){let hash=(location.hash||document.body?.dataset?.route||"").replace(/^#\/?/,"");if(hash.indexOf("tool/")===0)return {v:"tool",id:hash.slice(5).split("?")[0]};if(hash==="all")return {v:"all"};if(hash.startsWith("results"))return {v:"results"};return {v:"home"}}
+  function render(){document.documentElement.lang=s.lang;let route=currentRoute();s.id=route.id||"";let x=byId(s.id);app.innerHTML='<div class="studio"><a class="s-screenreader" href="#studio-main">'+t("skip")+'</a>'+header()+'<main id="studio-main" tabindex="-1">'+(route.v==="tool"&&x?detail(x):route.v==="all"?all():route.v==="results"?results():home())+'</main>'+footer()+'</div>';document.title=(x?x.n+" · ":"")+t("brand")+" / "+t("day")+" · The Unfinished 30";if(route.v==="tool"){let pane=document.getElementById("tabpanel");if(pane&&typeof pane.insertAdjacentHTML==="function"){pane.insertAdjacentHTML("afterend",'<section class="s-section" style="padding:32px 0"><span class="s-kicker">'+t("helpful")+'</span><div class="s-btns"><button class="s-btn outline tiny" data-act="feedback" data-val="yes">'+t("yes")+'</button><button class="s-btn outline tiny" data-act="feedback" data-val="no">'+t("notYet")+'</button></div></section>')}}for(const key of ["audience","duration","difficulty"]){const control=document.getElementById(key);if(control)control.value=s[key]}let v=document.getElementById("viewframe");if(v){let touch=0;v.addEventListener("touchstart",e=>touch=e.changedTouches[0].screenX,{passive:true});v.addEventListener("touchend",e=>{if(Math.abs(e.changedTouches[0].screenX-touch)>40){s.current=(s.current+(e.changedTouches[0].screenX<touch?1:7))%8;render()}},{passive:true})}}
   function notify(v){let a=document.getElementById("export-status");if(a)a.textContent=v;else{let el=document.createElement("div");el.className="s-toast";el.textContent=v;el.setAttribute("role","status");document.body.append(el);setTimeout(()=>el.remove(),2800)}}
   function download(name,value,type){let url=URL.createObjectURL(new Blob([value],{type:type||"text/plain"}));let a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-  function loadLibrary(url,test){return new Promise((resolve,reject)=>{if(test())return resolve();let tag=document.createElement("script");tag.src=url;tag.onload=()=>test()?resolve():reject(new Error("Library did not load"));tag.onerror=()=>reject(new Error("Network connection required"));document.head.appendChild(tag)})}
-  function slideData(x){return [{h:x.n,b:"One framework to take back control."},{h:"Why it matters",b:x.why},{h:x.n,b:"Framework diagram"},{h:"How to run it",b:x.solo.slice(0,4).map((z,i)=>(i+1)+". "+z).join("\n")},{h:"Your canvas",b:"Make this framework yours."},{h:"Worked example",b:x.ex},{h:"Team tips",b:x.team.slice(0,3).map((z,i)=>(i+1)+". "+z).join("\n")},{h:"Take back control",b:"Try one method. Make it yours. Share what worked."}]}
-  function spec(){return s.ratio==="16:9"?{w:13.333,h:7.5}:s.ratio==="9:10"?{w:7.5,h:8.333}:{w:7.5,h:13.333}}
-  function nativeDiagram(p,sl,x,blank,box,create,textFn){let [X,Y,W,H]=box;let labs=fieldNames(x).slice(0,7),kind=x.d[0],vals=answers(x);
-    if(kind==="matrix"){labs.slice(0,4).forEach((z,i)=>{let xx=X+(i%2)*W/2,yy=Y+Math.floor(i/2)*H/2;create(sl,xx,yy,W/2,H/2,i===0?"FFE1D6":"FFFDF9");textFn(sl,z,xx+.12,yy+.14,W/2-.24,.38,15,true);if(!blank)textFn(sl,vals[i]||"",xx+.12,yy+.63,W/2-.24,H/2-.67,13,false)})}
-    else if(kind==="bars"){
-      let sorted=x.d[1].map((z,i)=>({label:z[0],n:z[2]-z[1],i})).sort((a,b)=>b.n-a.n),sum=sorted.reduce((n,z)=>n+z.n,0)||1,cumulative=0,previous=null;
-      sorted.forEach((z,i)=>{
-        let bw=W/(sorted.length+1),hh=H*.83*z.n/sum,xx=X+i*W/sorted.length+.11;
-        create(sl,xx,Y+H-hh,bw,hh,i?"D6D5CE":"FF5A32");
-        textFn(sl,blank?"":vals[z.i]||z.label,xx,Y+H,bw,.42,10,true);
-        cumulative+=z.n/sum;
-        let current={x:xx+bw/2,y:Y+H-H*.84*cumulative};
-        if(previous)sl.addShape(p.ShapeType.line,{x:previous.x,y:current.y,w:current.x-previous.x,h:previous.y-current.y,flipV:true,line:{color:"161713",width:2}});
-        sl.addShape(p.ShapeType.ellipse,{x:current.x-.05,y:current.y-.05,w:.1,h:.1,fill:{color:"161713"},line:{color:"161713",width:1}});
-        previous=current;
-      });
-    }
-    else{let n=labs.length,cols=kind==="columns"||kind==="steps",cw=cols?W/n:W,rh=cols?H:H/n;labs.forEach((z,i)=>{let xx=X+(cols?i*cw:0),yy=Y+(cols?0:i*rh);create(sl,xx,yy,cw*(cols?.96:1),rh*(cols?1:.93),"FFFDF9");textFn(sl,z,xx+.1,yy+.12,cw-.2,Math.min(.4,rh*.35),13,true);if(!blank)textFn(sl,vals[i]||"",xx+.1,yy+Math.min(.48,rh*.4),cw-.2,Math.max(.3,rh*.44),11,false)})}
-  }
-  async function exportPptx(x){let b=app.querySelector('[data-act="pptx"]');if(b)b.disabled=true;notify("Building editable PowerPoint…");try{
-    await loadLibrary("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js",()=>!!(window.PptxGenJS||window.pptxgen));
-    let P=window.PptxGenJS||window.pptxgen,pptx=new P(),{w:W,h:H}=spec();pptx.defineLayout({name:"C",width:W,height:H});pptx.layout="C";pptx.author="Salah Khenissi";pptx.title=x.n;
-    let pad=W<9?.5:.7,room=W-2*pad,rows=slideData(x),SH=pptx.ShapeType;
-    let rect=(sl,xx,yy,ww,hh,fill)=>sl.addShape(SH.rect,{x:xx,y:yy,w:ww,h:hh,fill:{color:fill||"FFFDF9"},line:{color:"161713",width:.6}});
-    let txt=(sl,v,xx,yy,ww,hh,fs,bold,color)=>sl.addText(String(v||""),{x:xx,y:yy,w:ww,h:hh,fontFace:"Arial",fontSize:fs,bold:!!bold,color:color||"161713",margin:0,fit:"shrink",valign:"top"});
-    rows.forEach((row,i)=>{let sl=pptx.addSlide();sl.background={color:"FFFDF9"};sl.addShape(SH.rect,{x:pad,y:.39,w:.5,h:.07,line:{transparency:100},fill:{color:"FF5A32"}});txt(sl,"THE UNFINISHED 30 / DAY 04",pad,.56,room-.6,.3,10,true,"62645E");txt(sl,(i+1)+" / 8",W-1.2,.56,.5,.3,10,true,"62645E");txt(sl,row.h,pad,W<9?1.52:1.22,room,W<9?1.7:1.05,W<9?36:39,true);sl.addShape(SH.line,{x:pad,y:H-.65,w:room,h:0,line:{color:"D6D6CE",width:.8}});txt(sl,"SALAH KHENISSI / LINKEDIN.COM/IN/SALAHKHENISSI",pad,H-.51,room,.27,9,true,"62645E");
-      if(i===2||i===4)nativeDiagram(pptx,sl,x,i===4,[pad,W<9?3.55:2.66,room,W<9?Math.min(5,H-4.7):3.55],rect,txt);
-      else if(i===3||i===6){let ar=i===3?x.solo:x.team,yy=W<9?3.65:2.8;ar.slice(0,i===3?4:3).forEach((z,j)=>{txt(sl,(j+1)+". "+z,pad,yy,room,W<9?1.34:.91,W<9?18:19,false);yy+=W<9?1.5:1.04})}
-      else txt(sl,textShort(row.b,W<9?380:600),pad,W<9?3.7:2.92,room,W<9?Math.min(4,H-4.8):2.8,W<9?21:24,false);
-    });
-    await pptx.writeFile({fileName:"day04-"+x.id+"-"+s.ratio.replace(":","x")+"-editable.pptx"});notify("Editable PPTX downloaded: 8 slides.");track("pptx_download");}catch(e){notify("PPTX export failed: "+e.message)}finally{if(b)b.disabled=false}}
-  async function exportPdf(x){let b=app.querySelector('[data-act="pdf"]');if(b)b.disabled=true;notify("Creating PDF…");try{
-    await loadLibrary("https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js",()=>!!(window.jspdf&&window.jspdf.jsPDF));
-    let {w:W,h:H}=spec(),pdf=new window.jspdf.jsPDF({orientation:W>H?"landscape":"portrait",unit:"in",format:[W,H]}),rows=slideData(x),pad=W<9?.5:.7,room=W-2*pad;
-    rows.forEach((z,i)=>{if(i)pdf.addPage([W,H],W>H?"landscape":"portrait");pdf.setDrawColor(255,90,50);pdf.setLineWidth(.05);pdf.line(pad,.42,pad+.5,.42);pdf.setFont("helvetica","bold");pdf.setFontSize(9);pdf.setTextColor(85,86,80);pdf.text("THE UNFINISHED 30 / DAY 04",pad,.68);pdf.text((i+1)+" / 8",W-pad,.68,{align:"right"});pdf.setDrawColor(214,214,207);pdf.setLineWidth(.01);pdf.line(pad,H-.63,W-pad,H-.63);pdf.setFontSize(8);pdf.text("SALAH KHENISSI / LINKEDIN.COM/IN/SALAHKHENISSI",pad,H-.47);pdf.setTextColor(22,23,19);pdf.setFontSize(W<9?26:33);pdf.text(pdf.splitTextToSize(z.h,room).slice(0,3),pad,1.65);
-      if(i===2||i===4){
-        let labs=fieldNames(x).slice(0,7),vals=answers(x),y=W<9?3.45:2.85,n=labs.length,cw=room/(x.d[0]==="matrix"?2:1),rh=W<9?Math.min(.8,(H-y-1)/n):Math.min(.5,(H-y-1)/n);
-        if(x.d[0]==="bars"){
-          let rows=x.d[1].map((item,j)=>({label:item[0],v:Math.max(0,item[2]-item[1]),j})).sort((a,b)=>b.v-a.v);
-          let sum=rows.reduce((total,item)=>total+item.v,0)||1;
-          let chartH=Math.min(W<9?2.25:2.8,H-y-1.5),barW=room/(rows.length+1),cumulative=0,last=null;
-          pdf.setLineWidth(.012);pdf.setDrawColor(22,23,19);
-          rows.forEach((item,j)=>{
-            let xx=pad+j*(room/rows.length)+.08,hh=chartH*(item.v/sum)*.88;
-            pdf.setFillColor(j?218:255,j?217:90,j?210:50);pdf.rect(xx,y+chartH-hh,barW,hh,"FD");
-            pdf.setFontSize(9);pdf.setTextColor(22,23,19);pdf.text(textShort(i===4?"":vals[item.j]||item.label,12),xx,y+chartH+.3);
-            cumulative+=item.v/sum;let current={x:xx+barW/2,y:y+chartH-cumulative*chartH*.88};
-            if(last){pdf.setLineWidth(.025);pdf.line(last.x,last.y,current.x,current.y)}
-            pdf.circle(current.x,current.y,.04,"F");last=current;
-          });
-        }else{
-          labs.slice(0,9).forEach((name,j)=>{let xx=x.d[0]==="matrix"?pad+j%2*cw:pad,yy=x.d[0]==="matrix"?y+Math.floor(j/2)*rh:y+j*rh;pdf.rect(xx,yy,cw,rh);pdf.setFontSize(10);pdf.text(textShort(name,23),xx+.12,yy+.27);if(i===2&&vals[j]){pdf.setFontSize(8);pdf.text(textShort(vals[j],30),xx+.12,yy+.49)}});
-        }
+  function loadLibrary(url,test){return new Promise((resolve,reject)=>{if(test())return resolve();let tag=document.createElement("script");tag.src=url;tag.onload=()=>test()?resolve():reject(new Error("Library did not load"));tag.onerror=()=>reject(new Error("offline"));document.head.appendChild(tag)})}
+  async function exportDeck(x,kind){
+    const b=app.querySelector('[data-act="'+kind+'"]');
+    if(b?.disabled) return;
+    if(b)b.disabled=true;
+    const lang=s.lang, ratio=s.ratio, translate=key=>L[lang][key]||key;
+    const pages=deck.compose(x,ratio,answers(x),translate,family(x.f));
+    const [width,height]=deck.spec(ratio);
+    const file="day04-"+x.id+"-"+lang+"-"+ratio.replace(":","x");
+    notify(t(kind+"Working"));
+    try{
+      if(kind==="pptx"){
+        await loadLibrary("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js",()=>!!(window.PptxGenJS||window.pptxgen));
+        const Pptx=window.PptxGenJS||window.pptxgen, pptx=new Pptx();
+        pptx.defineLayout({name:"DAY04",width,height});
+        pptx.layout="DAY04";
+        pptx.author="Salah Khenissi";
+        pptx.title=x.n;
+        pptx.lang=lang==="fr"?"fr-FR":"en-US";
+        pages.forEach(page=>deck.addPptx(pptx.addSlide(),pptx.ShapeType,page,lang));
+        await pptx.writeFile({fileName:file+".pptx"});
+      }else{
+        await loadLibrary("https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js",()=>!!window.jspdf?.jsPDF);
+        const orientation=width>height?"landscape":"portrait";
+        const pdf=new window.jspdf.jsPDF({orientation,unit:"in",format:[width,height]});
+        pdf.setProperties({title:x.n,author:"Salah Khenissi"});
+        pages.forEach((page,i)=>{
+          if(i)pdf.addPage([width,height],orientation);
+          deck.addPdf(pdf,page);
+        });
+        pdf.save(file+".pdf");
       }
-      else{pdf.setFont("helvetica","normal");pdf.setFontSize(W<9?16:21);pdf.text(pdf.splitTextToSize(textShort(z.b,500),room).slice(0,W<9?21:11),pad,W<9?3.45:3.0)}
-    });pdf.save("day04-"+x.id+"-"+s.ratio.replace(":","x")+".pdf");notify("8-page PDF downloaded.");track("pdf_download");}catch(e){notify("PDF export failed: "+e.message)}finally{if(b)b.disabled=false}}
-  function feedback(kind){try{let saved=JSON.parse(localStorage.getItem("u30studio-feedback")||"{}");saved[s.id]=kind;localStorage.setItem("u30studio-feedback",JSON.stringify(saved))}catch(e){}notify("Thank you for the feedback.");track("feedback_"+kind)}
+      notify(t(kind+"Done"));
+      track(kind+"_download");
+    }catch(error){
+      notify(t(kind+"Error")+(error.message==="offline"?" "+t("offline"):""));
+    }finally{
+      if(b)b.disabled=false;
+    }
+  }
+  function feedback(kind){try{let saved=JSON.parse(localStorage.getItem("u30studio-feedback")||"{}");saved[s.id]=kind;localStorage.setItem("u30studio-feedback",JSON.stringify(saved))}catch(e){}notify(t("thanks"));track("feedback_"+kind)}
   function track(name){try{if(typeof window.va==="function")window.va("event",{name:"day04_"+name})}catch(e){}}
-  async function copyUrl(){try{if(navigator.share)await navigator.share({title:"Productivity Library",url:location.href});else{await navigator.clipboard.writeText(location.href);notify("Link copied.")}}catch(e){}}
-  async function downloadHtml(){try{let ar=await Promise.all(["index.html","studio.css","studio.js"].map(url=>fetch(url).then(r=>r.text())));let html=ar[0].replace('<link rel="stylesheet" href="studio.css">',"<style>"+ar[1]+"</style>").replace('<script src="studio.js" defer></'+'script>',"<script>"+ar[2]+"</"+"script>");download("productivity-studio-day04.html",html,"text/html")}catch(e){notify("HTML download unavailable.")}}
+  async function copyUrl(){try{if(navigator.share)await navigator.share({title:t("brand"),url:location.href});else{await navigator.clipboard.writeText(location.href);notify(t("copied"))}}catch(e){}}
+  async function downloadHtml(){
+    try{
+      const base=new URL(document.body.dataset.base||"./",location.href);
+      const files=["index.html","studio.css","methods.js","deck.js","studio.js"];
+      const [page,style,...scripts]=await Promise.all(files.map(async file=>{
+        const res=await fetch(new URL(file,base));
+        if(!res.ok) throw Error(file);
+        return res.text();
+      }));
+      let html=page.replace('<link rel="stylesheet" href="studio.css">',()=>"<style>"+style+"</style>");
+      html=html.replace('<html lang="en">','<html lang="'+s.lang+'">');
+      files.slice(2).forEach((file,i)=>{
+        html=html.replace('<script src="'+file+'" defer></'+'script>',()=>"<script>"+scripts[i].replace(/<\/script/gi,"<\\/script")+"</"+"script>");
+      });
+      download("productivity-studio-day04-"+s.lang+".html",html,"text/html");
+    }catch(e){notify(t("htmlError"))}
+  }
   app.addEventListener("submit",e=>{if(e.target.id!=="studio-quiz")return;e.preventDefault();save();track("quiz_completed");location.hash="#/results"});
   app.addEventListener("click",e=>{
     let f=e.target.closest("[data-family]");if(f){s.family=f.dataset.family;app.querySelectorAll("[data-family]").forEach(z=>z.setAttribute("aria-pressed",String(z===f)));let g=document.getElementById("cards");if(g)g.innerHTML=cards();document.getElementById("counter").textContent=filtered().length+" / 50";return}
-    let b=e.target.closest("[data-act]");if(!b)return;let act=b.dataset.act,x=byId(s.id);
-    if(act==="lang"){s.lang=s.lang==="en"?"fr":"en";save();render()}
+    let b=e.target.closest("[data-act]");if(!b){if(e.target.closest(".s-screenreader")){e.preventDefault();document.getElementById("studio-main").focus()}return}let act=b.dataset.act,x=byId(s.id);
+    if(act==="lang"){s.lang=s.lang==="en"?"fr":"en";save();render();app.querySelector('[data-act="lang"]')?.focus()}
     if(act==="tab"){s.tab=b.dataset.val;render()}
     if(act==="slide"){s.current=+b.dataset.val;render()}
     if(act==="next"){s.current=(s.current+1)%8;render()}
@@ -141,11 +298,14 @@
     if(act==="share")copyUrl();
     if(act==="html")downloadHtml();
     if(act==="feedback")feedback(b.dataset.val);
-    if(act==="pptx")exportPptx(x);
-    if(act==="pdf")exportPdf(x);
+    if(act==="pptx")exportDeck(x,"pptx");
+    if(act==="pdf")exportDeck(x,"pdf");
   });
-  app.addEventListener("input",e=>{let z=e.target;if(z.id==="search-tools"){s.query=z.value;document.getElementById("cards").innerHTML=cards();document.getElementById("counter").textContent=filtered().length+" / 50"}if(z.hasAttribute("data-field")){let a=s.answers[s.id]||(s.answers[s.id]={});a[z.dataset.field]=z.value;s.example=false;save();let d=document.getElementById("diagram");if(d)d.innerHTML=diagram(byId(s.id),a,false)}});
-  app.addEventListener("change",async e=>{let z=e.target;if(z.type==="radio"){s[z.name]=z.value;save()}if(z.id==="ratio"){s.ratio=z.value;save();render()}if(z.id==="audience"||z.id==="duration"||z.id==="difficulty"){s[z.id]=z.value;document.getElementById("cards").innerHTML=cards();document.getElementById("counter").textContent=filtered().length+" / 50"}if(z.id==="import-file"&&z.files[0]){try{let obj=JSON.parse(await z.files[0].text());if(obj.toolId!==s.id||!obj.values)throw Error("Wrong tool");s.answers[s.id]=obj.values;save();render()}catch(e){notify("Invalid answers JSON")}}});
+  app.addEventListener("input",e=>{let z=e.target;if(z.id==="search-tools"){s.query=z.value;document.getElementById("cards").innerHTML=cards();document.getElementById("counter").textContent=filtered().length+" / 50"}if(z.hasAttribute("data-field")){let a=s.answers[s.id]||(s.answers[s.id]={});a[z.dataset.field]=z.value;s.example=false;save();let d=document.getElementById("diagram");if(d)d.innerHTML=diagram(byId(s.id),a,true);const toggle=app.querySelector('[data-act="example"]');if(toggle)toggle.textContent=t("filled")}});
+  app.addEventListener("change",async e=>{let z=e.target;if(z.type==="radio"){s[z.name]=z.value;save()}if(z.id==="ratio"){s.ratio=z.value;save();render()}if(z.id==="audience"||z.id==="duration"||z.id==="difficulty"){s[z.id]=z.value;document.getElementById("cards").innerHTML=cards();document.getElementById("counter").textContent=filtered().length+" / 50"}if(z.id==="import-file"&&z.files[0]){try{let obj=JSON.parse(await z.files[0].text());if(obj.toolId!==s.id||!obj.values||Array.isArray(obj.values)||typeof obj.values!=="object")throw Error("invalid");
+    const method=byId(s.id),count=fieldNames(method).length,cols=method.d[0]==="grid"?method.d[1].cols.length:0;
+    const keys=Array.from({length:count},(_,i)=>[String(i),...Array.from({length:cols},(_,j)=>"c"+i+"-"+j)]).flat();
+    s.answers[s.id]=Object.fromEntries(Object.entries(obj.values).filter(([key,value])=>keys.includes(key)&&typeof value==="string").map(([key,value])=>[key,value.slice(0,240)]));s.example=false;save();render()}catch(e){notify(t("invalid"))}}});
   window.addEventListener("hashchange",()=>{s.tab="learn";s.current=0;s.example=false;render()});
   document.addEventListener("keydown",e=>{if(s.tab!=="slides"||e.target.matches("input,textarea,select"))return;if(e.key==="ArrowRight"){s.current=(s.current+1)%8;render()}if(e.key==="ArrowLeft"){s.current=(s.current+7)%8;render()}});
   render();

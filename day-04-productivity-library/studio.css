@@ -1,7 +1,7 @@
 
 /* The Unfinished 30 — Productivity Studio v2. Original visual system; no EY assets. */
 :root{--s-paper:#f5f2e9;--s-white:#fffdfa;--s-ink:#161713;--s-muted:#62645e;--s-line:#d6d6ce;--s-accent:#ff5a32;--s-accent-soft:#ffdfd6;--s-panel:#ebe9e2;--s-serif:Georgia,"Times New Roman",serif}
-body{background:var(--s-paper);color:var(--s-ink)}
+body{margin:0;background:var(--s-paper);color:var(--s-ink)}
 #app{max-width:none!important;padding:0!important}
 #app .studio{min-height:72vh;font:16px/1.5 "Helvetica Neue",Arial,sans-serif;color:var(--s-ink)}
 .studio *{box-sizing:border-box}
@@ -110,32 +110,8 @@ body{background:var(--s-paper);color:var(--s-ink)}
 .studio .s-slide{--slide-w:100%;position:relative;width:100%;background:#fffdfa;color:#161713;aspect-ratio:16/9;container-type:inline-size;box-shadow:0 10px 25px #0001;overflow:hidden}
 .studio .s-slide[data-ratio="9:10"]{aspect-ratio:9/10;max-width:480px}
 .studio .s-slide[data-ratio="9:16"]{aspect-ratio:9/16;max-width:390px}
-.studio .s-slideheader{position:absolute;top:5%;left:6%;right:6%;display:flex;justify-content:space-between;font-size:1.25cqw;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
-.studio .s-slide:not([data-ratio="16:9"]) .s-slideheader{font-size:2cqw}
-.studio .s-slideinner{position:absolute;top:17%;bottom:12%;left:7%;right:7%;display:flex;flex-direction:column;justify-content:center;gap:2cqw}
-.studio .s-slideinner h2{font-size:5.7cqw;line-height:1.02;letter-spacing:-.05em;max-width:22ch;font-weight:900}
-.studio .s-slideinner p{font-size:2.35cqw;line-height:1.36;max-width:39ch}
-.studio .s-slide[data-ratio="9:10"] .s-slideinner h2,.studio .s-slide[data-ratio="9:16"] .s-slideinner h2{font-size:7.3cqw}
-.studio .s-slide[data-ratio="9:10"] .s-slideinner p,.studio .s-slide[data-ratio="9:16"] .s-slideinner p{font-size:3.3cqw}
-.studio .s-slidefoot{position:absolute;left:6%;right:6%;bottom:5%;border-top:1px solid #d5d2c9;padding-top:1.2cqw;display:flex;justify-content:space-between;gap:4px;font-size:1.1cqw;font-weight:800;letter-spacing:.05em}
-.studio .s-slide[data-ratio="9:10"] .s-slidefoot,.studio .s-slide[data-ratio="9:16"] .s-slidefoot{font-size:1.9cqw}
-.studio .s-slide svg{width:min(100%,64cqw);height:auto;max-height:57%;align-self:center}
-.studio .s-slide[data-ratio="9:16"] svg{max-height:51%}
-.studio .s-slide .s-slideaccent{font-size:12cqw;font-weight:900;letter-spacing:-.07em;line-height:1}
-.studio .s-slide .s-slideprompt{border-top:1px solid #d5d2c9;padding-top:1.7cqw;font-size:2.1cqw;font-weight:900}
-.studio .s-slide[data-ratio="9:16"] .s-slideprompt{font-size:3cqw}
-.studio .s-slide .s-dots{display:flex;gap:2.6cqw;flex-wrap:wrap}
-.studio .s-slide .s-dots span{font-size:2cqw;border:1px solid #dedbd3;padding:1.2cqw}
-.studio .s-slide[data-ratio="9:16"] .s-dots span{font-size:3.2cqw}
-.studio .s-slide .s-step-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6cqw}
-.studio .s-slide[data-ratio="9:16"] .s-step-grid{grid-template-columns:1fr}
-.studio .s-slide .s-step-grid div{border-top:2px solid #1d1e19;padding:1.5cqw 0;min-width:0;font-size:1.9cqw}
-.studio .s-slide[data-ratio="9:16"] .s-step-grid div{font-size:3cqw}
-.studio .s-slide .s-step-grid b{font-size:2.4cqw;color:#ff5a32}
-.studio .s-slide[data-ratio="9:16"] .s-step-grid b{font-size:3.8cqw}
-.studio .s-slide .s-slidebar{position:absolute;top:0;left:0;width:8%;height:6px;background:#ff5a32}
-.studio .s-slide .s-example{background:#f1eee6;border-left:4px solid #ff5a32;padding:2.3cqw;font-size:2.3cqw;line-height:1.4}
-.studio .s-slide[data-ratio="9:16"] .s-example{font-size:3.2cqw;padding:3.2cqw}
+.studio .s-slide svg{display:block;width:100%;height:100%}
+.studio .s-slide:fullscreen{max-width:none;background:#161713}
 .studio .s-viewnav{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:15px}
 .studio .s-viewnav .s-count{font-weight:900;font-size:12px}
 .studio .s-thumbs{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px;margin:16px 0}
@@ -145,7 +121,7 @@ body{background:var(--s-paper);color:var(--s-ink)}
 .studio .s-exportrow .s-status{font-size:12px;color:var(--s-muted);flex:1;min-width:160px}
 .studio .s-bottombar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid var(--s-line);padding:25px 0;margin-top:58px}
 .studio .s-bottombar p{font-size:12px;color:var(--s-muted);max-width:58ch}
-.studio .s-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--s-ink);color:var(--s-white);padding:12px 18px;font-size:13px;font-weight:700;z-index:999}
+.s-toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--s-ink);color:var(--s-white);padding:12px 18px;font-size:13px;font-weight:700;z-index:999}
 .studio .s-visual-note{font:italic 17px Georgia,serif;color:var(--s-muted)}
 .studio .s-screenreader{position:absolute;left:-10000px;width:1px;height:1px}
 .studio .s-screenreader:focus{left:12px;top:12px;width:auto;height:auto;background:#fff;padding:10px;z-index:999}
@@ -177,7 +153,6 @@ body{background:var(--s-paper);color:var(--s-ink)}
 .studio .s-btn{font-size:13px}
 .studio .s-statline{gap:12px;font-size:10px}
 .studio .s-statline b{font-size:17px}
-.studio .s-slideinner p{font-size:2.9cqw}
 }
 @media(prefers-reduced-motion:reduce){.studio .s-btn,.studio .s-card{transition:none!important}}
 
@@ -185,3 +160,11 @@ body{background:var(--s-paper);color:var(--s-ink)}
 body>footer.foot{display:none!important}
 
 @media(max-width:610px){.studio .s-exportrow{position:sticky;bottom:0;z-index:30;background:var(--s-paper);box-shadow:0 -8px 22px #0001;padding:10px 0}.studio .s-exportrow .s-btn{flex:1;min-width:125px}.studio .s-exportrow .s-status{flex-basis:100%;min-width:0}}
+
+.studio .s-challenge{background:var(--s-ink);color:#faf6ee;font-size:13px}
+.studio .s-challenge .s-wrap{display:flex;flex-wrap:wrap;gap:2px 14px;justify-content:space-between;padding-block:7px}
+.studio .s-challenge a{color:#ffb08f;font-weight:700;text-decoration:none}
+.studio .s-worksheet fieldset{min-width:0;border:1px solid var(--s-line);padding:10px;display:grid;gap:9px}
+.studio .s-worksheet legend{font-weight:800}
+.studio .s-detailhead h1{overflow-wrap:anywhere}
+.share-fallback{max-width:48rem;margin:3rem auto;padding:1rem;font-family:Arial,sans-serif}
