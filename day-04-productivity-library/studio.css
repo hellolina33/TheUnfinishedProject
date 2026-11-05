@@ -183,3 +183,5 @@ body{background:var(--s-paper);color:var(--s-ink)}
 
 /* V2 owns the footer; hide outdated legacy copy from v1. */
 body>footer.foot{display:none!important}
+
+@media(max-width:610px){.studio .s-exportrow{position:sticky;bottom:0;z-index:30;background:var(--s-paper);box-shadow:0 -8px 22px #0001;padding:10px 0}.studio .s-exportrow .s-btn{flex:1;min-width:125px}.studio .s-exportrow .s-status{flex-basis:100%;min-width:0}}
