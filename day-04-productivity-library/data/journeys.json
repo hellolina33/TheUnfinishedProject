@@ -1,0 +1,240 @@
+[
+  {
+    "id": "study",
+    "en": "Plan my revision",
+    "fr": "Planifier mes révisions",
+    "roles": [
+      "student"
+    ],
+    "ids": [
+      "time-blocking",
+      "pomodoro",
+      "weekly-review"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Have your exam date, the topics to cover and your available hours ready.",
+      "fr": "Prépare ta date d’examen, les chapitres à revoir et tes créneaux disponibles."
+    },
+    "result": {
+      "en": "A realistic study schedule and a first focused session.",
+      "fr": "Un planning réaliste et une première séance de travail définie."
+    },
+    "steps": {
+      "en": [
+        "Reserve time for the topics that need work.",
+        "Choose one topic for a focused work block.",
+        "Adjust the next week from what you actually finished."
+      ],
+      "fr": [
+        "Réserve des créneaux pour les chapitres à travailler.",
+        "Choisis un chapitre pour un bloc de travail concentré.",
+        "Ajuste la semaine suivante à partir du travail réellement terminé."
+      ]
+    }
+  },
+  {
+    "id": "group-project",
+    "en": "Organise a group assignment",
+    "fr": "Organiser un projet de groupe",
+    "roles": [
+      "student"
+    ],
+    "ids": [
+      "smart",
+      "raci",
+      "kanban"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Bring the assignment brief, its deadline and the names of the group members.",
+      "fr": "Rassemble la consigne, la date de rendu et les noms des membres du groupe."
+    },
+    "result": {
+      "en": "A clear deliverable, shared responsibilities and visible next tasks.",
+      "fr": "Un livrable clair, des responsabilités réparties et les prochaines tâches visibles."
+    },
+    "steps": {
+      "en": [
+        "Define what must be delivered and how it will be assessed.",
+        "Agree who does the work and who makes each decision.",
+        "Make the remaining tasks visible to the group."
+      ],
+      "fr": [
+        "Définis ce qui doit être rendu et les critères de réussite.",
+        "Convenez de qui réalise le travail et de qui décide.",
+        "Rends les tâches restantes visibles pour le groupe."
+      ]
+    }
+  },
+  {
+    "id": "team-priorities",
+    "en": "Set priorities with my team",
+    "fr": "Choisir les priorités de mon équipe",
+    "roles": [
+      "manager"
+    ],
+    "ids": [
+      "impact-effort",
+      "moscow",
+      "daci"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "List the proposals, the available capacity and the result the team must achieve.",
+      "fr": "Liste les propositions, la capacité disponible et le résultat attendu de l’équipe."
+    },
+    "result": {
+      "en": "A shortlist, an explicit scope and a named decision owner.",
+      "fr": "Une sélection de priorités, un périmètre explicite et un responsable de la décision."
+    },
+    "steps": {
+      "en": [
+        "Compare the impact and effort of each proposal.",
+        "Separate what must be delivered from what can wait.",
+        "Name the decision owner and the people to consult."
+      ],
+      "fr": [
+        "Compare l’impact et l’effort de chaque proposition.",
+        "Distingue ce qui doit être livré de ce qui peut attendre.",
+        "Nomme le responsable de la décision et les personnes à consulter."
+      ]
+    }
+  },
+  {
+    "id": "retro",
+    "en": "Run a useful retrospective",
+    "fr": "Préparer une rétrospective utile",
+    "roles": [
+      "manager"
+    ],
+    "ids": [
+      "four-ls",
+      "start-stop-continue",
+      "eisenhower"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Pick a period to review and bring concrete observations from the team.",
+      "fr": "Choisis la période à examiner et rassemble des observations concrètes de l’équipe."
+    },
+    "result": {
+      "en": "One improvement to try, with an owner and a review date.",
+      "fr": "Une amélioration à tester, avec un responsable et une date de bilan."
+    },
+    "steps": {
+      "en": [
+        "Gather observations without jumping straight to solutions.",
+        "Turn recurring themes into changes the team can try.",
+        "Select an action and decide when it will happen."
+      ],
+      "fr": [
+        "Recueille les observations avant de proposer des solutions.",
+        "Transforme les thèmes récurrents en changements à tester.",
+        "Retiens une action et décide quand elle sera réalisée."
+      ]
+    }
+  },
+  {
+    "id": "daily-planning",
+    "en": "Sort out an overloaded day",
+    "fr": "Trier une journée trop chargée",
+    "roles": [
+      "professional"
+    ],
+    "ids": [
+      "eisenhower",
+      "timeboxing",
+      "shutdown"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Write down the tasks competing for your time, their real deadlines and the time you have.",
+      "fr": "Note les tâches qui se disputent ton temps, leurs vraies échéances et le temps disponible."
+    },
+    "result": {
+      "en": "A short priority list, time set aside and a clear stopping point.",
+      "fr": "Des priorités claires, des créneaux réservés et une fin de journée définie."
+    },
+    "steps": {
+      "en": [
+        "Decide what to do, schedule, delegate or remove.",
+        "Give the selected task a time limit and a finish condition.",
+        "Close the day and leave a clear next step for tomorrow."
+      ],
+      "fr": [
+        "Décide quoi faire, planifier, déléguer ou retirer.",
+        "Fixe une durée et une condition de fin pour la tâche retenue.",
+        "Clôture la journée et prépare une prochaine action pour demain."
+      ]
+    }
+  },
+  {
+    "id": "vendors",
+    "en": "Explain a choice to a client",
+    "fr": "Justifier un choix à un client",
+    "roles": [
+      "professional"
+    ],
+    "ids": [
+      "weighted",
+      "premortem",
+      "daci"
+    ],
+    "featured": true,
+    "intro": {
+      "en": "Bring the alternatives, the client’s constraints and the criteria that matter to the decision.",
+      "fr": "Rassemble les options, les contraintes du client et les critères qui comptent pour la décision."
+    },
+    "result": {
+      "en": "A recommendation with explicit criteria, risks and a decision process.",
+      "fr": "Une recommandation avec ses critères, ses risques et son circuit de décision."
+    },
+    "steps": {
+      "en": [
+        "Compare the alternatives against weighted criteria.",
+        "Check what could make the preferred option fail.",
+        "Agree who decides and what evidence they need."
+      ],
+      "fr": [
+        "Compare les options selon des critères pondérés.",
+        "Examine ce qui pourrait faire échouer l’option préférée.",
+        "Convenez de qui décide et des éléments nécessaires à cette décision."
+      ]
+    }
+  },
+  {
+    "id": "backlog",
+    "en": "Prioritise a product backlog",
+    "fr": "Prioriser un backlog produit",
+    "roles": [
+      "manager"
+    ],
+    "ids": [
+      "impact-effort",
+      "rice",
+      "premortem"
+    ],
+    "featured": false,
+    "intro": {
+      "en": "Use a common time period and list the product ideas, estimates and assumptions.",
+      "fr": "Fixe une période commune et liste les idées produit, les estimations et leurs hypothèses."
+    },
+    "result": {
+      "en": "A ranked backlog with assumptions to check before committing.",
+      "fr": "Un backlog classé et des hypothèses à vérifier avant de s’engager."
+    },
+    "steps": {
+      "en": [
+        "Shortlist ideas by impact and effort.",
+        "Compare reach, impact, confidence and effort.",
+        "Check the risks of the preferred idea."
+      ],
+      "fr": [
+        "Présélectionne les idées selon l’impact et l’effort.",
+        "Compare la portée, l’impact, la confiance et l’effort.",
+        "Vérifie les risques de l’idée retenue."
+      ]
+    }
+  }
+]

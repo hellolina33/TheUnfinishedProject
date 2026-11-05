@@ -58,7 +58,7 @@ for(const tool of data)for(const lang of ['en','fr'])for(const ratio of ['16:9',
     localStorage:{getItem(){return null},setItem(){throw Error("Unexpected browser storage write")}},
     location:{hash:'#/tool/'+tool.id,href:'https://example.com/#/tool/'+tool.id},
     navigator:{},URL,URLSearchParams,Intl,TextEncoder,setTimeout(){},console};
-  for(const file of ['engine.js','search.js','router.js','workspace.js','reuse.js','learning.js','distribution.js'])vm.runInNewContext(fs.readFileSync(path.join(folder,file),'utf8'),context,{timeout:1500});
+  for(const file of ['engine.js','search.js','router.js','journeys.js','workspace.js','reuse.js','learning.js','distribution.js'])vm.runInNewContext(fs.readFileSync(path.join(folder,file),'utf8'),context,{timeout:1500});
   vm.runInNewContext(deck,context,{timeout:1500});
   vm.runInNewContext(js,context,{timeout:1500});
   if(context.document.documentElement.lang!==lang || !app.innerHTML.includes(lang==='fr'?tool.fr.n:tool.n)){

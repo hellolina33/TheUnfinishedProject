@@ -70,6 +70,29 @@ write(
     JSON.stringify(data) +
     " };\n",
 );
+const kits = JSON.parse(read("data/journeys.json"));
+if (new Set(kits.map((kit) => kit.id)).size !== kits.length)
+  throw Error("Duplicate journey id");
+for (const kit of kits) {
+  if (
+    !/^[a-z-]+$/.test(kit.id) ||
+    kit.ids.length !== 3 ||
+    kit.ids.some((id) => !ids.has(id))
+  )
+    throw Error("Invalid journey " + kit.id);
+  for (const lang of ["en", "fr"])
+    if (
+      !kit[lang] ||
+      !kit.intro[lang] ||
+      !kit.result[lang] ||
+      kit.steps[lang].length !== kit.ids.length
+    )
+      throw Error("Incomplete journey " + kit.id);
+}
+write(
+  "journeys.js",
+  "window.ProductivityJourneys=" + JSON.stringify(kits) + ";\n",
+);
 const dependencies = [
   ["pptxgenjs", "pptxgen.bundle.js"],
   ["jspdf", "jspdf.umd.min.js"],
@@ -126,32 +149,13 @@ const modules = [
   "engine.js",
   "search.js",
   "router.js",
+  "journeys.js",
   "workspace.js",
   "reuse.js",
   "learning.js",
   "distribution.js",
   "deck.js",
   "studio.js",
-];
-const kits = [
-  {
-    id: "retro",
-    en: "Prepare a 30-minute retrospective",
-    fr: "Préparer une rétrospective de 30 minutes",
-    ids: ["four-ls", "start-stop-continue", "eisenhower"],
-  },
-  {
-    id: "backlog",
-    en: "Prioritise a product backlog",
-    fr: "Prioriser un backlog produit",
-    ids: ["impact-effort", "rice", "premortem"],
-  },
-  {
-    id: "vendors",
-    en: "Choose between three suppliers",
-    fr: "Choisir entre trois fournisseurs",
-    ids: ["weighted", "premortem", "daci"],
-  },
 ];
 const sourceFiles = [
   ...modules,
@@ -342,15 +346,7 @@ for (const lang of ["en", "fr"]) {
         return lang === "fr" ? method.fr.n : method.n;
       })
       .join(", ");
-    const kitDescription = esc(
-      lang === "fr"
-        ? "Un parcours avec " +
-            methodNames +
-            ". Guides, exemples et application HTML hors ligne dans un kit gratuit."
-        : "A guided workflow with " +
-            methodNames +
-            ". Guides, examples and the offline HTML app in one free kit.",
-    );
+    const kitDescription = esc(kit.result[lang] + " · " + methodNames);
     let html = page(lang, "home");
     for (const language of ["en", "fr"])
       html = html

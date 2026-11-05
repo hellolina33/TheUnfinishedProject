@@ -1,11 +1,11 @@
 {
-  "version": "e8fb43551821",
+  "version": "9713cb53a608",
   "files": [
     {
       "path": "methods.js",
-      "asset": "assets/methods-a9d46b4921a6.js",
-      "sha256": "a9d46b4921a60b0a23eb47b5158d7d0b00eb3b1c903707cb2afb9a63be779b75",
-      "bytes": 164035
+      "asset": "assets/methods-9c856b54db43.js",
+      "sha256": "9c856b54db431f43fa42a1c5dec7be9694d3bd5cb513ac4adb0768e201254f29",
+      "bytes": 164510
     },
     {
       "path": "engine.js",
@@ -21,15 +21,21 @@
     },
     {
       "path": "router.js",
-      "asset": "assets/router-c4a5f7645ec7.js",
-      "sha256": "c4a5f7645ec70c7daf61bcc4f9c21a472854effe3c6f8c0a27947ade4ab798c8",
-      "bytes": 4257
+      "asset": "assets/router-a3fe00191fd8.js",
+      "sha256": "a3fe00191fd84469054fc9ae1bb7370628f66325cac6127ee9e79102d9672713",
+      "bytes": 5000
+    },
+    {
+      "path": "journeys.js",
+      "asset": "assets/journeys-81bdd85e367b.js",
+      "sha256": "81bdd85e367bb67b5ef3b5fdc444363298f68dd73e18119805c22f89d38d6487",
+      "bytes": 6316
     },
     {
       "path": "workspace.js",
-      "asset": "assets/workspace-1464116b246c.js",
-      "sha256": "1464116b246c2901f2b8a200898ec36161ceb0fae0eb5e20777e4cd8c4010559",
-      "bytes": 18090
+      "asset": "assets/workspace-9bcf160e4454.js",
+      "sha256": "9bcf160e445418c02fd34fc27f5be707f49a836f3df2452a00b3b5b11fe451b6",
+      "bytes": 18233
     },
     {
       "path": "reuse.js",
@@ -51,21 +57,21 @@
     },
     {
       "path": "deck.js",
-      "asset": "assets/deck-3060caa9897f.js",
-      "sha256": "3060caa9897f766a7783e2af97dc22dee13906893c7d11d2ce6252a17b9e7018",
-      "bytes": 28152
+      "asset": "assets/deck-f6073d2556d7.js",
+      "sha256": "f6073d2556d77de186be4f2863c042c07a9dcde6be1ab97b61a403023449f1f1",
+      "bytes": 33771
     },
     {
       "path": "studio.js",
-      "asset": "assets/studio-e233e90649de.js",
-      "sha256": "e233e90649de50d65afa8611350ab6b03151c8b89568c780e9bc56849931cbdd",
-      "bytes": 97678
+      "asset": "assets/studio-51afab4d87ac.js",
+      "sha256": "51afab4d87ac15b191f12c3226755709e2c665b5ae7d7347f465218e47fcd6f6",
+      "bytes": 108264
     },
     {
       "path": "studio.css",
-      "asset": "assets/studio-4342f97c332d.css",
-      "sha256": "4342f97c332dbe21c8f6e755171888c7f8e04649258b8c7494349a2ace0b8002",
-      "bytes": 27755
+      "asset": "assets/studio-ac6340a06146.css",
+      "sha256": "ac6340a06146f26fa0a19a2fcfe130d01b5c86003cb15cb86e809d2b18c5002d",
+      "bytes": 36013
     },
     {
       "path": "vendor/pptxgen.bundle.js",

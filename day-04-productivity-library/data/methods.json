@@ -14,14 +14,18 @@
     "d": [
       "matrix",
       {
-        "x": "Urgent →",
-        "y": "Important ↑",
+        "x": "Urgency",
+        "y": "Importance",
         "q": [
           "Schedule",
           "Do now",
           "Drop",
           "Delegate"
-        ]
+        ],
+        "xLow": "Less urgent",
+        "xHigh": "More urgent",
+        "yLow": "Less important",
+        "yHigh": "More important"
       }
     ],
     "why": "Sorts a messy list into four actions, so the urgent does not crowd out the important.",
@@ -60,14 +64,18 @@
       "d": [
         "matrix",
         {
-          "x": "Urgence →",
-          "y": "Importance ↑",
+          "x": "Urgence",
+          "y": "Importance",
           "q": [
             "Planifier",
             "Faire maintenant",
             "Éliminer",
             "Déléguer"
-          ]
+          ],
+          "xLow": "Moins urgent",
+          "xHigh": "Plus urgent",
+          "yLow": "Moins important",
+          "yHigh": "Plus important"
         }
       ],
       "src": "Discours de Dwight D. Eisenhower (1954), puis popularisation par Stephen Covey (1989).",
@@ -761,14 +769,18 @@
     "d": [
       "matrix",
       {
-        "x": "Effort →",
-        "y": "Impact ↑",
+        "x": "Effort",
+        "y": "Impact",
         "q": [
           "Quick wins",
           "Major projects",
           "Fill-ins",
           "Thankless tasks"
-        ]
+        ],
+        "xLow": "Low",
+        "xHigh": "High",
+        "yLow": "Low",
+        "yHigh": "High"
       }
     ],
     "why": "Puts ideas on two axes, so quick wins are visible at a glance and heavy work is weighed against its payoff.",
@@ -805,14 +817,18 @@
       "d": [
         "matrix",
         {
-          "x": "Effort →",
-          "y": "Impact ↑",
+          "x": "Effort",
+          "y": "Impact",
           "q": [
             "Gains rapides",
             "Grands projets",
             "Tâches d’appoint",
             "À écarter"
-          ]
+          ],
+          "xLow": "Faible",
+          "xHigh": "Élevé",
+          "yLow": "Faible",
+          "yHigh": "Élevé"
         }
       ],
       "src": "Matrice courante en gestion de produit et en conseil. Auteur unique non établi.",
@@ -3941,14 +3957,18 @@
     "d": [
       "matrix",
       {
-        "x": "Internal → external",
-        "y": "Helpful → harmful",
+        "x": "Origin",
+        "y": "Effect",
         "q": [
           "Strengths",
           "Opportunities",
           "Weaknesses",
           "Threats"
-        ]
+        ],
+        "xLow": "Internal",
+        "xHigh": "External",
+        "yLow": "Harmful",
+        "yHigh": "Helpful"
       }
     ],
     "why": "Separate internal strengths and weaknesses from external opportunities and threats.",
@@ -3986,14 +4006,18 @@
       "d": [
         "matrix",
         {
-          "x": "Interne → externe",
-          "y": "Favorable → défavorable",
+          "x": "Origine",
+          "y": "Effet",
           "q": [
             "Forces",
             "Occasions",
             "Faiblesses",
             "Menaces"
-          ]
+          ],
+          "xLow": "Interne",
+          "xHigh": "Externe",
+          "yLow": "Défavorable",
+          "yHigh": "Favorable"
         }
       ],
       "src": "Attribution fréquente à Albert Humphrey. L’origine précise reste discutée.",
@@ -5027,14 +5051,18 @@
     "d": [
       "matrix",
       {
-        "x": "Energy drained →",
-        "y": "Energy gained ↑",
+        "x": "Energy used",
+        "y": "Energy gained",
         "q": [
           "Protect it",
           "Limit it",
           "Drop or batch",
           "Cut or fix"
-        ]
+        ],
+        "xLow": "Low",
+        "xHigh": "High",
+        "yLow": "Low",
+        "yHigh": "High"
       }
     ],
     "why": "Maps which activities drain your energy and which restore it, not just how long they take.",
@@ -5071,14 +5099,18 @@
       "d": [
         "matrix",
         {
-          "x": "Énergie dépensée →",
-          "y": "Énergie gagnée ↑",
+          "x": "Énergie dépensée",
+          "y": "Énergie gagnée",
           "q": [
             "Protéger",
             "Limiter",
             "Regrouper ou retirer",
             "Réduire ou corriger"
-          ]
+          ],
+          "xLow": "Faible",
+          "xHigh": "Élevée",
+          "yLow": "Faible",
+          "yHigh": "Élevée"
         }
       ],
       "src": "Exercice original de l’atelier inspiré de la gestion de l’énergie décrite par Jim Loehr et Tony Schwartz, The Power of Full Engagement (2003). La matrice est une adaptation créée pour ce guide.",
