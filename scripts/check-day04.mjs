@@ -19,7 +19,7 @@ for(const t of data){
     throw Error('Incomplete French tool '+t.id);
   }
   for(const version of [t,t.fr]){
-    if(!version.case?.scene || !version.case.check || !version.exampleNote)throw Error('Incomplete worked case '+t.id);
+    if(!version.case?.scene || !version.case.check || !version.case.reasoning || !version.outcome || !version.pitfall || !version.exampleNote)throw Error('Incomplete worked case '+t.id);
   }
   const file=path.join(folder,'tools',t.id,'index.html');
   if(!fs.existsSync(file))throw Error('Missing share page '+t.id);

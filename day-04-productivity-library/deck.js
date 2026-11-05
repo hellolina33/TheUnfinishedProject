@@ -20,6 +20,75 @@ window.ProductivityDeck = (() => {
   const editable = (label,x,y,w,h) => ({...text(label,x,y,w,h,11,false,muted),type:"placeholder"});
   const number = n => String(n+1).padStart(2,"0");
 
+  // A compact sketch of the method's structure, usable at thumbnail and cover sizes.
+  function motif(method,[x,y,w,h],dark=false){
+    const [shape,data]=method.d, n=fieldNames(method).length;
+    const kind=method.id==="second-order"?"flow":shape;
+    const base=dark?"31332E":tint, edge=dark?"8C8E86":muted;
+    const tile=(a,b,c,d,fill=base,stroke)=>box(x+a*w,y+b*h,c*w,d*h,fill,stroke);
+    const segment=(a,b,c,d,color=edge)=>line(x+a*w,y+b*h,x+c*w,y+d*h,color);
+    if(kind==="matrix"){
+      return list(4,i=>tile(.12+i%2*.40,.12+Math.floor(i/2)*.39,.37,.35,i===1?orange:base,edge));
+    }
+    if(kind==="grid"){
+      const cols=data.cols.length, rows=data.rows.length;
+      return list(rows+1,i=>list(cols+1,j=>tile(.08+j*.84/(cols+1),.11+i*.78/(rows+1),.84/(cols+1),.78/(rows+1),i===0||j===0?base:i===1&&j===1?orange:undefined,edge))).flat();
+    }
+    if(kind==="bars"){
+      const step=.82/n;
+      if(method.id==="pareto"){
+        let cumulative=0, last;
+        const bars=[], trend=[];
+        data.forEach(([,start,end],i)=>{
+          const x=.09+step*(i+.50), height=(end-start)*1.13;
+          bars.push(tile(x-step*.28,.87-height,step*.56,height,i<2?orange:base,edge));
+          cumulative+=end-start;
+          const next=[x,.87-cumulative*.72];
+          if(last) trend.push(segment(...last,...next));
+          trend.push(tile(next[0]-.013,next[1]-.022,.026,.044,edge));
+          last=next;
+        });
+        return [segment(.08,.87,.92,.87),...bars,...trend];
+      }
+      return data.flatMap(([,start,end],i)=>[
+        tile(.08,.14+i*.76/n,.84,.44/n),
+        tile(.08+.84*start,.14+i*.76/n,.84*(end-start),.44/n,i===0?orange:edge)
+      ]);
+    }
+    if(kind==="tree"){
+      const step=.80/n;
+      return [
+        segment(.50,.33,.50,.53),segment(.10+step/2,.53,.90-step/2,.53),
+        tile(.35,.11,.30,.24,orange),
+        ...list(n,i=>[segment(.10+step*(i+.5),.53,.10+step*(i+.5),.65),tile(.10+step*i+.02,.65,step-.04,.22,base,edge)]).flat()
+      ];
+    }
+    if(kind==="cycle"){
+      const points=list(n,i=>[.50+.35*Math.sin(i*2*Math.PI/n),.50-.36*Math.cos(i*2*Math.PI/n)]);
+      return [
+        ...points.map((p,i)=>segment(...p,...points[(i+1)%n])),
+        ...points.map(([a,b],i)=>tile(a-.035,b-.065,.07,.13,i===0?orange:base,edge))
+      ];
+    }
+    if(kind==="columns"){
+      const step=.84/n;
+      return list(n,i=>[
+        tile(.08+i*step,.15,step-.025,.70,base,edge),
+        tile(.08+i*step,.15,step-.025,.14,i===0?orange:edge)
+      ]).flat();
+    }
+    const step=.84/n, yLine=kind==="timeline"?.69:.51;
+    return [
+      segment(.08+step/2,yLine,.92-step/2,yLine),
+      ...list(n,i=>{
+        const offset=.08+step*i;
+        return kind==="timeline"
+          ?[segment(offset+step/2,.36,offset+step/2,.69),tile(offset+.025,.25,step-.05,.14,i===0?orange:base,edge)]
+          :[tile(offset+.023,.39,step-.046,.24,i===0?orange:base,edge)];
+      }).flat()
+    ];
+  }
+
   function framework(method, values, area, t, blank=false) {
     const [x,y,w,h] = area;
     const [kind,data] = method.d;
@@ -107,7 +176,9 @@ window.ProductivityDeck = (() => {
       });
       return out;
     }
-    const gap=.10;
+    const chain=method.id==="second-order";
+    const sequence=chain||["flow","timeline","cycle","steps"].includes(kind);
+    const gap=sequence?.23:.10;
     let top=y, space=h;
     if (kind==="matrix") {
       out.push(text(data.y,x,y,w*.48,.27,11,true,muted),text(data.x,x+w*.52,y,w*.48,.27,11,true,muted));
@@ -115,13 +186,30 @@ window.ProductivityDeck = (() => {
     }
     if (kind==="tree") {
       out.push(box(x,top,w,.52,tint,rule),text(data.root,x+.14,top+.11,w-.28,.32,14,true));
-      top+=.68; space-=.68;
+      top+=.82; space-=.82;
     }
-    const cols=kind==="matrix"?2:portrait?(labels.length>5?2:1):Math.min(labels.length,kind==="columns"&&labels.length<=4?4:3);
+    const cols=kind==="matrix"?2:kind==="tree"&&!chain?labels.length:portrait?(labels.length>5?2:1):Math.min(labels.length,kind==="columns"&&labels.length<=4?4:3);
     const rows=Math.ceil(labels.length/cols), cw=(w-gap*(cols-1))/cols, rh=(space-gap*(rows-1))/rows;
+    if(kind==="tree"){
+      const junction=top-.15;
+      out.push(line(x+w/2,y+.52,x+w/2,junction,muted));
+      if(chain) out.push(line(x+w/2,junction,x+cw/2,junction,muted),line(x+cw/2,junction,x+cw/2,top,muted));
+      else {
+        out.push(line(x+cw/2,junction,x+w-cw/2,junction,muted));
+        labels.forEach((_,i)=>{const center=x+(cw+gap)*i+cw/2;out.push(line(center,junction,center,top,muted));});
+      }
+    }
     labels.forEach((label,i)=>{
-      const prefix=["flow","timeline","cycle","steps"].includes(kind)?number(i)+"   ":"";
-      cell(prefix+label,values[i],x+(i%cols)*(cw+gap),top+Math.floor(i/cols)*(rh+gap),cw,rh,i);
+      const left=x+(i%cols)*(cw+gap), yy=top+Math.floor(i/cols)*(rh+gap);
+      cell((sequence?number(i)+"   ":"")+label,values[i],left,yy,cw,rh,i);
+      if(!sequence||i===labels.length-1)return;
+      if(cols===1){
+        const xx=left+cw/2, bottom=yy+rh, tip=bottom+gap-.045;
+        out.push(line(xx,bottom,xx,tip,muted),line(xx-.036,tip-.05,xx,tip,muted),line(xx+.036,tip-.05,xx,tip,muted));
+      }else if(i%cols!==cols-1){
+        const mid=yy+rh/2, right=left+cw, tip=right+gap-.045;
+        out.push(line(right,mid,tip,mid,muted),line(tip-.05,mid-.036,tip,mid,muted),line(tip-.05,mid+.036,tip,mid,muted));
+      }
     });
     return out;
   }
@@ -155,13 +243,16 @@ window.ProductivityDeck = (() => {
     ];
     const y=wide?2.39:2.75, available=end-y-.16;
     const {scene,check,headlines=[]}=method.case;
-    const compact=tall?6.1:wide?4.25:4.55;
+    const compact=tall?8.25:wide?4.25:5.90;
+    const artwork=wide?[w-m-3.25,1.68,3.2,2.26]:[m,4.17,width,tall?3.55:1.47];
     const cover=[
       box(0,.82,w,end-.83,ink),
       text(category.toUpperCase()+"  /  "+method.t+" min",m,1.25,width,.35,13,true,orange),
-      text(method.n,m,wide?1.85:2.15,wide?width*.83:width,tall?2.7:2.2,wide?60:51,true,paper),
+      text(method.n,m,wide?1.85:2.15,wide?width*.68:width,1.94,wide?60:51,true,paper),
+      ...motif(method,artwork,true),
       line(m,compact,w-m,compact,muted),
-      text(method.why,m,compact+.25,width,wide?1.4:1.7,wide?26:25,false,paper)
+      text(method.why,m,compact+.25,width,wide?1.4:tall?1.7:1.2,wide?26:25,false,paper),
+      text(method.outcome,m,wide?end-.52:end-.78,width,wide?.34:.55,wide?15:17,true,orange)
     ];
     const briefing=[
       ...title(t("caseLabel"),headlines[0]||t("caseContext")),
@@ -169,20 +260,24 @@ window.ProductivityDeck = (() => {
       text(scene,m+.24,y+.24,width-.48,wide?1.16:1.65,wide?24:23,true),
       ...stepList([t("whenPrompt"),t("successPrompt")],[m,y+(wide?1.86:2.48),width,available-(wide?1.86:2.48)],wide?2:1)
     ];
-    const exampleW=wide?width*.64:width, exampleTop=wide?y:y+1.45;
-    const resultX=wide?m+exampleW+.22:m, resultW=wide?width-exampleW-.22:width;
+    const exampleW=wide?width*.55:width;
+    const exampleTop=wide?y:y+(tall?2.85:2.25);
+    const resultX=wide?m+exampleW+.21:m, resultW=wide?width-exampleW-.21:width;
+    const reasonH=wide?2.13:tall?1.55:1.16, decisionY=y+reasonH+.21;
     const example=[
       ...title(t("caseLabel"),headlines[2]||t("decisionChapter")),
-      box(resultX,y,resultW,wide?available:1.24,tint),
-      text(t("caseDecision").toUpperCase(),resultX+.16,y+.15,resultW-.32,.24,11,true,muted),
-      text(method.exampleNote,resultX+.16,y+.47,resultW-.32,wide?available-.62:.61,wide?20:17,true),
+      box(resultX,y,resultW,reasonH,tint),
+      text(t("caseReasoning").toUpperCase(),resultX+.15,y+.12,resultW-.30,.22,10,true,muted),
+      text(method.case.reasoning,resultX+.15,y+.40,resultW-.30,reasonH-.50,wide?17:16),
+      text(t("caseDecision").toUpperCase(),resultX+.15,decisionY,resultW-.30,.22,10,true,muted),
+      text(method.exampleNote,resultX+.15,decisionY+.28,resultW-.30,wide?available-reasonH-.64:tall?.65:.45,wide?17:15,true),
       ...framework(method,method.sampleCells||method.sample,[m,exampleTop,exampleW,end-exampleTop-.18],t)
     ];
     const action=[
       ...title(t("practice"),t("applyTitle")),
       ...stepList(method.solo,[m,y,width,available-.75],wide||(!tall&&method.solo.length>4)?2:1),
       box(m,end-.71,width,.51,tint),
-      text(t("nextPrompt"),m+.13,end-.58,width-.26,.28,12,true)
+      text(method.outcome,m+.13,end-.58,width-.26,.28,14,true)
     ];
     const workshop=[
       ...title(t("asTeam"),t("teamTitle")),
@@ -197,10 +292,10 @@ window.ProductivityDeck = (() => {
       text(check,m+.19,y+.48,width-.38,wide?.76:1.19,wide?20:19,true),
       ...stepList([t("nextPrompt"),t("ownerPrompt"),t("reviewPrompt")],[m,y+(wide?1.72:2.2),width,available-(wide?1.72:2.2)],wide?3:1)
     ];
-    const mapTop=method.id==="pareto"?y+.54:y;
+    const mapTop=y+.59;
     const map=[
       ...title(t("method"),headlines[1]||t("methodMap")),
-      ...(method.id==="pareto"?[text(t("paretoTrap"),m,y,width,.43,14,true)]:[]),
+      text(method.pitfall,m,y,width,.49,15,true),
       ...framework(method,{},[m,mapTop,width,end-mapTop-.16],t)
     ];
     return [
@@ -285,10 +380,10 @@ window.ProductivityDeck = (() => {
         pdf.setFont("helvetica",i.bold?"bold":"normal");
         pdf.setFontSize(size);
         pdf.setTextColor("#"+i.color);
-        lines.forEach((row,j)=>pdf.text(row.replace(/→/g,">").replace(/↑/g,"").replace(/≤/g,"<="),i.x,i.y+(size*.88+j*leading)/72));
+        lines.forEach((row,j)=>pdf.text(row.replace(/[\u202f\u2009]/g," ").replace(/→/g,">").replace(/↑/g,"").replace(/≤/g,"<="),i.x,i.y+(size*.88+j*leading)/72));
       }
     });
   }
 
-  return {spec,fieldNames,framework,compose,svg,addPptx,addPdf};
+  return {spec,fieldNames,framework,motif,compose,svg,addPptx,addPdf};
 })();
