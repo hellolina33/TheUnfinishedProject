@@ -1,0 +1,24 @@
+name: Day 04 Productivity Studio checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'day-04-productivity-library/**'
+      - 'scripts/check-day04.mjs'
+      - 'index.html'
+      - '.github/workflows/day04-checks.yml'
+  pull_request:
+    paths:
+      - 'day-04-productivity-library/**'
+      - 'scripts/check-day04.mjs'
+      - 'index.html'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5c163ec9a2f88f4a50a281a8b9c1 # v4.2.2
+      - name: Validate 50 tools and 300 export flows
+        run: node scripts/check-day04.mjs
