@@ -383,11 +383,11 @@ function viewTool(id){
     '<div class="meta"><span class="rf">'+FAM[t.f]+'</span>'+modeBadge(t)+'<span class="rf">'+t.t+' min</span></div>'+
     '<div class="tool" style="margin-top:22px">'+
       '<div>'+
-        '<div class="sec"><h2>Why it works</h3><p>'+esc(t.why)+'</p></div>'+
-        '<div class="sec"><h2>Run it alone</h3><ol>'+t.solo.map(function(s){return '<li>'+esc(s)+'</li>';}).join("")+'</ol></div>'+
-        '<div class="sec"><h2>Run it with a team</h3><ol>'+t.team.map(function(s){return '<li>'+esc(s)+'</li>';}).join("")+'</ol></div>'+
-        '<div class="sec"><h2>Example</h3><p>'+esc(t.ex)+'</p></div>'+
-        '<div class="sec"><h2>Source</h3><p class="src">'+esc(t.src)+'</p></div>'+
+        '<div class="sec"><h2>Why it works</h2><p>'+esc(t.why)+'</p></div>'+
+        '<div class="sec"><h2>Run it alone</h2><ol>'+t.solo.map(function(s){return '<li>'+esc(s)+'</li>';}).join("")+'</ol></div>'+
+        '<div class="sec"><h2>Run it with a team</h2><ol>'+t.team.map(function(s){return '<li>'+esc(s)+'</li>';}).join("")+'</ol></div>'+
+        '<div class="sec"><h2>Example</h2><p>'+esc(t.ex)+'</p></div>'+
+        '<div class="sec"><h2>Source</h2><p class="src">'+esc(t.src)+'</p></div>'+
         '<div class="dl"><label for="export-ratio" class="export-label">Presentation format</label>'+
           '<div class="export-controls"><select id="export-ratio" aria-label="Choose slide aspect ratio"><option value="16:9">16:9 · Landscape</option><option value="9:10">9:10 · Portrait</option><option value="9:16">9:16 · Mobile</option></select>'+
           '<button class="btn" id="dl" type="button">Download editable PowerPoint (8 slides)</button>'+
