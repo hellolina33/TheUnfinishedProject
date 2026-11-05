@@ -12,6 +12,7 @@ Live: https://the-unfinished-30.vercel.app
 | Day | Prototype | Folder |
 |---|---|---|
 | 1 | WhichOneAreYou — who plays which role in your WhatsApp group | [day-01-whichoneareyou](day-01-whichoneareyou/) |
+| 7 | Energizer Studio — build 2-minute energizers and icebreakers as one HTML file | [day-07-energizer-studio](day-07-energizer-studio/) |
 
 ## Adding a day
 1. Create `day-XX-name/index.html` (+ README).

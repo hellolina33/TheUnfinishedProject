@@ -214,6 +214,10 @@ const DAYS = [
     img: 'images/day-04-card.svg', alt: 'An illustrated toolbox of 50 productivity frameworks',
     app: '/day-04-productivity-library/', dl: 'productivity-library.html', post: '',
     todo: "Fifty methods are included, but some attributions need further verification. PPTX export uses an online JavaScript library; visual diagrams inside generated slides are images, while the surrounding text is editable. Google Slides is available by importing PPTX. Additional ratios and native PDF export are still being refined." },
+  { n: 7, name: 'Energizer Studio', line: 'Build a 2-minute energizer or icebreaker for your team: drop your videos, edit the scenes, export one HTML file you can run in any room.', tags: ['Facilitators', 'Your own videos', 'One HTML file'], emo: '🎬', c: 'var(--mint)',
+    img: 'images/day-07-card.svg', alt: 'A presentation screen with a 3-2-1 countdown, two video cards of people dancing and a colourful timeline below',
+    app: '/day-07-energizer-studio/', dlUrl: '/day-07-energizer-studio/app/', dl: 'energizer-studio.html', post: '',
+    todo: "Tested in Chrome only; Safari and Firefox are untested. Videos are embedded as they are, so big clips make big files. No poll or would-you-rather scenes yet. The editor works best on a laptop. No music included: bring a track you have the rights to." },
 ];
 /* ============================================ */
 
@@ -243,7 +247,7 @@ for (let i = 1; i <= 30; i++) {
       <div class="bd"><span class="dn">Day ${i}</span><h3>${esc(d.name)}</h3><p>${esc(d.line)}</p>
       <div class="tags">${(d.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
       ${d.todo ? `<details class="note"><summary>What's unfinished</summary><p>${esc(d.todo)}</p></details>` : ''}
-      <div class="acts">${d.app ? `<a class="p" href="${esc(d.app)}" target="_blank" rel="noopener">Try it</a>` : ''}<a href="${esc(d.post || LI_ACTIVITY)}" target="_blank" rel="noopener">Read the story</a>${d.dl && d.app ? `<a href="${esc(d.app)}" download="${esc(d.dl)}" title="One HTML file. Open it in your browser, nothing to install.">Download HTML</a>` : ''}</div></div></article>`;
+      <div class="acts">${d.app ? `<a class="p" href="${esc(d.app)}" target="_blank" rel="noopener">Try it</a>` : ''}<a href="${esc(d.post || LI_ACTIVITY)}" target="_blank" rel="noopener">Read the story</a>${d.dl && d.app ? `<a href="${esc(d.dlUrl || d.app)}" download="${esc(d.dl)}" title="One HTML file. Open it in your browser, nothing to install.">Download HTML</a>` : ''}</div></div></article>`;
   } else if (i === latest + 1) {
     h += `<article class="day locked" id="day-${i}"><div class="face"><span class="n">Day ${i}</span><span class="emo">?</span></div>
       <div class="bd"><h3>Next up: ${fmt(dateOf(i))}</h3><p>Follow on LinkedIn to catch it the morning it's out.</p></div></article>`;

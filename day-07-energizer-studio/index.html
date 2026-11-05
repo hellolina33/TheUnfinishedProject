@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Energizer Studio · The Unfinished 30</title>
+<meta name="author" content="Salah Khenissi">
+<meta name="description" content="Build 2-minute energizers and icebreakers your team actually joins. Drop your videos, edit the scenes, export one HTML file that runs in any room. Free, no account. Day 7 of The Unfinished 30.">
+<meta property="og:title" content="Energizer Studio: wake up a room in 2 minutes">
+<meta property="og:description" content="Build energizers and icebreakers with your own videos. One HTML file, free, no account. Day 7 of The Unfinished 30, by Salah Khenissi.">
+<meta property="og:image" content="https://the-unfinished-30.vercel.app/day-07-energizer-studio/og.jpg">
+<meta property="og:url" content="https://the-unfinished-30.vercel.app/day-07-energizer-studio/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#FFF7EC">
+<link rel="icon" href="/day-07-energizer-studio/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/day-07-energizer-studio/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/day-07-energizer-studio/apple-touch-icon.png">
+<link rel="preload" href="/day-07-energizer-studio/bricolage.woff2" as="font" type="font/woff2" crossorigin>
+<script defer src="/_vercel/insights/script.js"></script>
+<style>
+@font-face{font-family:Brico;src:url(/day-07-energizer-studio/bricolage.woff2) format('woff2');font-weight:200 800;font-stretch:75% 100%;font-display:swap}
+:root{--red:#E8344E;--yel:#FFC233;--grn:#12A671;--blu:#2C6BEF;--pur:#7A3FF2;--ink:#14142B;--paper:#FFF7EC;--muted:#4F4F66;--line:#E9DFCF;
+  --f:Brico,"Helvetica Neue",Arial,system-ui,sans-serif;color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{background:var(--paper);color:var(--ink);font:17px/1.55 var(--f);overflow-x:clip}
+a{color:inherit}
+img{display:block;max-width:100%;height:auto}
+:focus-visible{outline:3px solid var(--blu);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1160px;margin:0 auto;padding:0 max(20px,env(safe-area-inset-left))}
+b,strong{font-weight:800}
+/* challenge bar */
+.chal{background:var(--ink);color:#D9D6E8;font-size:14px}
+.chal .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px 18px;padding-top:11px;padding-bottom:11px}
+.chal a{color:var(--yel);font-weight:700;text-decoration:none}
+.chal a:hover{text-decoration:underline}
+/* nav */
+nav.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:18px;padding-bottom:18px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px;letter-spacing:-.02em;text-decoration:none}
+.dots{display:inline-flex;gap:5px}.dots i{width:12px;height:12px;border-radius:50%;display:block}
+.dots i:nth-child(1){background:var(--red)}.dots i:nth-child(2){background:var(--yel)}.dots i:nth-child(3){background:var(--grn)}.dots i:nth-child(4){background:var(--blu)}.dots i:nth-child(5){background:var(--pur)}
+nav.top ul{display:flex;gap:22px;list-style:none;font-weight:700;font-size:15px}
+nav.top ul a{text-decoration:none}nav.top ul a:hover{text-decoration:underline}
+@media (max-width:820px){nav.top ul{display:none}}
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;border:3px solid var(--ink);background:#fff;color:var(--ink);font-weight:800;font-size:17px;text-decoration:none;box-shadow:5px 6px 0 var(--ink);transition:transform .15s,box-shadow .15s;white-space:nowrap}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:7px 8px 0 var(--ink)}
+.btn.main{background:var(--yel)}
+.btn.sm{min-height:44px;padding:0 18px;font-size:15px;box-shadow:3px 4px 0 var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+.small{font-size:14px;color:var(--muted)}
+/* hero */
+.hero{padding:34px 0 70px}
+.hero .grid{display:grid;grid-template-columns:1fr 1.15fr;gap:56px;align-items:center}
+@media (max-width:980px){.hero .grid{grid-template-columns:1fr;gap:40px}}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:#fff;border-radius:999px;padding:8px 18px;font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+h1{font-weight:800;font-size:clamp(46px,7vw,92px);line-height:.93;letter-spacing:-.05em;margin:22px 0 22px}
+h1 .hl{background:var(--yel);padding:0 .08em;border-radius:.08em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lead{font-size:clamp(18px,1.6vw,21px);color:#2D2D45;max-width:34em;margin-bottom:28px}
+.proof{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-size:15px;font-weight:700}
+.proof span{display:inline-flex;align-items:center;gap:8px}
+.proof span::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--grn)}
+.shot{border:4px solid var(--ink);border-radius:22px;overflow:hidden;box-shadow:12px 14px 0 var(--ink);background:#fff;transform:rotate(1.2deg)}
+.hero figure{position:relative}
+.sticker{position:absolute;background:#fff;border:3px solid var(--ink);box-shadow:5px 6px 0 var(--ink);border-radius:16px;padding:10px 16px;font-weight:800;font-size:17px;white-space:nowrap}
+.hero .s1{left:-18px;top:-22px;transform:rotate(-7deg);background:var(--yel)}
+.hero .s2{right:-10px;bottom:-26px;transform:rotate(5deg)}
+@media (max-width:600px){.hero .s1{left:6px}.hero .s2{right:6px}}
+/* sections */
+section{padding:80px 0;border-top:3px solid var(--ink)}
+.kicker{font-weight:800;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:var(--red);margin-bottom:12px}
+h2{font-weight:800;font-size:clamp(34px,4.6vw,58px);line-height:.98;letter-spacing:-.045em;margin-bottom:22px;max-width:16em}
+h3{font-weight:800;font-size:23px;letter-spacing:-.02em;line-height:1.15;margin-bottom:8px}
+.sub{font-size:19px;color:#2D2D45;max-width:40em}
+/* why */
+.why{background:#fff}
+.why .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:start}
+@media (max-width:900px){.why .grid{grid-template-columns:1fr;gap:28px}}
+.why .story p{margin-bottom:16px;font-size:18px}
+.why .story p:first-child{font-size:22px;font-weight:600;line-height:1.4}
+.pains{display:grid;gap:14px}
+.pain{border:3px solid var(--ink);border-radius:18px;padding:18px 20px;background:var(--paper);display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.pain .ic{width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-weight:800;color:#fff}
+.pain h3{font-size:19px;margin-bottom:4px}
+.pain p{font-size:16px;color:var(--muted)}
+/* what */
+.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:40px}
+@media (max-width:900px){.cards3{grid-template-columns:1fr}}
+.uc{border:3px solid var(--ink);border-radius:22px;background:#fff;overflow:hidden;box-shadow:7px 8px 0 var(--ink);display:flex;flex-direction:column}
+.uc img{border-bottom:3px solid var(--ink);aspect-ratio:16/9;object-fit:cover}
+.uc .bd{padding:20px 22px 24px}
+.uc .meta{font-size:13px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.uc p{font-size:16px;color:#2D2D45}
+/* scenes */
+.scenes{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:40px}
+@media (max-width:980px){.scenes{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:520px){.scenes{grid-template-columns:1fr}}
+.sc{border:3px solid var(--ink);border-radius:18px;background:#fff;padding:16px 18px}
+.sc .tag{display:inline-flex;align-items:center;gap:8px;font-weight:800;font-size:15px;margin-bottom:6px}
+.sc .tag i{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink)}
+.sc p{font-size:15px;color:var(--muted);line-height:1.45}
+/* how */
+.how{background:var(--ink);color:#fff;border-top-color:var(--ink)}
+.how .kicker{color:var(--yel)}
+.how .sub{color:#CFCDE0}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:44px;counter-reset:s}
+@media (max-width:980px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.steps{grid-template-columns:1fr}}
+.step{background:#fff;color:var(--ink);border-radius:22px;padding:24px;position:relative;border:3px solid #fff}
+.step .n{width:56px;height:56px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:26px;color:#fff;margin-bottom:16px;box-shadow:4px 5px 0 var(--ink)}
+.step p{font-size:16px;color:var(--muted)}
+.step .k{display:inline-block;font-size:13px;font-weight:700;background:var(--paper);border:2px solid var(--ink);border-radius:8px;padding:1px 8px;margin:6px 4px 0 0;color:var(--ink)}
+.editor-shot{margin-top:50px;border:4px solid #fff;border-radius:20px;overflow:hidden}
+.cap{margin-top:12px;font-size:14px;color:#CFCDE0}
+/* features */
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:40px;border:3px solid var(--ink);border-radius:22px;overflow:hidden;background:#fff}
+@media (max-width:900px){.feats{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.feats{grid-template-columns:1fr}}
+.feat{padding:24px 24px 26px;border-right:3px solid var(--ink);border-bottom:3px solid var(--ink)}
+.feat h3{font-size:19px;display:flex;align-items:center;gap:10px}
+.feat h3 i{width:14px;height:14px;border-radius:50%;flex:none}
+.feat p{font-size:15.5px;color:var(--muted)}
+/* who */
+.who .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:36px}
+@media (max-width:900px){.who .grid{grid-template-columns:1fr}}
+.who .card{border:3px solid var(--ink);border-radius:20px;padding:22px;background:#fff}
+.who .card p{font-size:16px;color:var(--muted)}
+/* tips */
+.tips{background:#fff}
+.tiplist{display:grid;grid-template-columns:1fr 1fr;gap:16px 40px;margin-top:30px;list-style:none}
+@media (max-width:820px){.tiplist{grid-template-columns:1fr}}
+.tiplist li{display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:start;font-size:16.5px}
+.tiplist li b{display:block}
+.tiplist .ck{width:36px;height:36px;border-radius:10px;background:var(--grn);border:3px solid var(--ink);display:grid;place-items:center;color:#fff;font-weight:800}
+.callout{margin-top:40px;border:3px solid var(--ink);border-radius:20px;padding:22px 24px;background:var(--paper);display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.callout .ic{width:48px;height:48px;border-radius:50%;background:var(--blu);border:3px solid var(--ink);display:grid;place-items:center;color:#fff;font-weight:800;font-size:22px}
+/* faq */
+.faq .list{margin-top:34px;display:grid;gap:12px;max-width:900px}
+details.q{border:3px solid var(--ink);border-radius:18px;background:#fff}
+details.q summary{cursor:pointer;list-style:none;padding:18px 58px 18px 22px;font-weight:800;font-size:18px;position:relative}
+details.q summary::-webkit-details-marker{display:none}
+details.q summary::after{content:"+";position:absolute;right:20px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;background:var(--yel);border:2px solid var(--ink);display:grid;place-items:center;font-size:20px;line-height:1}
+details.q[open] summary::after{content:"–"}
+details.q .a{padding:0 22px 20px;font-size:16.5px;color:#2D2D45}
+details.q .a p+p{margin-top:10px}
+/* unfinished */
+.unf{background:var(--yel)}
+.unf ul{margin-top:24px;display:grid;gap:12px;list-style:none;max-width:860px}
+.unf li{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:14px 18px;font-size:16.5px}
+.unf li b{margin-right:6px}
+/* cta */
+.cta{text-align:center}
+.cta h2{margin:0 auto 18px}
+.cta .sub{margin:0 auto 30px}
+.cta .btns{justify-content:center}
+footer{border-top:3px solid var(--ink);padding:30px 0 40px;font-size:15px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px}
+footer a{font-weight:700}
+</style>
+</head>
+<body>
+<div class="chal"><div class="wrap"><span><a href="/">The Unfinished 30</a> · Day 7/30, one free prototype a day</span><span>Made by <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span></div></div>
+
+<nav class="top" aria-label="Page"><div class="wrap">
+  <a class="logo" href="#top"><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>Energizer Studio</a>
+  <ul><li><a href="#why">Why</a></li><li><a href="#what">What you can build</a></li><li><a href="#how">How it works</a></li><li><a href="#faq">Q&amp;A</a></li></ul>
+  <a class="btn sm main" href="/day-07-energizer-studio/app/">Open the studio</a>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap grid">
+  <div>
+    <span class="eyebrow">Day 7 · For facilitators &amp; team leads</span>
+    <h1>Wake up a room in <span class="hl">2 minutes.</span></h1>
+    <p class="lead">Energizer Studio turns your team’s videos into a bold, full-screen energizer or icebreaker. Pick a template, drop your clips, change the words. You get one HTML file that runs in any meeting room, even offline.</p>
+    <div class="btns">
+      <a class="btn main" href="/day-07-energizer-studio/app/">▶ Try the demo and build yours</a>
+      <a class="btn" href="#how">See how it works</a>
+    </div>
+    <div class="proof"><span>Free, no account</span><span>Nothing uploaded</span><span>One file to share</span></div>
+  </div>
+  <figure>
+    <div class="shot"><img src="/day-07-energizer-studio/img/editor.webp" width="1600" height="900" alt="The Energizer Studio editor: a list of scenes on the left, a live preview of a question screen on the right and a colour timeline at the bottom"></div>
+    <span class="sticker s1">Live preview</span>
+    <span class="sticker s2">Export → one .html</span>
+  </figure>
+</div></header>
+
+<section class="why" id="why"><div class="wrap grid">
+  <div class="story">
+    <p class="kicker">Why I built it</p>
+    <h2>The 2 pm slump is real. Slides won’t fix it.</h2>
+    <p>For a company summit, I had to bring a room back to life right after lunch. I turned 12 senior leaders into animated characters and had them lead 10 silly moves on the big screen: jazz hands, a robot malfunction, air guitar, a freeze.</p>
+    <p>It landed well with the team. The next question was obvious: <b>could any facilitator make one for their own session, without a designer?</b></p>
+    <p>That animation took a lot of custom work. Energizer Studio packs it into a tool anyone can use, with their own team, their own words and their own colours.</p>
+  </div>
+  <div class="pains" aria-label="Problems it solves">
+    <div class="pain"><span class="ic" style="background:var(--red)">1</span><div><h3>Energizers feel generic</h3><p>Stock videos and “stand up and stretch” slides get polite smiles. Seeing your own leaders or colleagues on screen gets people moving.</p></div></div>
+    <div class="pain"><span class="ic" style="background:var(--blu)">2</span><div><h3>Facilitators lose time</h3><p>Timing slides, finding a countdown, syncing music, fixing fonts on the room laptop. Here, the show runs by itself.</p></div></div>
+    <div class="pain"><span class="ic" style="background:var(--pur)">3</span><div><h3>Tools need accounts and Wi-Fi</h3><p>No sign-up, no licence, no upload. The file opens in Chrome, even with the network down.</p></div></div>
+  </div>
+</div></section>
+
+<section id="what"><div class="wrap">
+  <p class="kicker">What you can build</p>
+  <h2>Three formats, ready to run.</h2>
+  <p class="sub">Start from a template, then make it yours. Every scene has its own duration, so a 90-second energizer and a 10-minute icebreaker use the same tool.</p>
+  <div class="cards3">
+    <article class="uc"><img src="/day-07-energizer-studio/img/move.webp" width="960" height="540" alt="A blue move screen titled Air Guitar, with an instruction, a countdown ring and a card where your video plays" loading="lazy"><div class="bd"><p class="meta">Movement energizer · 1.5 to 3 min</p><h3>Copy the leader</h3><p>Your colleagues’ videos lead each move, one or two at a time. A ring counts down, a sticker adds the joke, a “FREEZE!” banner lands on cue.</p></div></article>
+    <article class="uc"><img src="/day-07-energizer-studio/img/question.webp" width="960" height="540" alt="A blue question screen asking what small thing made you smile this week, with a talk timer" loading="lazy"><div class="bd"><p class="meta">Icebreaker · 2 to 10 min</p><h3>Talk to someone new</h3><p>One big question per screen, a talk timer and three beeps before the swap. Works for onboarding, workshops, kick-offs and offsites.</p></div></article>
+    <article class="uc"><img src="/day-07-energizer-studio/img/timer.webp" width="960" height="540" alt="A green stretch break screen with a large countdown ring" loading="lazy"><div class="bd"><p class="meta">Breaks &amp; mixes · any length</p><h3>Your own running order</h3><p>Mix moves, questions and timed breaks. Add a rules screen, a 3-2-1 countdown and an outro that thanks the room.</p></div></article>
+  </div>
+  <div class="scenes" aria-label="Scene types">
+    <div class="sc"><span class="tag"><i style="background:var(--paper)"></i>Opener</span><p>Your title and up to three featured videos.</p></div>
+    <div class="sc"><span class="tag"><i style="background:var(--ink)"></i>Meet the crew</span><p>Every video at once, as playing cards.</p></div>
+    <div class="sc"><span class="tag"><i style="background:var(--yel)"></i>Rules</span><p>Up to three rules, one underlined, and a bottom line.</p></div>
+    <div class="sc"><span class="tag"><i style="background:var(--ink)"></i>3-2-1 Go</span><p>Countdown with beeps and a “Let’s move!” burst.</p></div>
+    <div class="sc"><span class="tag"><i style="background:var(--red)"></i>Move</span><p>Name, instruction, sticker, 1 or 2 videos, optional freeze.</p></div>
+    <div class="sc"><span class="tag"><i style="background:var(--blu)"></i>Question</span><p>A big question, a hint, a talk timer and end beeps.</p></div>
+    <div class="sc"><span class="tag"><i style="background:var(--grn)"></i>Timer</span><p>A full-screen countdown for breaks or pair work.</p></div>
+    <div class="sc"><span class="tag"><i style="background:var(--paper)"></i>Outro</span><p>Thank-you title, the whole crew taking a bow, confetti.</p></div>
+  </div>
+</div></section>
+
+<section class="how" id="how"><div class="wrap">
+  <p class="kicker">How it works</p>
+  <h2>From blank to big screen in four steps.</h2>
+  <p class="sub">Everything happens in your browser. Close the tab and your edits are still there next time.</p>
+  <div class="steps">
+    <div class="step"><span class="n" style="background:var(--red)">1</span><h3>Pick a template</h3><p>Movement energizer, icebreaker questions or blank. Add, reorder, duplicate or delete scenes.</p></div>
+    <div class="step"><span class="n" style="background:var(--yel);color:var(--ink)">2</span><h3>Drop your videos</h3><p>Drag in short MP4s. Set start and end to skip still frames, then zoom to frame each person. Videos are assigned to moves automatically.</p></div>
+    <div class="step"><span class="n" style="background:var(--grn)">3</span><h3>Write and time it</h3><p>Change every text, duration and colour with a live preview. Add your own music if you have the rights.</p></div>
+    <div class="step"><span class="n" style="background:var(--blu)">4</span><h3>Export and present</h3><p>“Export show” saves one HTML file with everything inside. Open it in the room and press Start.</p><span class="k">Space pause</span><span class="k">F full screen</span><span class="k">N next</span></div>
+  </div>
+  <div class="editor-shot"><img src="/day-07-energizer-studio/img/editor.webp" width="1600" height="900" alt="The editor with the scene list, a live preview and the timeline" loading="lazy"></div>
+  <p class="cap">The editor: scenes on the left, live preview on the right, the whole show on the timeline below. Click the timeline to jump anywhere.</p>
+</div></section>
+
+<section id="features"><div class="wrap">
+  <p class="kicker">What’s inside</p>
+  <h2>Built for the room, not for a demo.</h2>
+  <div class="feats">
+    <div class="feat"><h3><i style="background:var(--red)"></i>Runs by itself</h3><p>Transitions, countdowns, beeps and music are timed for you. You can stay with your group instead of the laptop.</p></div>
+    <div class="feat"><h3><i style="background:var(--yel)"></i>Projector-proof</h3><p>Designed at 1920 × 1080 with huge type. Fonts are embedded, so nothing breaks on a borrowed laptop.</p></div>
+    <div class="feat"><h3><i style="background:var(--grn)"></i>One file to share</h3><p>The exported show carries its videos, music and settings. Email it, put it on a drive, open it offline.</p></div>
+    <div class="feat"><h3><i style="background:var(--blu)"></i>Editable later</h3><p>Anyone who receives the file can press Edit, change a word, and export a new version.</p></div>
+    <div class="feat"><h3><i style="background:var(--pur)"></i>Your brand</h3><p>Five colours, ink and paper, a corner label and a tag on the video cards. Change them once, the whole show follows.</p></div>
+    <div class="feat"><h3><i style="background:var(--red)"></i>Smart text</h3><p>Type {i}, {total} or {mins} and the numbers stay right when you add or remove scenes. Double asterisks make a word bold.</p></div>
+    <div class="feat"><h3><i style="background:var(--yel)"></i>Private by design</h3><p>No server, no account, no tracking of your content. Edits are saved in your own browser only.</p></div>
+    <div class="feat"><h3><i style="background:var(--grn)"></i>Inclusive by default</h3><p>The templates invite people to join from their seat, and every move can be done in a small space.</p></div>
+    <div class="feat"><h3><i style="background:var(--blu)"></i>Remote-friendly</h3><p>Share the browser tab in Teams, Zoom or Meet, with sound on, and your remote crowd joins in.</p></div>
+  </div>
+</div></section>
+
+<section class="who" id="who"><div class="wrap">
+  <p class="kicker">Who it’s for</p>
+  <h2>Anyone who runs a room.</h2>
+  <div class="grid">
+    <div class="card"><h3>Trainers &amp; facilitators</h3><p>A reset after lunch, between two heavy modules, or to open day two. Build one once, reuse it every session.</p></div>
+    <div class="card"><h3>Team leads &amp; managers</h3><p>Start a town hall, a kick-off or an offsite with your own people on screen. It says “this is our team” better than a slide.</p></div>
+    <div class="card"><h3>HR, L&amp;D &amp; event teams</h3><p>Summits, onboarding waves, wellbeing weeks. Give every facilitator the same polished format in one file.</p></div>
+  </div>
+</div></section>
+
+<section class="tips" id="tips"><div class="wrap">
+  <p class="kicker">Facilitator tips</p>
+  <h2>Make it land.</h2>
+  <ul class="tiplist">
+    <li><span class="ck">✓</span><div><b>Short clips work best.</b>About 10 seconds of 720p per person. Ask colleagues to film themselves against a plain wall, full body, phone in landscape.</div></li>
+    <li><span class="ck">✓</span><div><b>Keep moves gentle.</b>Feet grounded, hands close, nothing that needs space or a warm-up. Always say “or join from your seat”.</div></li>
+    <li><span class="ck">✓</span><div><b>Say the magic sentence.</b>“Out of sync is perfect.” People move more when they know nobody is grading them.</div></li>
+    <li><span class="ck">✓</span><div><b>Two minutes is enough.</b>Eight to ten moves of 8 seconds, or three to five questions. Stop while the room still wants more.</div></li>
+    <li><span class="ck">✓</span><div><b>Test on the room laptop.</b>Open the file, press Start, check full screen and sound. Takes one minute and saves the moment.</div></li>
+    <li><span class="ck">✓</span><div><b>Lead by example.</b>Do the first move with them. When the facilitator commits, the room follows.</div></li>
+  </ul>
+  <div class="callout"><span class="ic">i</span><div><b>Ask before you use someone’s face.</b> The exported file contains the videos you add. Get people’s OK before putting them on screen, and only add music you have the rights to play. Animated avatars of your colleagues work too, as long as they agreed.</div></div>
+</div></section>
+
+<section class="faq" id="faq"><div class="wrap">
+  <p class="kicker">Q&amp;A</p>
+  <h2>Questions people ask.</h2>
+  <div class="list">
+    <details class="q"><summary>Is it really free? Do I need an account?</summary><div class="a"><p>Yes, free, and no account. Open the studio, build, export. It is Day 7 of The Unfinished 30, a challenge where I ship one free prototype every day.</p></div></details>
+    <details class="q"><summary>Where do my videos go?</summary><div class="a"><p>Nowhere. They stay on your computer. The studio runs in your browser and saves your work in the browser’s own storage. When you export, the videos are packed into the HTML file you download.</p></div></details>
+    <details class="q"><summary>Where do I get the videos?</summary><div class="a"><p>Ask colleagues to film themselves for about 10 seconds doing one move, against a plain background. You can also use animated characters of your team, made with the AI video tool you already use, as long as each person agreed.</p><p>No videos at all? The icebreaker template works with text only.</p></div></details>
+    <details class="q"><summary>Which video formats work? How big will the file be?</summary><div class="a"><p>MP4 (H.264) is the safest. WebM works in Chrome too, and MOV files usually do if they were recorded in H.264. The file grows with your videos: twelve 10-second clips in 720p make a file of roughly 15 to 20 MB. The studio does not compress videos yet, so shorter, smaller clips are better.</p></div></details>
+    <details class="q"><summary>Does it work offline, on Mac, on Windows?</summary><div class="a"><p>Yes, offline: everything is inside the file. It is tested in Chrome. Edge uses the same engine and should behave the same, but Safari and Firefox are not tested yet.</p></div></details>
+    <details class="q"><summary>Can I use it in Teams, Zoom or Meet?</summary><div class="a"><p>Yes. Open the file in Chrome, then share that tab or window with “share sound” on. People at home follow along on their camera.</p></div></details>
+    <details class="q"><summary>Can I put it inside PowerPoint or Google Slides?</summary><div class="a"><p>Not directly. Keep the HTML file open in a browser tab next to your deck and switch to it when it’s time. Pressing F makes it full screen.</p></div></details>
+    <details class="q"><summary>Can I change the length of each part?</summary><div class="a"><p>Yes. Every scene has its own duration in seconds. The timeline and the “Under 2 minutes” style texts update when you use the {mins} token.</p></div></details>
+    <details class="q"><summary>Can someone else edit the show I send them?</summary><div class="a"><p>Yes. They open the file, press E or click Edit, make their changes and export a new file. The original stays untouched.</p></div></details>
+    <details class="q"><summary>Can I add music?</summary><div class="a"><p>Yes, any MP3 you have the rights to play. You choose when it starts, its volume and whether it loops. No music is included.</p></div></details>
+    <details class="q"><summary>Can I write in another language?</summary><div class="a"><p>Yes, every text on screen is yours to write, in any language that uses Latin letters. The editor itself is in English.</p></div></details>
+    <details class="q"><summary>Can I use it at work?</summary><div class="a"><p>Yes. It is free to use for your sessions. Check your company’s rules on employee images and music before you share a show widely.</p></div></details>
+  </div>
+</div></section>
+
+<section class="unf" id="unfinished"><div class="wrap">
+  <p class="kicker" style="color:var(--ink)">Honest note</p>
+  <h2>What’s still unfinished.</h2>
+  <ul>
+    <li><b>Browsers:</b>tested in Chrome only. Edge should work the same way; Safari and Firefox are untested.</li>
+    <li><b>File size:</b>videos are embedded as they are, with no compression, so big clips make big files.</li>
+    <li><b>Scene types:</b>no live poll, no “would you rather”, no team scoreboard yet.</li>
+    <li><b>Phones:</b>you can watch a show on a phone, but editing is built for a laptop.</li>
+    <li><b>Editor language:</b>the editor is in English only for now.</li>
+  </ul>
+</div></section>
+
+<section class="cta"><div class="wrap">
+  <h2>Your team, on the big screen, today.</h2>
+  <p class="sub">Play the 2-minute demo, then press Edit and make it yours.</p>
+  <div class="btns"><a class="btn main" href="/day-07-energizer-studio/app/">▶ Open Energizer Studio</a><a class="btn" href="/day-07-energizer-studio/app/" download="energizer-studio.html">Download the HTML</a></div>
+  <p class="small" style="margin-top:18px">One file, about 270 KB. Open it in Chrome, nothing to install.</p>
+</div></section>
+
+<footer><div class="wrap">
+  <span>Energizer Studio · Day 7 of <a href="/">The Unfinished 30</a> · by <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a> · © 2026</span>
+  <span><a href="/day-07-energizer-studio/app/" download="energizer-studio.html">Download the HTML</a> · <a href="/">All prototypes</a></span>
+</div></footer>
+</body>
+</html>
