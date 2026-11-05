@@ -310,7 +310,7 @@ body[data-embed] #app{padding-top:10px!important}
 .w-suggestions{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
 .w-kit-page li{margin:20px 0}.w-kit-page h2{font-size:28px}.w-kit-page p{max-width:66ch}
 .w-reuse{border-top:1px solid var(--s-line);padding-top:8px}.w-reuse summary{font-weight:700;cursor:pointer;min-height:32px}.w-reuse p{font-size:13px}.w-completeness{font-size:14px;margin:12px 0}.w-plan input{min-width:0}
-</style></head><body data-version="7389dbff27e8"><div id="app"></div><script type="text/plain" id="offline-notices">Third-party notices. JSZip is used under its MIT license option.
+</style></head><body data-version="e8fb43551821"><div id="app"></div><script type="text/plain" id="offline-notices">Third-party notices. JSZip is used under its MIT license option.
 
 pptxgenjs 4.0.1
 The MIT License (MIT)
@@ -1797,6 +1797,7 @@ window.ProductivityWorkspace = (() => {
       apply: "Replace table with these rows",
       notes: "Reading notes",
       export: "Download or copy the result",
+      reuseTitle: "Keep and reuse",
       markdown: "Copy summary",
       csvOut: "Download CSV",
       calendar: "Download calendar",
@@ -1888,6 +1889,7 @@ window.ProductivityWorkspace = (() => {
       apply: "Remplacer le tableau par ces lignes",
       notes: "Notes de lecture",
       export: "Télécharger ou copier le résultat",
+      reuseTitle: "Garder et réutiliser",
       markdown: "Copier le résumé",
       csvOut: "Télécharger le CSV",
       calendar: "Télécharger le calendrier",
@@ -4955,7 +4957,7 @@ window.ProductivityDeck = (() => {
     return `${interactive ? workspace.render(x, workFor(x), s.lang, esc) : ""}<div class="s-canvaslayout ${interactive ? (Object.keys(values).length ? "w-legacy w-has-legacy" : "w-legacy") : ""}"><div class="s-canvaspaper">
       <div class="s-viewtoolbar"><span class="s-kicker">${t("livePreview")}</span><button class="s-btn outline tiny" data-act="example">${s.example ? t("viewMine") : t("filled")}</button></div>
       <div id="diagram">${diagram(x, s.example ? x.sampleCells || x.sample : values, !s.example)}</div><p class="s-source">${s.example ? t("fiction") : t("tip")}</p>
-    </div><aside class="s-panel"><div class="s-worksheet"><h3>${interactive ? wt("export") : t("myEntries")}</h3><p class="s-smallnote" id="worksheet-save" role="status">${savedStatus(x)}</p>${interactive ? (Object.keys(values).length ? `<details class="w-old-notes"><summary>${s.lang === "fr" ? "Notes d’un ancien canevas" : "Notes from an earlier worksheet"}</summary>${fields}</details>` : "") : fields}
+    </div><aside class="s-panel"><div class="s-worksheet"><h3>${interactive ? wt("reuseTitle") : t("myEntries")}</h3><p class="s-smallnote" id="worksheet-save" role="status">${savedStatus(x)}</p>${interactive ? (Object.keys(values).length ? `<details class="w-old-notes"><summary>${s.lang === "fr" ? "Notes d’un ancien canevas" : "Notes from an earlier worksheet"}</summary>${fields}</details>` : "") : fields}
       <button class="s-btn orange s-worksheet-primary" data-act="worksheet-slides">${t(hasAnswers(x) ? "seeWorksheetSlide" : "seeBlankWorksheet")} →</button>
       <details class="s-answer-management" id="answer-management">
         <summary>${t("manageAnswers")}</summary>

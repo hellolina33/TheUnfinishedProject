@@ -58,7 +58,7 @@
   ],
   "redirects": [
     {
-      "source": "/day-04-productivity-library/tools/:id",
+      "source": "/day-04-productivity-library/tools/:id/",
       "has": [
         {
           "type": "query",
@@ -70,7 +70,7 @@
       "permanent": true
     },
     {
-      "source": "/day-04-productivity-library/tools/:id",
+      "source": "/day-04-productivity-library/tools/:id/",
       "destination": "/day-04-productivity-library/en/tools/:id/",
       "permanent": true
     }

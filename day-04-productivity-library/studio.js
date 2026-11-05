@@ -1148,7 +1148,7 @@
     return `${interactive ? workspace.render(x, workFor(x), s.lang, esc) : ""}<div class="s-canvaslayout ${interactive ? (Object.keys(values).length ? "w-legacy w-has-legacy" : "w-legacy") : ""}"><div class="s-canvaspaper">
       <div class="s-viewtoolbar"><span class="s-kicker">${t("livePreview")}</span><button class="s-btn outline tiny" data-act="example">${s.example ? t("viewMine") : t("filled")}</button></div>
       <div id="diagram">${diagram(x, s.example ? x.sampleCells || x.sample : values, !s.example)}</div><p class="s-source">${s.example ? t("fiction") : t("tip")}</p>
-    </div><aside class="s-panel"><div class="s-worksheet"><h3>${interactive ? wt("export") : t("myEntries")}</h3><p class="s-smallnote" id="worksheet-save" role="status">${savedStatus(x)}</p>${interactive ? (Object.keys(values).length ? `<details class="w-old-notes"><summary>${s.lang === "fr" ? "Notes d’un ancien canevas" : "Notes from an earlier worksheet"}</summary>${fields}</details>` : "") : fields}
+    </div><aside class="s-panel"><div class="s-worksheet"><h3>${interactive ? wt("reuseTitle") : t("myEntries")}</h3><p class="s-smallnote" id="worksheet-save" role="status">${savedStatus(x)}</p>${interactive ? (Object.keys(values).length ? `<details class="w-old-notes"><summary>${s.lang === "fr" ? "Notes d’un ancien canevas" : "Notes from an earlier worksheet"}</summary>${fields}</details>` : "") : fields}
       <button class="s-btn orange s-worksheet-primary" data-act="worksheet-slides">${t(hasAnswers(x) ? "seeWorksheetSlide" : "seeBlankWorksheet")} →</button>
       <details class="s-answer-management" id="answer-management">
         <summary>${t("manageAnswers")}</summary>

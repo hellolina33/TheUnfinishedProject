@@ -25,3 +25,22 @@ for (const page of [
   if (!response.ok) throw Error("Unavailable page " + page);
 }
 console.log("Production release " + manifest.version + " verified.");
+for (const [legacy, destination] of [
+  [
+    "/day-04-productivity-library/tools/pareto/?lang=fr",
+    "/day-04-productivity-library/fr/outils/pareto/",
+  ],
+  [
+    "/day-04-productivity-library/tools/pareto/",
+    "/day-04-productivity-library/en/tools/pareto/",
+  ],
+]) {
+  const response = await fetch(site + legacy, { redirect: "manual" });
+  const location = new URL(response.headers.get("location") || "/", site);
+  if (
+    ![301, 308].includes(response.status) ||
+    location.pathname !== destination
+  )
+    throw Error("Legacy URL did not redirect to its canonical page: " + legacy);
+}
+console.log("Permanent legacy redirects verified.");
