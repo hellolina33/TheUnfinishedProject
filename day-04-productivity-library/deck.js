@@ -39,29 +39,48 @@ window.ProductivityDeck = (() => {
       }
       if (index!==undefined) out.push(box(left,top,.045,height,index===0?orange:rule));
     };
+    if(method.id==="pareto" && !blank){
+      const chartTop=y+.52, bottom=y+h-1.08, chartH=bottom-chartTop;
+      const left=x+.43, right=x+w-.42, step=(right-left)/data.length;
+      out.push(text(t("paretoScale"),x,y,w*.48,.28,11,true),text(t("paretoCumulative"),x+w*.54,y,w*.46,.28,11,true,muted));
+      [0,.2,.4,.6,.8,1].forEach(fraction=>{
+        const yy=bottom-chartH*fraction;
+        out.push(line(left,yy,right,yy,fraction===.8?muted:rule));
+        out.push(text(Math.round(100*fraction),x,yy-.07,.36,.19,8,false,muted));
+      });
+      const points=[];
+      let total=0;
+      data.forEach(([label,start,end],i)=>{
+        const count=end-start;
+        total+=count;
+        const xx=left+i*step;
+        const barH=chartH*count;
+        out.push(box(xx+step*.23,bottom-barH,step*.54,barH,i<2?orange:tint));
+        out.push(text(Math.round(100*count),xx+step*.25,bottom-.24,step*.48,.20,9,true));
+        out.push(text(label,xx+.04,bottom+.14,step-.08,.54,11,true));
+        points.push([xx+step*.50,bottom-chartH*total,total]);
+      });
+      points.forEach(([xx,yy,share],i)=>{
+        if(i) out.push(line(points[i-1][0],points[i-1][1],xx,yy,ink));
+        out.push(box(xx-.033,yy-.033,.066,.066,ink));
+        out.push(text(Math.round(share*100)+" %",xx+.08,yy-.23,Math.min(.55,right+.42-xx-.08),.20,9,true));
+      });
+      out.push(line(left,bottom+.84,left+.27,bottom+.84,muted),text(t("paretoThreshold"),left+.37,bottom+.75,right-left-.37,.22,9,false,muted));
+      return out;
+    }
     if (kind==="bars" && !blank) {
-      const isPareto = method.id==="pareto";
+
       const rows = data.map(([label,start,end],index)=>({label,start,end,index}));
-      if (isPareto) rows.sort((a,b)=>b.end-a.end);
       const labelW=w*(portrait?.36:.28), plotW=w-labelW-.52, rh=h/(rows.length+1);
       const labelSize=portrait?12:14;
-      out.push(text(isPareto?t("cumulative"):t("timeScale"),x+labelW,y,plotW,.28,11,true,muted));
-      let cumulative=0, previous;
+      out.push(text(t("timeScale"),x+labelW,y,plotW,.28,11,true,muted));
       rows.forEach(({label,start,end,index},i)=>{
         const yy=y+rh*(i+1);
         const value=values[index];
         const barY=yy+rh*.12, barH=rh*.42;
         out.push(text(label,x,yy,labelW-.12,rh*.8,labelSize,true));
         out.push(box(x+labelW,barY,plotW,barH,tint));
-        out.push(box(x+labelW+plotW*(isPareto?0:start),barY,plotW*(end-start),barH,i?muted:orange));
-        if (isPareto) {
-          cumulative+=end-start;
-          const point=[x+labelW+plotW*cumulative,barY+barH*.5];
-          if (previous) out.push(line(...previous,...point,ink));
-          out.push(box(point[0]-.035,point[1]-.035,.07,.07,ink));
-          out.push(text(Math.round(cumulative*100)+"%",x+labelW+plotW+.05,barY,.47,.25,10,true));
-          previous=point;
-        }
+        out.push(box(x+labelW+plotW*start,barY,plotW*(end-start),barH,i?muted:orange));
         if (value) out.push(text(value,x+labelW,yy+rh*.57,plotW,rh*.38,10));
       });
       return out;
@@ -121,8 +140,9 @@ window.ProductivityDeck = (() => {
         const xx=x+i%cols*(cw+gap), yy=y+Math.floor(i/cols)*rh;
         return [
           line(xx,yy,xx+cw,yy),
-          text(number(i),xx,yy+.11,.43,.30,13,true),
-          text(step,xx+.52,yy+.11,cw-.52,rh-.18,wide?17:16)
+          box(xx,yy+.10,.38,.34,orange),
+          text(number(i),xx+.065,yy+.15,.27,.20,10,true),
+          text(step,xx+.53,yy+.12,cw-.53,rh-.20,wide?18:17)
         ];
       });
     };
@@ -134,39 +154,59 @@ window.ProductivityDeck = (() => {
       text(method.n+"  ·  Salah Khenissi",m,end+.12,width,.31,9,true,muted)
     ];
     const y=wide?2.39:2.75, available=end-y-.16;
-    const coverY=tall?3.1:1.74;
+    const {scene,check,headlines=[]}=method.case;
+    const compact=tall?6.1:wide?4.25:4.55;
     const cover=[
-      text(category.toUpperCase(),m,coverY-.48,width,.32,12,true,muted),
-      text(method.n,m,coverY,wide?width*.72:width,tall?2.8:wide?2.2:2.45,wide?61:52,true),
-      box(m,end-1.85,width,1.42,tint),
-      text(method.why,m+.23,end-1.66,width-.46,.84,wide?22:20),
-      text(method.t+" min  /  "+t(method.m==="solo"?"me":method.m==="team"?"team":"both"),m+.23,end-.76,width-.46,.24,10,true,muted)
+      box(0,.82,w,end-.83,ink),
+      text(category.toUpperCase()+"  /  "+method.t+" min",m,1.25,width,.35,13,true,orange),
+      text(method.n,m,wide?1.85:2.15,wide?width*.83:width,tall?2.7:2.2,wide?60:51,true,paper),
+      line(m,compact,w-m,compact,muted),
+      text(method.why,m,compact+.25,width,wide?1.4:1.7,wide?26:25,false,paper)
     ];
-    if(wide) cover.push(text(String(method.number).padStart(2,"0"),w-m-1.83,coverY+.09,1.83,1.4,70,true,orange));
-    const bodyW=wide?width*.55:width;
-    const problem=[
-      ...title(t("problem"),t("why")),
-      text(method.why,m,y,bodyW,wide?1.91:tall?3.0:1.6,wide?28:26,true),
-      ...stepList([t("whenPrompt"),t("successPrompt")],wide?[m+width*.62,y,width*.38,available]:[m,y+(tall?3.45:1.87),width,available-(tall?3.45:1.87)],1)
+    const briefing=[
+      ...title(t("caseLabel"),headlines[0]||t("caseContext")),
+      box(m,y,width,wide?1.6:2.15,tint),
+      text(scene,m+.24,y+.24,width-.48,wide?1.16:1.65,wide?24:23,true),
+      ...stepList([t("whenPrompt"),t("successPrompt")],[m,y+(wide?1.86:2.48),width,available-(wide?1.86:2.48)],wide?2:1)
     ];
-    const exampleW=wide?width*.66:width, exampleTop=wide?y:y+.95;
+    const exampleW=wide?width*.64:width, exampleTop=wide?y:y+1.45;
+    const resultX=wide?m+exampleW+.22:m, resultW=wide?width-exampleW-.22:width;
     const example=[
-      ...title(t("example"),t("exampleTitle")),
-      text(method.exampleNote||t("examplePrompt"),wide?m+exampleW+.23:m,y,wide?width-exampleW-.23:width,wide?1.74:.74,16,true),
+      ...title(t("caseLabel"),headlines[2]||t("decisionChapter")),
+      box(resultX,y,resultW,wide?available:1.24,tint),
+      text(t("caseDecision").toUpperCase(),resultX+.16,y+.15,resultW-.32,.24,11,true,muted),
+      text(method.exampleNote,resultX+.16,y+.47,resultW-.32,wide?available-.62:.61,wide?20:17,true),
       ...framework(method,method.sampleCells||method.sample,[m,exampleTop,exampleW,end-exampleTop-.18],t)
     ];
+    const action=[
+      ...title(t("practice"),t("applyTitle")),
+      ...stepList(method.solo,[m,y,width,available-.75],wide||(!tall&&method.solo.length>4)?2:1),
+      box(m,end-.71,width,.51,tint),
+      text(t("nextPrompt"),m+.13,end-.58,width-.26,.28,12,true)
+    ];
+    const workshop=[
+      ...title(t("asTeam"),t("teamTitle")),
+      ...stepList(method.team,[m,y,width,available-1.00],wide?2:1),
+      box(m,end-.94,width,.74,ink),
+      text(t("teamOutput"),m+.15,end-.81,width-.30,.45,17,true,paper)
+    ];
     const follow=[
-      ...title(t("nextStep"),t("reviewTitle")),
-      ...stepList([t("nextPrompt"),t("ownerPrompt"),t("reviewPrompt")],[m,y,width,available],wide?3:1)
+      ...title(t("reviewChapter"),headlines[3]||t("reviewTitle")),
+      box(m,y,width,wide?1.44:1.93,tint),
+      text(t("reviewEvidence").toUpperCase(),m+.19,y+.15,width-.38,.24,11,true,muted),
+      text(check,m+.19,y+.48,width-.38,wide?.76:1.19,wide?20:19,true),
+      ...stepList([t("nextPrompt"),t("ownerPrompt"),t("reviewPrompt")],[m,y+(wide?1.72:2.2),width,available-(wide?1.72:2.2)],wide?3:1)
+    ];
+    const mapTop=method.id==="pareto"?y+.54:y;
+    const map=[
+      ...title(t("method"),headlines[1]||t("methodMap")),
+      ...(method.id==="pareto"?[text(t("paretoTrap"),m,y,width,.43,14,true)]:[]),
+      ...framework(method,{},[m,mapTop,width,end-mapTop-.16],t)
     ];
     return [
-      cover,problem,
-      [...title(t("method"),method.n),...framework(method,{},[m,y,width,available],t)],
-      [...title(t("practice"),t("soloTitle")),...stepList(method.solo,[m,y,width,available],wide||(!tall&&method.solo.length>4)?2:1)],
+      cover,briefing,map,action,
       [...title(t("canvas"),t("canvasTitle")),...framework(method,values,[m,y,width,available],t,true)],
-      example,
-      [...title(t("asTeam"),t("teamTitle")),...stepList(method.team,[m,y,width,available],wide?2:1)],
-      follow
+      example,workshop,follow
     ].map((items,i)=>frame(i,items));
   }
 

@@ -47,7 +47,7 @@
   "timingAfter": "minutes per team step, with time at the end to agree on the decision.",
   "placeholder": "Write your answer…",
   "viewMine": "My answers",
-  "preview": "Preview the eight slides before downloading.",
+  "preview": "Both files use the selected format.",
   "helpful": "Was this helpful?",
   "yes": "Yes",
   "notYet": "Not yet",
@@ -121,7 +121,7 @@
   "timingAfter": "minutes par étape en équipe et un temps final pour décider.",
   "placeholder": "Écris ta réponse…",
   "viewMine": "Mes réponses",
-  "preview": "Parcours les huit diapositives avant de télécharger.",
+  "preview": "Les deux fichiers utilisent le format choisi.",
   "helpful": "Cette méthode t’a aidé ?",
   "yes": "Oui",
   "notYet": "Pas encore",
@@ -154,6 +154,74 @@
   "nextPrompt": "Action · Note le premier changement concret.",
   "ownerPrompt": "Responsable · Note qui agit et pour quand.",
   "reviewPrompt": "Bilan · Fixe une date et un signe de réussite."
+});
+  Object.assign(L.en,{
+  "guide": "Method guide",
+  "guideHint": "See when it helps, with a worked case.",
+  "worksheetTab": "My worksheet",
+  "worksheetHint": "Work through your own situation.",
+  "presentation": "Presentation",
+  "presentationHint": "Preview and download the deck.",
+  "openWorksheet": "Open my worksheet",
+  "caseContext": "Situation",
+  "caseDecision": "Decision",
+  "caseCheck": "How to check the result",
+  "caseLabel": "Worked case · illustrative data",
+  "exportTitle": "Download this deck",
+  "deckNav": "Slide contents",
+  "overview": "Overview",
+  "caseBrief": "The situation",
+  "methodMap": "Framework diagram",
+  "soloChapter": "Instructions",
+  "worksheetChapter": "Working sheet",
+  "decisionChapter": "Worked decision",
+  "teamChapter": "Team exercise",
+  "reviewChapter": "Measure the result",
+  "reference": "Worked-case reference",
+  "applyTitle": "From first input to a decision",
+  "teamOutput": "Agree on a result before leaving",
+  "reviewEvidence": "What to measure in this case",
+  "yourNextMove": "Record your next move",
+  "checkFirst": "Check before deciding",
+  "paretoScale": "Number of incidents",
+  "paretoThreshold": "80% reference",
+  "paretoCumulative": "Cumulative share",
+  "paretoTrap": "Count each incident once. If severity varies, repeat the analysis using impact instead of frequency.",
+  "caseInNumbers": "Concentration of incidents"
+});
+  Object.assign(L.fr,{
+  "guide": "Guide de la méthode",
+  "guideHint": "Vois quand l’appliquer, avec un cas pratique.",
+  "worksheetTab": "Mon canevas",
+  "worksheetHint": "Applique la méthode à ta situation.",
+  "presentation": "Présentation",
+  "presentationHint": "Parcours et télécharge le support.",
+  "openWorksheet": "Ouvrir mon canevas",
+  "caseContext": "Situation",
+  "caseDecision": "Décision",
+  "caseCheck": "Comment vérifier le résultat",
+  "caseLabel": "Cas pratique · données fictives",
+  "exportTitle": "Télécharger la présentation",
+  "deckNav": "Sommaire des diapositives",
+  "overview": "Vue d’ensemble",
+  "caseBrief": "La situation",
+  "methodMap": "Schéma de la méthode",
+  "soloChapter": "Mode d’emploi",
+  "worksheetChapter": "Canevas de travail",
+  "decisionChapter": "Décision expliquée",
+  "teamChapter": "Atelier en équipe",
+  "reviewChapter": "Mesurer le résultat",
+  "reference": "Repère du cas pratique",
+  "applyTitle": "Des premières données à la décision",
+  "teamOutput": "Convenez d’un résultat avant de terminer",
+  "reviewEvidence": "Quoi mesurer dans ce cas",
+  "yourNextMove": "Note ta prochaine action",
+  "checkFirst": "À vérifier avant de décider",
+  "paretoScale": "Nombre d’incidents",
+  "paretoThreshold": "Repère à 80 %",
+  "paretoCumulative": "Part cumulée",
+  "paretoTrap": "Compte chaque incident une seule fois. Si la gravité varie, refais le classement en mesurant l’impact.",
+  "caseInNumbers": "Concentration des incidents"
 });
   let stored={};try{stored=JSON.parse(localStorage.getItem("u30studio")||"{}")||{}}catch(e){}
   const s={lang:["en","fr"].includes(stored.lang)?stored.lang:(document.documentElement.lang==="fr"?"fr":"en"),need:stored.need||"prioritise",who:stored.who||"both",time:stored.time||"medium",freq:stored.freq||"regular",fm:stored.fm||"structured",ratio:stored.ratio||"16:9",answers:stored.answers||{},family:"all",query:"",audience:"all",duration:"all",difficulty:"all",tab:"learn",current:0,example:false,id:""};
@@ -195,7 +263,7 @@
   function all(){return '<section class="s-wrap s-section"><div class="s-kicker">'+t("library")+'</div><h1 style="font-size:clamp(45px,8vw,90px);margin:16px 0">'+t("all")+'<span style="color:#ff5a32">.</span></h1><div class="s-toolbar"><input id="search-tools" type="search" class="s-search" aria-label="'+t("search")+'" placeholder="'+t("search")+'" value="'+esc(s.query)+'"><select class="s-select" id="audience" aria-label="'+t("who")+'"><option value="all">'+t("both")+'</option><option value="solo">'+t("me")+'</option><option value="team">'+t("team")+'</option></select><select class="s-select" id="duration" aria-label="'+t("maxDuration")+'"><option value="all">'+t("anyDuration")+'</option><option value="15">≤ 15 MIN</option><option value="30">≤ 30 MIN</option><option value="60">≤ 60 MIN</option></select><select class="s-select" id="difficulty" aria-label="'+t("style")+'"><option value="all">'+t("anyStyle")+'</option><option value="casual">'+t("casual")+'</option><option value="structured">'+t("structured")+'</option><option value="formal">'+t("formal")+'</option></select><span id="counter" aria-live="polite">'+filtered().length+' / 50</span></div><div class="s-filters">'+[["all",t("allFamilies")],...Object.keys(names).map(z=>[z,family(z)])].map(z=>'<button class="s-filter" data-family="'+z[0]+'" aria-pressed="'+String(s.family===z[0])+'">'+z[1]+"</button>").join("")+'</div><div class="s-grid" id="cards">'+cards()+"</div></section>"}
   const VERIFIED_LINKS={"pareto":"https://asq.org/quality-resources/pareto","pomodoro":"https://www.pomodorotechnique.com/","smart":"https://openurl.ebsco.com/contentitem/edb%3A6043491","cynefin":"https://thecynefin.co/team/dave-snowden/","rice":"https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/","gtd":"https://gettingthingsdone.com/","pdca":"https://asq.org/quality-resources/pdca-cycle"};
   function sourceUrl(x){return VERIFIED_LINKS[x.id]||null}
-  function learn(x){return '<div class="s-learning"><section class="s-panel"><div class="s-kicker">'+family(x.f)+'</div><h2 style="font-size:32px;margin:14px 0 17px">'+t("why")+'</h2><p>'+esc(x.why)+'</p><h4>'+t("alone")+'</h4><ol class="s-steps">'+x.solo.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol><h4>'+t("asTeam")+'</h4><ol class="s-steps">'+x.team.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol></section><aside class="s-panel"><h3>'+t("example")+'</h3><p>'+esc(x.ex)+'</p><div style="margin-top:20px">'+diagram(x,x.sampleCells||x.sample)+'</div><h4>'+t("timing")+'</h4><p>'+t("timingBefore")+' '+Math.max(2,Math.round(x.t/Math.max(1,x.team.length)))+' '+t("timingAfter")+'</p><h4>'+t("src")+'</h4><div class="s-source">'+esc(x.src)+(sourceUrl(x)?'<br><a href="'+esc(sourceUrl(x))+'" target="_blank" rel="noopener noreferrer">'+t("readSource")+' ↗</a>':'')+'<br><br>'+t("status")+'</div><div class="s-btns"><button class="s-btn orange tiny" data-act="tab" data-val="practice">'+t("practice")+' →</button></div></aside></div>'}
+  function learn(x){return '<div class="s-learning"><section class="s-panel"><div class="s-kicker">'+family(x.f)+'</div><h2 style="font-size:32px;margin:14px 0 17px">'+t("why")+'</h2><p>'+esc(x.why)+'</p><h4>'+t("alone")+'</h4><ol class="s-steps">'+x.solo.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol><h4>'+t("asTeam")+'</h4><ol class="s-steps">'+x.team.map((v,i)=>'<li><b>'+("0"+(i+1)).slice(-2)+'</b><span>'+esc(v)+"</span></li>").join("")+'</ol></section><aside class="s-panel"><h3>'+t("caseLabel")+'</h3><div class="s-case"><div><h4>'+t("caseContext")+'</h4><p>'+esc(x.case.scene)+'</p></div><div><h4>'+t("caseDecision")+'</h4><p>'+esc(x.ex)+'</p></div><div><h4>'+t("caseCheck")+'</h4><p>'+esc(x.case.check)+'</p></div></div><div style="margin-top:20px">'+diagram(x,x.sampleCells||x.sample)+'</div><h4>'+t("timing")+'</h4><p>'+t("timingBefore")+' '+Math.max(2,Math.round(x.t/Math.max(1,x.team.length)))+' '+t("timingAfter")+'</p><h4>'+t("src")+'</h4><div class="s-source">'+esc(x.src)+(sourceUrl(x)?'<br><a href="'+esc(sourceUrl(x))+'" target="_blank" rel="noopener noreferrer">'+t("readSource")+' ↗</a>':'')+'<br><br>'+t("status")+'</div><div class="s-btns"><button class="s-btn orange tiny" data-act="tab" data-val="practice">'+t("openWorksheet")+' →</button></div></aside></div>'}
   function worksheet(x){
     const labels=fieldNames(x),values=answers(x),grid=x.d[0]==="grid";
     const input=(label,key)=>`<div><label for="input-${key}">${esc(label)}</label><textarea id="input-${key}" data-field="${key}" rows="2" maxlength="240" placeholder="${t("placeholder")}">${esc(values[key]||"")}</textarea></div>`;
@@ -214,11 +282,47 @@
     const [w,h]=deck.spec(s.ratio);
     return `<div class="s-slide" data-ratio="${s.ratio}" id="slide-canvas">${deck.svg(deck.compose(x,s.ratio,answers(x),t,family(x.f))[n],w,h,esc,x.n+" · "+(n+1)+" / 8")}</div>`;
   }
-  function slides(x){return '<div class="s-viewtoolbar"><div><label class="s-kicker" for="ratio">'+t("format")+'</label><select class="s-select" id="ratio">'+["16:9","9:10","9:16"].map(v=>'<option value="'+v+'" '+(s.ratio===v?"selected":"")+">"+v+"</option>").join("")+'</select></div><div><button class="s-btn outline tiny" data-act="fullscreen">'+t("fullscreen")+'</button><button class="s-btn outline tiny" data-act="share">'+t("share")+"</button></div></div><div class=\"s-viewframe\" id=\"viewframe\">"+slideContent(x,s.current)+'</div><div class="s-viewnav"><button class="s-btn outline tiny" data-act="previous">← '+t("previous")+'</button><strong class="s-count" aria-live="polite">'+(s.current+1)+' / 8</strong><button class="s-btn outline tiny" data-act="next">'+t("next")+' →</button></div><div class="s-thumbs">'+Array.from({length:8},(_,i)=>'<button class="s-thumb" data-act="slide" data-val="'+i+'" aria-current="'+String(s.current===i)+'">'+("0"+(i+1)).slice(-2)+"</button>").join("")+'</div><div class="s-exportrow"><span id="export-status" class="s-status" role="status">'+t("preview")+'</span><button class="s-btn orange" data-act="pptx">'+t("pptx")+' ↓</button><button class="s-btn outline" data-act="pdf">'+t("pdf")+" ↓</button></div>"
+  const chapters=["overview","caseBrief","methodMap","soloChapter","worksheetChapter","decisionChapter","teamChapter","reviewChapter"];
+  function slides(x){
+    const chaptersHtml=chapters.map((key,i)=>`<button class="s-chapter" data-act="slide" data-val="${i}" aria-current="${s.current===i?"step":"false"}"><span>${String(i+1).padStart(2,"0")}</span>${t(key)}</button>`).join("");
+    return `<div class="s-deckworkspace">
+      <div class="s-deckstage">
+        <div class="s-viewtoolbar"><div><label class="s-kicker" for="ratio">${t("format")}</label>
+          <select class="s-select" id="ratio">${["16:9","9:10","9:16"].map(v=>`<option value="${v}" ${s.ratio===v?"selected":""}>${v}</option>`).join("")}</select></div>
+          <div><button class="s-btn outline tiny" data-act="fullscreen">${t("fullscreen")}</button><button class="s-btn outline tiny" data-act="share">${t("share")}</button></div>
+        </div>
+        <div class="s-viewframe" id="viewframe" tabindex="-1">${slideContent(x,s.current)}</div>
+        <div class="s-viewnav"><button class="s-btn outline tiny" data-act="previous" ${s.current===0?"disabled":""}>← ${t("previous")}</button>
+          <strong class="s-count" aria-live="polite">${s.current+1} / 8 · ${t(chapters[s.current])}</strong>
+          <button class="s-btn outline tiny" data-act="next" ${s.current===7?"disabled":""}>${t("next")} →</button></div>
+      </div>
+      <aside class="s-deckaside">
+        <nav aria-label="${t("deckNav")}"><h3>${t("deckNav")}</h3><div class="s-chapters">${chaptersHtml}</div></nav>
+        <section class="s-deckexports"><h3>${t("exportTitle")}</h3>
+          <p id="export-status" class="s-status" role="status">${t("preview")}</p>
+          <button class="s-btn orange" data-act="pptx">${t("pptx")} ↓</button>
+          <button class="s-btn outline" data-act="pdf">${t("pdf")} ↓</button>
+        </section>
+      </aside>
+    </div>`;
   }
-  function detail(x){return '<div class="s-wrap"><div class="s-breadcrumb"><a href="#/all">'+t("back")+'</a><span>/</span><span>'+family(x.f)+'</span><span>/</span><strong>'+esc(x.n)+'</strong></div><section class="s-detailhead"><div><div class="s-kicker">'+t("brand")+' / '+("0"+(x.number)).slice(-2)+' '+t("of50")+'</div><h1>'+esc(x.n)+'<span style="color:#ff5a32">.</span></h1><p>'+esc(x.why)+'</p><div class="s-detailmeta"><span class="s-badge">'+family(x.f)+'</span><span class="s-badge">'+x.t+' MIN</span><span class="s-badge">'+t(x.m==="solo"?"me":x.m==="team"?"team":"both")+'</span></div></div><button class="s-btn orange tiny" data-act="tab" data-val="slides">'+t("slides")+' →</button></section><div class="s-tabbar" role="tablist">'+[["learn",t("learn")],["practice",t("practice")],["slides",t("slides")]].map(z=>'<button role="tab" class="s-tab" data-act="tab" data-val="'+z[0]+'" aria-selected="'+String(s.tab===z[0])+'">'+z[1]+"</button>").join("")+'</div><div id="tabpanel" role="tabpanel">'+(s.tab==="learn"?learn(x):s.tab==="practice"?worksheet(x):slides(x))+"</div></div>"}
+  const views=[["learn","guide"],["practice","worksheetTab"],["slides","presentation"]];
+  function detail(x){
+    return `<div class="s-wrap">
+      <div class="s-breadcrumb"><a href="#/all">← ${t("back")}</a><span>/</span><span>${family(x.f)}</span></div>
+      <section class="s-detailhead"><div>
+        <div class="s-kicker">${t("brand")} / ${String(x.number).padStart(2,"0")} ${t("of50")}</div>
+        <h1>${esc(x.n)}<span class="s-title-dot">.</span></h1><p>${esc(x.why)}</p>
+        <div class="s-detailmeta"><span class="s-badge">${family(x.f)}</span><span class="s-badge">${x.t} min</span><span class="s-badge">${t(x.m==="solo"?"alone":x.m==="team"?"asTeam":"both")}</span></div>
+      </div></section>
+      <div class="s-tabbar" role="tablist" aria-label="${esc(x.n)}">
+        ${views.map(([key,label],i)=>`<button id="method-tab-${key}" role="tab" class="s-tab" data-act="tab" data-val="${key}" aria-controls="tabpanel" aria-selected="${s.tab===key}" tabindex="${s.tab===key?0:-1}"><span class="s-tab-index">0${i+1}</span><span>${t(label)}<small>${t(label==="worksheetTab"?"worksheetHint":label+"Hint")}</small></span></button>`).join("")}
+      </div>
+      <div id="tabpanel" role="tabpanel" aria-labelledby="method-tab-${s.tab}" tabindex="0">${s.tab==="learn"?learn(x):s.tab==="practice"?worksheet(x):slides(x)}</div>
+    </div>`;
+  }
   function currentRoute(){let hash=(location.hash||document.body?.dataset?.route||"").replace(/^#\/?/,"");if(hash.indexOf("tool/")===0)return {v:"tool",id:hash.slice(5).split("?")[0]};if(hash==="all")return {v:"all"};if(hash.startsWith("results"))return {v:"results"};return {v:"home"}}
-  function render(){document.documentElement.lang=s.lang;let route=currentRoute();s.id=route.id||"";let x=byId(s.id);app.innerHTML='<div class="studio"><a class="s-screenreader" href="#studio-main">'+t("skip")+'</a>'+header()+'<main id="studio-main" tabindex="-1">'+(route.v==="tool"&&x?detail(x):route.v==="all"?all():route.v==="results"?results():home())+'</main>'+footer()+'</div>';document.title=(x?x.n+" · ":"")+t("brand")+" / "+t("day")+" · The Unfinished 30";if(route.v==="tool"){let pane=document.getElementById("tabpanel");if(pane&&typeof pane.insertAdjacentHTML==="function"){pane.insertAdjacentHTML("afterend",'<section class="s-section" style="padding:32px 0"><span class="s-kicker">'+t("helpful")+'</span><div class="s-btns"><button class="s-btn outline tiny" data-act="feedback" data-val="yes">'+t("yes")+'</button><button class="s-btn outline tiny" data-act="feedback" data-val="no">'+t("notYet")+'</button></div></section>')}}for(const key of ["audience","duration","difficulty"]){const control=document.getElementById(key);if(control)control.value=s[key]}let v=document.getElementById("viewframe");if(v){let touch=0;v.addEventListener("touchstart",e=>touch=e.changedTouches[0].screenX,{passive:true});v.addEventListener("touchend",e=>{if(Math.abs(e.changedTouches[0].screenX-touch)>40){s.current=(s.current+(e.changedTouches[0].screenX<touch?1:7))%8;render()}},{passive:true})}}
+  function render(){document.documentElement.lang=s.lang;let route=currentRoute();s.id=route.id||"";let x=byId(s.id);app.innerHTML='<div class="studio"><a class="s-screenreader" href="#studio-main">'+t("skip")+'</a>'+header()+'<main id="studio-main" tabindex="-1">'+(route.v==="tool"&&x?detail(x):route.v==="all"?all():route.v==="results"?results():home())+'</main>'+footer()+'</div>';document.title=(x?x.n+" · ":"")+t("brand")+" / "+t("day")+" · The Unfinished 30";if(route.v==="tool"){let pane=document.getElementById("tabpanel");if(pane&&typeof pane.insertAdjacentHTML==="function"){pane.insertAdjacentHTML("afterend",'<section class="s-section" style="padding:32px 0"><span class="s-kicker">'+t("helpful")+'</span><div class="s-btns"><button class="s-btn outline tiny" data-act="feedback" data-val="yes">'+t("yes")+'</button><button class="s-btn outline tiny" data-act="feedback" data-val="no">'+t("notYet")+'</button></div></section>')}}for(const key of ["audience","duration","difficulty"]){const control=document.getElementById(key);if(control)control.value=s[key]}let v=document.getElementById("viewframe");if(v){let touch=0;v.addEventListener("touchstart",e=>touch=e.changedTouches[0].screenX,{passive:true});v.addEventListener("touchend",e=>{if(Math.abs(e.changedTouches[0].screenX-touch)>40){moveSlide(e.changedTouches[0].screenX<touch?1:-1)}},{passive:true})}}
   function notify(v){let a=document.getElementById("export-status");if(a)a.textContent=v;else{let el=document.createElement("div");el.className="s-toast";el.textContent=v;el.setAttribute("role","status");document.body.append(el);setTimeout(()=>el.remove(),2800)}}
   function download(name,value,type){let url=URL.createObjectURL(new Blob([value],{type:type||"text/plain"}));let a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
   function loadLibrary(url,test){return new Promise((resolve,reject)=>{if(test())return resolve();let tag=document.createElement("script");tag.src=url;tag.onload=()=>test()?resolve():reject(new Error("Library did not load"));tag.onerror=()=>reject(new Error("offline"));document.head.appendChild(tag)})}
@@ -286,10 +390,18 @@
     let f=e.target.closest("[data-family]");if(f){s.family=f.dataset.family;app.querySelectorAll("[data-family]").forEach(z=>z.setAttribute("aria-pressed",String(z===f)));let g=document.getElementById("cards");if(g)g.innerHTML=cards();document.getElementById("counter").textContent=filtered().length+" / 50";return}
     let b=e.target.closest("[data-act]");if(!b){if(e.target.closest(".s-screenreader")){e.preventDefault();document.getElementById("studio-main").focus()}return}let act=b.dataset.act,x=byId(s.id);
     if(act==="lang"){s.lang=s.lang==="en"?"fr":"en";save();render();app.querySelector('[data-act="lang"]')?.focus()}
-    if(act==="tab"){s.tab=b.dataset.val;render()}
-    if(act==="slide"){s.current=+b.dataset.val;render()}
-    if(act==="next"){s.current=(s.current+1)%8;render()}
-    if(act==="previous"){s.current=(s.current+7)%8;render()}
+    if(act==="tab"){s.tab=b.dataset.val;render();document.getElementById("method-tab-"+s.tab)?.focus()}
+    if(act==="slide"){
+      s.current=+b.dataset.val;
+      render();
+      if(matchMedia("(max-width: 820px)").matches){
+        const frame=document.getElementById("viewframe");
+        frame?.focus({preventScroll:true});
+        frame?.scrollIntoView({block:"start"});
+      }else app.querySelector('[data-act="slide"][aria-current="step"]')?.focus();
+    }
+    if(act==="next")moveSlide(1,"next");
+    if(act==="previous")moveSlide(-1,"previous");
     if(act==="example"){s.example=!s.example;render()}
     if(act==="clear"){s.answers[s.id]={};save();render()}
     if(act==="json")download(x.id+"-answers.json",JSON.stringify({toolId:x.id,values:answers(x),savedAt:new Date().toISOString()},null,2),"application/json");
@@ -307,6 +419,29 @@
     const keys=Array.from({length:count},(_,i)=>[String(i),...Array.from({length:cols},(_,j)=>"c"+i+"-"+j)]).flat();
     s.answers[s.id]=Object.fromEntries(Object.entries(obj.values).filter(([key,value])=>keys.includes(key)&&typeof value==="string").map(([key,value])=>[key,value.slice(0,240)]));s.example=false;save();render()}catch(e){notify(t("invalid"))}}});
   window.addEventListener("hashchange",()=>{s.tab="learn";s.current=0;s.example=false;render()});
-  document.addEventListener("keydown",e=>{if(s.tab!=="slides"||e.target.matches("input,textarea,select"))return;if(e.key==="ArrowRight"){s.current=(s.current+1)%8;render()}if(e.key==="ArrowLeft"){s.current=(s.current+7)%8;render()}});
+  function moveSlide(delta,focus){
+    const index=Math.max(0,Math.min(7,s.current+delta));
+    if(index===s.current)return;
+    s.current=index;
+    render();
+    if(focus){
+      const button=app.querySelector(focus==='slide'?'[aria-current="step"]':'[data-act="'+focus+'"]');
+      (button?.disabled?app.querySelector('[aria-current="step"]'):button)?.focus({preventScroll:true});
+    }
+  }
+  document.addEventListener("keydown",e=>{
+    const tab=e.target.closest('[role="tab"]');
+    const delta=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0;
+    if(tab && (delta || ["Home","End"].includes(e.key))){
+      e.preventDefault();
+      const index=views.findIndex(([key])=>key===s.tab);
+      s.tab=views[e.key==="Home"?0:e.key==="End"?2:(index+delta+views.length)%views.length][0];
+      render();
+      document.getElementById("method-tab-"+s.tab)?.focus();
+    }else if(delta && s.tab==="slides" && e.target.closest(".s-deckworkspace") && !e.target.matches("select,input,textarea")){
+      e.preventDefault();
+      moveSlide(delta,e.target.dataset.act==="slide"?"slide":delta>0?"next":"previous");
+    }
+  });
   render();
 })();

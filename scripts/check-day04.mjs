@@ -18,6 +18,9 @@ for(const t of data){
   if (!t.fr?.n || !t.fr.why || !t.fr.ex || !t.fr.src || !t.fr.solo.length || !t.fr.team.length || t.fr.d[0]!==t.d[0]) {
     throw Error('Incomplete French tool '+t.id);
   }
+  for(const version of [t,t.fr]){
+    if(!version.case?.scene || !version.case.check || !version.exampleNote)throw Error('Incomplete worked case '+t.id);
+  }
   const file=path.join(folder,'tools',t.id,'index.html');
   if(!fs.existsSync(file))throw Error('Missing share page '+t.id);
   const page=fs.readFileSync(file,'utf8');
@@ -59,6 +62,9 @@ for(const tool of data)for(const lang of ['en','fr'])for(const ratio of ['16:9',
   vm.runInNewContext(js,context,{timeout:1500});
   if(context.document.documentElement.lang!==lang || !app.innerHTML.includes(lang==='fr'?tool.fr.n:tool.n)){
     throw Error('Wrong rendered locale: '+tool.id+' '+lang);
+  }
+  if((app.innerHTML.match(/role="tab"/g)||[]).length!==3 || /s-detailhead[^]*?<button[^]*?<\/section>/.test(app.innerHTML.split('role="tablist"')[0])){
+    throw Error('Expected three views and no duplicate presentation action');
   }
   for(const action of ['pptx','pdf']){
     handlers.click({target:{closest(sel){return sel==='[data-family]'?null:{dataset:{act:action}}}}});
