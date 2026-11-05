@@ -1,5 +1,7 @@
 # Day 5 · Rain Room
 
+![Rain Room cassette and audio meter beside a rainy window](../images/day-05-card.svg)
+
 A cassette player for deep work. Pick a tape, mix your room on the desk, set an auto stop, press play.
 
 - One HTML file plus a `snd/` folder of short, looped recordings and instrument samples (about 7 MB, loaded only when you turn a sound up).

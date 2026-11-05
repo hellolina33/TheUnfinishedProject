@@ -17,126 +17,16 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Onest:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --navy:#0E1638; --navy-2:#16214A; --line:#2A3766; --ink:#F6F4FB; --muted:#AEB6D4;
-  --chip:#FFD84D; --chip-ink:#17141F; --mint:#3FD0A0;
-  --card:#F8F7FC; --card-ink:#17141F; --card-muted:#5E5869;
-  --peach:#FFB894; --lilac:#D8C6FA; --pink:#FFB8DE; --lemon:#FFE36E; --sky:#A9D6FF;
-  --f-display:"Bagel Fat One","Arial Rounded MT Bold",ui-rounded,sans-serif;
-  --f-body:"Onest",ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{background:var(--navy);color:var(--ink);font:16px/1.6 var(--f-body);overflow-x:clip}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--chip);outline-offset:3px;border-radius:6px}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
-h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:.95;letter-spacing:-.01em;text-wrap:balance}
-.y{color:var(--chip)}
-.muted{color:var(--muted)}
-section{padding-block:88px}
-@media (max-width:700px){section{padding-block:56px}}
+<link rel="stylesheet" href="./showcase/styles.css">
 
-/* top bar */
-.top{position:sticky;top:0;z-index:20;background:rgba(14,22,56,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.top .wrap{display:flex;align-items:center;gap:16px;height:64px}
-.brand{font-family:var(--f-display);font-size:22px;text-decoration:none;white-space:nowrap}
-@media (max-width:420px){.brand{font-size:18px}}
-.top nav{margin-left:auto;display:flex;gap:6px;align-items:center}
-.top nav a{text-decoration:none;color:var(--muted);font-weight:600;font-size:15px;padding:8px 10px;border-radius:8px}
-.top nav a:hover{color:var(--ink)}
-.top nav a.btn{color:var(--chip-ink);padding:0 16px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:12px;border:2px solid var(--chip);background:var(--chip);color:var(--chip-ink);font:600 16px var(--f-body);text-decoration:none;cursor:pointer;white-space:nowrap;transition:transform .15s}
-.btn:hover{transform:translateY(-2px)}
-.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
-.btn.ghost:hover{border-color:var(--ink)}
-.btn.sm{min-height:40px;padding:0 16px;font-size:14px}
-@media (max-width:640px){.top nav .hide-m{display:none}}
-
-/* hero */
-.hero{padding-block:72px 56px;position:relative}
-.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 1px 1px,rgba(246,244,251,.08) 1.2px,transparent 1.8px) 0 0/26px 26px;pointer-events:none}
-.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:48px;align-items:center}
-.hero .art{width:100%;height:auto;display:block}
-@media (max-width:900px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.hero .art{display:none}}
-.hero .ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
-.kicker{display:inline-block;background:var(--chip);color:var(--chip-ink);border-radius:999px;padding:6px 16px;font-weight:700;font-size:14px}
-.hero h1{font-size:clamp(56px,9vw,112px);margin-top:22px}
-.hero .lead{font-size:clamp(18px,2vw,22px);margin-top:22px;max-width:36ch}
-.hero .story{margin-top:16px;color:var(--muted);max-width:52ch}
-.grid30{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:8px;margin-top:28px;max-width:520px}
-.grid30 a,.grid30 span{aspect-ratio:3/4;border-radius:8px;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--f-display);font-size:16px;color:var(--muted);text-decoration:none}
-.grid30 .on{background:var(--chip);border-color:var(--chip);color:var(--chip-ink)}
-.grid30 .today{box-shadow:0 0 0 3px var(--mint)}
-
-.hp{position:absolute;left:-9999px}
-
-/* days */
-.head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:end;gap:16px;margin-bottom:32px}
-.head h2{font-size:clamp(40px,6vw,72px)}
-.head p{max-width:40ch;color:var(--muted)}
-.days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-@media (max-width:980px){.days{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:620px){.days{grid-template-columns:minmax(0,1fr)}}
-.day{background:var(--card);color:var(--card-ink);border:3px solid #17141F;border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
-.day .face{background:var(--c,var(--lemon));aspect-ratio:16/9;display:grid;place-items:center;border-bottom:3px solid #17141F;position:relative}
-.day .face .n{position:absolute;top:12px;left:14px;font-family:var(--f-display);font-size:22px}
-.day .face .emo{font-size:64px;line-height:1}
-.day .face.pic{display:block;aspect-ratio:auto}
-.day .face.pic img{width:100%;height:auto;display:block}
-.day .note{background:#ECEAF3;border-radius:12px;padding:10px 12px;font-size:14px}
-.day .note summary{cursor:pointer;font-weight:700}
-.day .note p{margin-top:6px;font-size:14px}
-.sched{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-top:8px}
-.sched span{border:2px dashed var(--line);border-radius:10px;padding:8px 10px;color:var(--muted);font-size:13px;line-height:1.3}
-.sched b{display:block;font-family:var(--f-display);font-weight:400;font-size:16px;color:var(--ink)}
-@media (max-width:620px){.sched{grid-template-columns:repeat(auto-fill,minmax(68px,1fr))}.sched span{padding:6px 8px;font-size:12px}.sched b{font-size:14px}}
-.day .bd{padding:18px 18px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
-.day h3{font-size:28px}
-.day p{color:var(--card-muted);font-size:15px}
-.day .tags{display:flex;flex-wrap:wrap;gap:6px}
-.day .tags span{font-size:12px;font-weight:700;background:#ECEAF3;border-radius:999px;padding:4px 10px}
-.day .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
-.day .acts a{min-height:40px;padding:0 14px;border-radius:10px;font-weight:600;font-size:14px;display:inline-flex;align-items:center;text-decoration:none;border:2px solid #17141F}
-.day .acts a.p{background:#17141F;color:var(--card)}
-.day .dn{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--card-muted);margin-bottom:-6px}
-.day.locked{align-self:start;background:transparent;border:2px dashed var(--line);color:var(--muted)}
-.day.locked .face{background:transparent;border-bottom:2px dashed var(--line)}
-.day.locked .face .emo{font-family:var(--f-display);font-size:72px;color:var(--line)}
-.day.locked h3{color:var(--muted);font-size:22px}
-.day.locked p{color:#7F89AE}
-.more-days{margin-top:20px;text-align:center}
-
-/* about */
-.about .wrap{display:grid;grid-template-columns:auto minmax(0,1fr);gap:40px;align-items:center}
-.about img{width:180px;height:180px;border-radius:50%;object-fit:cover;border:4px solid var(--chip);background:var(--navy-2)}
-.about h2{font-size:clamp(36px,5vw,56px)}
-.about p{margin-top:14px;max-width:60ch;color:var(--muted);font-size:17px}
-.about .row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
-@media (max-width:700px){.about .wrap{grid-template-columns:minmax(0,1fr)}.about img{width:120px;height:120px}}
-
-/* faq */
-.faq details{border-top:1px solid var(--line);padding:4px 0}
-.faq details:last-child{border-bottom:1px solid var(--line)}
-.faq summary{cursor:pointer;list-style:none;font-weight:600;font-size:18px;padding:16px 0;display:flex;justify-content:space-between;gap:16px}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"+";font-family:var(--f-display);font-size:24px;color:var(--chip)}
-.faq details[open] summary::after{content:"−"}
-.faq details p{color:var(--muted);padding-bottom:16px;max-width:70ch}
-
-footer{border-top:1px solid var(--line);padding-block:40px;color:var(--muted);font-size:14px}
-footer .wrap{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between}
-footer a{color:var(--ink)}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn{transition:none}}
-</style>
 </head>
 <body>
 
+<a class="skip" href="#days">Skip to prototypes</a>
 <header class="top"><div class="wrap">
   <a class="brand" href="#top">The <span class="y">Unfinished</span> 30</a>
-  <nav>
-    <a class="hide-m" href="#days">The 30 days</a>
+  <nav aria-label="Main navigation">
+    <a class="hide-m" href="#days">Prototypes</a>
     <a class="hide-m" href="#about">About</a>
     <a class="btn sm" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Follow on LinkedIn</a>
   </nav>
@@ -145,25 +35,35 @@ footer a{color:var(--ink)}
 <main id="top">
   <section class="hero"><div class="wrap">
     <div>
-      <span class="kicker" id="todayChip">Day 1 is live</span>
+      <span class="kicker" id="release-count">A 30-day challenge</span>
       <h1>The <span class="y">Unfinished</span> 30</h1>
       <p class="lead">30 days. One working prototype a day. Free.</p>
-      <p class="story">For years I've built small tools with AI to fix real problems in my life and at work. Around 100 of them never launched publicly; only I and a happy few use them. Instead of keeping them to myself, I'm handing them over: take them, use them, rebuild them.</p>
+      <p class="story">I started with around 100 small tools I’d built with AI for work and everyday life. I’m opening them up one day at a time so you can try them, use them and adapt them.</p>
       <div class="ctas">
-        <a class="btn" id="tryToday" href="/day-01-whichoneareyou/">Try Day 1: WhichOneAreYou</a>
-        <a class="btn ghost" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Follow on LinkedIn</a>
+        <a class="btn" href="#days">Browse the prototypes</a>
+        <a class="btn ghost" href="#calendar">See the calendar</a>
       </div>
-      <div class="grid30" id="grid30" aria-label="Challenge progress"></div>
     </div>
     <img class="art" src="images/hero.webp" alt="" width="1448" height="1086" decoding="async">
   </div></section>
 
-  <section id="days"><div class="wrap">
+  <section class="catalogue" id="days" aria-labelledby="catalogue-title"><div class="wrap">
     <div class="head">
-      <h2>The <span class="y">30 days</span></h2>
-      <p>A new card flips every day. Each one comes with the tool, the LinkedIn post that tells its story, and an honest note on what's unfinished.</p>
+      <h2 id="catalogue-title">The <span class="y">prototypes</span></h2>
+      <p>Start with the latest release or browse earlier days. Each card tells you what the tool does and what’s still unfinished.</p>
     </div>
-    <div class="days" id="daysList"></div>
+    <div class="days" id="days-list"></div>
+    <noscript><p>View the prototype folders and live links on <a href="https://github.com/hellolina33/TheUnfinishedProject#prototype-index">GitHub</a>.</p></noscript>
+  </div></section>
+
+  <section class="calendar-section" id="calendar" aria-labelledby="calendar-title"><div class="wrap">
+    <div class="head">
+      <h2 id="calendar-title">The <span class="y">30 days</span></h2>
+      <p>Pick a published day to jump to its card. Releases are scheduled for 8 am Bangkok time.</p>
+    </div>
+    <div id="next-release"></div>
+    <ol class="calendar" id="release-calendar" aria-label="30-day release calendar"></ol>
+    <p class="legend"><span>Latest release</span><span>Published</span><span>Unreleased</span></p>
   </div></section>
 
   <section class="about" id="about"><div class="wrap">
@@ -180,79 +80,19 @@ footer a{color:var(--ink)}
 
   <section class="faq"><div class="wrap">
     <div class="head"><h2>Questions</h2></div>
-    <details><summary>Is it really free?</summary><p>Yes. Every prototype is free to use. Some need your own AI API key (Claude, ChatGPT, Gemini or Grok) for their AI features: you pay the provider directly, usually a few cents.</p></details>
+    <details><summary>Is it really free?</summary><p>Yes. Every prototype is free to use. Some need your own AI API key (Claude, ChatGPT, Gemini or Grok) for their AI features: usage charges depend on the provider.</p></details>
     <details><summary>Why "unfinished"?</summary><p>Because they are. They work, but they haven't had the hosting, security reviews, marketing and polish a real product needs. I'd rather put them in your hands now than keep polishing for months.</p></details>
-    <details><summary>What happens to my data?</summary><p>Each prototype says it on its own page. Most run entirely in your browser. When one calls an AI, it goes straight from your browser to the provider you picked, with your key.</p></details>
-    <details><summary>Can I rebuild one and use it at work?</summary><p>Yes, that's the point. Fork it, adapt it, make it solve your problem. A mention or a tag on LinkedIn is always appreciated.</p></details>
+    <details><summary>What happens to my data?</summary><p>Each prototype explains how it handles your data. Many features run in your browser. AI features may send text to the selected provider or through a server endpoint.</p></details>
+    <details><summary>Can I rebuild one and use it at work?</summary><p>The source is on GitHub. Contact me on LinkedIn about adapting a prototype for your team.</p></details>
     <details><summary>Can you build one for my team?</summary><p>Possibly. Tell me the problem on LinkedIn and I'll tell you honestly if it's a fit.</p></details>
   </div></section>
 </main>
 
 <footer><div class="wrap">
   <span>The Unfinished 30 · designed and built by <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span>
-  <span>© 2026 Salah Khenissi</span>
+  <a href="https://github.com/hellolina33/TheUnfinishedProject">View the source on GitHub</a>
 </div></footer>
 
-<script>
-/* ============ EDIT HERE EACH DAY ============
-   Add or fill one entry per day. Leave name empty to keep the card locked. */
-const START = '2026-11-02'; // Day 1 date (Bangkok)
-const DAYS = [
-  { n: 1, name: 'WhichOneAreYou', line: 'Drop a WhatsApp export and find out which role everyone really plays: the Firefighter, the Ghost, the Night Owl…', tags: ['WhatsApp', 'Couples & groups', 'English & French'], emo: '🃏', c: 'var(--lemon)',
-    img: 'images/day-01-card.webp', alt: 'Five playful cards representing different group-chat roles',
-    app: '/day-01-whichoneareyou/', dl: 'whichoneareyou.html', post: '',
-    todo: "No accounts and no saved history: close the tab and the analysis is gone. Built and tested on WhatsApp exports in English and French; other formats may read badly. The roles are playful patterns from message stats, not a diagnosis. The AI chat needs your own API key." },
-  { n: 2, name: 'How Many Weeks', line: 'Your life in weeks: how many are left, and what can still fit into them. Summers, books, days with your parents, the things you want to finish.', tags: ['Life in weeks', 'No account', 'English & French'], emo: '⏳', c: 'var(--sky)',
-    img: 'images/day-02-card.svg', alt: 'A grid of life weeks with most squares filled in and a smiling hourglass beside it',
-    app: '/day-02-howmanyweeks/', dl: 'how-many-weeks.html', post: '',
-    todo: "Lifespan is one value for everyone: no country, no sex, no health history. The work block is fixed from 22 to 65. The times are yearly averages. Nothing syncs between devices. The share card has only been tested on a few browsers." },
-  { n: 3, name: 'Office Filter', line: 'Type what you really think at work. Get three versions you can actually send: diplomatic, direct, firm. Your no stays a no.', tags: ['Work', 'Your own AI key', 'English & French'], emo: '✉️', c: 'var(--peach)',
-    img: 'images/day-03-card.svg', alt: 'An angry spiky bubble goes through a smiling funnel and comes out as three calm message bubbles',
-    app: '/day-03-officefilter/', dl: 'office-filter.html', post: '',
-    todo: "Three versions and one revision at a time, no history. The AI can still miss the tone in a sensitive situation: read before you send. Browser calls depend on each provider; a custom endpoint may need your own proxy. Tested with simulated AI answers, not with every model." },
-  { n: 4, name: 'Productivity Library', line: '50 practical frameworks to prioritise, organise, focus, decide and review. Find the right tool, learn it, and take an editable slide deck.', tags: ['50 frameworks', '8 editable slides', 'PPTX & PDF'], emo: '🧰', c: 'var(--lilac)',
-    img: 'images/day-04-card.svg', alt: 'An illustrated toolbox of 50 productivity frameworks',
-    app: '/day-04-productivity-library/', dl: 'productivity-library.html', post: '',
-    todo: "Fifty methods are included, but some attributions need further verification. PPTX export uses an online JavaScript library; visual diagrams inside generated slides are images, while the surrounding text is editable. Google Slides is available by importing PPTX. Additional ratios and native PDF export are still being refined." },
-];
-/* ============================================ */
-
-const $ = s => document.querySelector(s);
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const dateOf0 = n => { const d = new Date(START + 'T08:00:00+07:00'); d.setDate(d.getDate() + n - 1); return d; };
-const byN = new Map(DAYS.filter(d => d.name && (d.n === 1 || Date.now() >= dateOf0(d.n).getTime())).map(d => [d.n, d]));
-const latest = Math.max(1, ...byN.keys());
-const dateOf = n => { const d = new Date(START + 'T08:00:00+07:00'); d.setDate(d.getDate() + n - 1); return d; };
-const fmt = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
-
-$('#todayChip').textContent = `Day ${latest} is live`;
-const LI_ACTIVITY = 'https://www.linkedin.com/in/salahkhenissi/recent-activity/all/';
-{ const t = byN.get(latest); if (t && t.app) { const a = $('#tryToday'); a.href = t.app; a.textContent = `Try Day ${latest}: ${t.name}`; } }
-let g = '';
-for (let i = 1; i <= 30; i++) g += byN.has(i) ? `<a class="on ${i === latest ? 'today' : ''}" href="#day-${i}" aria-label="Day ${i}">${i}</a>` : `<span aria-label="Day ${i}, locked">${i}</span>`;
-$('#grid30').innerHTML = g;
-
-let h = '', sched = '';
-for (let i = 1; i <= 30; i++) {
-  const d = byN.get(i);
-  if (d) {
-    const face = d.img
-      ? `<div class="face pic"><img src="${esc(d.img)}" alt="${esc(d.alt || '')}" width="1672" height="941" loading="lazy" decoding="async"></div>`
-      : `<div class="face" style="--c:${d.c || 'var(--lemon)'}"><span class="n">Day ${i}</span><span class="emo" aria-hidden="true">${esc(d.emo || '✨')}</span></div>`;
-    h += `<article class="day" id="day-${i}">${face}
-      <div class="bd"><span class="dn">Day ${i}</span><h3>${esc(d.name)}</h3><p>${esc(d.line)}</p>
-      <div class="tags">${(d.tags || []).map(t => `<span>${esc(t)}</span>`).join('')}</div>
-      ${d.todo ? `<details class="note"><summary>What's unfinished</summary><p>${esc(d.todo)}</p></details>` : ''}
-      <div class="acts">${d.app ? `<a class="p" href="${esc(d.app)}" target="_blank" rel="noopener">Try it</a>` : ''}<a href="${esc(d.post || LI_ACTIVITY)}" target="_blank" rel="noopener">Read the story</a>${d.dl && d.app ? `<a href="${esc(d.app)}" download="${esc(d.dl)}" title="One HTML file. Open it in your browser, nothing to install.">Download HTML</a>` : ''}</div></div></article>`;
-  } else if (i === latest + 1) {
-    h += `<article class="day locked" id="day-${i}"><div class="face"><span class="n">Day ${i}</span><span class="emo">?</span></div>
-      <div class="bd"><h3>Next up: ${fmt(dateOf(i))}</h3><p>Follow on LinkedIn to catch it the morning it's out.</p></div></article>`;
-  } else if (i > latest + 1) {
-    sched += `<span><b>Day ${i}</b>${fmt(dateOf(i))}</span>`;
-  }
-}
-$('#daysList').innerHTML = h + (sched ? `<div class="sched" aria-label="Coming days">${sched}</div>` : '');
-
-</script>
+<script type="module" src="./showcase/catalogue.js"></script>
 </body>
 </html>

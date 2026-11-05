@@ -5,13 +5,13 @@ on:
     paths:
       - 'day-04-productivity-library/**'
       - 'scripts/check-day04.mjs'
-      - 'index.html'
+      - 'showcase/prototypes.js'
       - '.github/workflows/day04-checks.yml'
   pull_request:
     paths:
       - 'day-04-productivity-library/**'
       - 'scripts/check-day04.mjs'
-      - 'index.html'
+      - 'showcase/prototypes.js'
 permissions:
   contents: read
 jobs:
