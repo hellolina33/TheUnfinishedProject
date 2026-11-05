@@ -54,8 +54,8 @@ for(const tool of data)for(const lang of ['en','fr'])for(const ratio of ['16:9',
   }
   const app={_html:'',set innerHTML(x){this._html=x},get innerHTML(){return this._html},addEventListener(name,handler){handlers[name]=handler},querySelector(){return null}};
   const context={window:{__PRODUCTIVITY_INTERNALS:{TOOLS:data},PptxGenJS:StubPpt,jspdf:{jsPDF:StubPdf},addEventListener(){}},
-    document:{documentElement:{lang:"en"},getElementById(id){return id==='app'?app:null},addEventListener(){},body:{append(){}},createElement(){return {remove(){},setAttribute(){}}}},
-    localStorage:{getItem(){return JSON.stringify({ratio,lang})},setItem(){}},
+    document:{documentElement:{lang},getElementById(id){return id==='app'?app:null},addEventListener(){},body:{append(){}},createElement(){return {remove(){},setAttribute(){}}}},
+    localStorage:{getItem(){return null},setItem(){throw Error("Unexpected browser storage write")}},
     location:{hash:'#/tool/'+tool.id,href:'https://example.com/#/tool/'+tool.id},
     navigator:{},setTimeout(){},console};
   vm.runInNewContext(deck,context,{timeout:1500});
@@ -66,13 +66,14 @@ for(const tool of data)for(const lang of ['en','fr'])for(const ratio of ['16:9',
   if((app.innerHTML.match(/role="tab"/g)||[]).length!==3 || /s-detailhead[^]*?<button[^]*?<\/section>/.test(app.innerHTML.split('role="tablist"')[0])){
     throw Error('Expected three views and no duplicate presentation action');
   }
+  await handlers.change({target:{id:"ratio",value:ratio}});
   for(const action of ['pptx','pdf']){
     handlers.click({target:{closest(sel){return sel==='[data-family]'?null:{dataset:{act:action}}}}});
     await new Promise(resolve=>setImmediate(resolve));
   }
   if(output.length!==2)throw Error('Missing export: '+tool.id+' '+ratio);
   for(const result of output){
-    if(!result.fileName.includes('-'+lang+'-'))throw Error('Incorrect export locale filename');
+    if(!result.fileName.includes('-'+lang+'-'+ratio.replace(':','x')))throw Error('Incorrect export locale filename');
     if(result.pages!==8)throw Error('Not eight pages: '+tool.id+' '+ratio+' '+result.kind);
     if(result.kind==='pptx'&&result.shapes<12)throw Error('No native shapes: '+tool.id+' '+ratio);
     passes++;

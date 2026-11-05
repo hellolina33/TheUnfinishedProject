@@ -313,13 +313,165 @@
   "restoreAnswers": "Restaurer les réponses",
   "restoreHelp": "Les réponses de la copie seront ajoutées au canevas."
 });
-  let stored={};try{stored=JSON.parse(localStorage.getItem("u30studio")||"{}")||{}}catch(e){}
-  const s={lang:["en","fr"].includes(stored.lang)?stored.lang:(document.documentElement.lang==="fr"?"fr":"en"),need:stored.need||"prioritise",who:stored.who||"both",time:stored.time||"medium",freq:stored.freq||"regular",fm:stored.fm||"structured",ratio:stored.ratio||"16:9",answers:stored.answers||{},family:"all",query:"",audience:"all",duration:"all",difficulty:"all",tab:"learn",current:0,example:false,id:""};
+  Object.assign(L.en,{
+  "navFind": "Find a method",
+  "navLibrary": "Library",
+  "navSources": "Sources",
+  "navHelp": "Help",
+  "downloadApp": "Download HTML",
+  "headline": "Pick a method.",
+  "headline2": "Put it to work.",
+  "lead": "Choose a method, work through an example, and turn your answers into a presentation.",
+  "sub": "Free to use. Open the site or download the complete app as a single HTML file.",
+  "try": "Try the Eisenhower Matrix",
+  "heroMatrix": "One list, four decisions",
+  "heroMatrixHint": "Decide what to do, schedule, delegate or drop.",
+  "landingStart": "Three ways to get started",
+  "startGuide": "Read a worked case",
+  "startGuideCopy": "See the data, the reasoning behind the decision and what to measure next.",
+  "startCanvas": "Fill in your worksheet",
+  "startCanvasCopy": "Enter your own situation. Download a copy if you want to return to it later.",
+  "startDeck": "Prepare a presentation",
+  "startDeckCopy": "Preview the eight slides and choose an editable PowerPoint or a PDF.",
+  "quizSub": "Choose one answer for each of the five questions.",
+  "who": "Who will use the result?",
+  "me": "Just me",
+  "team": "My team",
+  "boss": "My manager",
+  "partners": "My partners",
+  "client": "My client",
+  "fitsAudience": "Suited to the audience",
+  "fitsStyle": "Matches your working style",
+  "fitsRepeat": "Useful for recurring work",
+  "sourceTitle": "What the library is based on",
+  "sourceIntro": "The method pages point to published works and practitioner references. Each guide separates its source note from the studio’s explanation and example.",
+  "sourcesSelection": "A selection of published references",
+  "sourceLink": "Read the reference",
+  "sourceCreditTitle": "Examples, diagrams and rights",
+  "sourceCredit": "The worked cases are fictional. The explanations, worksheets and slide layouts were created for this project. Published method names identify their references. This app contains no consulting firm templates, slides or internal data.",
+  "sourceCaution": "Some methods have disputed origins. The guide flags attribution uncertainty where applicable.",
+  "codeNotices": "Open-source library notices",
+  "helpTitle": "Questions and help",
+  "helpIntro": "Find out how to keep a worksheet, work offline or report an issue.",
+  "faqFreeQ": "Is the app free?",
+  "faqFreeA": "Yes. The site, the HTML file and the worksheet, PowerPoint and PDF downloads are free. You do not need an account.",
+  "faqPrivacyQ": "What happens to my answers?",
+  "faqPrivacyA": "Your answers stay in the open tab while you work. The app does not save them to browser storage or send them to a server. Reloading or closing the tab ends the session. Use Manage my answers in the worksheet to download or reopen a backup.",
+  "faqOfflineQ": "How do I use it offline?",
+  "faqOfflineA": "Download the HTML file and open it in a browser. It includes all 50 methods, the recommender, the worksheets and the PowerPoint and PDF export tools. Download a separate backup to keep your own answers.",
+  "faqFilesQ": "Which file should I download?",
+  "faqFilesA": "Choose HTML for the complete app, a worksheet backup to resume your answers, PowerPoint for editable slides, or PDF to share a fixed copy.",
+  "faqRightsQ": "Where do the examples and templates come from?",
+  "faqRightsA": "The cases use fictional data and the layouts were drawn for this project. Method guides link to their references where available. If you see a source or credit that should be corrected, tell us which method and section are affected.",
+  "supportTitle": "Need help with a method or a file?",
+  "supportCopy": "Share the method name, the step where you got stuck and your browser. Keep personal worksheet answers out of the message.",
+  "supportContact": "Contact Salah on LinkedIn",
+  "supportReport": "Report a problem on GitHub",
+  "localEmpty": "Answers stay in this tab until you close or reload it.",
+  "localSaved": "In this tab only. Download a backup to keep these answers.",
+  "clearDetails": "This removes the answers for this method from the current session. You can download a backup before deleting.",
+  "legacyTitle": "Answers from an earlier version",
+  "legacyHelp": "An earlier version saved answers in this browser. You can reopen the methods and download backups, then remove the old browser data here.",
+  "legacyRemove": "Remove old browser data…",
+  "legacyConfirm": "Remove the old saved data from this browser?",
+  "legacyDone": "Old browser data removed. Open answers stay in this tab until you leave.",
+  "legacyFailed": "This browser did not allow the old data to be removed.",
+  "htmlPreparing": "Preparing the offline HTML…",
+  "htmlReady": "Your offline HTML download started.",
+  "editorialTitle": "How a guide is made",
+  "editorialSource": "Trace the method to a published reference and flag uncertain attributions.",
+  "editorialCase": "Write a fictional scenario, explain the decision and define a way to check it.",
+  "editorialDeck": "Build an editable worksheet and test the presentation in three formats.",
+  "rightsReference": "WIPO guidance on copyright",
+  "otherMatches": "Other methods in this family",
+  "recommendationHelp": "Tools in the selected family are ranked using your audience, time, frequency and working style."
+});
+  Object.assign(L.fr,{
+  "navFind": "Trouver une méthode",
+  "navLibrary": "Bibliothèque",
+  "navSources": "Sources",
+  "navHelp": "Aide",
+  "downloadApp": "Télécharger le HTML",
+  "headline": "Choisis un outil.",
+  "headline2": "Passe à la pratique.",
+  "lead": "Choisis une méthode, suis un cas pratique et transforme tes réponses en présentation.",
+  "sub": "Gratuit. Utilise le site ou télécharge l’application complète dans un seul fichier HTML.",
+  "try": "Essayer la matrice d’Eisenhower",
+  "heroMatrix": "Une liste, quatre décisions",
+  "heroMatrixHint": "Décide quoi faire, planifier, déléguer ou retirer.",
+  "landingStart": "Trois façons de commencer",
+  "startGuide": "Lire un cas pratique",
+  "startGuideCopy": "Découvre les données, le raisonnement derrière la décision et ce qu’il faut mesurer ensuite.",
+  "startCanvas": "Remplir ton canevas",
+  "startCanvasCopy": "Saisis ta propre situation. Télécharge une copie pour y revenir plus tard.",
+  "startDeck": "Préparer une présentation",
+  "startDeckCopy": "Parcours les huit diapositives et choisis un PowerPoint modifiable ou un PDF.",
+  "quizSub": "Choisis une réponse pour chacune des cinq questions.",
+  "who": "À qui servira le résultat ?",
+  "me": "Moi",
+  "team": "Mon équipe",
+  "boss": "Mon responsable",
+  "partners": "Mes partenaires",
+  "client": "Mon client",
+  "fitsAudience": "Adapté au public choisi",
+  "fitsStyle": "Adapté à ta façon de travailler",
+  "fitsRepeat": "Utile pour un travail récurrent",
+  "sourceTitle": "Sur quoi repose la bibliothèque",
+  "sourceIntro": "Les fiches renvoient à des publications et à des références de praticiens. Chaque guide distingue sa note de source de l’explication et de l’exemple rédigés pour l’atelier.",
+  "sourcesSelection": "Quelques références publiées",
+  "sourceLink": "Consulter la référence",
+  "sourceCreditTitle": "Exemples, schémas et droits",
+  "sourceCredit": "Les cas pratiques sont fictifs. Les explications, canevas et mises en page ont été créés pour ce projet. Les noms des méthodes publiées permettent d’identifier leurs références. L’application ne contient aucun modèle, support de présentation ou jeu de données interne de cabinet de conseil.",
+  "sourceCaution": "L’origine de certaines méthodes est discutée. Le guide signale les incertitudes d’attribution lorsque c’est pertinent.",
+  "codeNotices": "Mentions des bibliothèques open source",
+  "helpTitle": "Questions fréquentes et aide",
+  "helpIntro": "Apprends à conserver un canevas, à travailler hors ligne ou à signaler un problème.",
+  "faqFreeQ": "L’application est-elle gratuite ?",
+  "faqFreeA": "Oui. Le site, le fichier HTML et les téléchargements de canevas, PowerPoint et PDF sont gratuits. Aucun compte n’est requis.",
+  "faqPrivacyQ": "Que deviennent mes réponses ?",
+  "faqPrivacyA": "Tes réponses restent dans l’onglet ouvert pendant que tu travailles. L’application ne les enregistre pas dans le stockage du navigateur et ne les transmet pas à un serveur. Actualiser ou fermer l’onglet termine la session. Dans le canevas, utilise Gérer mes réponses pour télécharger ou rouvrir une copie.",
+  "faqOfflineQ": "Comment utiliser l’application hors ligne ?",
+  "faqOfflineA": "Télécharge le fichier HTML et ouvre-le dans un navigateur. Il contient les 50 méthodes, le questionnaire, les canevas et les outils d’export PowerPoint et PDF. Télécharge une copie séparée pour conserver tes propres réponses.",
+  "faqFilesQ": "Quel fichier choisir ?",
+  "faqFilesA": "Choisis le HTML pour l’application complète, une copie du canevas pour reprendre tes réponses, le PowerPoint pour modifier les diapositives ou le PDF pour partager une version fixe.",
+  "faqRightsQ": "D’où viennent les exemples et les modèles ?",
+  "faqRightsA": "Les cas utilisent des données fictives et les mises en page ont été dessinées pour ce projet. Les guides renvoient à leurs références lorsqu’un lien est disponible. Pour une correction de source ou d’attribution, indique la méthode et la section concernées.",
+  "supportTitle": "Besoin d’aide sur une méthode ou un fichier ?",
+  "supportCopy": "Indique la méthode, l’étape qui bloque et ton navigateur. Garde tes réponses personnelles dans ton canevas.",
+  "supportContact": "Contacter Salah sur LinkedIn",
+  "supportReport": "Signaler un problème sur GitHub",
+  "localEmpty": "Tes réponses restent dans cet onglet jusqu’à sa fermeture ou son actualisation.",
+  "localSaved": "Dans cet onglet uniquement. Télécharge une copie pour garder tes réponses.",
+  "clearDetails": "Cela efface les réponses à cette méthode dans la session actuelle. Tu peux télécharger une copie avant de les effacer.",
+  "legacyTitle": "Réponses d’une version précédente",
+  "legacyHelp": "Une ancienne version a enregistré des réponses dans ce navigateur. Tu peux rouvrir les méthodes et télécharger des copies, puis supprimer les anciennes données du navigateur ici.",
+  "legacyRemove": "Supprimer les anciennes données…",
+  "legacyConfirm": "Supprimer les anciennes données enregistrées dans ce navigateur ?",
+  "legacyDone": "Anciennes données supprimées. Les réponses ouvertes restent dans cet onglet jusqu’à ton départ.",
+  "legacyFailed": "Ce navigateur n’a pas autorisé la suppression des anciennes données.",
+  "htmlPreparing": "Préparation du fichier HTML hors ligne…",
+  "htmlReady": "Le téléchargement du fichier HTML hors ligne a commencé.",
+  "editorialTitle": "Comment une fiche est préparée",
+  "editorialSource": "Relier la méthode à une référence publiée et signaler les attributions incertaines.",
+  "editorialCase": "Écrire un scénario fictif, expliquer la décision et prévoir comment la vérifier.",
+  "editorialDeck": "Créer un canevas modifiable et tester la présentation dans trois formats.",
+  "rightsReference": "Repères de l’OMPI sur le droit d’auteur",
+  "otherMatches": "Autres méthodes de cette famille",
+  "recommendationHelp": "Les outils de la famille choisie sont classés selon le public, le temps, la fréquence et la façon de travailler."
+});
+  let legacy={}, hasLegacy=false;
+  try{
+    const previous=localStorage.getItem("u30studio");
+    hasLegacy=Boolean(previous||localStorage.getItem("u30studio-feedback"));
+    if(previous)legacy=JSON.parse(previous)||{};
+  }catch(e){}
+  const localeInUrl=location.search?.match(/(?:^|[?&])lang=(en|fr)(?:&|$)/)?.[1];
+  const s={lang:localeInUrl||(document.documentElement.lang==="fr"?"fr":"en"),need:"prioritise",who:"me",time:"medium",freq:"regular",fm:"structured",ratio:"16:9",
+    answers:{...legacy.answers},family:"all",query:"",audience:"all",duration:"all",difficulty:"all",tab:"learn",current:0,example:false,id:""};
   const deck=window.ProductivityDeck;
   const t=k=>L[s.lang][k]||k, esc=x=>String(x==null?"":x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])), byId=id=>localizedTools().find(x=>x.id===id), family=k=>s.lang==="fr"?frnames[k]:names[k];
-  let localAvailable=true;
-  const save=()=>{try{localStorage.setItem("u30studio",JSON.stringify({lang:s.lang,need:s.need,who:s.who,time:s.time,freq:s.freq,fm:s.fm,ratio:s.ratio,answers:s.answers}));localAvailable=true}catch(e){localAvailable=false}};
   const link=x=>"#/tool/"+encodeURIComponent(x.id);
+  const asset=file=>new URL(file,new URL(document.body.dataset.base||"./",location.href));
   function localizedTools(){
     return tools.map((x,i)=>({...x,...(s.lang==="fr"?x.fr:{}),number:i+1}));
   }
@@ -327,25 +479,43 @@
   function answers(x){return s.answers[x.id]||{}}
   const hasAnswer=value=>typeof value==="string"&&Boolean(value.trim());
   const hasAnswers=x=>Object.values(answers(x)).some(hasAnswer);
-  const savedStatus=x=>t(!localAvailable?"localUnavailable":hasAnswers(x)?"localSaved":"localEmpty");
+  const savedStatus=x=>t(hasAnswers(x)?"localSaved":"localEmpty");
   let pendingBackup=null;
   function diagram(x,values={},blank=false){
     const w=9,h=5.5;
     return deck.svg(deck.framework(x,values,[.15,.13,w-.30,h-.26],t,blank),w,h,esc,x.n);
   }
-  function header(){
+  const logo='<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" fill="#161713"/><path d="M6 6h8v8H6zm0 12h8v8H6zm12 0h8v8h-8z" fill="#fffdfa"/><path d="M18 6h8v8h-8z" fill="#ff5a32"/></svg>';
+  const navigation=[["","home"],["find","navFind"],["all","navLibrary"],["sources","navSources"],["help","navHelp"]];
+  function header(route){
+    const selected=route.section||({home:"",all:"all",tool:"all",results:"find"}[route.v]);
     return `<div class="s-challenge"><div class="s-wrap">
       <span><a href="https://the-unfinished-30.vercel.app/">The Unfinished 30</a> · ${t("challenge")}</span>
       <span>${t("madeBy")} <a href="https://www.linkedin.com/in/salahkhenissi/">Salah Khenissi</a></span>
     </div></div>
     <header class="s-wrap"><div class="s-top">
-      <a class="s-brand" href="#/">${t("brand")}</a>
-      <nav class="s-nav" aria-label="${t("brand")}"><a href="#/">${t("home")}</a><a href="#/all">${t("all")}</a><button data-act="lang" aria-label="${t("language")}">${s.lang==="en"?"FR":"EN"}</button></nav>
+      <a class="s-brand" href="#/">${logo}<span>${t("brand")}</span></a>
+      <nav class="s-nav" aria-label="${t("brand")}">${navigation.map(([key,label])=>`<a href="#/${key}" ${key===selected?'aria-current="location"':""}>${t(label)}</a>`).join("")}</nav>
+      <div class="s-headeractions"><button class="s-btn outline tiny" data-act="lang" aria-label="${t("language")}">${s.lang==="en"?"FR":"EN"}</button><button class="s-btn orange tiny" data-act="html">${t("downloadApp")} ↓</button></div>
     </div></header>`;
   }
-  function footer(){return `<footer class="s-wrap"><div class="s-bottombar"><p>${t("credit")}</p><div class="s-btns"><a class="s-btn outline tiny" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">LinkedIn ↗</a><button class="s-btn outline tiny" data-act="html">${t("downloadApp")}</button></div></div></footer>`}
-  function quiz(){const choices=(key,values)=>'<div class="s-opts">'+values.map(z=>'<label class="s-opt"><input type="radio" name="'+key+'" value="'+esc(z[0])+'" '+(s[key]===z[0]?"checked":"")+'><span>'+esc(z[1])+"</span></label>").join("")+"</div>";
-    return '<form id="studio-quiz"><div class="s-quiz"><div class="s-field"><span class="s-label">01 / '+t("need")+"</span>"+choices("need",Object.keys(names).map(x=>[x,family(x)]))+'</div><div class="s-field"><span class="s-label">02 / '+t("who")+"</span>"+choices("who",[["me",t("me")],["team",t("team")],["both",t("both")]])+'</div><div class="s-field"><span class="s-label">03 / '+t("time")+"</span>"+choices("time",[["short",t("short")],["medium",t("medium")],["long",t("long")]])+'</div></div><details class="s-advanced"><summary>'+t("more")+'</summary><div class="s-advancedgrid"><div class="s-field"><span class="s-label">'+t("freq")+"</span>"+choices("freq",[["once",t("once")],["regular",t("regular")]])+'</div><div class="s-field"><span class="s-label">'+t("style")+"</span>"+choices("fm",[["casual",t("casual")],["structured",t("structured")],["formal",t("formal")]])+'</div></div></details><div class="s-btns"><button class="s-btn orange" type="submit">'+t("find")+' →</button><a class="s-btn outline" href="#/all">'+t("all")+"</a></div></form>"
+  function footer(){
+    return `<footer class="s-wrap"><div class="s-bottombar">
+      <div><a class="s-brand" href="#/">${logo}<span>${t("brand")}</span></a><p>${t("credit")}</p></div>
+      <nav class="s-footerlinks" aria-label="${t("navHelp")}"><a href="#/sources">${t("navSources")}</a><a href="#/help">${t("navHelp")}</a><a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">${t("supportContact")} ↗</a></nav>
+    </div></footer>`;
+  }
+  const audiences=["me","team","boss","partners","client"];
+  function quiz(){
+    const questions=[
+      ["need","need",Object.keys(names),family],["who","who",audiences,t],
+      ["time","time",["short","medium","long"],t],["freq","freq",["once","regular"],t],
+      ["fm","style",["casual","structured","formal"],t]
+    ];
+    return `<form id="studio-quiz"><div class="s-quiz">${questions.map(([key,label,values,display],i)=>`
+      <fieldset class="s-field"><legend><span>0${i+1}</span> ${t(label)}</legend>
+      <div class="s-opts">${values.map(value=>`<label class="s-opt"><input type="radio" name="${key}" value="${value}" ${s[key]===value?"checked":""}><span>${display(value)}</span></label>`).join("")}</div></fieldset>`).join("")}
+      </div><div class="s-btns"><button class="s-btn orange" type="submit">${t("find")} →</button><a class="s-btn outline" href="#/all">${t("all")}</a></div></form>`;
   }
   function sketch(x){
     return deck.svg(deck.motif(x,[0,0,3.4,1.36]),3.4,1.36,esc,"");
@@ -358,10 +528,61 @@
       <div class="s-cardbottom"><span>${t(x.m==="solo"?"alone":x.m==="team"?"asTeam":"soloOrTeam")}</span><span>${t("explore")} ↗</span></div>
       ${reason?`<div class="s-rec">${esc(reason)}</div>`:""}</a>`;
   }
-  function art(){let x=byId("pareto");return '<div class="s-art" aria-label="'+t("paretoArt")+'"><div class="s-arthead"><span>'+t("paretoIndex")+'</span><span>'+t("both")+'</span></div><div class="s-artbody"><div><div class="s-artbig">80<br>/ 20<span style="color:#ff5a32">.</span></div><p>'+t("paretoLead")+'</p></div><div>'+diagram(x)+"</div></div></div>"}
-  function home(){return '<div class="s-wrap"><section class="s-hero"><div><div class="s-kicker">THE UNFINISHED 30 / '+t("day")+'</div><h1>'+t("headline")+'<br><span class="s-serif">'+t("headline2")+'</span></h1><p class="s-lead">'+t("lead")+'</p><p class="s-sub">'+t("sub")+'</p><div class="s-btns"><a class="s-btn orange" href="#/tool/pareto">'+t("try")+' ↗</a><a class="s-btn outline" href="#/all">'+t("all")+'</a></div></div>'+art()+'</section><div class="s-statline"><span><b>50</b> '+t("methods")+'</span><span><b>5</b> '+t("families")+'</span><span><b>8</b> '+t("slidesEach")+'</span><span><b>3</b> '+t("formats")+'</span><span>'+t("free")+'</span></div></div><section class="s-wrap s-section" id="find"><div class="s-sectionhead"><div><div class="s-kicker">'+t("findIt")+'</div><h2>'+t("quizTitle")+'</h2></div><p>'+t("quizSub")+'</p></div>'+quiz()+'</section><section class="s-wrap s-section" style="padding-top:0"><div class="s-sectionhead"><div><div class="s-kicker">'+t("tryIt")+'</div><h2>'+t("startHere")+'</h2></div></div><div class="s-grid">'+["pareto","eisenhower","pomodoro"].map(i=>card(byId(i))).join("")+"</div></section>"}
-  function scored(x){let n=x.f===s.need?8:0,why=[];let max=s.time==="short"?15:s.time==="medium"?60:1e4;if(x.t<=max){n+=3;why.push(t("fitsTime"))}else n-=5;if(s.who==="me"&&x.m!=="team"||s.who==="team"&&x.m!=="solo"){n+=4;why.push(t("fitsAudience"))}else if(s.who!=="both")n-=7;if(s.who==="both"&&x.m==="both")n+=2;if(s.freq==="regular"&&x.rec)n++;if(s.fm===x.fm)n+=2;return {n,why:why.join(" · ")}}
-  function results(){let list=localizedTools().filter(x=>x.f===s.need&&(s.who==="both"||s.who==="team"&&x.m!=="solo"||s.who==="me"&&x.m!=="team")).map(x=>({x,s:scored(x)})).sort((a,b)=>b.s.n-a.s.n);return '<section class="s-wrap s-section"><div class="s-kicker">'+t("recommendations")+'</div><h1 style="font-size:clamp(44px,6vw,75px);margin:20px 0">'+t("rec")+'</h1><p class="s-visual-note">'+family(s.need)+' · '+t(s.who)+' · '+t(s.time)+'</p><div class="s-grid" style="margin-top:22px">'+list.slice(0,3).map(z=>card(z.x,z.s.why)).join("")+'</div><div class="s-sectionhead" style="margin-top:60px"><h2>'+t("otherMatches")+'</h2></div><div class="s-grid">'+list.slice(3).map(z=>card(z.x)).join("")+"</div></section>"}
+  function art(){
+    const x=byId("eisenhower");
+    return `<figure class="s-matrix-hero"><figcaption><span class="s-kicker">${esc(x.n)}</span><h2>${t("heroMatrix")}</h2><p>${t("heroMatrixHint")}</p></figcaption>${diagram(x,x.sampleCells||x.sample)}</figure>`;
+  }
+  function landingSupport(){
+    const refs=[
+      ["pareto","ASQ"],["rice","Intercom"],["gtd","David Allen Company"],["pdca","ASQ"]
+    ];
+    const faq=["Free","Privacy","Offline","Files","Rights"];
+    return `<section class="s-wrap s-section s-landingsection" id="sources" tabindex="-1">
+      <div class="s-sectionhead"><h2>${t("sourceTitle")}</h2><p>${t("sourceIntro")}</p></div>
+      <div class="s-editorial"><h3>${t("editorialTitle")}</h3><ol>${["Source","Case","Deck"].map(key=>`<li>${t("editorial"+key)}</li>`).join("")}</ol></div>
+      <div class="s-reference-list"><h3>${t("sourcesSelection")}</h3><ul>${refs.map(([id,publisher])=>`
+        <li><a href="#/tool/${id}">${esc(byId(id).n)}</a><a href="${esc(VERIFIED_LINKS[id])}" target="_blank" rel="noopener" aria-label="${t("sourceLink")} · ${esc(byId(id).n)}">${esc(publisher)} ↗</a></li>`).join("")}</ul></div>
+      <div class="s-rights"><h3>${t("sourceCreditTitle")}</h3><p>${t("sourceCredit")}</p><p>${t("sourceCaution")}</p><p><a href="https://www.wipo.int/en/web/copyright/protection" target="_blank" rel="noopener">${t("rightsReference")} ↗</a></p><button class="s-btn outline tiny" data-act="notices">${t("codeNotices")} ↓</button></div>
+    </section>
+    <section class="s-wrap s-section s-landingsection" id="help" tabindex="-1">
+      <div class="s-sectionhead"><h2>${t("helpTitle")}</h2><p>${t("helpIntro")}</p></div>
+      <div class="s-faq">${faq.map(key=>`<details><summary>${t("faq"+key+"Q")}</summary><p>${t("faq"+key+"A")}</p></details>`).join("")}</div>
+      ${hasLegacy?`<section class="s-helpbox"><h3>${t("legacyTitle")}</h3><p>${t("legacyHelp")}</p><button class="s-btn outline tiny" data-act="remove-legacy">${t("legacyRemove")}</button></section>`:""}
+      <section class="s-helpbox"><h3>${t("supportTitle")}</h3><p>${t("supportCopy")}</p><div class="s-btns"><a class="s-btn outline tiny" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">${t("supportContact")} ↗</a><a class="s-btn outline tiny" href="https://github.com/hellolina33/TheUnfinishedProject/issues" target="_blank" rel="noopener">${t("supportReport")} ↗</a></div></section>
+    </section>`;
+  }
+  function home(){
+    return `<div class="s-wrap"><section class="s-hero"><div>
+      <div class="s-kicker">THE UNFINISHED 30 / ${t("day")}</div>
+      <h1>${t("headline")}<br><span class="s-serif">${t("headline2")}</span></h1>
+      <p class="s-lead">${t("lead")}</p><p class="s-sub">${t("sub")}</p>
+      <div class="s-btns"><a class="s-btn orange" href="#/tool/eisenhower">${t("try")} →</a><a class="s-btn outline" href="#/find">${t("navFind")}</a></div>
+    </div>${art()}</section>
+    <div class="s-statline"><span><b>50</b> ${t("methods")}</span><span><b>5</b> ${t("families")}</span><span><b>8</b> ${t("slidesEach")}</span><span><b>3</b> ${t("formats")}</span></div></div>
+    <section class="s-wrap s-section s-landingsection" id="find" tabindex="-1"><div class="s-sectionhead"><div><div class="s-kicker">${t("navFind")}</div><h2>${t("quizTitle")}</h2></div><p>${t("quizSub")}</p></div>${quiz()}</section>
+    <section class="s-wrap s-section s-landingsection"><h2>${t("landingStart")}</h2><ol class="s-startpath">${["Guide","Canvas","Deck"].map((key,i)=>`<li><span>0${i+1}</span><h3>${t("start"+key)}</h3><p>${t("start"+key+"Copy")}</p></li>`).join("")}</ol>
+      <div class="s-sectionhead"><h2>${t("startHere")}</h2></div><div class="s-grid">${["eisenhower","pareto","pomodoro"].map(id=>card(byId(id))).join("")}</div></section>
+    ${landingSupport()}`;
+  }
+  function audienceFit(x){
+    if(s.who==="me")return x.m!=="team"&&x.out.includes("me");
+    if(s.who==="team")return x.m!=="solo";
+    if(s.who==="boss")return x.out.includes("manager");
+    if(s.who==="client")return x.out.includes("clients");
+    return x.m!=="solo"&&(x.out.includes("clients")||x.out.includes("manager"));
+  }
+  function scored(x){
+    let n=0;
+    const why=[];
+    const limit={short:15,medium:60,long:Infinity}[s.time];
+    if(x.t<=limit){n+=3;why.push(t("fitsTime"))}else n-=5;
+    if(audienceFit(x)){n+=6;why.push(t("fitsAudience"))}
+    if(x.fm===s.fm){n+=2;why.push(t("fitsStyle"))}
+    if(s.freq==="regular"&&x.rec){n++;why.push(t("fitsRepeat"))}
+    if(s.freq==="once"&&!x.rec)n++;
+    return {n,why:why.join(" · ")};
+  }
+  function results(){let list=localizedTools().filter(x=>x.f===s.need).map(x=>({x,s:scored(x)})).sort((a,b)=>b.s.n-a.s.n);return '<section class="s-wrap s-section"><div class="s-kicker">'+t("recommendations")+'</div><h1 style="font-size:clamp(44px,6vw,75px);margin:20px 0">'+t("rec")+'</h1><p class="s-visual-note">'+family(s.need)+' · '+t(s.who)+' · '+t(s.time)+'</p><p>'+t("recommendationHelp")+'</p><a class="s-btn outline tiny" href="#/find">'+t("navFind")+' ↗</a><div class="s-grid" style="margin-top:22px">'+list.slice(0,3).map(z=>card(z.x,z.s.why)).join("")+'</div><div class="s-sectionhead" style="margin-top:60px"><h2>'+t("otherMatches")+'</h2></div><div class="s-grid">'+list.slice(3).map(z=>card(z.x)).join("")+"</div></section>"}
   const normalize=value=>value.normalize("NFD").replace(/\p{M}/gu,"").toLowerCase();
   const hasFilters=()=>Boolean(s.query||[s.family,s.audience,s.duration,s.difficulty].some(value=>value!=="all"));
   function filtered(){
@@ -403,7 +624,7 @@
       <div class="s-grid" id="cards">${cards(items)}</div>
     </section>`;
   }
-  const VERIFIED_LINKS={"pareto":"https://asq.org/quality-resources/pareto","pomodoro":"https://www.pomodorotechnique.com/","smart":"https://openurl.ebsco.com/contentitem/edb%3A6043491","cynefin":"https://thecynefin.co/team/dave-snowden/","rice":"https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/","gtd":"https://gettingthingsdone.com/","pdca":"https://asq.org/quality-resources/pdca-cycle"};
+  const VERIFIED_LINKS={"pareto":"https://asq.org/quality-resources/pareto","pomodoro":"https://www.pomodorotechnique.com/","smart":"https://openurl.ebsco.com/contentitem/edb%3A6043491","cynefin":"https://thecynefin.co/team/dave-snowden/","rice":"https://www.intercom.com/blog/rice-simple-prioritization-for-product-managers/","gtd":"https://gettingthingsdone.com/what-is-gtd/","pdca":"https://asq.org/quality-resources/pdca-cycle"};
   function sourceUrl(x){return VERIFIED_LINKS[x.id]||null}
   function sampleTable(x){
     const labels=fieldNames(x), grid=x.d[0]==="grid";
@@ -535,7 +756,7 @@
       return;
     }
     s.answers[x.id]=replace?incoming:{...current,...Object.fromEntries(additions)};
-    save();
+
     afterWorksheetChange("importDone");
   }
   function slideContent(x,n){
@@ -581,11 +802,11 @@
       <div id="tabpanel" role="tabpanel" aria-labelledby="method-tab-${s.tab}" tabindex="0">${s.tab==="learn"?learn(x):s.tab==="practice"?worksheet(x):slides(x)}</div>
     </div>`;
   }
-  function currentRoute(){let hash=(location.hash||document.body?.dataset?.route||"").replace(/^#\/?/,"");if(hash.indexOf("tool/")===0)return {v:"tool",id:hash.slice(5).split("?")[0]};if(hash==="all")return {v:"all"};if(hash.startsWith("results"))return {v:"results"};return {v:"home"}}
-  function render(){document.documentElement.lang=s.lang;let route=currentRoute();s.id=route.id||"";let x=byId(s.id);app.innerHTML='<div class="studio"><a class="s-screenreader" href="#studio-main">'+t("skip")+'</a>'+header()+'<main id="studio-main" tabindex="-1">'+(route.v==="tool"&&x?detail(x):route.v==="all"?all():route.v==="results"?results():home())+'</main>'+footer()+'</div>';document.title=(x?x.n+" · ":"")+t("brand")+" / "+t("day")+" · The Unfinished 30";if(route.v==="tool"){let pane=document.getElementById("tabpanel");if(pane&&typeof pane.insertAdjacentHTML==="function"){pane.insertAdjacentHTML("afterend",'<section class="s-section" style="padding:32px 0"><span class="s-kicker">'+t("helpful")+'</span><div class="s-btns"><button class="s-btn outline tiny" data-act="feedback" data-val="yes">'+t("yes")+'</button><button class="s-btn outline tiny" data-act="feedback" data-val="no">'+t("notYet")+'</button></div></section>')}}for(const key of ["audience","duration","difficulty"]){const control=document.getElementById(key);if(control)control.value=s[key]}let v=document.getElementById("viewframe");if(v){let touch=0;v.addEventListener("touchstart",e=>touch=e.changedTouches[0].screenX,{passive:true});v.addEventListener("touchend",e=>{if(Math.abs(e.changedTouches[0].screenX-touch)>40){moveSlide(e.changedTouches[0].screenX<touch?1:-1)}},{passive:true})}}
+  function currentRoute(){let hash=(location.hash||document.body?.dataset?.route||"").replace(/^#\/?/,"");if(hash.indexOf("tool/")===0)return {v:"tool",id:hash.slice(5).split("?")[0]};if(["find","sources","help"].includes(hash))return {v:"home",section:hash};if(hash==="all")return {v:"all"};if(hash.startsWith("results"))return {v:"results"};return {v:"home"}}
+  function render(){document.documentElement.lang=s.lang;let route=currentRoute();s.id=route.id||"";let x=byId(s.id);app.innerHTML='<div class="studio"><a class="s-screenreader" href="#studio-main">'+t("skip")+'</a>'+header(route)+'<main id="studio-main" tabindex="-1">'+(route.v==="tool"&&x?detail(x):route.v==="all"?all():route.v==="results"?results():home())+'</main>'+footer()+'</div>';document.title=(x?x.n+" · ":"")+t("brand")+" / "+t("day")+" · The Unfinished 30";for(const key of ["audience","duration","difficulty"]){const control=document.getElementById(key);if(control)control.value=s[key]}let v=document.getElementById("viewframe");if(v){let touch=0;v.addEventListener("touchstart",e=>touch=e.changedTouches[0].screenX,{passive:true});v.addEventListener("touchend",e=>{if(Math.abs(e.changedTouches[0].screenX-touch)>40){moveSlide(e.changedTouches[0].screenX<touch?1:-1)}},{passive:true})}}
   function notify(v){let a=document.getElementById("export-status");if(a)a.textContent=v;else{let el=document.createElement("div");el.className="s-toast";el.textContent=v;el.setAttribute("role","status");document.body.append(el);setTimeout(()=>el.remove(),2800)}}
   function download(name,value,type){let url=URL.createObjectURL(new Blob([value],{type:type||"text/plain"}));let a=document.createElement("a");a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
-  function loadLibrary(url,test){return new Promise((resolve,reject)=>{if(test())return resolve();let tag=document.createElement("script");tag.src=url;tag.onload=()=>test()?resolve():reject(new Error("Library did not load"));tag.onerror=()=>reject(new Error("offline"));document.head.appendChild(tag)})}
+  function loadLibrary(url,test){return new Promise((resolve,reject)=>{if(test())return resolve();let tag=document.createElement("script");tag.src=asset(url);tag.onload=()=>test()?resolve():reject(new Error("Library did not load"));tag.onerror=()=>reject(new Error("offline"));document.head.appendChild(tag)})}
   async function exportDeck(x,kind){
     const b=app.querySelector('[data-act="'+kind+'"]');
     if(b?.disabled) return;
@@ -597,7 +818,7 @@
     notify(t(kind+"Working"));
     try{
       if(kind==="pptx"){
-        await loadLibrary("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js",()=>!!(window.PptxGenJS||window.pptxgen));
+        await loadLibrary("vendor/pptxgen.bundle.js",()=>!!(window.PptxGenJS||window.pptxgen));
         const Pptx=window.PptxGenJS||window.pptxgen, pptx=new Pptx();
         pptx.defineLayout({name:"DAY04",width,height});
         pptx.layout="DAY04";
@@ -607,7 +828,7 @@
         pages.forEach(page=>deck.addPptx(pptx.addSlide(),pptx.ShapeType,page,lang));
         await pptx.writeFile({fileName:file+".pptx"});
       }else{
-        await loadLibrary("https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js",()=>!!window.jspdf?.jsPDF);
+        await loadLibrary("vendor/jspdf.umd.min.js",()=>!!window.jspdf?.jsPDF);
         const orientation=width>height?"landscape":"portrait";
         const pdf=new window.jspdf.jsPDF({orientation,unit:"in",format:[width,height]});
         pdf.setProperties({title:x.n,author:"Salah Khenissi"});
@@ -618,38 +839,82 @@
         pdf.save(file+".pdf");
       }
       notify(t(kind+"Done"));
-      track(kind+"_download");
     }catch(error){
       notify(t(kind+"Error")+(error.message==="offline"?" "+t("offline"):""));
     }finally{
       if(b)b.disabled=false;
     }
   }
-  function feedback(kind){try{let saved=JSON.parse(localStorage.getItem("u30studio-feedback")||"{}");saved[s.id]=kind;localStorage.setItem("u30studio-feedback",JSON.stringify(saved))}catch(e){}notify(t("thanks"));track("feedback_"+kind)}
-  function track(name){try{if(typeof window.va==="function")window.va("event",{name:"day04_"+name})}catch(e){}}
   async function copyUrl(){try{if(navigator.share)await navigator.share({title:t("brand"),url:location.href});else{await navigator.clipboard.writeText(location.href);notify(t("copied"))}}catch(e){}}
+  const vendorFiles=["vendor/pptxgen.bundle.js","vendor/jspdf.umd.min.js","vendor/NOTICES.txt"];
+  async function assetText(file){
+    const response=await fetch(asset(file));
+    if(!response.ok)throw Error(file);
+    return response.text();
+  }
+  const inlineScript=code=>"<script>"+code.replace(/<\/script/gi,"<\\/script")+"</"+"script>";
   async function downloadHtml(){
+    const embedded=document.getElementById("offline-notices");
+    if(embedded){
+      const root=document.documentElement.cloneNode(true);
+      root.querySelector("#app").replaceChildren();
+      download("productivity-studio-day04-"+s.lang+".html","<!doctype html>\n"+root.outerHTML,"text/html");
+      return;
+    }
+    const lang=s.lang;
+    notify(t("htmlPreparing"));
     try{
-      const base=new URL(document.body.dataset.base||"./",location.href);
-      const files=["index.html","studio.css","methods.js","deck.js","studio.js"];
-      const [page,style,...scripts]=await Promise.all(files.map(async file=>{
-        const res=await fetch(new URL(file,base));
-        if(!res.ok) throw Error(file);
-        return res.text();
-      }));
+      const files=["index.html","studio.css","methods.js","deck.js","studio.js",...vendorFiles];
+      const [page,style,methods,deck,studio,pptx,pdf,notices]=await Promise.all(files.map(assetText));
       let html=page.replace('<link rel="stylesheet" href="studio.css">',()=>"<style>"+style+"</style>");
-      html=html.replace('<html lang="en">','<html lang="'+s.lang+'">');
-      files.slice(2).forEach((file,i)=>{
-        html=html.replace('<script src="'+file+'" defer></'+'script>',()=>"<script>"+scripts[i].replace(/<\/script/gi,"<\\/script")+"</"+"script>");
-      });
-      download("productivity-studio-day04-"+s.lang+".html",html,"text/html");
+      html=html.replace('<html lang="en">','<html lang="'+lang+'">');
+      html=html.replace('<script src="methods.js" defer></'+'script>',()=>inlineScript(pptx)+inlineScript(pdf)+
+        '<script type="text/plain" id="offline-notices">'+notices+'</'+'script>'+inlineScript(methods));
+      html=html.replace('<script src="deck.js" defer></'+'script>',()=>inlineScript(deck));
+      html=html.replace('<script src="studio.js" defer></'+'script>',()=>inlineScript(studio));
+      download("productivity-studio-day04-"+lang+".html",html,"text/html");
+      notify(t("htmlReady"));
     }catch(e){notify(t("htmlError"))}
   }
-  app.addEventListener("submit",e=>{if(e.target.id!=="studio-quiz")return;e.preventDefault();save();track("quiz_completed");location.hash="#/results"});
+  async function downloadNotices(){
+    try{
+      const content=document.getElementById("offline-notices")?.textContent||await assetText(vendorFiles[2]);
+      download("productivity-studio-notices.txt",content,"text/plain");
+    }catch(e){notify(t("htmlError"))}
+  }
+  function removeLegacy(){
+    if(!window.confirm(t("legacyConfirm")))return;
+    try{
+      localStorage.removeItem("u30studio");
+      localStorage.removeItem("u30studio-feedback");
+      hasLegacy=false;
+      render();
+      focusSection();
+      notify(t("legacyDone"));
+    }catch(e){notify(t("legacyFailed"))}
+  }
+  function focusSection(){
+    const section=currentRoute().section;
+    if(section){
+      const target=document.getElementById(section);
+      target?.focus({preventScroll:true});
+      target?.scrollIntoView({block:"start"});
+    }else window.scrollTo(0,0);
+  }
+  app.addEventListener("submit",e=>{if(e.target.id!=="studio-quiz")return;e.preventDefault();location.hash="#/results"});
   app.addEventListener("click",e=>{
     let f=e.target.closest("[data-family]");if(f){s.family=f.dataset.family;updateCatalogue();return}
     let b=e.target.closest("[data-act]");if(!b){if(e.target.closest(".s-screenreader")){e.preventDefault();document.getElementById("studio-main").focus()}return}let act=b.dataset.act,x=byId(s.id);
-    if(act==="lang"){s.lang=s.lang==="en"?"fr":"en";save();render();app.querySelector('[data-act="lang"]')?.focus()}
+    if(act==="lang"){
+      s.lang=s.lang==="en"?"fr":"en";
+      if(/^https?:$/.test(location.protocol)){
+        const url=new URL(location.href);
+        url.searchParams.set("lang",s.lang);
+        history.replaceState(null,"",url);
+      }
+      render();
+      app.querySelector('[data-act="lang"]')?.focus();
+    }
     if(act==="tab"){s.tab=b.dataset.val;render();document.getElementById("method-tab-"+s.tab)?.focus()}
     if(act==="reset-filters"){
       Object.assign(s,{family:"all",query:"",audience:"all",duration:"all",difficulty:"all"});
@@ -684,7 +949,7 @@
     if(act==="cancel-answer")document.getElementById("answer-dialog")?.close();
     if(act==="confirm-clear"){
       delete s.answers[x.id];
-      save();
+
       afterWorksheetChange("clearDone");
     }
     if(act==="import-blank"||act==="import-replace")applyBackup(x,act==="import-replace");
@@ -696,13 +961,14 @@
     if(act==="fullscreen")document.getElementById("slide-canvas")?.requestFullscreen?.();
     if(act==="share")copyUrl();
     if(act==="html")downloadHtml();
-    if(act==="feedback")feedback(b.dataset.val);
+    if(act==="notices")downloadNotices();
+    if(act==="remove-legacy")removeLegacy();
     if(act==="pptx")exportDeck(x,"pptx");
     if(act==="pdf")exportDeck(x,"pdf");
   });
-  app.addEventListener("input",e=>{let z=e.target;if(z.id==="search-tools"){s.query=z.value;updateCatalogue()}if(z.hasAttribute("data-field")){let a=s.answers[s.id]||(s.answers[s.id]={});a[z.dataset.field]=z.value;s.example=false;save();syncWorksheet(byId(s.id));let d=document.getElementById("diagram");if(d)d.innerHTML=diagram(byId(s.id),a,true);const toggle=app.querySelector('[data-act="example"]');if(toggle)toggle.textContent=t("filled");const hint=app.querySelector(".s-canvaspaper .s-source");if(hint)hint.textContent=t("tip")}});
-  app.addEventListener("change",async e=>{let z=e.target;if(z.type==="radio"){s[z.name]=z.value;save()}if(z.id==="ratio"){s.ratio=z.value;save();render()}if(z.id==="audience"||z.id==="duration"||z.id==="difficulty"){s[z.id]=z.value;updateCatalogue()}if(z.id==="import-file")await reviewBackup(z,byId(s.id));});
-  window.addEventListener("hashchange",()=>{pendingBackup=null;s.tab="learn";s.current=0;s.example=false;render()});
+  app.addEventListener("input",e=>{let z=e.target;if(z.id==="search-tools"){s.query=z.value;updateCatalogue()}if(z.hasAttribute("data-field")){let a=s.answers[s.id]||(s.answers[s.id]={});a[z.dataset.field]=z.value;s.example=false;syncWorksheet(byId(s.id));let d=document.getElementById("diagram");if(d)d.innerHTML=diagram(byId(s.id),a,true);const toggle=app.querySelector('[data-act="example"]');if(toggle)toggle.textContent=t("filled");const hint=app.querySelector(".s-canvaspaper .s-source");if(hint)hint.textContent=t("tip")}});
+  app.addEventListener("change",async e=>{let z=e.target;if(z.type==="radio"){s[z.name]=z.value}if(z.id==="ratio"){s.ratio=z.value;render()}if(z.id==="audience"||z.id==="duration"||z.id==="difficulty"){s[z.id]=z.value;updateCatalogue()}if(z.id==="import-file")await reviewBackup(z,byId(s.id));});
+  window.addEventListener("hashchange",()=>{pendingBackup=null;s.tab="learn";s.current=0;s.example=false;render();focusSection()});
   function moveSlide(delta,focus){
     const index=Math.max(0,Math.min(7,s.current+delta));
     if(index===s.current)return;
@@ -728,4 +994,5 @@
     }
   });
   render();
+  if(currentRoute().section)focusSection();
 })();
