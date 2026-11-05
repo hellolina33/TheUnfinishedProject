@@ -271,6 +271,14 @@ test("Localized metadata, scenario kits and the dedicated widget are deployable"
   expect(response.headers()["content-security-policy"]).toContain(
     "script-src 'self'",
   );
+  const situationPage = await request.get(base + "fr/kits/backlog/");
+  const situationHtml = await situationPage.text();
+  expect(situationHtml).toContain(
+    'property="og:title" content="Prioriser un backlog produit',
+  );
+  expect(situationHtml).toContain(
+    'property="og:url" content="https://the-unfinished-30.vercel.app/day-04-productivity-library/fr/kits/backlog/"',
+  );
   const kit = await request.get(base + "downloads/kit-backlog-fr.zip");
   expect(kit.ok()).toBeTruthy();
   const zip = await JSZip.loadAsync(await kit.body());

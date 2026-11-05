@@ -2,9 +2,7 @@ name: Day 04 release checks
 on:
   push:
     branches: [main]
-    paths: ['day-04-productivity-library/**', 'scripts/**', 'tests/day04/**', 'package*.json', 'vercel.json', '.github/workflows/day04-checks.yml']
   pull_request:
-    paths: ['day-04-productivity-library/**', 'scripts/**', 'tests/day04/**', 'package*.json', 'vercel.json', '.github/workflows/day04-checks.yml']
 permissions:
   contents: read
 jobs:
