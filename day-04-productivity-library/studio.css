@@ -230,3 +230,19 @@ body>footer.foot{display:none!important}
 
 .studio .s-workshoptime{grid-column:1/-1;font-size:13px;color:var(--s-muted)}
 .studio [data-act="reset-filters"]:disabled{cursor:default}
+
+/* Worksheet actions */
+.studio .s-worksheet-primary{width:100%;line-height:1.3}
+.studio .s-answer-management{border-top:1px solid var(--s-line);padding-top:8px;font-size:13px}
+.studio .s-answer-management summary{min-height:38px;cursor:pointer;font-weight:800;padding:8px 0}
+.studio .s-answer-management p{font-size:13px;line-height:1.45;color:var(--s-muted)}
+.studio .s-backup-actions,.studio .s-dialog-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.studio .s-delete-link{background:none;border:0;text-align:left;color:#962c25;text-decoration:underline;margin-top:9px;padding:6px 0;min-height:35px;font-size:13px}
+.studio .s-answer-management button:disabled{opacity:.55;cursor:default}
+.studio #worksheet-message:empty{display:none}
+.studio .s-answer-dialog{width:min(460px,calc(100% - 28px));padding:22px;border:1px solid var(--s-ink);background:var(--s-white);color:var(--s-ink)}
+.studio .s-answer-dialog::backdrop{background:#16171380}
+.studio .s-answer-dialog h3{font-size:23px;line-height:1.13}
+.studio .s-answer-dialog p{margin-top:8px;line-height:1.45}
+.studio .s-backup-file{overflow-wrap:anywhere;font-weight:700}
+.studio .s-danger{background:#962c25;border-color:#962c25}

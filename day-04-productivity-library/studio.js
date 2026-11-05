@@ -253,17 +253,82 @@
   "anyAudience": "Tous les publics",
   "soloOrTeam": "Seul ou en équipe"
 });
+  Object.assign(L.en,{
+  "localEmpty": "Your answers are saved in this browser as you type.",
+  "localSaved": "Saved in this browser.",
+  "localUnavailable": "Local saving is unavailable. Download a backup before leaving.",
+  "seeWorksheetSlide": "Preview my answers on the slide",
+  "seeBlankWorksheet": "Preview the worksheet in the deck",
+  "manageAnswers": "Manage my answers",
+  "backupHelp": "Keep a backup to reopen these answers in this method later or in another browser.",
+  "backupDownload": "Download a backup",
+  "backupOpen": "Open a backup",
+  "clearAnswers": "Delete my answers…",
+  "clearConfirm": "Delete the answers for this worksheet?",
+  "clearDetails": "This removes the answers saved for this method in this browser. You can keep a backup before deleting.",
+  "clearNow": "Delete answers",
+  "clearDone": "Your worksheet is empty.",
+  "cancel": "Cancel",
+  "importReview": "Choose how to open this backup",
+  "importReviewHelp": "Fill empty fields to keep your current answers. Replace all uses only the answers in the file.",
+  "importBlank": "Fill empty fields",
+  "importReplace": "Replace all answers",
+  "importDone": "Backup opened.",
+  "importWrong": "This backup belongs to a different method. Open it from that method’s worksheet.",
+  "importEmpty": "This backup has no answers to restore.",
+  "importNoNew": "Your existing answers were kept. The backup had no new answers for empty fields.",
+  "backupStarted": "Backup download started.",
+  "livePreview": "Live preview",
+  "myEntries": "Your answers",
+  "restoreAnswers": "Restore answers",
+  "restoreHelp": "This will fill the worksheet with the answers in the backup."
+});
+  Object.assign(L.fr,{
+  "localEmpty": "Tes réponses se sauvegardent dans ce navigateur pendant la saisie.",
+  "localSaved": "Enregistré dans ce navigateur.",
+  "localUnavailable": "La sauvegarde locale est indisponible. Télécharge une copie avant de quitter.",
+  "seeWorksheetSlide": "Voir mes réponses sur la diapo",
+  "seeBlankWorksheet": "Voir la diapo du canevas",
+  "manageAnswers": "Gérer mes réponses",
+  "backupHelp": "Garde une copie pour rouvrir ces réponses dans cette méthode plus tard ou dans un autre navigateur.",
+  "backupDownload": "Télécharger une copie",
+  "backupOpen": "Ouvrir une copie",
+  "clearAnswers": "Effacer mes réponses…",
+  "clearConfirm": "Effacer les réponses de ce canevas ?",
+  "clearDetails": "Cela supprime les réponses à cette méthode enregistrées dans ce navigateur. Tu peux garder une copie avant de les effacer.",
+  "clearNow": "Effacer les réponses",
+  "clearDone": "Ton canevas est vide.",
+  "cancel": "Annuler",
+  "importReview": "Choisis comment ouvrir cette copie",
+  "importReviewHelp": "Remplis les champs vides pour garder tes réponses. Remplacer tout utilise uniquement les réponses du fichier.",
+  "importBlank": "Remplir les champs vides",
+  "importReplace": "Remplacer toutes les réponses",
+  "importDone": "Copie ouverte.",
+  "importWrong": "Cette copie appartient à une autre méthode. Ouvre-la depuis le canevas de cette méthode.",
+  "importEmpty": "Cette copie ne contient aucune réponse à restaurer.",
+  "importNoNew": "Tes réponses sont conservées. La copie ne contient aucune réponse à ajouter dans les champs vides.",
+  "backupStarted": "Téléchargement de la copie lancé.",
+  "livePreview": "Aperçu en direct",
+  "myEntries": "Tes réponses",
+  "restoreAnswers": "Restaurer les réponses",
+  "restoreHelp": "Les réponses de la copie seront ajoutées au canevas."
+});
   let stored={};try{stored=JSON.parse(localStorage.getItem("u30studio")||"{}")||{}}catch(e){}
   const s={lang:["en","fr"].includes(stored.lang)?stored.lang:(document.documentElement.lang==="fr"?"fr":"en"),need:stored.need||"prioritise",who:stored.who||"both",time:stored.time||"medium",freq:stored.freq||"regular",fm:stored.fm||"structured",ratio:stored.ratio||"16:9",answers:stored.answers||{},family:"all",query:"",audience:"all",duration:"all",difficulty:"all",tab:"learn",current:0,example:false,id:""};
   const deck=window.ProductivityDeck;
   const t=k=>L[s.lang][k]||k, esc=x=>String(x==null?"":x).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch])), byId=id=>localizedTools().find(x=>x.id===id), family=k=>s.lang==="fr"?frnames[k]:names[k];
-  const save=()=>{try{localStorage.setItem("u30studio",JSON.stringify({lang:s.lang,need:s.need,who:s.who,time:s.time,freq:s.freq,fm:s.fm,ratio:s.ratio,answers:s.answers}))}catch(e){}};
+  let localAvailable=true;
+  const save=()=>{try{localStorage.setItem("u30studio",JSON.stringify({lang:s.lang,need:s.need,who:s.who,time:s.time,freq:s.freq,fm:s.fm,ratio:s.ratio,answers:s.answers}));localAvailable=true}catch(e){localAvailable=false}};
   const link=x=>"#/tool/"+encodeURIComponent(x.id);
   function localizedTools(){
     return tools.map((x,i)=>({...x,...(s.lang==="fr"?x.fr:{}),number:i+1}));
   }
   const fieldNames=deck.fieldNames;
   function answers(x){return s.answers[x.id]||{}}
+  const hasAnswer=value=>typeof value==="string"&&Boolean(value.trim());
+  const hasAnswers=x=>Object.values(answers(x)).some(hasAnswer);
+  const savedStatus=x=>t(!localAvailable?"localUnavailable":hasAnswers(x)?"localSaved":"localEmpty");
+  let pendingBackup=null;
   function diagram(x,values={},blank=false){
     const w=9,h=5.5;
     return deck.svg(deck.framework(x,values,[.15,.13,w-.30,h-.26],t,blank),w,h,esc,x.n);
@@ -384,11 +449,94 @@
       return `<fieldset><legend>${esc(label)}</legend>${x.d[1].cols.map((col,j)=>input(col,"c"+i+"-"+j)).join("")}${values[i]?input(t("rowNote"),i):""}</fieldset>`;
     }).join("");
     return `<div class="s-canvaslayout"><div class="s-canvaspaper">
-      <div class="s-viewtoolbar"><span class="s-kicker">${t("canvas")}</span><button class="s-btn outline tiny" data-act="example">${s.example?t("viewMine"):t("filled")}</button></div>
+      <div class="s-viewtoolbar"><span class="s-kicker">${t("livePreview")}</span><button class="s-btn outline tiny" data-act="example">${s.example?t("viewMine"):t("filled")}</button></div>
       <div id="diagram">${diagram(x,s.example?(x.sampleCells||x.sample):values,!s.example)}</div><p class="s-source">${s.example?t("fiction"):t("tip")}</p>
-    </div><aside class="s-panel"><div class="s-worksheet"><h3>${t("canvas")}</h3><p class="s-smallnote">${t("hint")}</p>${fields}
-      <div class="s-btns"><button class="s-btn outline tiny" data-act="json">${t("download")}</button><button class="s-btn outline tiny" data-act="import">${t("import")}</button><button class="s-btn outline tiny" data-act="clear">${t("reset")}</button></div>
-      <input id="import-file" type="file" accept="application/json" hidden></div></aside></div>`;
+    </div><aside class="s-panel"><div class="s-worksheet"><h3>${t("myEntries")}</h3><p class="s-smallnote" id="worksheet-save" role="status">${savedStatus(x)}</p>${fields}
+      <button class="s-btn orange s-worksheet-primary" data-act="worksheet-slides">${t(hasAnswers(x)?"seeWorksheetSlide":"seeBlankWorksheet")} →</button>
+      <details class="s-answer-management" id="answer-management">
+        <summary>${t("manageAnswers")}</summary>
+        <p>${t("backupHelp")}</p>
+        <div class="s-backup-actions">
+          <button class="s-btn outline tiny" data-act="json" ${hasAnswers(x)?"":"disabled"}>${t("backupDownload")}</button>
+          <button class="s-btn outline tiny" data-act="import">${t("backupOpen")}</button>
+        </div>
+        <button class="s-delete-link" data-act="clear" ${hasAnswers(x)?"":"disabled"}>${t("clearAnswers")}</button>
+        <input id="import-file" type="file" accept=".json,application/json" hidden>
+      </details>
+      <p class="s-smallnote" id="worksheet-message" role="status"></p>
+      <dialog class="s-answer-dialog" id="answer-dialog" aria-labelledby="answer-dialog-title"></dialog>
+    </div></aside></div>`;
+  }
+  function syncWorksheet(x){
+    const filled=hasAnswers(x);
+    const status=document.getElementById("worksheet-save");
+    const message=savedStatus(x);
+    if(status.textContent!==message)status.textContent=message;
+    app.querySelector('[data-act="json"]').disabled=!filled;
+    app.querySelector('[data-act="clear"]').disabled=!filled;
+    app.querySelector('[data-act="worksheet-slides"]').textContent=t(filled?"seeWorksheetSlide":"seeBlankWorksheet")+" →";
+  }
+  function worksheetMessage(key){
+    const status=document.getElementById("worksheet-message");
+    if(status)status.textContent=key?t(key):"";
+  }
+  function afterWorksheetChange(key){
+    s.example=false;
+    render();
+    const details=document.getElementById("answer-management");
+    details.open=true;
+    details.querySelector("summary").focus({preventScroll:true});
+    worksheetMessage(key);
+  }
+  function openAnswerDialog(kind,name=""){
+    const dialog=document.getElementById("answer-dialog");
+    const deleting=kind==="delete";
+    const filled=hasAnswers(byId(s.id));
+    dialog.innerHTML=`<h3 id="answer-dialog-title">${t(deleting?"clearConfirm":filled?"importReview":"restoreAnswers")}</h3>
+      <p>${t(deleting?"clearDetails":filled?"importReviewHelp":"restoreHelp")}</p>${name?`<p class="s-backup-file">${esc(name)}</p>`:""}
+      <div class="s-dialog-actions"><button class="s-btn outline tiny" data-act="cancel-answer" autofocus>${t("cancel")}</button>
+      ${deleting?`<button class="s-btn tiny s-danger" data-act="confirm-clear">${t("clearNow")}</button>`:
+        `<button class="s-btn orange tiny" data-act="import-blank">${t(filled?"importBlank":"restoreAnswers")}</button>
+        ${filled?`<button class="s-btn outline tiny" data-act="import-replace">${t("importReplace")}</button>`:""}`}
+      </div>`;
+    dialog.addEventListener("close",()=>{pendingBackup=null},{once:true});
+    dialog.showModal();
+  }
+  async function reviewBackup(input,x){
+    const file=input.files[0];
+    if(!file)return;
+    input.value="";
+    pendingBackup=null;
+    try{
+      if(file.size>256*1024)throw Error("invalid");
+      const obj=JSON.parse(await file.text());
+      if(!input.isConnected)return;
+      if(!obj||typeof obj.toolId!=="string")throw Error("invalid");
+      if(obj.toolId!==x.id){worksheetMessage("importWrong");return}
+      if(!obj.values||Array.isArray(obj.values)||typeof obj.values!=="object")throw Error("invalid");
+      const cols=x.d[0]==="grid"?x.d[1].cols.length:0;
+      const keys=fieldNames(x).flatMap((_,i)=>[String(i),...Array.from({length:cols},(_,j)=>"c"+i+"-"+j)]);
+      const values=Object.fromEntries(keys.filter(key=>hasAnswer(obj.values[key])).map(key=>[key,obj.values[key].slice(0,240)]));
+      if(!Object.keys(values).length){worksheetMessage("importEmpty");return}
+      pendingBackup={id:x.id,values};
+      worksheetMessage("");
+      openAnswerDialog("import",file.name);
+    }catch(e){if(input.isConnected)worksheetMessage("invalid")}
+  }
+  function applyBackup(x,replace){
+    if(pendingBackup?.id!==x.id)return;
+    const incoming=pendingBackup.values;
+    pendingBackup=null;
+    const current=answers(x);
+    const additions=Object.entries(incoming).filter(([key])=>!hasAnswer(current[key]));
+    if(!replace&&!additions.length){
+      document.getElementById("answer-dialog").close();
+      worksheetMessage("importNoNew");
+      return;
+    }
+    s.answers[x.id]=replace?incoming:{...current,...Object.fromEntries(additions)};
+    save();
+    afterWorksheetChange("importDone");
   }
   function slideContent(x,n){
     const [w,h]=deck.spec(s.ratio);
@@ -526,8 +674,24 @@
     if(act==="next")moveSlide(1,"next");
     if(act==="previous")moveSlide(-1,"previous");
     if(act==="example"){s.example=!s.example;render()}
-    if(act==="clear"){s.answers[s.id]={};save();render()}
-    if(act==="json")download(x.id+"-answers.json",JSON.stringify({toolId:x.id,values:answers(x),savedAt:new Date().toISOString()},null,2),"application/json");
+    if(act==="worksheet-slides"){
+      s.tab="slides";
+      s.current=4;
+      render();
+      document.getElementById("method-tab-slides")?.focus();
+    }
+    if(act==="clear"&&hasAnswers(x))openAnswerDialog("delete");
+    if(act==="cancel-answer")document.getElementById("answer-dialog")?.close();
+    if(act==="confirm-clear"){
+      delete s.answers[x.id];
+      save();
+      afterWorksheetChange("clearDone");
+    }
+    if(act==="import-blank"||act==="import-replace")applyBackup(x,act==="import-replace");
+    if(act==="json"&&hasAnswers(x)){
+      download(x.id+"-answers.json",JSON.stringify({toolId:x.id,values:answers(x),savedAt:new Date().toISOString()},null,2),"application/json");
+      worksheetMessage("backupStarted");
+    }
     if(act==="import")document.getElementById("import-file")?.click();
     if(act==="fullscreen")document.getElementById("slide-canvas")?.requestFullscreen?.();
     if(act==="share")copyUrl();
@@ -536,12 +700,9 @@
     if(act==="pptx")exportDeck(x,"pptx");
     if(act==="pdf")exportDeck(x,"pdf");
   });
-  app.addEventListener("input",e=>{let z=e.target;if(z.id==="search-tools"){s.query=z.value;updateCatalogue()}if(z.hasAttribute("data-field")){let a=s.answers[s.id]||(s.answers[s.id]={});a[z.dataset.field]=z.value;s.example=false;save();let d=document.getElementById("diagram");if(d)d.innerHTML=diagram(byId(s.id),a,true);const toggle=app.querySelector('[data-act="example"]');if(toggle)toggle.textContent=t("filled");const hint=app.querySelector(".s-canvaspaper .s-source");if(hint)hint.textContent=t("tip")}});
-  app.addEventListener("change",async e=>{let z=e.target;if(z.type==="radio"){s[z.name]=z.value;save()}if(z.id==="ratio"){s.ratio=z.value;save();render()}if(z.id==="audience"||z.id==="duration"||z.id==="difficulty"){s[z.id]=z.value;updateCatalogue()}if(z.id==="import-file"&&z.files[0]){try{let obj=JSON.parse(await z.files[0].text());if(obj.toolId!==s.id||!obj.values||Array.isArray(obj.values)||typeof obj.values!=="object")throw Error("invalid");
-    const method=byId(s.id),count=fieldNames(method).length,cols=method.d[0]==="grid"?method.d[1].cols.length:0;
-    const keys=Array.from({length:count},(_,i)=>[String(i),...Array.from({length:cols},(_,j)=>"c"+i+"-"+j)]).flat();
-    s.answers[s.id]=Object.fromEntries(Object.entries(obj.values).filter(([key,value])=>keys.includes(key)&&typeof value==="string").map(([key,value])=>[key,value.slice(0,240)]));s.example=false;save();render()}catch(e){notify(t("invalid"))}}});
-  window.addEventListener("hashchange",()=>{s.tab="learn";s.current=0;s.example=false;render()});
+  app.addEventListener("input",e=>{let z=e.target;if(z.id==="search-tools"){s.query=z.value;updateCatalogue()}if(z.hasAttribute("data-field")){let a=s.answers[s.id]||(s.answers[s.id]={});a[z.dataset.field]=z.value;s.example=false;save();syncWorksheet(byId(s.id));let d=document.getElementById("diagram");if(d)d.innerHTML=diagram(byId(s.id),a,true);const toggle=app.querySelector('[data-act="example"]');if(toggle)toggle.textContent=t("filled");const hint=app.querySelector(".s-canvaspaper .s-source");if(hint)hint.textContent=t("tip")}});
+  app.addEventListener("change",async e=>{let z=e.target;if(z.type==="radio"){s[z.name]=z.value;save()}if(z.id==="ratio"){s.ratio=z.value;save();render()}if(z.id==="audience"||z.id==="duration"||z.id==="difficulty"){s[z.id]=z.value;updateCatalogue()}if(z.id==="import-file")await reviewBackup(z,byId(s.id));});
+  window.addEventListener("hashchange",()=>{pendingBackup=null;s.tab="learn";s.current=0;s.example=false;render()});
   function moveSlide(delta,focus){
     const index=Math.max(0,Math.min(7,s.current+delta));
     if(index===s.current)return;
