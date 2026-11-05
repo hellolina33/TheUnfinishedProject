@@ -20,6 +20,14 @@ for (const page of [
   "/sitemap.xml",
   "/robots.txt",
   "/day-04-productivity-library/downloads/productivity-studio-fr.html",
+  ...JSON.parse(
+    fs.readFileSync("day-04-productivity-library/data/journeys.json", "utf8"),
+  ).flatMap((kit) =>
+    ["fr", "en"].map(
+      (lang) =>
+        "/day-04-productivity-library/" + lang + "/kits/" + kit.id + "/",
+    ),
+  ),
 ]) {
   const response = await fetch(site + page);
   if (!response.ok) throw Error("Unavailable page " + page);

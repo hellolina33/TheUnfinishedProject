@@ -654,6 +654,92 @@
     recommendationHelp:
       "Les outils de la famille choisie sont classés selon le public, le temps, la fréquence et la façon de travailler.",
   });
+  Object.assign(L.en, {
+    navStart: "Start here",
+    navMethods: "Methods",
+    navMore: "More",
+    taskEyebrow: "A practical method for the task ahead",
+    taskTitle: "What do you need to get done?",
+    taskLead:
+      "Choose a situation. Start with one method and leave with a plan or a presentation.",
+    profileQuestion: "Choose your situation",
+    profilestudent: "Student",
+    profilemanager: "Manager",
+    profileprofessional: "Professional",
+    knowMethod: "Already know the method?",
+    browseMethods: "Browse the 50 methods",
+    taskPromise:
+      "Free, no account. Your answers stay in this tab. Download a copy to keep your work.",
+    changeGoal: "Choose another goal",
+    yourGoal: "Your goal",
+    beforeStart: "Have this ready",
+    journeyOptional:
+      "Start with the first step. The other methods are optional: stop when you have a useful result.",
+    beginWith: "Start with",
+    openStep: "Open",
+    workInTab: "Answers in this tab",
+    journeyFiles: "Keep my work or download this journey",
+    journeyFilesHint:
+      "The summary contains the answers you entered here. The offline kit contains the published examples and a blank app.",
+    journeySummary: "Download my journey summary",
+    downloadKit: "Download the offline kit",
+    step: "Step",
+    journeyNext: "Next step",
+    journeyRetained:
+      "Your answers stay in this tab while you move between the steps.",
+    journeyReview: "Review my journey",
+    testApp: "Help test the app",
+    extraFilters: "Refine the results",
+    chooseHelp: "Help me choose",
+    deckContents: "Slide contents",
+    deckOptions: "Display and sharing",
+    extendedGuide: "Go further: comparisons, exercises and workshops",
+    shareMethod: "Share this method",
+    paretoCategories: "Causes, from most to least frequent",
+  });
+  Object.assign(L.fr, {
+    navStart: "Commencer",
+    navMethods: "Méthodes",
+    navMore: "Plus",
+    taskEyebrow: "Une méthode pour avancer concrètement",
+    taskTitle: "Qu’as-tu besoin de faire ?",
+    taskLead:
+      "Choisis ta situation. Commence par une méthode et repars avec un plan ou un support.",
+    profileQuestion: "Choisis ta situation",
+    profilestudent: "Étudiant",
+    profilemanager: "Manager",
+    profileprofessional: "Professionnel",
+    knowMethod: "Tu connais déjà la méthode ?",
+    browseMethods: "Parcourir les 50 méthodes",
+    taskPromise:
+      "Gratuit, sans compte. Tes réponses restent dans cet onglet. Télécharge une copie pour garder ton travail.",
+    changeGoal: "Choisir un autre objectif",
+    yourGoal: "Ton objectif",
+    beforeStart: "Avant de commencer",
+    journeyOptional:
+      "Commence par la première étape. Les autres méthodes sont facultatives : arrête-toi dès que tu as un résultat utile.",
+    beginWith: "Commencer avec",
+    openStep: "Ouvrir",
+    workInTab: "Réponses dans cet onglet",
+    journeyFiles: "Garder mon travail ou télécharger ce parcours",
+    journeyFilesHint:
+      "Le bilan contient les réponses saisies ici. Le kit hors ligne contient les exemples publiés et une application vierge.",
+    journeySummary: "Télécharger le bilan de mon parcours",
+    downloadKit: "Télécharger le kit hors ligne",
+    step: "Étape",
+    journeyNext: "Étape suivante",
+    journeyRetained:
+      "Tes réponses restent dans cet onglet pendant que tu passes d’une étape à l’autre.",
+    journeyReview: "Revenir au bilan du parcours",
+    testApp: "Participer au test de l’application",
+    extraFilters: "Affiner les résultats",
+    chooseHelp: "Aide-moi à choisir",
+    deckContents: "Plan des diapositives",
+    deckOptions: "Affichage et partage",
+    extendedGuide: "Aller plus loin : comparaisons, exercices et ateliers",
+    shareMethod: "Partager cette méthode",
+    paretoCategories: "Causes, de la plus fréquente à la moins fréquente",
+  });
   let legacy = {},
     hasLegacy = false;
   try {
@@ -664,6 +750,8 @@
   const router = window.ProductivityRouter;
   const localeInUrl = router.lang();
   const s = {
+    persona: "professional",
+    journey: undefined,
     lang: localeInUrl || (document.documentElement.lang === "fr" ? "fr" : "en"),
     need: "prioritise",
     who: "me",
@@ -678,7 +766,6 @@
     audience: "all",
     duration: "all",
     difficulty: "all",
-    deliverable: "all",
     deliverable: "all",
     tab: "learn",
     current: 0,
@@ -786,25 +873,24 @@
   }
   const logo =
     '<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><rect width="32" height="32" fill="#161713"/><path d="M6 6h8v8H6zm0 12h8v8H6zm12 0h8v8h-8z" fill="#fffdfa"/><path d="M18 6h8v8h-8z" fill="#ff5a32"/></svg>';
-  const navigation = [
-    ["", "home"],
-    ["find", "navFind"],
-    ["all", "navLibrary"],
-    ["sources", "navSources"],
-    ["help", "navHelp"],
-  ];
   function header(route) {
-    const selected =
-      route.section ||
-      { home: "", all: "all", tool: "all", results: "find" }[route.v];
+    const selected = route.section
+      ? null
+      : ["all", "tool"].includes(route.v)
+        ? "all"
+        : "";
     return `<div class="s-challenge"><div class="s-wrap">
-      <span><a href="https://the-unfinished-30.vercel.app/">The Unfinished 30</a> · ${t("challenge")}</span>
-      <span>${t("madeBy")} <a href="https://www.linkedin.com/in/salahkhenissi/">Salah Khenissi</a></span>
+      <span><a href="https://the-unfinished-30.vercel.app/">The Unfinished 30</a><span class="s-challenge-full"> · ${t("challenge")}</span><span class="s-challenge-short"> · ${t("day")}</span></span>
+      <span class="s-challenge-author">${t("madeBy")} <a href="https://www.linkedin.com/in/salahkhenissi/">Salah Khenissi</a></span>
     </div></div>
     <header class="s-wrap"><div class="s-top">
       <a class="s-brand" href="#/">${logo}<span>${t("brand")}</span></a>
-      <nav class="s-nav" aria-label="${t("brand")}">${navigation.map(([key, label]) => `<a href="#/${key}" ${key === selected ? 'aria-current="location"' : ""}>${t(label)}</a>`).join("")}</nav>
-      <div class="s-headeractions"><button class="s-btn outline tiny" data-act="lang" aria-label="${t("language")}">${s.lang === "en" ? "FR" : "EN"}</button><button class="s-btn orange tiny" data-act="html">${t("downloadApp")} ↓</button></div>
+      <nav class="s-nav" aria-label="${t("brand")}"><a href="#/" ${selected === "" ? 'aria-current="page"' : ""}>${t("navStart")}</a><a href="#/all" ${selected === "all" ? 'aria-current="page"' : ""}>${t("navMethods")}</a></nav>
+      <details class="s-utility"><summary>${t("navMore")} <span aria-hidden="true">⌄</span></summary><div class="s-utility-panel">
+        <button data-act="html">${t("downloadApp")} ↓</button>
+        <a href="#/help">${t("navHelp")}</a><a href="#/sources">${t("navSources")}</a>
+        <button data-act="lang" aria-label="${t("language")}">${s.lang === "en" ? "Passer en français" : "Switch to English"}</button>
+      </div></details>
     </div></header>`;
   }
   function footer() {
@@ -846,7 +932,7 @@
     const x = byId("eisenhower");
     return `<figure class="s-matrix-hero"><figcaption><span class="s-kicker">${esc(x.n)}</span><h2>${t("heroMatrix")}</h2><p>${t("heroMatrixHint")}</p></figcaption>${diagram(x, x.sampleCells || x.sample)}</figure>`;
   }
-  function landingSupport() {
+  function landingSupport(section) {
     const refs = [
       ["pareto", "ASQ"],
       ["rice", "Intercom"],
@@ -854,8 +940,8 @@
       ["pdca", "ASQ"],
     ];
     const faq = ["Free", "Privacy", "Offline", "Files", "Rights"];
-    return `<section class="s-wrap s-section s-landingsection" id="sources" tabindex="-1">
-      <div class="s-sectionhead"><h2>${t("sourceTitle")}</h2><p>${t("sourceIntro")}</p></div>
+    const sources = `<section class="s-wrap s-section s-landingsection s-supportpage" id="sources" tabindex="-1">
+      <div class="s-sectionhead"><h1>${t("sourceTitle")}</h1><p>${t("sourceIntro")}</p></div>
       <div class="s-editorial"><h3>${t("editorialTitle")}</h3><ol>${["Source", "Case", "Deck"].map((key) => `<li>${t("editorial" + key)}</li>`).join("")}</ol></div>
       <div class="s-reference-list"><h3>${t("sourcesSelection")}</h3><ul>${refs
         .map(
@@ -864,26 +950,72 @@
         )
         .join("")}</ul></div>
       <div class="s-rights"><h3>${t("sourceCreditTitle")}</h3><p>${t("sourceCredit")}</p><p>${t("sourceCaution")}</p><p><a href="https://www.wipo.int/en/web/copyright/protection" target="_blank" rel="noopener">${t("rightsReference")} ↗</a></p><button class="s-btn outline tiny" data-act="notices">${t("codeNotices")} ↓</button></div>
-    </section>
-    <section class="s-wrap s-section s-landingsection" id="help" tabindex="-1">
-      <div class="s-sectionhead"><h2>${t("helpTitle")}</h2><p>${t("helpIntro")}</p></div>
+    </section>`;
+    const help = `<section class="s-wrap s-section s-landingsection s-supportpage" id="help" tabindex="-1">
+      <div class="s-sectionhead"><h1>${t("helpTitle")}</h1><p>${t("helpIntro")}</p></div>
       <div class="s-faq">${faq.map((key) => `<details><summary>${t("faq" + key + "Q")}</summary><p>${t("faq" + key + "A")}</p></details>`).join("")}</div>
       ${hasLegacy ? `<section class="s-helpbox"><h3>${t("legacyTitle")}</h3><p>${t("legacyHelp")}</p><button class="s-btn outline tiny" data-act="remove-legacy">${t("legacyRemove")}</button></section>` : ""}
       <section class="s-helpbox"><h3>${t("supportTitle")}</h3><p>${t("supportCopy")}</p><div class="s-btns"><a class="s-btn outline tiny" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">${t("supportContact")} ↗</a><a class="s-btn outline tiny" href="https://github.com/hellolina33/TheUnfinishedProject/issues" target="_blank" rel="noopener">${t("supportReport")} ↗</a></div></section>
+    <p class="s-support-pilot"><a href="#/pilot">${t("testApp")}</a></p></section>`;
+    return section === "sources" ? sources : help;
+  }
+  const journeyById = (id) =>
+    window.ProductivityJourneys.find((kit) => kit.id === id);
+  const journeyURL = (kit) => router.url({ v: "kit", id: kit.id }, s.lang);
+  const journeyToolURL = (kit, id, view = "practice") =>
+    router.url({ v: "tool", id, view, journey: kit.id }, s.lang);
+  function journeyChoices() {
+    return window.ProductivityJourneys.filter(
+      (kit) => kit.featured && kit.roles.includes(s.persona),
+    )
+      .map(
+        (kit) =>
+          `<a class="s-journeychoice" href="${journeyURL(kit)}"><div><h3>${esc(kit[s.lang])}</h3><p>${esc(kit.result[s.lang])}</p></div><span aria-hidden="true">→</span></a>`,
+      )
+      .join("");
+  }
+  function home(route) {
+    if (route.section === "find")
+      return `<section class="s-wrap s-section s-choicepage" id="find" tabindex="-1"><a class="s-textlink" href="#/all">← ${t("navMethods")}</a><h1>${t("quizTitle")}</h1><p>${t("quizSub")}</p>${quiz()}</section>`;
+    if (["sources", "help"].includes(route.section))
+      return landingSupport(route.section);
+    if (route.section === "pilot")
+      return `<section class="s-wrap s-section s-choicepage" id="pilot" tabindex="-1"><h1>${window.ProductivityLearning.content[s.lang].pilot}</h1><p>${window.ProductivityLearning.content[s.lang].pilotCopy}</p><label for="pilot-notes">${window.ProductivityLearning.content[s.lang].notes}</label><textarea id="pilot-notes" rows="5" maxlength="5000"></textarea><div class="s-btns"><button class="s-btn outline" data-pilot="notes">${window.ProductivityLearning.content[s.lang].pilotExport}</button><button class="s-btn outline" data-pilot="counts">${window.ProductivityLearning.content[s.lang].metrics}</button></div></section>`;
+    return `<section class="s-wrap s-hero s-taskhome">
+      <div class="s-taskintro"><p class="s-kicker">${t("taskEyebrow")}</p><h1>${t("taskTitle")}</h1><p class="s-lead">${t("taskLead")}</p></div>
+      <div class="s-startchooser"><div class="s-personas" role="group" aria-label="${t("profileQuestion")}">${["student", "manager", "professional"].map((role) => `<button data-persona="${role}" aria-pressed="${s.persona === role}">${t("profile" + role)}</button>`).join("")}</div>
+        <div class="s-journeychoices" id="journey-choices">${journeyChoices()}</div>
+        <p class="s-directlibrary">${t("knowMethod")} <a href="#/all">${t("browseMethods")} →</a></p>
+      </div><p class="s-taskpromise">${t("taskPromise")}</p>
     </section>`;
   }
-  function home() {
-    return `<div class="s-wrap"><section class="s-hero"><div>
-      <div class="s-kicker">THE UNFINISHED 30 / ${t("day")}</div>
-      <h1>${t("headline")}<br><span class="s-serif">${t("headline2")}</span></h1>
-      <p class="s-lead">${t("lead")}</p><p class="s-sub">${t("sub")}</p>
-      <div class="s-btns"><a class="s-btn orange" href="#/tool/eisenhower">${t("try")} →</a><a class="s-btn outline" href="#/tool/eisenhower?view=practice">${s.lang === "fr" ? "Remplir un outil" : "Fill a worksheet"}</a><a class="s-btn outline" href="#/find">${t("navFind")}</a></div>
-    </div>${art()}</section>
-    <div class="s-statline"><span><b>50</b> ${t("methods")}</span><span><b>5</b> ${t("families")}</span><span><b>8</b> ${t("slidesEach")}</span><span><b>3</b> ${t("formats")}</span></div></div>
-    <section class="s-wrap s-section s-landingsection" id="find" tabindex="-1"><div class="s-sectionhead"><div><div class="s-kicker">${t("navFind")}</div><h2>${t("quizTitle")}</h2></div><p>${t("quizSub")}</p></div>${quiz()}</section>
-    <section class="s-wrap s-section s-landingsection"><h2>${t("landingStart")}</h2><ol class="s-startpath">${["Guide", "Canvas", "Deck"].map((key, i) => `<li><span>0${i + 1}</span><h3><a href="#/tool/eisenhower?view=${["learn", "practice", "slides"][i]}">${t("start" + key)}</a></h3><p>${t("start" + key + "Copy")}</p></li>`).join("")}</ol>
-      <div class="s-sectionhead"><h2>${t("startHere")}</h2></div><div class="s-grid">${["eisenhower", "pareto", "pomodoro"].map((id) => card(byId(id))).join("")}</div></section>
-    ${window.ProductivityLearning.landing(localizedTools(), s.lang, esc, link)}${landingSupport()}`;
+  function journeyPage(id) {
+    const kit = journeyById(id);
+    if (!kit)
+      return `<section class="s-wrap s-section"><h1>${t("nothing")}</h1><a href="#/">${t("navStart")}</a></section>`;
+    s.persona = kit.roles[0];
+    const worked = kit.ids.filter((id) => hasAnswers(byId(id)));
+    return `<section class="s-wrap s-section s-journeypage"><a class="s-textlink" href="#/">← ${t("changeGoal")}</a><div class="s-journeyheading"><p class="s-kicker">${t("yourGoal")}</p><h1>${esc(kit[s.lang])}</h1><p class="s-lead">${esc(kit.result[s.lang])}</p></div><div class="s-journeyprep"><h2>${t("beforeStart")}</h2><p>${esc(kit.intro[s.lang])}</p><p class="s-smallnote">${t("journeyOptional")}</p></div>
+      <ol class="s-journeysteps">${kit.ids
+        .map((id, index) => {
+          const method = byId(id);
+          return `<li><span class="s-stepnumber">${index + 1}</span><div><h2>${esc(kit.steps[s.lang][index])}</h2><p>${esc(method.n)} · ${method.t} min${hasAnswers(method) ? " · " + t("workInTab") : ""}</p><a class="s-btn ${index === 0 ? "orange" : "outline"}" href="${journeyToolURL(kit, id)}">${index === 0 ? t("beginWith") : t("openStep")} ${esc(method.n)} →</a></div></li>`;
+        })
+        .join("")}</ol>
+      <details class="s-journeyfiles"><summary>${t("journeyFiles")}</summary><p>${t("journeyFilesHint")}</p><div class="s-btns"><button class="s-btn outline" data-act="journey-export" data-journey="${kit.id}" ${worked.length ? "" : "disabled"}>${t("journeySummary")} ↓</button><a class="s-btn outline" href="${router.root}downloads/kit-${kit.id}-${s.lang}.zip" download>${t("downloadKit")} ↓</a></div></details></section>`;
+  }
+  function journeyContext(x) {
+    const kit = journeyById(s.journey),
+      index = kit?.ids.indexOf(x.id);
+    if (!kit || index < 0) return "";
+    return `<aside class="s-journeycontext" aria-label="${t("yourGoal")}"><a href="${journeyURL(kit)}">← ${esc(kit[s.lang])}</a><p>${t("step")} ${index + 1} / ${kit.ids.length} · ${esc(kit.steps[s.lang][index])}</p></aside>`;
+  }
+  function journeyContinue(x) {
+    const kit = journeyById(s.journey),
+      index = kit?.ids.indexOf(x.id);
+    if (!kit || index < 0) return "";
+    const next = byId(kit.ids[index + 1]);
+    return `<nav class="s-journeycontinue" aria-label="${t("journeyNext")}"><p>${t("journeyRetained")}</p>${next ? `<a class="s-btn outline" href="${journeyToolURL(kit, next.id)}">${t("journeyNext")} : ${esc(next.n)} →</a>` : `<a class="s-btn outline" href="${journeyURL(kit)}">${t("journeyReview")} →</a>`}</nav>`;
   }
   function audienceFit(x) {
     if (s.who === "me") return x.m !== "team" && x.out.includes("me");
@@ -1047,8 +1179,10 @@
     return `<section class="s-wrap s-section s-catalogue">
       <div class="s-kicker">${t("library")}</div>
       <h1>${t("all")}<span class="s-title-dot">.</span></h1><p class="s-catalogueintro">${t("catalogueIntro")}</p>
-      <div class="s-toolbar">
+      <div class="s-libraryentry">
         <input id="search-tools" type="search" class="s-search" aria-label="${t("search")}" placeholder="${t("search")}" value="${esc(s.query)}">
+        <a class="s-textlink" href="#/find">${t("chooseHelp")} →</a></div>
+      <details class="s-refinements" ${[s.family, s.audience, s.duration, s.difficulty, s.deliverable].some((value) => value !== "all") ? "open" : ""}><summary>${t("extraFilters")}</summary><div class="s-toolbar">
         <select class="s-select" id="audience" aria-label="${t("who")}"><option value="all">${t("anyAudience")}</option><option value="solo">${t("alone")}</option><option value="team">${t("asTeam")}</option></select>
         <select class="s-select" id="duration" aria-label="${t("maxDuration")}"><option value="all">${t("anyDuration")}</option>${[15, 30, 60].map((min) => `<option value="${min}">≤ ${min} min</option>`).join("")}</select>
         <select class="s-select" id="difficulty" aria-label="${t("style")}"><option value="all">${t("anyStyle")}</option>${["casual", "structured", "formal"].map((style) => `<option value="${style}">${t(style)}</option>`).join("")}</select>
@@ -1062,12 +1196,14 @@
         ["plan", s.lang === "fr" ? "Préparer un plan" : "Build a plan"],
       ]
         .map(([id, label]) => `<option value="${id}">${label}</option>`)
-        .join("")}</select></div>
+        .join(
+          "",
+        )}</select></div>        <div class="s-filters">${[["all", t("allFamilies")], ...Object.keys(names).map((k) => [k, family(k)])].map(([key, label]) => `<button class="s-filter" data-family="${key}" aria-pressed="${s.family === key}">${label}</button>`).join("")}</div>      <div class="w-suggestions">${(s.lang === "fr" ? ["urgent important", "prioriser backlog", "compte rendu atelier", "80/20"] : ["urgent important", "product backlog", "retrospective workshop", "80/20"]).map((query) => `<button class="s-btn outline tiny" data-query="${esc(query)}">${esc(query)}</button>`).join("")}</div></details>
       <div class="s-cataloguebar">
-        <div class="s-filters">${[["all", t("allFamilies")], ...Object.keys(names).map((k) => [k, family(k)])].map(([key, label]) => `<button class="s-filter" data-family="${key}" aria-pressed="${s.family === key}">${label}</button>`).join("")}</div>
+
         <div class="s-cataloguecount"><span id="counter" aria-live="polite">${items.length} / 50</span><button class="s-btn outline tiny" data-act="reset-filters" ${hasFilters() ? "" : "disabled"}>${t("filterReset")}</button></div>
       </div>
-      <div class="w-suggestions">${(s.lang === "fr" ? ["urgent important", "prioriser backlog", "compte rendu atelier", "80/20"] : ["urgent important", "product backlog", "retrospective workshop", "80/20"]).map((query) => `<button class="s-btn outline tiny" data-query="${esc(query)}">${esc(query)}</button>`).join("")}</div><div class="s-grid" id="cards">${cards(items)}</div>
+<div class="s-grid" id="cards">${cards(items)}</div>
     </section>`;
   }
   const VERIFIED_LINKS = {
@@ -1123,12 +1259,12 @@
           </div>
         </div>
       </section>
-      ${window.ProductivityLearning.guide(x, localizedTools(), s.lang, esc, link)}
+      <details class="s-guide-more"><summary>${t("extendedGuide")}</summary>${window.ProductivityLearning.guide(x, localizedTools(), s.lang, esc, link)}</details>
       <section class="s-guidepractice"><h2>${t("practiceHeading")}</h2><div class="s-guidesteps">
         ${steps(t("alone"), x.solo)}${steps(t("asTeam"), x.team)}
         <p class="s-workshoptime"><strong>${t("timing")}</strong> · ${t("timingBefore")} ${Math.max(2, Math.round(x.t / Math.max(1, x.team.length)))} ${t("timingAfter")}</p>
       </div><div class="s-btns"><button class="s-btn orange" data-act="tab" data-val="practice">${t("openWorksheet")} →</button></div></section>
-      ${window.ProductivityDistribution.panel(x, s.lang, esc, new URL(link(x), location.href).href)}
+      <details class="s-share-method"><summary>${t("shareMethod")}</summary>${window.ProductivityDistribution.panel(x, s.lang, esc, new URL(link(x), location.href).href)}</details>
       <details class="s-attribution"><summary>${t("src")}</summary><p>${esc(x.src)}${sourceUrl(x) ? ` · <a href="${esc(sourceUrl(x))}" target="_blank" rel="noopener noreferrer">${t("readSource")} ↗</a>` : ""}</p><p>${x.reference?.status === "linked-primary" ? (s.lang === "fr" ? "Référence primaire liée. Les exemples et schémas de cette fiche sont des adaptations originales." : "Primary reference linked. The examples and diagrams in this guide are original adaptations.") : t("status")}</p></details>
     </div>`;
   }
@@ -1373,12 +1509,13 @@
           <button class="s-btn outline tiny" data-act="next" ${s.current === 7 ? "disabled" : ""}>${t("next")} →</button></div>
       </div>
       <aside class="s-deckaside">
-        <nav aria-label="${t("deckNav")}"><h3>${t("deckNav")}</h3><div class="s-chapters">${chaptersHtml}</div></nav>
-        <section class="s-deckexports"><button class="s-btn outline tiny" data-work-act="read-slides">${wt("reading")}</button><h3>${t("exportTitle")}</h3>
+        <section class="s-deckexports"><h3>${t("exportTitle")}</h3>
           <p id="export-status" class="s-status" role="status">${t("preview")}</p>
           <button class="s-btn orange" data-act="pptx">${t("pptx")} ↓</button>
           <button class="s-btn outline" data-act="pdf">${t("pdf")} ↓</button>
         </section>
+        <details class="s-deckcontents"><summary>${t("deckContents")}</summary><nav aria-label="${t("deckNav")}"><div class="s-chapters">${chaptersHtml}</div></nav></details>
+        <button class="s-btn outline tiny" data-work-act="read-slides">${wt("reading")}</button>
       </aside>
     </div>`;
   }
@@ -1407,22 +1544,33 @@
   ];
   function detail(x) {
     return `<div class="s-wrap">
-      <div class="s-breadcrumb"><a href="#/all">← ${t("back")}</a><span>/</span><span>${family(x.f)}</span></div>
+      ${journeyContext(x)}<div class="s-breadcrumb"><a href="#/all">← ${t("back")}</a><span>/</span><span>${family(x.f)}</span></div>
       <section class="s-detailhead"><div>
-        <div class="s-kicker">${t("brand")} / ${String(x.number).padStart(2, "0")} ${t("of50")}</div>
+        <div class="s-kicker">${family(x.f)}</div>
         <h1>${esc(x.n)}<span class="s-title-dot">.</span></h1><p>${esc(x.why)}</p>
         <div class="s-detailmeta"><span class="s-badge">${family(x.f)}</span><span class="s-badge">${x.t} min</span><span class="s-badge">${t(x.m === "solo" ? "alone" : x.m === "team" ? "asTeam" : "soloOrTeam")}</span></div>
       </div></section>
       <div class="s-tabbar" role="tablist" aria-label="${esc(x.n)}">
         ${views.map(([key, label], i) => `<button id="method-tab-${key}" role="tab" class="s-tab" data-act="tab" data-val="${key}" aria-controls="tabpanel" aria-selected="${s.tab === key}" tabindex="${s.tab === key ? 0 : -1}"><span class="s-tab-index">0${i + 1}</span><span>${t(label)}<small>${t(label === "worksheetTab" ? "worksheetHint" : label + "Hint")}</small></span></button>`).join("")}
       </div>
-      <div id="tabpanel" role="tabpanel" aria-labelledby="method-tab-${s.tab}" tabindex="0">${s.tab === "learn" ? learn(x) : s.tab === "practice" ? worksheet(x) : slides(x)}</div>
+      <div id="tabpanel" role="tabpanel" aria-labelledby="method-tab-${s.tab}" tabindex="0">${s.tab === "learn" ? learn(x) : s.tab === "practice" ? worksheet(x) : slides(x)}</div>${journeyContinue(x)}
     </div>`;
   }
   const currentRoute = router.route;
   function render() {
     document.documentElement.lang = s.lang;
     let route = currentRoute();
+    s.journey = journeyById(route.journey)?.ids.includes(route.id)
+      ? route.journey
+      : undefined;
+    if (route.v === "tool")
+      route = {
+        ...route,
+        view: s.tab,
+        slide: s.current,
+        ratio: s.ratio,
+        journey: s.journey,
+      };
     router.sync(route, s.lang);
     s.id = route.id || "";
     let x = byId(s.id);
@@ -1433,25 +1581,23 @@
       header(route) +
       '<main id="studio-main" tabindex="-1">' +
       (route.v === "kit"
-        ? window.ProductivityLearning.kitPage(
-            route.id,
-            localizedTools(),
-            s.lang,
-            esc,
-            link,
-          )
+        ? journeyPage(route.id)
         : route.v === "tool" && x
           ? detail(x)
           : route.v === "all"
             ? all()
             : route.v === "results"
               ? results()
-              : home()) +
+              : home(route)) +
       "</main>" +
       footer() +
       "</div>";
     document.title =
-      (x ? x.n + " · " : "") +
+      (x
+        ? x.n + " · "
+        : route.v === "kit" && journeyById(route.id)
+          ? journeyById(route.id)[s.lang] + " · "
+          : "") +
       t("brand") +
       " / " +
       t("day") +
@@ -1600,7 +1746,14 @@
   async function copyUrl() {
     const x = byId(s.id),
       state = x
-        ? { v: "tool", id: x.id, view: s.tab, slide: s.current, ratio: s.ratio }
+        ? {
+            v: "tool",
+            id: x.id,
+            view: s.tab,
+            slide: s.current,
+            ratio: s.ratio,
+            journey: s.journey,
+          }
         : currentRoute();
     const url = new URL(
       router.url(state, s.lang),
@@ -2077,10 +2230,13 @@
               v: "tool",
               id: path.slice(5),
               view: new URLSearchParams(query || "").get("view"),
+              journey: new URLSearchParams(query || "").get("journey"),
             }
-          : ["all", "results"].includes(path)
-            ? { v: path }
-            : { v: "home", section: path || undefined },
+          : path.startsWith("kit/")
+            ? { v: "kit", id: path.slice(4) }
+            : ["all", "results"].includes(path)
+              ? { v: path }
+              : { v: "home", section: path || undefined },
       );
     } else if (href?.startsWith(router.root)) {
       e.preventDefault();
@@ -2091,7 +2247,12 @@
         kit
           ? { v: "kit", id: kit[1] }
           : match
-            ? { v: "tool", id: decodeURIComponent(match[1]) }
+            ? {
+                v: "tool",
+                id: decodeURIComponent(match[1]),
+                view: target.searchParams.get("view"),
+                journey: target.searchParams.get("journey"),
+              }
             : { v: "all" },
       );
     }
@@ -2099,6 +2260,8 @@
   window.addEventListener("popstate", () => {
     s.lang = router.lang();
     s.tab = currentRoute().view || "learn";
+    s.current = currentRoute().slide || 0;
+    if (currentRoute().ratio) s.ratio = currentRoute().ratio;
     render();
     focusSection();
     if (currentRoute().v === "all") {
@@ -2107,6 +2270,17 @@
     }
   });
   app.addEventListener("click", (e) => {
+    const persona = e.target.closest("[data-persona]");
+    if (persona) {
+      s.persona = persona.dataset.persona;
+      app
+        .querySelectorAll("[data-persona]")
+        .forEach((button) =>
+          button.setAttribute("aria-pressed", String(button === persona)),
+        );
+      document.getElementById("journey-choices").innerHTML = journeyChoices();
+      return;
+    }
     const suggestion = e.target.closest("[data-query]");
     if (suggestion) {
       s.query = suggestion.dataset.query;
@@ -2131,12 +2305,29 @@
     }
     let act = b.dataset.act,
       x = byId(s.id);
+    if (act === "journey-export") {
+      const kit = journeyById(b.dataset.journey);
+      if (kit)
+        download(
+          "parcours-" + kit.id + ".md",
+          "# " +
+            kit[s.lang] +
+            "\n\n" +
+            kit.ids
+              .filter((id) => hasAnswers(byId(id)))
+              .map((id) =>
+                reuse.markdown(byId(id), s.work[id], answers(byId(id)), s.lang),
+              )
+              .join("\n\n"),
+          "text/markdown",
+        );
+    }
     if (act === "lang") {
       s.lang = s.lang === "en" ? "fr" : "en";
       if (/^https?:$/.test(location.protocol))
         history.replaceState(null, "", router.url(currentRoute(), s.lang));
       render();
-      app.querySelector('[data-act="lang"]')?.focus();
+      app.querySelector(".s-utility summary")?.focus();
     }
     if (act === "tab") {
       s.tab = b.dataset.val;
@@ -2157,6 +2348,13 @@
     }
     if (act === "example-workspace") {
       count("example");
+      if (hasAnswers(x) && !window.confirm(t("clearConfirm"))) return;
+      if (engine.supported.includes(x.id)) s.work[x.id] = engine.sample(x);
+      else
+        s.answers[x.id] = x.sampleCells
+          ? { ...x.sampleCells }
+          : Object.fromEntries(x.sample.map((value, i) => [i, value]));
+      markUsed();
       s.tab = "practice";
       s.example = true;
       render();
@@ -2293,6 +2491,14 @@
     }
   }
   document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      const menu = app.querySelector(".s-utility[open]");
+      if (menu) {
+        menu.open = false;
+        menu.querySelector("summary").focus();
+        return;
+      }
+    }
     const tab = e.target.closest('[role="tab"]');
     const delta = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
     if (tab && (delta || ["Home", "End"].includes(e.key))) {
@@ -2323,6 +2529,12 @@
             ? "next"
             : "previous",
       );
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (!event.target.closest(".s-utility")) {
+      const menu = app.querySelector(".s-utility[open]");
+      if (menu) menu.open = false;
     }
   });
   const publicFilters = new URLSearchParams(location.search || "");

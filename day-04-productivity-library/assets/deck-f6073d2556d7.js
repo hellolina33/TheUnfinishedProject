@@ -50,6 +50,30 @@ window.ProductivityDeck = (() => {
     ...text(label, x, y, w, h, 11, false, muted),
     type: "placeholder",
   });
+  const aligned = (
+    content,
+    x,
+    y,
+    w,
+    h,
+    size,
+    bold = false,
+    color = ink,
+    align = "left",
+    vertical = false,
+  ) => ({ ...text(content, x, y, w, h, size, bold, color), align, vertical });
+  const arrow = (x, y, x2, y2) => [
+    line(x, y, x2, y2, muted),
+    ...(x === x2
+      ? [
+          line(x2 - 0.045, y2 + 0.07, x2, y2, muted),
+          line(x2 + 0.045, y2 + 0.07, x2, y2, muted),
+        ]
+      : [
+          line(x2 - 0.07, y2 - 0.045, x2, y2, muted),
+          line(x2 - 0.07, y2 + 0.045, x2, y2, muted),
+        ]),
+  ];
   const number = (n) => String(n + 1).padStart(2, "0");
 
   // A compact sketch of the method's structure, usable at thumbnail and cover sizes.
@@ -254,39 +278,84 @@ window.ProductivityDeck = (() => {
           );
       }
       if (index !== undefined)
-        out.push(box(left, top, 0.045, height, index === 0 ? orange : rule));
+        out.push(
+          box(
+            left,
+            top,
+            0.045,
+            height,
+            index === (method.id === "eisenhower" ? 1 : 0) ? orange : rule,
+          ),
+        );
     };
     if (method.id === "pareto" && !blank) {
-      const chartTop = y + 0.52,
-        bottom = y + h - 1.08,
+      const chartTop = y + 0.28,
+        bottom = y + h - 1.12,
         chartH = bottom - chartTop;
-      const left = x + 0.43,
-        right = x + w - 0.42,
+      const left = x + 0.78,
+        right = x + w - 0.78,
         step = (right - left) / data.length;
+      const totalCount = method.total || 100;
+      const fmt = (value) =>
+        new Intl.NumberFormat(method.uiLang === "fr" ? "fr" : "en", {
+          maximumSignificantDigits: 4,
+        }).format(value);
       out.push(
-        text(method.unit || t("paretoScale"), x, y, w * 0.48, 0.28, 11, true),
-        text(
-          t("paretoCumulative"),
-          x + w * 0.54,
-          y,
-          w * 0.46,
-          0.28,
-          11,
+        aligned(
+          method.unit || t("paretoScale"),
+          x,
+          chartTop,
+          0.25,
+          chartH,
+          10,
           true,
           muted,
+          "center",
+          true,
         ),
+        aligned(
+          t("paretoCumulative"),
+          x + w - 0.25,
+          chartTop,
+          0.25,
+          chartH,
+          10,
+          true,
+          muted,
+          "center",
+          true,
+        ),
+        line(left, chartTop, left, bottom, muted),
+        line(right, chartTop, right, bottom, muted),
       );
       [0, 0.2, 0.4, 0.6, 0.8, 1].forEach((fraction) => {
         const yy = bottom - chartH * fraction;
-        out.push(line(left, yy, right, yy, fraction === 0.8 ? muted : rule));
+        out.push(line(left, yy, right, yy, fraction === 0 ? muted : rule));
+        if (fraction === 0.8) {
+          for (let xx = left; xx < right; xx += 0.13)
+            out.push(line(xx, yy, Math.min(right, xx + 0.075), yy, muted));
+        }
+        out.push(
+          aligned(
+            fmt(totalCount * fraction),
+            x + 0.3,
+            yy - 0.08,
+            0.36,
+            0.2,
+            9,
+            false,
+            muted,
+            "right",
+          ),
+        );
         out.push(
           text(
-            Math.round((method.total || 100) * fraction),
-            x,
-            yy - 0.07,
-            0.36,
-            0.19,
-            8,
+            Math.round(fraction * 100) + "%",
+            right + 0.1,
+            yy - 0.08,
+            0.39,
+            0.2,
+            9,
             false,
             muted,
           ),
@@ -295,61 +364,179 @@ window.ProductivityDeck = (() => {
       const points = [];
       let total = 0;
       data.forEach(([label, start, end], i) => {
-        const count = end - start;
-        total += count;
-        const xx = left + i * step;
-        const barH = chartH * count;
+        const fraction = end - start;
+        total += fraction;
+        const xx = left + i * step,
+          barH = chartH * fraction;
         out.push(
           box(
-            xx + step * 0.23,
+            xx + step * 0.2,
             bottom - barH,
-            step * 0.54,
+            step * 0.6,
             barH,
             i < 2 ? orange : tint,
           ),
         );
         out.push(
-          text(
-            method.counts ? method.counts[i] : Math.round(100 * count),
-            xx + step * 0.25,
-            bottom - 0.24,
-            step * 0.48,
-            0.2,
+          aligned(
+            fmt(method.counts ? method.counts[i] : 100 * fraction),
+            xx + step * 0.22,
+            barH > 0.32 ? bottom - barH + 0.07 : bottom - barH - 0.19,
+            step * 0.56,
+            0.19,
             9,
             true,
+            ink,
+            "center",
           ),
         );
         out.push(
-          text(label, xx + 0.04, bottom + 0.14, step - 0.08, 0.54, 11, true),
+          aligned(
+            label,
+            xx + 0.02,
+            bottom + 0.13,
+            step - 0.04,
+            0.42,
+            11,
+            true,
+            ink,
+            "center",
+          ),
         );
         points.push([xx + step * 0.5, bottom - chartH * total, total]);
       });
       points.forEach(([xx, yy, share], i) => {
         if (i) out.push(line(points[i - 1][0], points[i - 1][1], xx, yy, ink));
-        out.push(box(xx - 0.033, yy - 0.033, 0.066, 0.066, ink));
+        out.push(box(xx - 0.03, yy - 0.03, 0.06, 0.06, ink));
         out.push(
-          text(
-            Math.round(share * 100) + " %",
-            xx + 0.08,
-            yy - 0.23,
-            Math.min(0.55, right + 0.42 - xx - 0.08),
-            0.2,
+          aligned(
+            Math.round(share * 100) + "%",
+            xx - 0.28,
+            yy - 0.22,
+            0.56,
+            0.19,
             9,
             true,
+            ink,
+            "center",
           ),
         );
       });
       out.push(
-        line(left, bottom + 0.84, left + 0.27, bottom + 0.84, muted),
+        aligned(
+          t("paretoCategories"),
+          left,
+          bottom + 0.61,
+          right - left,
+          0.24,
+          9,
+          false,
+          muted,
+          "center",
+        ),
+      );
+      out.push(
+        line(left, bottom + 0.96, left + 0.27, bottom + 0.96, muted),
         text(
           t("paretoThreshold"),
           left + 0.37,
-          bottom + 0.75,
+          bottom + 0.87,
           right - left - 0.37,
           0.22,
           9,
           false,
           muted,
+        ),
+      );
+      return out;
+    }
+    if (kind === "matrix") {
+      const left = x + 1.25,
+        right = x + w - 0.08,
+        top = y + 0.22,
+        bottom = y + h - 0.86;
+      const gap = 0.12,
+        cw = (right - left - gap) / 2,
+        rh = (bottom - top - gap) / 2;
+      out.push(
+        ...arrow(left - 0.13, bottom, left - 0.13, top - 0.07),
+        ...arrow(left, bottom + 0.1, right + 0.02, bottom + 0.1),
+        aligned(
+          data.y,
+          x,
+          top,
+          0.25,
+          bottom - top,
+          11,
+          true,
+          muted,
+          "center",
+          true,
+        ),
+        aligned(
+          data.yHigh,
+          x + 0.28,
+          top + 0.06,
+          0.78,
+          0.38,
+          9,
+          false,
+          muted,
+          "right",
+        ),
+        aligned(
+          data.yLow,
+          x + 0.28,
+          bottom - 0.4,
+          0.78,
+          0.38,
+          9,
+          false,
+          muted,
+          "right",
+        ),
+        text(
+          data.xLow,
+          left,
+          bottom + 0.2,
+          (right - left) / 2,
+          0.23,
+          9,
+          false,
+          muted,
+        ),
+        aligned(
+          data.xHigh,
+          left + (right - left) / 2,
+          bottom + 0.2,
+          (right - left) / 2,
+          0.23,
+          9,
+          false,
+          muted,
+          "right",
+        ),
+        aligned(
+          data.x,
+          left,
+          y + h - 0.27,
+          right - left,
+          0.25,
+          11,
+          true,
+          muted,
+          "center",
+        ),
+      );
+      labels.forEach((label, i) =>
+        cell(
+          label,
+          values[i],
+          left + (i % 2) * (cw + gap),
+          top + Math.floor(i / 2) * (rh + gap),
+          cw,
+          rh,
+          i,
         ),
       );
       return out;
@@ -442,14 +629,6 @@ window.ProductivityDeck = (() => {
     const gap = sequence ? 0.23 : 0.1;
     let top = y,
       space = h;
-    if (kind === "matrix") {
-      out.push(
-        text(data.y, x, y, w * 0.48, 0.27, 11, true, muted),
-        text(data.x, x + w * 0.52, y, w * 0.48, 0.27, 11, true, muted),
-      );
-      top += 0.34;
-      space -= 0.34;
-    }
     if (kind === "tree") {
       out.push(
         box(x, top, w, 0.52, tint, rule),
@@ -785,7 +964,10 @@ window.ProductivityDeck = (() => {
   }
 
   let measure;
-  function fit(item) {
+  function fit(original) {
+    const item = original.vertical
+      ? { ...original, w: original.h, h: original.w }
+      : original;
     if (!measure && typeof document.createElement === "function")
       measure = document.createElement("canvas").getContext?.("2d");
     const width = item.w * 72 * 0.96,
@@ -831,6 +1013,7 @@ window.ProductivityDeck = (() => {
     }
   }
 
+  let svgSequence = 0;
   function svg(items, w, h, escape, label) {
     const u = (n) => (n * 72).toFixed(2);
     const content = items
@@ -867,6 +1050,18 @@ window.ProductivityDeck = (() => {
             '"/>'
           );
         const { lines, size, leading } = fit(i);
+        const tx = i.vertical ? i.x + i.w / 2 - i.h / 2 : i.x;
+        const ty = i.vertical ? i.y + i.h / 2 - i.w / 2 : i.y;
+        const tw = i.vertical ? i.h : i.w;
+        const ax =
+          tx + (i.align === "center" ? tw / 2 : i.align === "right" ? tw : 0);
+        const transform = i.vertical
+          ? ' transform="rotate(-90 ' +
+            u(i.x + i.w / 2) +
+            " " +
+            u(i.y + i.h / 2) +
+            ')"'
+          : "";
         return (
           '<text fill="#' +
           i.color +
@@ -874,14 +1069,22 @@ window.ProductivityDeck = (() => {
           size +
           '" font-weight="' +
           (i.bold ? 700 : 400) +
-          '">' +
+          '" text-anchor="' +
+          (i.align === "center"
+            ? "middle"
+            : i.align === "right"
+              ? "end"
+              : "start") +
+          '"' +
+          transform +
+          ">" +
           lines
             .map(
               (row, j) =>
                 '<tspan x="' +
-                u(i.x) +
+                u(ax) +
                 '" y="' +
-                (i.y * 72 + size * 0.88 + j * leading) +
+                (ty * 72 + size * 0.88 + j * leading) +
                 '">' +
                 escape(row) +
                 "</tspan>",
@@ -891,14 +1094,30 @@ window.ProductivityDeck = (() => {
         );
       })
       .join("");
+    const id = "method-diagram-" + ++svgSequence;
     return (
       '<svg viewBox="0 0 ' +
       u(w) +
       " " +
       u(h) +
-      '" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="' +
-      escape(label) +
-      '">' +
+      '" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="' +
+      id +
+      "-title " +
+      id +
+      '-desc"><title id="' +
+      id +
+      '-title">' +
+      escape(label || "Method diagram") +
+      '</title><desc id="' +
+      id +
+      '-desc">' +
+      escape(
+        items
+          .filter((i) => i.type === "text")
+          .map((i) => i.content)
+          .join(". "),
+      ) +
+      "</desc>" +
       content +
       "</svg>"
     );
@@ -942,6 +1161,8 @@ window.ProductivityDeck = (() => {
           valign: "top",
           lineSpacing: leading,
           wrap: false,
+          align: i.align || "left",
+          ...(i.vertical ? { vert: "vert270" } : {}),
           ...(i.url ? { hyperlink: { url: i.url } } : {}),
         });
       }
@@ -965,17 +1186,33 @@ window.ProductivityDeck = (() => {
         pdf.setFontSize(size);
         pdf.setTextColor("#" + i.color);
         if (i.url) pdf.link(i.x, i.y, i.w, i.h, { url: i.url });
-        lines.forEach((row, j) =>
-          pdf.text(
-            row
-              .replace(/[\u202f\u2009]/g, " ")
-              .replace(/→/g, ">")
-              .replace(/↑/g, "")
-              .replace(/≤/g, "<="),
-            i.x,
-            i.y + (size * 0.88 + j * leading) / 72,
-          ),
-        );
+        lines.forEach((row, j) => {
+          const value = row
+            .replace(/[\u202f\u2009]/g, " ")
+            .replace(/→/g, ">")
+            .replace(/↑/g, "")
+            .replace(/≤/g, "<=");
+          if (i.vertical) {
+            const cx = i.x + i.w / 2,
+              cy = i.y + i.h / 2;
+            const rowW =
+              pdf.getTextWidth?.(value) || (value.length * size * 0.52) / 72;
+            const tx = cx - (i.align === "center" ? rowW / 2 : i.h / 2);
+            const ty = cy - i.w / 2 + (size * 0.88 + j * leading) / 72;
+            pdf.text(value, cx + ty - cy, cy - tx + cx, { angle: 90 });
+          } else
+            pdf.text(
+              value,
+              i.x +
+                (i.align === "center"
+                  ? i.w / 2
+                  : i.align === "right"
+                    ? i.w
+                    : 0),
+              i.y + (size * 0.88 + j * leading) / 72,
+              { align: i.align || "left" },
+            );
+        });
       }
     });
   }

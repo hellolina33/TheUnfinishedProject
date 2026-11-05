@@ -36,3 +36,11 @@ Black on white, one stroke weight, no colour, drawn so a reader can copy them. S
 ## Interactive worksheets
 
 Use grouped, labelled fields for input, a readable HTML results table and a native diagram where it helps explain the result. Keep exports and data management in expandable sections. At narrow widths show inputs before previews. Preserve the session-only data model.
+
+## Task-first navigation
+
+The primary menu has two destinations: Start here and Methods. More contains offline download, support, sources and language. Home shows two concrete goals for the chosen student, manager or professional profile. A journey identifies the needed inputs, the first useful output and optional next steps; method screens retain that context. Search leads the catalogue, with refinements grouped separately. Avoid repeating the same choice in several competing blocks.
+
+## Axes
+
+Matrix dimensions have independent low/high endpoint labels. Horizontal axes sit below the cells; vertical dimensions sit to the left. Pareto has separate count and cumulative-percentage scales. Reserve geometry for labels rather than placing both axis names over the plot. Preserve editable text in native slide exports.

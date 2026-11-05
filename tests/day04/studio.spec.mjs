@@ -13,7 +13,7 @@ test("Canonical routes, bilingual metadata and search recover the right tools", 
     /\/fr\/outils\/four-ls\/$/,
   );
   await page
-    .getByRole("link", { name: "Bibliothèque", exact: true })
+    .getByRole("link", { name: "Méthodes", exact: true })
     .first()
     .click();
   await page.locator("#search-tools").fill("eisenower");
@@ -99,6 +99,7 @@ test("Untrusted input stays text, session answers are absent from the downloadab
     .fill('<img src=x onerror="window.exposed=1">PRIVATE_WORKSHEET');
   await expect(page.locator("#work-results img")).toHaveCount(0);
   expect(await page.evaluate(() => window.exposed)).toBeUndefined();
+  await page.locator(".s-utility summary").click();
   const [file] = await Promise.all([
     page.waitForEvent("download"),
     page.locator("header [data-act=html]").click(),
@@ -120,7 +121,8 @@ test("Untrusted input stays text, session answers are absent from the downloadab
   await offline.goto("file://" + offlinePath);
   await expect(offline.locator(".s-hero")).toBeVisible();
   await context.setOffline(true);
-  await offline.locator('.s-hero a[href*="eisenhower"]').first().click();
+  await offline.locator(".s-journeychoice").first().click();
+  await offline.locator(".s-journeysteps a").first().click();
   await editor(offline);
   await offline.locator("[data-work-act=sample]").click();
   await offline.getByRole("tab", { name: /Présentation/ }).click();
@@ -252,6 +254,7 @@ test("Public sharing restores the selected slide and never adds worksheet text t
   await page.locator("[data-work-act=add]").click();
   await page.locator('[data-work="rows.0.title"]').fill("DO_NOT_SHARE_THIS");
   await page.getByRole("tab", { name: /Présentation/ }).click();
+  await page.locator(".s-deckcontents summary").click();
   await page.locator('[data-act=slide][data-val="5"]').click();
   await page.locator("[data-act=share]").click();
   const link = await page.evaluate(() => window.sharedPublicLink);
@@ -308,4 +311,108 @@ test("Recommendations distinguish exact fits from explicit alternatives", async 
     page.getByRole("heading", { name: "Alternatives à comparer" }),
   ).toBeVisible();
   await expect(page.locator(".s-rec").first()).toContainText("Alternative");
+});
+
+for (const journey of [
+  { role: "student", id: "study", method: "time-blocking", next: "pomodoro" },
+  {
+    role: "manager",
+    id: "team-priorities",
+    method: "impact-effort",
+    next: "moscow",
+  },
+  {
+    role: "professional",
+    id: "vendors",
+    method: "weighted",
+    next: "premortem",
+  },
+])
+  test(`${journey.role} can choose a goal, work, continue and recover the same answers`, async ({
+    page,
+  }) => {
+    await page.goto(base + "fr/");
+    await expect(page.locator("header .s-nav a")).toHaveCount(2);
+    await page.locator(`[data-persona=${journey.role}]`).click();
+    await expect(page.locator(".s-journeychoice")).toHaveCount(2);
+    await page.locator(`.s-journeychoice[href*="/${journey.id}/"]`).click();
+    await expect(page.locator(".s-journeysteps>li")).toHaveCount(3);
+    await page.locator(".s-journeysteps a").first().click();
+    await expect(page).toHaveURL(
+      new RegExp(journey.method + ".*journey=" + journey.id),
+    );
+    await expect(page.locator(".s-journeycontext")).toContainText("1 / 3");
+    if (journey.method === "impact-effort")
+      await page.locator("#input-0").fill("Choix conservé pour le parcours");
+    else
+      await page
+        .locator("[data-work=decision]")
+        .fill("Choix conservé pour le parcours");
+    await page.locator(".s-journeycontinue a").click();
+    await expect(page).toHaveURL(
+      new RegExp(journey.next + ".*journey=" + journey.id),
+    );
+    await expect(page.locator(".s-journeycontext")).toContainText("2 / 3");
+    await page.goBack();
+    await expect(
+      page.locator(
+        journey.method === "impact-effort"
+          ? "#input-0"
+          : "[data-work=decision]",
+      ),
+    ).toHaveValue("Choix conservé pour le parcours");
+    await page.locator(".s-journeycontext a").click();
+    await page.locator(".s-journeyfiles summary").click();
+    const [summary] = await Promise.all([
+      page.waitForEvent("download"),
+      page.locator("[data-act=journey-export]").click(),
+    ]);
+    expect(fs.readFileSync(await summary.path(), "utf8")).toContain(
+      "Choix conservé pour le parcours",
+    );
+  });
+
+test("The compact mobile menu, support pages and language switch remain usable", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto(base + "fr/");
+  expect(
+    await page
+      .locator("header")
+      .evaluate((el) => el.getBoundingClientRect().height),
+  ).toBeLessThan(130);
+  await page.locator(".s-utility summary").click();
+  await expect(page.locator("header [data-act=html]")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.locator(".s-utility")).not.toHaveAttribute("open", "");
+  await page.locator(".s-utility summary").click();
+  await page.locator('header a[href="#/help"]').click();
+  await expect(page.locator("#help")).toBeVisible();
+  await expect(page.locator(".s-taskhome")).toHaveCount(0);
+  await page.locator(".s-utility summary").click();
+  await page.locator("header [data-act=lang]").click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  await page.getByRole("link", { name: "Start here", exact: true }).click();
+  await page.locator("[data-persona=student]").click();
+  await expect(page.locator(".s-journeychoices")).toContainText(
+    "Plan my revision",
+  );
+});
+
+test("A guide example really fills the worksheet and slide state survives a reload", async ({
+  page,
+}) => {
+  await page.goto(base + "fr/outils/pareto/");
+  await page.locator("[data-act=example-workspace]").click();
+  await expect(page.locator("#work-results")).toContainText("100");
+  await page.getByRole("tab", { name: /Présentation/ }).click();
+  await page.locator(".s-deckcontents summary").click();
+  await page.locator('[data-act=slide][data-val="2"]').click();
+  await page.locator("#ratio").selectOption("9:16");
+  await expect(page).toHaveURL(/view=slides.*slide=2.*ratio=9%3A16/);
+  page.on("dialog", (dialog) => dialog.accept());
+  await page.reload();
+  await expect(page.locator(".s-slide")).toHaveAttribute("data-ratio", "9:16");
+  await expect(page.locator(".s-count")).toContainText("3 / 8");
 });

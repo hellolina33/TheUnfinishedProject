@@ -310,3 +310,111 @@ body[data-embed] #app{padding-top:10px!important}
 .w-suggestions{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
 .w-kit-page li{margin:20px 0}.w-kit-page h2{font-size:28px}.w-kit-page p{max-width:66ch}
 .w-reuse{border-top:1px solid var(--s-line);padding-top:8px}.w-reuse summary{font-weight:700;cursor:pointer;min-height:32px}.w-reuse p{font-size:13px}.w-completeness{font-size:14px;margin:12px 0}.w-plan input{min-width:0}
+
+/* Task-first journeys: one choice at a time, with secondary tools kept nearby. */
+.studio .s-top{display:grid;grid-template-columns:minmax(220px,1fr) auto minmax(80px,1fr);gap:24px;padding:16px 0}
+.studio .s-nav{gap:12px;flex-wrap:nowrap}
+.studio .s-nav a{min-height:44px;display:flex;align-items:center;padding:8px 12px;font-size:14px}
+.studio .s-nav a[aria-current=page]{color:var(--s-ink);text-decoration:underline;text-decoration-color:var(--s-accent);text-underline-offset:8px;text-decoration-thickness:2px}
+.studio .s-utility{justify-self:end;position:relative;font-size:14px}
+.studio .s-utility>summary{list-style:none;display:flex;gap:16px;align-items:center;cursor:pointer;min-height:44px;padding:8px 12px;font-weight:700}
+.studio .s-utility>summary::-webkit-details-marker{display:none}
+.studio .s-utility-panel{position:absolute;right:0;top:calc(100% + 8px);width:260px;z-index:50;display:grid;background:var(--s-white);border:1px solid var(--s-line);padding:8px}
+.studio .s-utility-panel>a,.studio .s-utility-panel>button{display:block;text-align:left;text-decoration:none;border:0;background:none;color:var(--s-ink);min-height:44px;padding:10px 12px;font-size:14px;font-weight:600}
+.studio .s-utility-panel>a:hover,.studio .s-utility-panel>button:hover{background:var(--s-panel)}
+.studio .s-challenge-short{display:none}
+.studio .s-taskhome{display:block;padding:62px 0 42px;max-width:900px;margin-inline:auto}
+.studio .s-taskintro h1{font-size:clamp(36px,5vw,64px);max-width:17ch;margin:16px 0 20px}
+.studio .s-taskintro .s-lead{max-width:53ch;font-size:19px}
+.studio .s-startchooser{margin-top:36px}
+.studio .s-personas{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--s-line);padding-bottom:14px}
+.studio .s-personas button{border:1px solid transparent;background:none;padding:10px 18px;min-height:44px;color:var(--s-muted);font-size:15px;font-weight:700}
+.studio .s-personas button[aria-pressed=true]{color:var(--s-white);background:var(--s-ink)}
+.studio .s-journeychoice{display:flex;gap:24px;justify-content:space-between;align-items:center;text-decoration:none;padding:26px 8px;border-bottom:1px solid var(--s-line)}
+.studio .s-journeychoice h3{font-size:clamp(20px,2.6vw,28px);letter-spacing:-.025em;line-height:1.2}
+.studio .s-journeychoice p{max-width:59ch;color:var(--s-muted);font-size:15px;margin-top:8px}
+.studio .s-journeychoice>span{font-size:28px;color:var(--s-muted)}
+.studio .s-journeychoice:hover h3{text-decoration:underline;text-decoration-color:var(--s-accent);text-underline-offset:5px}
+.studio .s-directlibrary{padding-top:26px;font-size:14px;color:var(--s-muted)}
+.studio .s-directlibrary a{color:var(--s-ink);font-weight:700;text-underline-offset:3px}
+.studio .s-taskpromise{font-size:13px;color:var(--s-muted);margin-top:34px;max-width:70ch}
+.studio .s-textlink{display:inline-block;font-size:14px;color:var(--s-muted);text-underline-offset:4px;line-height:1.6}
+.studio .s-journeypage,.studio .s-choicepage,.studio .s-supportpage{max-width:900px;padding-block:30px 50px}
+.studio .s-journeyheading{margin:32px 0 28px}
+.studio .s-journeyheading h1,.studio .s-choicepage h1,.studio .s-supportpage h1{font-size:clamp(32px,4.4vw,52px);margin:12px 0 18px;max-width:22ch}
+.studio .s-journeyheading .s-lead{font-size:19px;max-width:55ch}
+.studio .s-journeyprep{background:var(--s-panel);padding:20px 24px}
+.studio .s-journeyprep h2{font-size:18px;letter-spacing:-.02em;margin-bottom:10px}
+.studio .s-journeyprep p{font-size:15px}
+.studio .s-journeyprep .s-smallnote{font-size:13px;color:var(--s-muted);margin-top:10px}
+.studio .s-journeysteps{list-style:none;padding:0;margin:30px 0}
+.studio .s-journeysteps>li{display:grid;grid-template-columns:36px 1fr;gap:16px;padding:26px 0;border-bottom:1px solid var(--s-line)}
+.studio .s-stepnumber{font-size:20px;font-weight:700;color:var(--s-muted);font-variant-numeric:tabular-nums}
+.studio .s-journeysteps h2{font-size:22px;line-height:1.25;letter-spacing:-.025em;max-width:42ch}
+.studio .s-journeysteps p{font-size:14px;color:var(--s-muted);margin:10px 0 18px}
+.studio .s-journeyfiles{padding-top:8px;font-size:14px}
+.studio .s-journeyfiles summary,.studio .s-refinements summary,.studio .s-deckcontents summary,.studio .s-guide-more>summary,.studio .s-share-method>summary{cursor:pointer;font-size:14px;font-weight:700;min-height:44px;padding-block:12px}
+.studio .s-journeyfiles>p{max-width:65ch;color:var(--s-muted);margin-top:10px}
+.studio .s-journeycontext{margin-top:24px;padding:14px 18px;background:var(--s-panel);border-left:3px solid var(--s-accent);font-size:13px}
+.studio .s-journeycontext a{font-weight:700;text-underline-offset:3px}
+.studio .s-journeycontext p{margin-top:5px;color:var(--s-muted)}
+.studio .s-journeycontinue{padding-top:24px;margin-top:30px;border-top:1px solid var(--s-line);display:flex;justify-content:space-between;gap:20px;align-items:center}
+.studio .s-journeycontinue p{font-size:13px;color:var(--s-muted);max-width:44ch}
+.studio .s-libraryentry{display:flex;gap:24px;align-items:center;justify-content:space-between;margin-top:26px}
+.studio .s-libraryentry .s-search{width:min(640px,100%)}
+.studio .s-refinements{margin:12px 0 20px;border-bottom:1px solid var(--s-line)}
+.studio .s-refinements .s-toolbar{padding-top:10px;border-top:0;justify-content:flex-start}
+.studio .s-choicepage>p{margin:0 0 30px;color:var(--s-muted)}
+.studio .s-choicepage .s-quiz{grid-template-columns:1fr 1fr;gap:24px}
+.studio .s-detailhead{padding:12px 0 25px}
+.studio .s-detailhead h1{font-size:clamp(32px,4.5vw,54px);max-width:28ch;margin:8px 0 12px}
+.studio .s-detailhead p{font-size:17px;max-width:65ch}
+.studio .s-detailmeta{margin-top:12px}
+.studio .s-detailmeta .s-badge{border:0;padding:0 12px 0 0;font-size:11px;color:var(--s-muted)}
+.studio .s-detailmeta .s-badge:first-child{display:none}
+.studio .s-tab{padding:13px 18px}
+.studio .s-tab-index,.studio .s-tab small{display:none}
+.studio .s-tabbar{margin-bottom:24px;border-color:var(--s-line)}
+.studio .s-guide-more,.studio .s-share-method{border-block-start:1px solid var(--s-line);padding-top:4px}
+.studio .s-guide-more>summary,.studio .s-share-method>summary{font-size:15px}
+.studio .s-deckaside{gap:20px}
+.studio .s-deckcontents{border-top:1px solid var(--s-line);padding-top:8px}
+.studio .s-deckcontents .s-chapters{margin-top:10px}
+.studio .s-deckexports{margin-top:0;border-top:0;padding-top:0}
+.studio .s-support-pilot{margin-top:28px;font-size:14px}
+.studio .s-supportpage .s-sectionhead{align-items:start;display:block}
+.studio .s-supportpage .s-sectionhead p{max-width:65ch;margin-top:14px}
+@media(max-width:700px){
+ .studio .s-top{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px 0}
+ .studio .s-top .s-nav{grid-row:2;grid-column:1/-1;gap:12px}
+ .studio .s-top .s-nav a{font-size:13px;min-height:40px;padding:6px 8px}
+ .studio .s-utility{grid-column:2;grid-row:1}
+ .studio .s-brand{font-size:12px;letter-spacing:.02em;gap:7px}
+ .studio .s-brand svg{width:26px;height:26px}
+ .studio .s-challenge-full,.studio .s-challenge-author{display:none}
+ .studio .s-challenge-short{display:inline}
+ .studio .s-challenge{font-size:11px}
+ .studio .s-taskhome{padding-block:32px 28px}
+ .studio .s-taskintro h1{font-size:38px;margin-top:12px}
+ .studio .s-taskintro .s-lead{font-size:17px}
+ .studio .s-startchooser{margin-top:26px}
+ .studio .s-personas{gap:2px}
+ .studio .s-personas button{padding:10px 12px;font-size:14px}
+ .studio .s-journeychoice{padding-block:22px;gap:12px}
+ .studio .s-journeychoice h3{font-size:21px}
+ .studio .s-journeychoice p{font-size:14px}
+ .studio .s-journeyheading{margin-top:24px}
+ .studio .s-journeyprep{padding:18px}
+ .studio .s-journeysteps>li{grid-template-columns:24px 1fr;gap:10px}
+ .studio .s-journeysteps h2{font-size:20px}
+ .studio .s-journeycontinue{display:block}
+ .studio .s-journeycontinue .s-btn{margin-top:15px}
+ .studio .s-libraryentry{display:block}
+ .studio .s-libraryentry .s-textlink{margin-top:14px}
+ .studio .s-choicepage .s-quiz{grid-template-columns:1fr}
+ .studio .s-detailhead h1{font-size:34px}
+ .studio .s-detailhead p{font-size:15px}
+ .studio .s-tab{font-size:13px;padding:12px 10px}
+ .studio .s-journeycontext{margin-top:18px;padding:12px;font-size:12px}
+ .studio .s-journeycontext+.s-breadcrumb{display:none}
+}

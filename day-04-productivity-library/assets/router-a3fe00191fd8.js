@@ -18,6 +18,9 @@ window.ProductivityRouter = (() => {
       ratio: ["16:9", "9:10", "9:16"].includes(params.get("ratio"))
         ? params.get("ratio")
         : null,
+      journey: /^[a-z-]{1,40}$/.test(params.get("journey") || "")
+        ? params.get("journey")
+        : undefined,
     };
   }
   function route() {
@@ -32,6 +35,7 @@ window.ProductivityRouter = (() => {
           id: decodeURIComponent(path.slice(5)),
           ...viewParams(params),
         };
+      if (path.startsWith("kit/")) return { v: "kit", id: path.slice(4) };
       if (["find", "sources", "help", "pilot"].includes(path))
         return { v: "home", section: path };
       if (["all", "results"].includes(path)) return { v: path };
@@ -69,9 +73,20 @@ window.ProductivityRouter = (() => {
         "#/" +
         (state.v === "tool"
           ? "tool/" + state.id + (state.view ? "?view=" + state.view : "")
-          : state.v === "home"
-            ? state.section || ""
-            : state.v)
+          : state.v === "kit"
+            ? "kit/" + state.id
+            : state.v === "home"
+              ? state.section || ""
+              : state.v) +
+        (state.v === "tool"
+          ? (() => {
+              const params = new URLSearchParams();
+              if (state.journey) params.set("journey", state.journey);
+              if (state.slide) params.set("slide", String(state.slide));
+              if (state.ratio) params.set("ratio", state.ratio);
+              return params.size ? (state.view ? "&" : "?") + params : "";
+            })()
+          : "")
       );
     let path = root + language + "/";
     if (state.v === "tool")
@@ -89,6 +104,7 @@ window.ProductivityRouter = (() => {
     if (state.view) params.set("view", state.view);
     if (state.slide) params.set("slide", String(state.slide));
     if (state.ratio) params.set("ratio", state.ratio);
+    if (state.journey) params.set("journey", state.journey);
     return path + (params.size ? "?" + params : "");
   }
   function sync(state, language) {
