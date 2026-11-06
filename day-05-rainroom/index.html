@@ -210,12 +210,13 @@ details.cust[open]>summary::after{content:"−"}
 .hear{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;margin-top:12px;background:#D6CAB0;border-radius:12px;padding:4px}
 .hear button{border:0;border-radius:9px;background:transparent;color:var(--muted);font-weight:800;font-size:13px;min-height:38px;cursor:pointer}
 .hear button[aria-pressed="true"]{background:var(--ink);color:var(--body)}
+.dlink{color:var(--mustard);font-weight:700;font-size:12px;text-decoration:underline}
 </style>
 </head>
 <body>
 <div class="wrap app">
   <div class="chal"><span><a href="https://the-unfinished-30.vercel.app/" target="_blank" rel="noopener">The Unfinished 30</a> · <span data-t="day"></span></span>
-    <span class="meta"><details class="pop"><summary data-t="unfSum"></summary><div class="popc"><p data-t="unf"></p></div></details>
+    <span class="meta"><a class="dlink" id="dl-html" href="/day-05-rainroom/rain-room.html" download="rain-room.html" data-t="dlHtml"></a><details class="pop"><summary data-t="unfSum"></summary><div class="popc"><p data-t="unf"></p></div></details>
     <details class="pop"><summary data-t="credSum"></summary><div class="popc"><p data-t="credIntro"></p><ul>
       <li>Rain, alex36917 (<a href="https://freesound.org/people/alex36917/sounds/524605/" target="_blank" rel="noopener">source</a>), CC BY. Storm, Digifish music (<a href="https://freesound.org/people/digifishmusic/sounds/41739/" target="_blank" rel="noopener">source</a>), CC BY. Waves, Luftrum (<a href="https://freesound.org/people/Luftrum/sounds/48412/" target="_blank" rel="noopener">source</a>), CC BY. City, gezortenplotz (<a href="https://freesound.org/people/gezortenplotz/sounds/44796/" target="_blank" rel="noopener">source</a>), CC BY. Night train, SDLx (<a href="https://freesound.org/people/SDLx/sounds/259988/" target="_blank" rel="noopener">source</a>), CC BY 3.0. Edited by Porrumentzio for <a href="https://github.com/rafaelmardojai/blanket" target="_blank" rel="noopener">Blanket</a>.</li>
       <li>Birds (kvgarlic), Boat (Falcet), Stream (gluckose), Wind (felix.blume): CC0, via Freesound and Blanket. Café (stephan), Fireplace (ezwa), Crickets (Lisa Redfern): public domain, via SoundBible.</li>
@@ -305,11 +306,11 @@ fr:{day:"Jour 5/30, un prototype gratuit par jour",lead:"Un baladeur pour bosser
 Object.assign(T.en,{lead:"Pick a tape, press play, get to work. Real rain and café recordings, live piano, bass and guitar that never repeat.",play:"Play",pause:"Pause",timer:"Timer",off:"Off",pomo:"Pomodoro",
  moods:"Pick a tape",moodsSub:"Each tape is a ready-made mix of music and sounds.",custom:"Customize",customSub:"Music, sounds, tape effect",music:"Music",none:"No music",musicVol:"Volume",
  yourSounds:"In your mix",addSound:"Add a sound",extras:"Extras",tapeFx:"Cassette effect",tapeFxSub:"Warm, slightly wobbly tape sound on the music.",customMin:"Timer in minutes",noSounds:"Only music for now. Add rain, café or nature sounds below.",
- loading:"LOADING…",close:"Done",hBoth:"Music + sounds",hMusic:"Music only",hAmb:"Sounds only",yourMix:"Your mix",clearAll:"Clear all",more:"More options",pressPlay:"PRESS ▶ TO START",ends:"ENDS",musicOff:"MUSIC OFF",noSound:"NO SOUND",noTimer:"NO TIMER",focus:"FOCUS",brk:"BREAK",done:"DONE",remove:"Remove"});
+ loading:"LOADING…",close:"Done",dlHtml:"Download the HTML",hBoth:"Music + sounds",hMusic:"Music only",hAmb:"Sounds only",yourMix:"Your mix",clearAll:"Clear all",more:"More options",pressPlay:"PRESS ▶ TO START",ends:"ENDS",musicOff:"MUSIC OFF",noSound:"NO SOUND",noTimer:"NO TIMER",focus:"FOCUS",brk:"BREAK",done:"DONE",remove:"Remove"});
 Object.assign(T.fr,{lead:"Choisis une cassette, appuie sur lecture, au travail. De vrais enregistrements de pluie et de café, un piano, une contrebasse et une guitare qui ne se répètent jamais.",play:"Lecture",pause:"Pause",timer:"Minuteur",off:"Off",pomo:"Pomodoro",
  moods:"Choisis une cassette",moodsSub:"Chaque cassette est un mix prêt à l'emploi de musique et de sons.",custom:"Personnaliser",customSub:"Musique, sons, effet cassette",music:"Musique",none:"Pas de musique",musicVol:"Volume",
  yourSounds:"Dans ton mix",addSound:"Ajouter un son",extras:"Options",tapeFx:"Effet cassette",tapeFxSub:"Son de bande chaud et un peu flottant sur la musique.",customMin:"Minuteur en minutes",noSounds:"Que de la musique pour l'instant. Ajoute pluie, café ou nature ci-dessous.",
- loading:"CHARGEMENT…",close:"OK",hBoth:"Musique + sons",hMusic:"Musique seule",hAmb:"Sons seuls",yourMix:"Ton mix",clearAll:"Tout retirer",more:"Plus d'options",pressPlay:"APPUIE SUR ▶",ends:"FIN",musicOff:"MUSIQUE OFF",noSound:"AUCUN SON",noTimer:"PAS DE MINUTEUR",focus:"FOCUS",brk:"PAUSE",done:"FINI",remove:"Retirer"});
+ loading:"CHARGEMENT…",close:"OK",dlHtml:"Télécharger le HTML",hBoth:"Musique + sons",hMusic:"Musique seule",hAmb:"Sons seuls",yourMix:"Ton mix",clearAll:"Tout retirer",more:"Plus d'options",pressPlay:"APPUIE SUR ▶",ends:"FIN",musicOff:"MUSIQUE OFF",noSound:"AUCUN SON",noTimer:"PAS DE MINUTEUR",focus:"FOCUS",brk:"PAUSE",done:"FINI",remove:"Retirer"});
 var lang="en",tx=function(){return T[lang]};
 
 var P='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
@@ -348,7 +349,7 @@ function bake(sec,count,make){var sr=ctx.sampleRate,n=Math.floor(sr*sec),b=ctx.c
   for(var e=0;e<count;e++){var at=Math.floor(rnd()*n),pan=rnd(),ev=make(sr);for(var i=0;i<ev.length;i++){var k=(at+i)%n;L[k]+=ev[i]*(1-pan);R[k]+=ev[i]*pan}}return b}
 function loop(buf,dest){var s=ctx.createBufferSource();s.buffer=buf;s.loop=true;s.connect(dest);s.start(ctx.currentTime+.02,rnd()*buf.duration);return s}
 var FILECACHE={};
-function load(name){if(!FILECACHE[name])FILECACHE[name]=fetch(BASE+name+".mp3").then(function(r){if(!r.ok)throw new Error(r.status);return r.arrayBuffer()}).then(function(a){return new Promise(function(res,rej){ctx.decodeAudioData(a,res,rej)})});return FILECACHE[name]}
+function load(name){if(!FILECACHE[name])FILECACHE[name]=fetch((window.RR_SND&&window.RR_SND[name])||BASE+name+".mp3").then(function(r){if(!r.ok)throw new Error(r.status);return r.arrayBuffer()}).then(function(a){return new Promise(function(res,rej){ctx.decodeAudioData(a,res,rej)})});return FILECACHE[name]}
 function seamless(b){var sr=b.sampleRate,trim=Math.floor(sr*.06),xf=Math.min(Math.floor(sr*1.5),Math.floor((b.length-2*trim)/4)),n=b.length-2*trim-xf,o=ctx.createBuffer(b.numberOfChannels,n,sr);
   for(var c=0;c<b.numberOfChannels;c++){var d=b.getChannelData(c),od=o.getChannelData(c);for(var i=0;i<n;i++)od[i]=d[trim+xf+i];
     for(var j=0;j<xf;j++){var a=j/xf;od[n-xf+j]=d[trim+n+j]*Math.cos(a*Math.PI/2)+d[trim+j]*Math.sin(a*Math.PI/2)}}return o}
@@ -556,6 +557,7 @@ function applyLang(){document.documentElement.lang=lang;document.querySelectorAl
   renderTapes();renderStyles();renderActive();renderAddGrid();setMusic(S.music);renderTimer();renderLCD()}
 $("l-en").addEventListener("click",function(){lang="en";applyLang();save()});$("l-fr").addEventListener("click",function(){lang="fr";applyLang();save()});
 applyLang();
+if(window.RR_SND){var dl=document.getElementById("dl-html");if(dl)dl.remove()}
 })();
 </script>
 </body>
