@@ -319,6 +319,7 @@ body[data-view="duel"] .podium-label.right, body[data-view="jury"] .podium-label
 <div class="trial-area"><div class="source-row"><label for="source" data-i18n="responseMode">Response mode</label><select id="source"><option value="local" data-i18n="localMode">Offline templates</option><option value="trial" data-i18n="trialMode">AI · Free trial</option><option value="own" data-i18n="ownMode">AI · My Gemini key</option></select></div>
 <div id="trial-info" hidden><p id="trial-status" class="trial-status" role="status"></p><p class="source-detail" data-i18n="trialPrivacy">Your request and context go to Google Gemini through the challenge proxy.</p></div>
 <div id="own-key" hidden><label for="api-key" data-i18n="keyLabel">Your Gemini API key</label><input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="AIza…"><p class="source-detail" data-i18n="keyPrivacy">Kept in memory for this tab. Sent only to Google when you use AI.</p></div>
+<p id="source-error" class="source-detail" role="alert" hidden></p>
 <p id="source-note" class="source-detail" data-i18n="offlineDetail">Works without an account or connection. Uses response templates and wording cues.</p>
 </div>
 </aside>
@@ -767,6 +768,7 @@ const YesManEngine = (() => {
       trial.left === 0 ? t("trialEmpty") : t("trialReady").replace("{left}",trial.left).replace("{total}",trial.total);
   }
   function sourceUI() {
+    if ($("source-error").dataset.key) $("source-error").textContent = t($("source-error").dataset.key);
     const source = $("source").value;
     $("trial-info").hidden = source !== "trial";
     $("own-key").hidden = source !== "own";
@@ -958,8 +960,10 @@ const YesManEngine = (() => {
   };
   async function askAI(task,data,extra={}) {
     const source=$("source").value;
+    $("source-error").hidden = true;
+    delete $("source-error").dataset.key;
     if (source==="local") return null;
-    if (!navigator.onLine) { status(t("networkDown")); $("data-note").textContent=t("networkDown"); return null; }
+    if (!navigator.onLine) { status(t("networkDown")); $("data-note").textContent=t("networkDown"); $("source-error").dataset.key="networkDown"; $("source-error").textContent=t("networkDown"); $("source-error").hidden=false; return null; }
     const payload={task, request:data.request, boundary:data.boundary, recipient:data.recipient, tone:data.tone, difficulty:data.difficulty||"persistent", lang, ...extra};
     try {
       let response;
@@ -989,7 +993,11 @@ const YesManEngine = (() => {
       const text=body.candidates?.[0]?.content?.parts?.map(part=>part.text||"").join("");
       return JSON.parse(text);
     } catch(problem) {
-      const message=problem.message==="missingKey"?t("missingKey"):t("aiUnavailable");
+      const errorKey=problem.message==="missingKey"?"missingKey":"aiUnavailable";
+      const message=t(errorKey);
+      $("source-error").dataset.key=errorKey;
+      $("source-error").textContent=message;
+      $("source-error").hidden=false;
       $("data-note").textContent=message;
       status(message);
       return null;
@@ -998,6 +1006,8 @@ const YesManEngine = (() => {
 
   $("source").addEventListener("change",()=>{
     userChoseSource = true;
+    $("source-error").hidden=true;
+    delete $("source-error").dataset.key;
     if($("source").value!=="own") $("api-key").value="";
     sourceUI();
     if($("source").value==="trial") checkTrial();
