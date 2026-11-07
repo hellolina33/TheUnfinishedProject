@@ -415,7 +415,7 @@ const YesManEngine = (() => {
     let negotiate = en
       ? explicitTradeoff ? "Taking this on would mean moving an existing commitment. Which one should take priority?" : "I could help with a smaller part if we agree on the scope first. Which part is essential?"
       : explicitTradeoff ? "Pour prendre ça en charge, il faudrait déplacer un engagement déjà prévu. Qu’est-ce qui doit passer en priorité ?" : "Je pourrais aider sur une partie si on définit le périmètre d’abord. Quelle partie est indispensable ?";
-    if (boundary && !explicitTradeoff) negotiate = boundary + (/[.!?]$/.test(boundary) ? "" : ".") + (en ? " Would that work for you?" : formal ? " Est-ce que cela vous conviendrait ?" : " Est-ce que ça te conviendrait ?");
+    if (boundary) negotiate = boundary + (/[.!?]$/.test(boundary) ? "" : ".") + (en ? " Would that work for you?" : formal ? " Est-ce que cela vous conviendrait ?" : " Est-ce que ça te conviendrait ?");
     const deadlines = timePattern.test(normalise(data.request)) || /\b(urgent|asap|deadline|echeance)\b/.test(normalise(data.request));
     let decline = en
       ? deadlines ? "I can’t commit to the timing you’re asking for." : "I can’t take this on."
@@ -429,12 +429,12 @@ const YesManEngine = (() => {
       : formal ? "Je vérifie ce qui est faisable et je reviens vers vous avant de m’engager." : short ? "Je vérifie avant de m’engager et je te redis." : "Je vérifie ce qui est faisable et je te redis avant de m’engager.";
     const effects = en ? [
       "You ask for information. You have not accepted the task.",
-      boundary && !explicitTradeoff ? "You state the limit you entered. Read it as a potential commitment." : "Your agreement depends on a scope or priority decision.",
+      boundary ? "You state the limit you entered. Read it as a potential commitment." : "Your agreement depends on a scope or priority decision.",
       deadlines && type !== "money" ? "You decline the requested timing. The rest of the request remains open." : "You decline the request.",
       "You promise to come back with a decision. The timing is still open."
     ] : [
       "Tu demandes une précision. Tu n’as pas accepté la tâche.",
-      boundary && !explicitTradeoff ? "Tu poses la limite saisie. Relis-la comme un engagement possible." : "Ton accord dépend d’un arbitrage sur le périmètre ou la priorité.",
+      boundary ? "Tu poses la limite saisie. Relis-la comme un engagement possible." : "Ton accord dépend d’un arbitrage sur le périmètre ou la priorité.",
       deadlines && type !== "money" ? "Tu refuses le délai demandé. Le reste de la demande reste ouvert." : "Tu déclines la demande.",
       "Tu t’engages à revenir avec une décision. Le moment reste à préciser."
     ];
@@ -681,6 +681,7 @@ const YesManEngine = (() => {
   let activeIntent = "clarify";
   let trial = { left: null, total: null };
   let trialSequence = 0;
+  let userChoseSource = false;
   const t = key => words[lang][key] ?? key;
 
   function status(message) { $("live-status").textContent = message; }
@@ -774,7 +775,7 @@ const YesManEngine = (() => {
     $("data-note").textContent = source === "local" ? t("localNote") : source === "trial" ? t("trialPrivacy") : t("keyPrivacy");
     updateTrial();
   }
-  async function checkTrial() {
+  async function checkTrial(activateIfReady = false) {
     const seq = ++trialSequence;
     $("trial-status").textContent = t("trialChecking");
     try {
@@ -786,6 +787,10 @@ const YesManEngine = (() => {
       if (!Number.isInteger(data.left) || !Number.isInteger(data.total)) throw new Error("quota");
       trial = { left: data.left, total: data.total };
     } catch { if (seq === trialSequence) trial = { left:null,total:null }; }
+    if (activateIfReady && seq === trialSequence && trial.left > 0 && !userChoseSource && !pending) {
+      $("source").value = "trial";
+      sourceUI();
+    }
     if (seq === trialSequence && $("source").value === "trial") updateTrial();
   }
 
@@ -992,6 +997,7 @@ const YesManEngine = (() => {
   }
 
   $("source").addEventListener("change",()=>{
+    userChoseSource = true;
     if($("source").value!=="own") $("api-key").value="";
     sourceUI();
     if($("source").value==="trial") checkTrial();
@@ -1121,6 +1127,7 @@ const YesManEngine = (() => {
   window.addEventListener("resize",()=>$("intent-tabs").setAttribute("aria-orientation",window.innerWidth<=700?"horizontal":"vertical"));
   translate();
   show("prepare");
+  if (["https://the-unfinished-30.vercel.app", "https://yes-man-day-06.linael.chatgpt.site"].includes(location.origin) && navigator.onLine) checkTrial(true);
 })();
 </script>
 </body>
