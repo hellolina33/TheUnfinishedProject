@@ -13,6 +13,31 @@ const fixedPrompts = {
   follow: "Return JSON with line. Play the person making the request, giving ONE concise realistic pushback that responds to firstReply. Difficulty gentle asks for clarification, persistent probes a smaller commitment, challenging adds realistic insistence. Be respectful, without insults or threats. Do not create promises on the user's behalf.",
   review: "Return JSON with reading, tip, marks. Analyse finalReply and explain the commitment the requester might reasonably hear, with one concrete wording tip. Distinguish refusal, taking time, conditional acceptance, accepting a part, and open agreement. marks must be at most four exact substrings copied from finalReply. No personality scores or obedience scores."
 };
+const responseSchemas = {
+  drafts: {
+    type: "object", required: ["options"], additionalProperties: false,
+    properties: { options: {
+      type: "array", minItems: 4, maxItems: 4,
+      items: { type: "object", required: ["kind", "text", "effect"],
+        properties: {
+          kind: { type: "string", enum: ["clarify", "negotiate", "decline", "pause"] },
+          text: { type: "string" }, effect: { type: "string" }
+        }, additionalProperties: false
+      }
+    } }
+  },
+  follow: {
+    type: "object", required: ["line"], additionalProperties: false,
+    properties: { line: { type: "string" } }
+  },
+  review: {
+    type: "object", required: ["reading", "tip", "marks"], additionalProperties: false,
+    properties: {
+      reading: { type: "string" }, tip: { type: "string" },
+      marks: { type: "array", maxItems: 4, items: { type: "string" } }
+    }
+  }
+};
 // These counters are synchronous reservations inside each warm instance. The signed cookie
 // survives restarts; IP and daily counters are best effort across instances, not a billing cap.
 const ipCounts = new Map();
@@ -115,16 +140,33 @@ module.exports = async function handler(req, res) {
       body:JSON.stringify({
         systemInstruction:{parts:[{text:system}]},
         contents:[{role:"user",parts:[{text:JSON.stringify(payload)}]}],
-        generationConfig:{responseMimeType:"application/json",maxOutputTokens:1800,temperature:0.6}
+        generationConfig:{
+          responseMimeType:"application/json",
+          responseJsonSchema:responseSchemas[data.task],
+          maxOutputTokens:2048,
+          thinkingConfig:{thinkingLevel:"MINIMAL",includeThoughts:false},
+          temperature:0.6
+        }
       }),
       signal:AbortSignal.timeout(18000)
     });
     if (!upstream.ok) return res.status(502).json({error:"upstream",...remaining});
     const body = await upstream.json();
-    const text = body.candidates?.[0]?.content?.parts?.map(part=>part.text || "").join("");
+    const candidate = body.candidates?.[0];
+    const text = candidate?.content?.parts?.filter(part=>!part.thought).map(part=>part.text || "").join("");
+    if (candidate?.finishReason === "MAX_TOKENS") {
+      console.warn("Yes Man output reached the token cap", {task:data.task});
+      return res.status(502).json({error:"output",...remaining});
+    }
     if (!text || text.length > 14000) return res.status(502).json({error:"output",...remaining});
     let result;
-    try { result = JSON.parse(text); } catch { return res.status(502).json({error:"output",...remaining}); }
+    try {
+      const clean = text.trim().replace(/^\`\`\`(?:json)?\s*/i, "").replace(/\s*\`\`\`$/, "");
+      result = JSON.parse(clean);
+    } catch {
+      console.warn("Yes Man returned invalid JSON", {task:data.task,length:text.length,finishReason:candidate?.finishReason});
+      return res.status(502).json({error:"output",...remaining});
+    }
     if (!result || typeof result !== "object" || Array.isArray(result)) return res.status(502).json({error:"output",...remaining});
     return res.status(200).json({result,...remaining});
   } catch {
