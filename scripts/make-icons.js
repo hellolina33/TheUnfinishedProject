@@ -9,6 +9,7 @@ const ICONS = {
   "day-01-whichoneareyou": wrap("#FFE36E", `<circle cx="32" cy="33" r="21" fill="#FFB8DE" ${st}/><circle cx="25" cy="29" r="3.2" fill="${INK}"/><circle cx="39" cy="29" r="3.2" fill="${INK}"/><path d="M23 39 Q32 48 41 39" fill="none" ${st}/>`),
   "day-02-howmanyweeks": wrap("#A9D6FF", [0,1,2].flatMap(r => [0,1,2].map(c => { const x = 12 + c * 14, y = 12 + r * 14, past = r * 3 + c < 5; return `<rect x="${x}" y="${y}" width="11" height="11" rx="3" fill="${past ? INK : (r * 3 + c === 7 ? "#FF6B4A" : "#FFFFFF")}" stroke="${INK}" stroke-width="2.5"/>`; })).join("")),
   "day-03-officefilter": wrap("#23211F", `<rect x="11" y="27" width="42" height="10" rx="5" fill="#FF5A1F" transform="rotate(-8 32 32)"/>`),
+  "day-06-yes-man": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 64 64\"><rect width=\"64\" height=\"64\" rx=\"14\" fill=\"#48202b\"/><path d=\"M12 18h17l-3 6H15zm23 0h17l-3 6H38zM17 24h8v23H17zm22 0h8v23H39zM12 47h18v4H12zm22 0h18v4H34z\" fill=\"#e2bd8c\"/><path d=\"M32 12v43\" stroke=\"#fff4dc\" stroke-width=\"1.5\" stroke-dasharray=\"2 4\"/></svg>",
   "day-05-rainroom": wrap("#0B0F1A", `<path d="M32 12 C32 12 18 30 18 39 a14 14 0 0 0 28 0 C46 30 32 12 32 12Z" fill="#FFB547"/><circle cx="14" cy="18" r="3" fill="#7FB2FF"/><circle cx="50" cy="22" r="2.5" fill="#7FB2FF"/><circle cx="48" cy="50" r="2" fill="#7FB2FF"/>`),
   "day-04-productivity-library": wrap("#D8C6FA", [[10,10,"#FF6B4A"],[34,10,"#FFFFFF"],[10,34,"#FFFFFF"],[34,34,"#FFFFFF"]].map(([x, y, f]) => `<rect x="${x}" y="${y}" width="20" height="20" rx="6" fill="${f}" ${st}/>`).join(""))
 };
@@ -25,3 +26,4 @@ function ico(png32) { const h = Buffer.alloc(22); h.writeUInt16LE(1, 2); h.write
   }
   await b.close(); console.log("icons ok");
 })();
+
