@@ -297,7 +297,7 @@ dialog p,dialog pre{white-space:pre-wrap;overflow-wrap:anywhere}
 #shortcut{display:block}
 @media(max-width:760px){.ym-sticky{position:sticky;bottom:0;z-index:3;background:#fffaf1;padding:10px 0 env(safe-area-inset-bottom,0);border-top:1px solid var(--line)}
 .ym-keyboard .ym-sticky{position:static}.duel-scroll{max-height:none;overflow:visible}.ym-compare{grid-template-columns:1fr}.primary-row{flex-wrap:wrap}.local-note{text-align:left;max-width:none}.mode-tabs{gap:12px}.mode-tabs button{font-size:13px}.form-row{grid-template-columns:1fr 1fr}
-body[data-view]:not([data-view=prepare]) .challenge-promise{display:none}}
+body[data-view]:not([data-view=prepare]) .challenge-promise,body[data-view]:not([data-view=prepare]) .challenge-right>span{display:none}}
 @media(max-width:430px){.form-row{grid-template-columns:1fr}.ym-steps{gap:5px}.ym-steps button{font-size:13px}.title-row{flex-wrap:wrap;gap:6px;padding:12px 0}.intent-tab{padding:8px}.trial-area .source-row select{max-width:100%}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
@@ -313,6 +313,7 @@ body[data-view]:not([data-view=prepare]) .challenge-promise{display:none}}
 <div class="title-row"><h1 class="wordmark">Yes <em>Man</em><span class="edition" data-i18n="edition">The eloquence edition</span></h1><p class="promise" data-i18n="promise">Before you say yes.<br>Find the words you mean.</p></div>
 <div class="ym-actions"><button type="button" class="text-button" id="focus-mode" data-i18n="focus-mode">Focus mode</button><button type="button" class="text-button" id="phrases" data-i18n="phrases">My phrases</button><button type="button" class="text-button" id="settings" data-i18n="settings">Settings</button><button type="button" class="text-button" id="new-request" data-i18n="new-request">New request</button></div>
 <div id="resume-box" class="ym-note" hidden><span data-i18n="resume-note">A local draft is available.</span><div class="ym-actions"><button type="button" class="text-button" id="resume" data-i18n="resume">Resume draft</button><button type="button" class="text-button" id="discard" data-i18n="discard">Delete draft</button></div></div>
+<p id="network-note" class="ym-note" role="status" hidden></p>
 <div class="app-layout">
 <section id="workspace" class="workspace" aria-label="Yes Man" tabindex="-1">
 <nav class="mode-tabs" aria-label="Mode"><button type="button" id="prepare-tab" class="active" data-i18n="prepareTab" aria-pressed="true">Answer a request</button><button type="button" id="practice-tab" data-i18n="practiceTab" aria-pressed="false">Practise a conversation</button></nav><nav class="ym-steps" aria-label="Steps"><button type="button" class="text-button" id="step-prepare" data-i18n="step-prepare">1. Decide</button><button type="button" class="text-button" id="step-results" data-i18n="step-results">2. Write</button><button type="button" class="text-button" id="step-duel" data-i18n="step-duel">3. Rehearse</button></nav>
@@ -908,6 +909,7 @@ const YesManEngine = (() => {
     $("intent-tabs").setAttribute("aria-orientation",window.innerWidth <= 700 ? "horizontal" : "vertical");
     renderScenes();
     sourceUI();
+    connectivity();
     if(result)renderResults();
     if(duel){renderDuel();if(duel.feedback)renderJury(duel.feedback);}
     stage();
@@ -1120,7 +1122,8 @@ const YesManEngine = (() => {
         providerQuota:L("Quota Gemini atteint. Les modèles locaux sont disponibles.","Gemini quota reached. Local templates are available."),
         trial_over:L("Séances gratuites épuisées. Les modèles locaux restent disponibles.","Free sessions are used up. Local templates are available."),
         session_over:L("Séance terminée. Continue avec les modèles locaux ou prépare une nouvelle demande.","This session ended. Continue locally or prepare a new request."),
-        busy:L("Service occupé. Modèles locaux utilisés.","Service busy. Local templates were used.")
+        busy:L("Service occupé. Modèles locaux utilisés.","Service busy. Local templates were used."),
+        timeout:L("Délai dépassé. Modèles locaux utilisés.","The request timed out. Local templates were used.")
       };
       const message=controller?.timedOut?L("Délai dépassé. Modèles locaux utilisés.","The request timed out. Local templates were used."):messages[problem.message]||t("aiUnavailable");
       error("result-error",message);status(message);return null;
@@ -1311,10 +1314,16 @@ const YesManEngine = (() => {
     }
     error("one-question");error("form-error");
     const binding=d.request+"\n"+d.lang;if(binding!==sessionBinding){sessionToken="";sessionBinding=binding;}
+    const previous=result?.data.request===d.request&&result.data.lang===d.lang?result.byLang[d.lang].options:[];
     const run=await work("drafts",d);if(run.cancelled)return;
     const options=templates(d).map(o=>{
       const a=run.answer?.options?.find(x=>x.kind===o.kind);
-      return safeText(a?.text,1400)&&safeText(a?.effect,500)?{...o,text:a.text,original:a.text,effect:a.effect,history:[a.text],source:"ai"}:o;
+      const option=safeText(a?.text,1400)&&safeText(a?.effect,500)?{...o,text:a.text,effect:a.effect,source:"ai"}:o;
+      option.lock=previous.find(x=>x.kind===o.kind)?.lock||"";
+      option.text=preserve(option.text,option);
+      option.original=option.text;
+      option.history=[option.text];
+      return option;
     });
     result={data:d,byLang:{[d.lang]:{options,ai:options.some(o=>o.source==="ai")}}};duel=null;
     activeIntent=d.intent==="retract"?"decline":Engine.intents.includes(d.intent)?d.intent:"clarify";
@@ -1546,7 +1555,12 @@ const YesManEngine = (() => {
   });
   bind("jury-correct",async()=>{
     const old=duel.final,run=await work("rewrite",duel,{text:old,transformation:"correction",correctionContext:duel.intention||duel.feedback.tip});if(run.cancelled)return;
-    const next=run.answer?.text||duel.feedback.suggestion||localEdit(old,"noApology",duel);
+    let next=run.answer?.text||duel.feedback.suggestion||localEdit(old,"noApology",duel);
+    if(next===old&&duel.boundary){
+      const sentences=old.split(/(?<=[.!?])\s+/);
+      const hedge=sentences.findIndex(s=>Engine.stance(s)==="hedge");
+      if(hedge>=0){sentences[hedge]=duel.boundary;next=sentences.join(" ").slice(0,1400);}
+    }
     propose(t("jury-correct"),old,next,s=>{duel.previous=old;jury(s);});
   });
   bind("export-conversation",()=>{
@@ -1605,7 +1619,13 @@ const YesManEngine = (() => {
     const manifest=document.createElement("link");manifest.rel="manifest";manifest.href="/day-06-yes-man/manifest.webmanifest";document.head.append(manifest);
     navigator.serviceWorker?.register("/day-06-yes-man/sw.js",{scope:"/day-06-yes-man/"}).catch(()=>{});
   }
-  translate();show("prepare");
+  function connectivity(){
+    $("network-note").hidden=navigator.onLine;
+    $("network-note").textContent=t("networkDown");
+  }
+  window.addEventListener("online",connectivity);
+  window.addEventListener("offline",connectivity);
+  translate();show("prepare");connectivity();
 
 })();
 </script>

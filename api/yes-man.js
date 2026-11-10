@@ -224,7 +224,7 @@ module.exports = async function handler(req, res) {
       return res.status(502).json({error:"output",...quota});
     }
     if (!validOutput(data.task,result)) return res.status(502).json({error:"output",...quota});
-    if(controller.signal.aborted)return;
+    if(controller.signal.aborted){if(!res.destroyed)return res.status(504).json({error:"timeout",...quota});return;}
     if(data.task==="follow"&&!payload.allowAcceptance)result.resolved=false;
     if(data.task==="review")result.marks=result.marks.filter(mark=>data.finalReply.includes(mark));
     dailyCount++;
@@ -242,7 +242,7 @@ module.exports = async function handler(req, res) {
     }
     return res.status(200).json(response);
   } catch {
-    if(!res.destroyed)return res.status(502).json({error:"upstream",...quota});
+    if(!res.destroyed)return res.status(controller.signal.aborted?504:502).json({error:controller.signal.aborted?"timeout":"upstream",...quota});
   } finally {
     clearTimeout(timeout);
     res.off?.("close",onClose);
