@@ -1,0 +1,24 @@
+{
+  "id": "/day-06-yes-man/",
+  "name": "Yes Man · The Unfinished 30",
+  "short_name": "Yes Man",
+  "start_url": "/day-06-yes-man/",
+  "scope": "/day-06-yes-man/",
+  "display": "standalone",
+  "background_color": "#eee8df",
+  "theme_color": "#28191f",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

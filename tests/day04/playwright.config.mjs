@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
-  testDir: ".",
-  testMatch: "*.spec.mjs",
+  testDir: "..",
+  testMatch: ["**/day04/*.spec.mjs", "**/day06/*.spec.mjs"],
   timeout: 45000,
   fullyParallel: true,
   retries: process.env.CI ? 1 : 0,
