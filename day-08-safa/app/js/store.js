@@ -1,9 +1,9 @@
 // Local-only state. Nothing here ever leaves the device.
 const KEY = 'safa.app.v1';
 const DEF = {
-  v: 1, onboarded: false, loc: null, method: 'MWL', madhab: 'shafi',
+  v: 1, lang: 'auto', onboarded: false, loc: null, method: 'MWL', madhab: 'shafi',
   offsets: { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 }, hijriAdj: 0, h24: true,
-  q: { last: null, favs: [], wbw: false, flow: false, tr: 'itani', tl: false, fs: 1, reciter: 'Alafasy_128kbps', speed: 1, hide: 0 },
+  q: { last: null, favs: [], wbw: false, flow: false, tr: 'auto', tl: false, fs: 1, reciter: 'Alafasy_128kbps', speed: 1, hide: 0 },
   d: { favs: [], tl: false },
   days: {}, pauseOn: false, rem: { on: false, t: '21:00' }
 };

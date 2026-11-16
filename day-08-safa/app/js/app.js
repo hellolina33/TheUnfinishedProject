@@ -1,5 +1,6 @@
 import { S, save, dayKey, getDay } from './store.js';
 import { $, icon, toast, closeSheet } from './ui.js';
+import { t, applyLang } from './i18n.js';
 import * as onboarding from './views/onboarding.js';
 import { render as renderToday, renderQibla, renderFlight } from './views/today.js';
 import { renderList as quranList, renderReader } from './views/quran.js';
@@ -8,7 +9,9 @@ import { renderTrack, renderSettings, renderAbout } from './views/track.js';
 
 const view = $('#view'), tabbar = $('#tabbar');
 const TABS = [['today', 'Today'], ['quran', 'Quran'], ['duas', 'Duas'], ['track', 'Track']];
-tabbar.innerHTML = TABS.map(([k, l]) => `<a href="#/${k}" data-tab="${k}">${icon[k]}${l}</a>`).join('');
+const drawTabs = () => { tabbar.innerHTML = TABS.map(([k, l]) => `<a href="#/${k}" data-tab="${k}">${icon[k]}${t(l)}</a>`).join(''); tabbar.setAttribute('aria-label', t('Main')); };
+applyLang(); drawTabs();
+window.addEventListener('safa:lang', () => { drawTabs(); route(); });
 
 let cleanup = null, token = 0;
 async function route() {
@@ -39,7 +42,7 @@ async function route() {
     else c = renderToday(view);
   } catch (e) {
     console.error(e);
-    view.innerHTML = `<p class="muted pad">This screen could not load. If you are offline, open it once with a connection and it will stay available.</p><a class="btn line sm" href="#/today">Back to Today</a>`;
+    view.innerHTML = `<p class="muted pad">${t('This screen could not load. If you are offline, open it once with a connection and it will stay available.')}</p><a class="btn line sm" href="#/today">${t('Back to Today')}</a>`;
   }
   if (my !== token) { if (typeof c === 'function') c(); return; }
   cleanup = c;
@@ -57,7 +60,7 @@ setInterval(async () => {
   const now = new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date()), k = dayKey();
   if (now < S.rem.t || S.rem.last === k || getDay(k).pz) return;
   S.rem.last = k; save();
-  const body = 'Evening adhkar. A few verses. Tick today.';
+  const body = t('Evening adhkar. A few verses. Tick today.');
   try { const reg = await navigator.serviceWorker.getRegistration(); if (reg && Notification.permission === 'granted') { reg.showNotification('safa.', { body, icon: 'icons/icon-192.png', tag: 'safa-evening' }); return; } } catch (e) { /* fall through */ }
   toast(body);
 }, 30000);
