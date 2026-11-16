@@ -277,7 +277,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </head>
 <body>
 
-<div class="strip"><div class="wrap"><span>PROTOTYPE · <a href="/">THE UNFINISHED 30</a></span><span class="hs">BRAND + MVP CONCEPT · V0.1</span></div></div>
+<div class="strip"><div class="wrap"><span>PROTOTYPE · <a href="/">THE UNFINISHED 30</a></span><span class="hs">V1 · INSTALLABLE WEB APP</span></div></div>
 
 <header class="top"><div class="wrap">
   <a class="logo" href="#top" aria-label="safa. home">
@@ -285,7 +285,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <b>safa<i>.</i></b>
   </a>
   <nav class="links" aria-label="Sections"><a href="#onboarding">30 seconds</a><a href="#tabs">Four tabs</a><a href="#flight">Flight</a><a href="#scope">V1 scope</a></nav>
-  <a class="btn sm" href="#app">Try it</a>
+  <a class="btn sm" href="app/">Open the app</a>
 </div></header>
 
 <main id="top">
@@ -296,7 +296,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <div class="meta"><span class="mono"><span class="dot"></span>&nbsp; The silent spiritual instrument</span><span class="mono">iOS · Android · Offline</span></div>
       <h1><span>Clear time.</span><span>Clear soul<span class="o">.</span></span></h1>
       <p class="lead">Prayer times, the Quran word by word, and authentic duas. No ads. No data collection. No guilt. Open it and you're praying on time in under 30 seconds.</p>
-      <div class="cta"><a class="btn" href="#app">Open the live demo</a><a class="btn line" href="#flight">Pray on a flight</a></div>
+      <div class="cta"><a class="btn" href="app/">Open the app</a><a class="btn line" href="#flight">Pray on a flight</a></div>
       <div class="specs">
         <div><b>0</b><span>Ads, accounts,<br>trackers</span></div>
         <div><b>&lt;30s</b><span>From icon to<br>today's times</span></div>
@@ -317,10 +317,12 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </nav>
         </div>
       </div>
-      <p class="mono" style="text-align:center;margin-top:16px">Live demo · tap the tabs</p>
+      <p class="mono" style="text-align:center;margin-top:16px">Preview · <a href="app/" style="color:var(--ink)">open the full app →</a></p>
     </div>
   </div>
 </section>
+
+<section class="block" style="padding:56px 0"><div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap"><div><span class="mono"><span class="dot"></span>&nbsp; The app is live</span><h2 style="margin-top:12px;font-size:clamp(28px,3.4vw,44px)">The whole Quran, 131 chapters of duas, your times. On your phone.</h2><p class="lead" style="margin-top:12px">Open it, then “Add to Home Screen”. It keeps working offline.</p></div><a class="btn" href="app/">Open the app</a></div></section>
 
 <section class="block" id="onboarding">
   <div class="wrap">
@@ -422,11 +424,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <div class="unfin">
       <h3>What's unfinished</h3>
       <ul>
-        <li>This is a web demo of the concept, not the native app. No widgets, no notifications, no real compass sensor.</li>
-        <li>Quran: only Al-Fatiha 1–4 is mapped word by word. Audio streams from public Quran.com recordings and needs a connection.</li>
-        <li>Duas: six examples, not the full Hisnul Muslim. References should be checked by a scholar before release.</li>
-        <li>Prayer times use a simplified solar model, not adhan-js yet. Expect a minute or two of difference with your mosque.</li>
-        <li>The tracker lives in this browser only. Clearing site data erases it.</li>
+        <li>The app is an installable web app, not yet a native iOS or Android build. No home-screen widgets. No prayer notifications while it is closed: it exports calendar reminders instead.</li>
+        <li>Recitation and word audio stream from public servers. Saving a surah's audio for offline is built but still needs testing on real phones.</li>
+        <li>Dua source references are matched automatically for about half of Hisnul Muslim. All of them need review by a person of knowledge before a public release.</li>
+        <li>Translation and tafsir licences must be confirmed before any store release.</li>
+        <li>The phone on this page is a small preview. The full app is one tap away.</li>
       </ul>
     </div>
   </div>
