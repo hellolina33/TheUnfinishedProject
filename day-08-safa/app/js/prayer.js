@@ -1,32 +1,35 @@
 // Prayer times (adhan-js, on device), Hijri date, Qibla, in-flight prayer scan.
 import * as adhan from '../vendor/adhan.js';
 import { S } from './store.js';
+import { t, L } from './i18n.js';
 
+const M_ = (n, d, p) => ({ get n() { return t(n); }, get d() { return t(d); }, p });
 const custom = (f, i) => () => { const p = adhan.CalculationMethod.Other(); p.fajrAngle = f; p.ishaAngle = i; return p; };
 const M = adhan.CalculationMethod;
 export const METHODS = {
-  MWL: { n: 'Muslim World League', d: '18° / 17°', p: () => M.MuslimWorldLeague() },
-  UOIF: { n: 'France · UOIF', d: '12° / 12°', p: custom(12, 12) },
-  ISNA: { n: 'North America · ISNA', d: '15° / 15°', p: () => M.NorthAmerica() },
-  UQ: { n: 'Umm Al-Qura · Makkah', d: '18.5° / 90 min', p: () => M.UmmAlQura() },
-  EG: { n: 'Egyptian General Authority', d: '19.5° / 17.5°', p: () => M.Egyptian() },
-  KAR: { n: 'Karachi · Univ. of Islamic Sciences', d: '18° / 18°', p: () => M.Karachi() },
-  MA: { n: 'Morocco · Habous', d: '19° / 17°', p: custom(19, 17) },
-  DZ: { n: 'Algeria · Religious Affairs', d: '18° / 17°', p: custom(18, 17) },
-  TN: { n: 'Tunisia · Religious Affairs', d: '18° / 18°', p: custom(18, 18) },
-  TR: { n: 'Turkey · Diyanet', d: '18° / 17°', p: () => M.Turkey() },
-  SG: { n: 'Singapore · Malaysia · Indonesia', d: '20° / 18°', p: () => M.Singapore() },
-  DXB: { n: 'Dubai', d: '18.2° / 18.2°', p: () => M.Dubai() },
-  KW: { n: 'Kuwait', d: '18° / 17.5°', p: () => M.Kuwait() },
-  QA: { n: 'Qatar', d: '18° / 90 min', p: () => M.Qatar() },
-  TEH: { n: 'Tehran · Institute of Geophysics', d: '17.7° / 14°', p: () => M.Tehran() },
-  MSC: { n: 'Moonsighting Committee', d: '18° / 18°, seasonal', p: () => M.MoonsightingCommittee() }
+  MWL: M_("Muslim World League", '18° / 17°', () => M.MuslimWorldLeague()),
+  UOIF: M_("France · UOIF", '12° / 12°', custom(12, 12)),
+  ISNA: M_("North America · ISNA", '15° / 15°', () => M.NorthAmerica()),
+  UQ: M_("Umm Al-Qura · Makkah", '18.5° / 90 min', () => M.UmmAlQura()),
+  EG: M_("Egyptian General Authority", '19.5° / 17.5°', () => M.Egyptian()),
+  KAR: M_("Karachi · Univ. of Islamic Sciences", '18° / 18°', () => M.Karachi()),
+  MA: M_("Morocco · Habous", '19° / 17°', custom(19, 17)),
+  DZ: M_("Algeria · Religious Affairs", '18° / 17°', custom(18, 17)),
+  TN: M_("Tunisia · Religious Affairs", '18° / 18°', custom(18, 18)),
+  TR: M_("Turkey · Diyanet", '18° / 17°', () => M.Turkey()),
+  SG: M_("Singapore · Malaysia · Indonesia", '20° / 18°', () => M.Singapore()),
+  DXB: M_("Dubai", '18.2° / 18.2°', () => M.Dubai()),
+  KW: M_("Kuwait", '18° / 17.5°', () => M.Kuwait()),
+  QA: M_("Qatar", '18° / 90 min', () => M.Qatar()),
+  TEH: M_("Tehran · Institute of Geophysics", '17.7° / 14°', () => M.Tehran()),
+  MSC: M_("Moonsighting Committee", '18° / 18°, seasonal', () => M.MoonsightingCommittee()),
 };
 const BY_COUNTRY = { FR: 'UOIF', BE: 'UOIF', US: 'ISNA', CA: 'ISNA', SA: 'UQ', YE: 'UQ', BH: 'UQ', OM: 'UQ', AE: 'DXB', KW: 'KW', QA: 'QA', EG: 'EG', SD: 'EG', LY: 'EG', SY: 'EG', LB: 'EG', JO: 'EG', IQ: 'EG', PS: 'EG', PK: 'KAR', IN: 'KAR', BD: 'KAR', AF: 'KAR', SG: 'SG', MY: 'SG', ID: 'SG', BN: 'SG', TR: 'TR', IR: 'TEH', MA: 'MA', DZ: 'DZ', TN: 'TN', GB: 'MSC', IE: 'MSC' };
 export const methodFor = iso2 => BY_COUNTRY[iso2] || 'MWL';
 
 export const ORDER = ['fajr', 'sunrise', 'dhuhr', 'asr', 'maghrib', 'isha'];
-export const NAMES = { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
+const NAMES_EN = { fajr: 'Fajr', sunrise: 'Sunrise', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' };
+export const NAMES = new Proxy(NAMES_EN, { get: (o, k) => typeof k === 'string' && o[k] ? t(o[k]) : o[k] });
 export const AR = { fajr: 'الفجر', sunrise: 'الشروق', dhuhr: 'الظهر', asr: 'العصر', maghrib: 'المغرب', isha: 'العشاء' };
 
 function params() {
@@ -57,9 +60,9 @@ export function fmtTime(ms, tz = S.loc && S.loc.tz) {
   return new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: S.h24 ? 'h23' : 'h12' }).format(new Date(ms)).replace(/\s?(am|pm)/i, (m, a) => ' ' + a.toUpperCase());
 }
 export function hijri(ms, tz = S.loc && S.loc.tz) {
-  try { return new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', { timeZone: tz, day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(ms + (S.hijriAdj || 0) * 86400000)).replace(/\s?AH$/, ' AH'); } catch (e) { return ''; }
+  try { return new Intl.DateTimeFormat(L() + '-u-ca-islamic-umalqura', { timeZone: tz, day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(ms + (S.hijriAdj || 0) * 86400000)).replace(/\s?(AH|ère de l’Hégire|ère de l'Hégire|AH)$/i, ' AH'); } catch (e) { return ''; }
 }
-export const gregorian = (ms, tz = S.loc && S.loc.tz) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(ms));
+export const gregorian = (ms, tz = S.loc && S.loc.tz) => new Intl.DateTimeFormat(L(), { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(ms));
 export const weekday = (ms, tz = S.loc && S.loc.tz) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'long' }).format(new Date(ms));
 
 /* ---------- Flight scan: sun position along a great-circle route ---------- */

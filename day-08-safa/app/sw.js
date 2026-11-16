@@ -1,8 +1,8 @@
 // safa. service worker: the app shell and every text file you open stay on the device.
-const V = 'safa-v1';
-const SHELL = ['./', 'app.css', 'manifest.webmanifest', 'js/app.js', 'js/store.js', 'js/prayer.js', 'js/ui.js',
+const V = 'safa-v2';
+const SHELL = ['./', 'app.css', 'manifest.webmanifest', 'js/app.js', 'js/store.js', 'js/prayer.js', 'js/ui.js', 'js/i18n.js',
   'js/views/onboarding.js', 'js/views/today.js', 'js/views/quran.js', 'js/views/duas.js', 'js/views/track.js', 'vendor/adhan.js',
-  'data/meta.json', 'data/duas.json', 'data/cities.json', 'data/quran/1.json', 'data/quran/18.json', 'data/quran/36.json', 'data/quran/67.json',
+  'data/meta.json', 'data/duas.json', 'data/cities.json', 'data/quran/1.json', 'data/quran/18.json', 'data/quran/36.json', 'data/quran/67.json', 'data/fr/1.json', 'data/fr/18.json',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   'fonts/inter-tight-latin-400-normal.woff2', 'fonts/inter-tight-latin-500-normal.woff2', 'fonts/inter-tight-latin-600-normal.woff2',
   'fonts/inter-tight-latin-ext-400-normal.woff2', 'fonts/inter-tight-latin-ext-500-normal.woff2',

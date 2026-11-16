@@ -14,6 +14,8 @@ The silent spiritual instrument: no ads, no data collection, no guilt.
 | Duas | Full Hisnul Muslim (131 chapters, 266 invocations), search by feeling, Arabic / transliteration / translation, counter, audio, favourites, source badge |
 | Track | Weekly view without percentages, pause mode, evening check-in, calendar export, settings, JSON backup export / import |
 
+Languages: English and French (automatic from the phone, or set in Settings). French covers the whole interface, dates, surah names, two Quran translations (Rashid Maash, Hamidullah), French search, and 249 of 266 duas with French transliteration. Word-by-word meanings and tafsir stay in English.
+
 All state lives in `localStorage`. A service worker caches the shell and every text file opened; audio can be saved per surah.
 
 ## Data
