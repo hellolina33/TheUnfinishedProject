@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>safa. — Clear time. Clear soul.</title>
+<meta name="description" content="The silent spiritual instrument. Prayer times, Quran word by word, authentic duas. No ads, no data collection, no guilt. Works offline, no account.">
+<meta property="og:title" content="safa. — Clear time. Clear soul.">
+<meta property="og:description" content="The silent spiritual instrument. No ads. No data collection. No guilt.">
+<meta name="theme-color" content="#080808">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23080808'/%3E%3Cmask id='m'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ccircle cx='58' cy='42' r='25' fill='black'/%3E%3C/mask%3E%3Ccircle cx='46' cy='52' r='28' fill='white' mask='url(%23m)'/%3E%3Ccircle cx='72' cy='30' r='7' fill='%23E85D2A'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --obsidian:#080808;--raw:#1c1c1b;--graphite:#2a2a28;
+  --paper:#ecebe7;--paper2:#e3e1dc;--sheet:#f6f5f2;
+  --ink:#111110;--muted:#6b6a66;--line:#cfccc5;--line-d:#2e2e2c;
+  --ember:#e85d2a;--ember-soft:#f6d9cc;
+  --sans:'Inter Tight',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--ar:'Amiri','Scheherazade New','Noto Naskh Arabic',serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 28px}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ember);vertical-align:middle}
+h1,h2,h3{font-weight:500;letter-spacing:-.035em;margin:0}
+h2{font-size:clamp(34px,4.6vw,60px);line-height:1}
+.lead{font-size:clamp(17px,1.5vw,19px);color:var(--muted);max-width:560px;margin:0}
+.ar{font-family:var(--ar)}
+
+/* strip + header */
+.strip{background:var(--obsidian);color:#a9a8a3;font:400 12px var(--mono);letter-spacing:.04em}
+.strip .wrap{display:flex;justify-content:space-between;gap:12px;padding-top:9px;padding-bottom:9px}
+.strip a{color:#fff}
+header.top{position:sticky;top:0;z-index:40;background:rgba(236,235,231,.88);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo b{font:700 26px/1 var(--sans);letter-spacing:-.06em}
+.logo b i{font-style:normal;color:var(--ember)}
+nav.links{display:flex;gap:28px;font:400 12px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+nav.links a{text-decoration:none;color:var(--muted)}
+nav.links a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 22px;border-radius:999px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);font:500 15px var(--sans);text-decoration:none;transition:background .2s,color .2s}
+.btn:hover{background:var(--ember);border-color:var(--ember)}
+.btn.line{background:transparent;color:var(--ink)}
+.btn.line:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.sm{min-height:38px;padding:0 16px;font-size:13px}
+
+/* hero */
+.hero{border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.hero .grid{display:grid;grid-template-columns:1fr 420px;gap:56px;padding-top:56px;padding-bottom:72px;align-items:start}
+.hero .meta{display:flex;gap:22px;flex-wrap:wrap}
+.hero h1{font-size:clamp(56px,8.6vw,124px);line-height:.9;letter-spacing:-.06em;margin:40px 0 28px}
+.hero h1>span{display:block}
+.hero h1 .o{color:var(--ember)}
+.hero .cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:32px}
+.specs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:56px;border-top:1px solid var(--ink)}
+.specs div{padding:16px 16px 0 0}
+.specs div+div{padding-left:16px;border-left:1px solid var(--line)}
+.specs b{display:block;font:500 30px/1 var(--sans);letter-spacing:-.04em}
+.specs span{font:400 11px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.arc{position:absolute;right:-180px;top:-120px;width:760px;height:760px;border:1px solid var(--line);border-radius:50%;pointer-events:none}
+.arc::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:var(--ember);left:96px;top:190px}
+
+/* phone */
+.phone{position:relative;width:100%;max-width:390px;margin:0 auto;background:var(--obsidian);border-radius:52px;padding:11px;box-shadow:0 50px 90px -30px rgba(0,0,0,.45)}
+.screen{background:var(--sheet);border-radius:42px;height:720px;overflow:hidden;display:flex;flex-direction:column;position:relative}
+.screen.dark{background:var(--obsidian);color:#f1efea}
+.sbar{display:flex;justify-content:space-between;padding:16px 26px 4px;font:500 12px var(--mono)}
+.view{flex:1;overflow-y:auto;padding:8px 20px 20px;scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);background:var(--sheet);padding:8px 8px 18px}
+.screen.dark .tabs{background:var(--obsidian);border-color:var(--line-d)}
+.tabs button{border:0;background:transparent;padding:8px 0 4px;font:400 10px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px}
+.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.4}
+.tabs button[aria-selected=true]{color:var(--ink)}
+.screen.dark .tabs button[aria-selected=true]{color:#fff}
+.tabs button[aria-selected=true]::after{content:'';width:4px;height:4px;border-radius:50%;background:var(--ember)}
+.vh{display:flex;justify-content:space-between;align-items:baseline;margin:6px 0 14px}
+.vh h3{font-size:26px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:6px 12px;font:400 11px var(--mono);letter-spacing:.04em;white-space:nowrap}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--sheet);border-color:var(--ink)}
+.screen.dark .chip{border-color:var(--line-d);color:#d9d7d1}.screen.dark .chip[aria-pressed=true]{background:#f1efea;color:var(--obsidian);border-color:#f1efea}
+
+/* today */
+.sel{display:flex;gap:8px;margin-bottom:14px}
+.sel select{flex:1;min-width:0;height:36px;border:1px solid var(--line);border-radius:10px;background:transparent;padding:0 8px;font:400 12px var(--mono)}
+.next{border:1px solid var(--ink);border-radius:22px;padding:18px;position:relative;overflow:hidden}
+.next .t{font:300 50px/1 var(--mono);letter-spacing:-.04em;margin:10px 0 6px}
+.next .dial{position:absolute;right:-30px;bottom:-60px;width:150px;height:150px;border:1px solid var(--line);border-radius:50%}
+.next .dial i{position:absolute;width:10px;height:10px;border-radius:50%;background:var(--ember);left:20px;top:22px}
+.next .row{display:flex;justify-content:space-between;align-items:end;margin-top:12px;position:relative}
+.list{margin:14px 0 0;padding:0;list-style:none}
+.list li{display:flex;justify-content:space-between;padding:11px 2px;border-bottom:1px solid var(--line);font-size:15px}
+.list li.now{font-weight:600}
+.list li.now span:first-child::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ember);margin-right:8px;vertical-align:middle}
+.list li span:last-child{font-family:var(--mono);font-size:14px}
+.list li.past{color:var(--muted)}
+.adj{font:400 10px var(--mono);color:var(--ember);margin-left:6px}
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.mini{border:1px solid var(--line);border-radius:18px;padding:14px;background:transparent;text-align:left;min-height:118px;display:flex;flex-direction:column;justify-content:space-between}
+.mini b{font:500 15px var(--sans)}
+.compass{width:56px;height:56px;border:1px solid var(--ink);border-radius:50%;position:relative}
+.compass i{position:absolute;left:50%;top:50%;width:2px;height:24px;background:var(--ember);transform-origin:50% 0}
+.compass::after{content:'';position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--ink)}
+.offset{display:flex;align-items:center;gap:8px;margin-top:12px;font:400 11px var(--mono);color:var(--muted)}
+.offset button{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:transparent}
+
+/* quran */
+.qbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.verse{padding:12px 0;border-bottom:1px solid var(--line-d)}
+.verse .vn{display:flex;justify-content:space-between;align-items:center;font:400 10px var(--mono);color:#8b8a85}
+.verse .vn button{border:1px solid var(--line-d);background:transparent;color:#d9d7d1;border-radius:999px;padding:3px 10px;font:400 10px var(--mono)}
+.verse .vn button.on{border-color:var(--ember);color:var(--ember)}
+.arline{direction:rtl;display:flex;flex-wrap:wrap;gap:4px 8px;font:400 28px/1.9 var(--ar);margin-top:2px}
+.w{border:0;background:transparent;padding:0 2px;border-radius:8px;font:inherit;line-height:inherit;display:inline-flex;flex-direction:column;align-items:center;color:inherit;transition:filter .2s}
+.w:hover,.w.on{color:var(--ember)}
+.w .tr,.w .fr{display:none;direction:ltr;font-family:var(--sans);line-height:1.25;text-align:center}
+.w .tr{font:italic 400 11px var(--sans);color:var(--ember)}
+.w .fr{font-size:11px;color:#a9a8a3;max-width:90px}
+.wbw .w{padding:4px 4px 6px}
+.wbw .w .tr,.wbw .w .fr{display:block}
+.hide .w:not(.shown){filter:blur(7px)}
+.player{position:sticky;bottom:0;margin-top:12px;background:#151514;border:1px solid var(--line-d);border-radius:18px;padding:12px 14px;display:grid;gap:8px}
+.player .r{display:flex;justify-content:space-between;align-items:center;gap:8px;font:400 11px var(--mono);color:#a9a8a3}
+.player .speeds{display:flex;gap:4px}
+.player .speeds .chip{padding:4px 8px;font-size:10px;color:#d9d7d1}
+.player .speeds .chip[aria-pressed=true]{background:#f1efea;color:var(--obsidian)}
+.msg{font:400 10px var(--mono);color:var(--ember);min-height:12px}
+.drawer{margin-top:10px;border:1px solid var(--line-d);border-radius:16px;padding:12px 14px;font-size:13px;color:#cfcdc7}
+.drawer summary{font:400 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;cursor:pointer;color:#f1efea}
+
+/* duas */
+.search{width:100%;height:40px;border:1px solid var(--line);border-radius:12px;background:transparent;padding:0 12px;font-size:14px;margin-bottom:10px}
+.feel{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.dua{border:1px solid var(--line);border-radius:20px;padding:16px;margin-top:12px}
+.dua .tag{font:400 10px var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--ember)}
+.dua .a{direction:rtl;font:400 24px/1.85 var(--ar);margin:8px 0}
+.dua .tl{font-style:italic;font-size:14px;color:var(--muted);margin:0 0 6px}
+.dua .en{font-size:14px;margin:0}
+.dua .foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.badge{font:400 10px var(--mono);letter-spacing:.04em;border:1px solid var(--ink);border-radius:999px;padding:3px 9px}
+.count{border:1px solid var(--ink);border-radius:999px;background:transparent;padding:4px 12px;font:500 12px var(--mono)}
+.count.done{background:var(--ember);border-color:var(--ember);color:#fff}
+.notl .tl{display:none}
+
+/* track */
+.pause{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--ink);border-radius:18px;padding:14px 16px;margin-bottom:14px}
+.pause b{font-size:15px}
+.pause small{display:block;font:400 10px var(--mono);color:var(--muted);margin-top:2px}
+.sw{width:50px;height:30px;border-radius:999px;border:1px solid var(--ink);background:transparent;position:relative;flex:none}
+.sw::after{content:'';position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:var(--ink);transition:left .2s,background .2s}
+.sw[aria-checked=true]{background:var(--ember);border-color:var(--ember)}
+.sw[aria-checked=true]::after{left:23px;background:#fff}
+.wk{width:100%;border-collapse:separate;border-spacing:4px;table-layout:fixed}
+.wk th{font:400 10px var(--mono);color:var(--muted);text-transform:uppercase}
+.wk th.l{text-align:left;width:58px;color:var(--ink)}
+.pd{width:100%;aspect-ratio:1;max-width:30px;border-radius:50%;border:1px solid var(--line);background:transparent;padding:0;margin:auto;display:block}
+.pd.on{background:var(--ink);border-color:var(--ink)}
+.pd.pz{border:1px dashed var(--ember);background:transparent}
+.days{font-size:14px;margin:12px 0 0;color:var(--muted)}
+.days b{color:var(--ink);font-weight:600}
+.set{margin-top:16px;border-top:1px solid var(--line)}
+.set div{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);font-size:14px}
+.set input{border:1px solid var(--line);border-radius:8px;background:transparent;padding:4px 6px;font:400 12px var(--mono)}
+.set span.v{font:400 12px var(--mono);color:var(--muted)}
+
+/* sections */
+section.block{padding:110px 0;border-bottom:1px solid var(--line)}
+.shead{display:grid;grid-template-columns:240px 1fr;gap:40px;margin-bottom:56px}
+.shead .lead{margin-top:18px}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+.step{padding:22px 24px 0 0}
+.step+.step{padding-left:24px;border-left:1px solid var(--line)}
+.step .tm{font:300 44px/1 var(--mono);letter-spacing:-.05em}
+.step h3{font-size:22px;margin:16px 0 8px}
+.step p{margin:0;color:var(--muted);font-size:15.5px}
+.tabs4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.tabs4 article{background:var(--paper);padding:24px;display:flex;flex-direction:column;gap:12px}
+.tabs4 h3{font-size:24px}
+.tabs4 ul{margin:0;padding:0;list-style:none;display:grid;gap:9px}
+.tabs4 li{font-size:14.5px;color:var(--muted);padding-left:14px;position:relative}
+.tabs4 li::before{content:'';position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--ink)}
+.tabs4 .open{margin-top:auto;align-self:start}
+
+/* flight */
+.flight{background:var(--obsidian);color:#f1efea;border-bottom:0}
+.flight .mono{color:#8b8a85}
+.flight .lead{color:#a9a8a3}
+.fl{display:grid;grid-template-columns:360px 1fr;gap:32px;align-items:start}
+.panel{border:1px solid var(--line-d);border-radius:24px;padding:22px}
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field label{font:400 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:#8b8a85}
+.field select,.field input{height:46px;border-radius:12px;border:1px solid var(--line-d);background:#121211;color:#f1efea;padding:0 12px;width:100%;color-scheme:dark}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rail{position:relative;padding-left:28px}
+.rail::before{content:'';position:absolute;left:6px;top:6px;bottom:6px;border-left:1px dashed #3f3f3c}
+.ev{position:relative;padding:14px 0 18px;border-bottom:1px solid var(--line-d)}
+.ev::before{content:'';position:absolute;left:-27px;top:22px;width:11px;height:11px;border-radius:50%;background:var(--obsidian);border:1px solid #f1efea}
+.ev.p::before{background:var(--ember);border-color:var(--ember)}
+.ev .h{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap}
+.ev .n{font-size:26px;font-weight:500;letter-spacing:-.03em}
+.ev .n small{font:400 18px var(--ar);color:#8b8a85;margin-left:6px}
+.ev .tt{font:400 15px var(--mono)}
+.ev .tt b{font-weight:500;color:#fff}
+.ev .m{font:400 12px var(--mono);color:#8b8a85;margin-top:6px}
+.sum{font:400 13px var(--mono);color:#a9a8a3;margin:0 0 6px}
+.rules{margin-top:22px;border:1px solid var(--ember);border-radius:18px;padding:16px 18px;font-size:15px;color:#d9d7d1}
+.rules b{color:var(--ember);font-weight:500}
+.small{font:400 11px/1.6 var(--mono);color:#8b8a85;margin-top:14px}
+
+/* rules + scope */
+.law{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.law article{border:1px solid var(--ink);border-radius:24px;padding:26px;min-height:220px;display:flex;flex-direction:column}
+.law .k{font:300 64px/1 var(--mono);letter-spacing:-.06em;color:var(--ember)}
+.law h3{font-size:24px;margin:auto 0 8px}
+.law p{margin:0;color:var(--muted);font-size:15px}
+.scope{width:100%;border-collapse:collapse}
+.scope th{font:400 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);text-align:left;padding:0 12px 12px 0;border-bottom:1px solid var(--ink)}
+.scope td{padding:16px 12px 16px 0;border-bottom:1px solid var(--line);font-size:16px;vertical-align:top}
+.scope td:not(:first-child){font:400 13px var(--mono)}
+.v{display:inline-flex;align-items:center;gap:8px;font:500 12px var(--mono);border-radius:999px;padding:4px 10px;border:1px solid var(--ink)}
+.v.v1{background:var(--ink);color:var(--paper)}
+.v.v1::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ember)}
+.bars{display:inline-flex;gap:3px;vertical-align:middle;margin-right:8px}
+.bars i{width:6px;height:12px;background:var(--line);border-radius:1px}
+.bars i.f{background:var(--ink)}
+.cut{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px}
+.cut h3{font-size:20px;margin-bottom:8px;text-decoration:line-through;text-decoration-color:var(--ember);text-decoration-thickness:2px}
+.cut p{margin:0;color:var(--muted);font-size:15px}
+
+/* stack + support */
+.stack{display:grid;grid-template-columns:1fr 1fr;gap:56px}
+.ledger div{display:flex;justify-content:space-between;gap:16px;padding:16px 0;border-bottom:1px solid var(--line)}
+.ledger div:first-child{border-top:1px solid var(--ink)}
+.ledger span:last-child{font:400 13px var(--mono);text-align:right}
+.support{background:var(--obsidian);color:#f1efea;border-radius:28px;padding:32px;display:flex;flex-direction:column;gap:16px}
+.support h3{font-size:34px;letter-spacing:-.04em}
+.support p{margin:0;color:#a9a8a3}
+.unfin{border:1px dashed var(--ember);border-radius:24px;padding:28px}
+.unfin h3{font-size:24px;margin-bottom:10px}
+.unfin ul{margin:0;padding-left:18px;color:var(--muted)}
+.unfin li{margin:6px 0}
+footer{padding:40px 0;font:400 12px var(--mono);color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+@media (max-width:1000px){
+  .hero .grid{grid-template-columns:1fr}
+  .shead{grid-template-columns:1fr;gap:12px}
+  .tabs4{grid-template-columns:1fr 1fr}
+  .fl,.stack{grid-template-columns:1fr}
+  nav.links{display:none}
+}
+@media (max-width:680px){
+  .wrap{padding:0 18px}
+  section.block{padding:72px 0}
+  .steps,.law,.cut,.tabs4{grid-template-columns:1fr}
+  .step,.step+.step{padding:20px 0 4px;border-left:0;border-top:1px solid var(--line)}
+  .specs{grid-template-columns:1fr 1fr 1fr}
+  .specs b{font-size:22px}
+  .screen{height:680px}
+  .scope thead{display:none}
+  .scope tr{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .scope td{border:0;padding:0}
+  .scope td:first-child{grid-column:1/-1;font-weight:500}
+  .strip .hs{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="strip"><div class="wrap"><span>PROTOTYPE · <a href="/">THE UNFINISHED 30</a></span><span class="hs">BRAND + MVP CONCEPT · V0.1</span></div></div>
+
+<header class="top"><div class="wrap">
+  <a class="logo" href="#top" aria-label="safa. home">
+    <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#080808"/><mask id="lm"><rect width="100" height="100" fill="#fff"/><circle cx="58" cy="42" r="25" fill="#000"/></mask><circle cx="46" cy="52" r="28" fill="#fff" mask="url(#lm)"/><circle cx="72" cy="30" r="7" fill="#E85D2A"/></svg>
+    <b>safa<i>.</i></b>
+  </a>
+  <nav class="links" aria-label="Sections"><a href="#onboarding">30 seconds</a><a href="#tabs">Four tabs</a><a href="#flight">Flight</a><a href="#scope">V1 scope</a></nav>
+  <a class="btn sm" href="#app">Try it</a>
+</div></header>
+
+<main id="top">
+<section class="hero">
+  <div class="arc" aria-hidden="true"></div>
+  <div class="wrap grid">
+    <div>
+      <div class="meta"><span class="mono"><span class="dot"></span>&nbsp; The silent spiritual instrument</span><span class="mono">iOS · Android · Offline</span></div>
+      <h1><span>Clear time.</span><span>Clear soul<span class="o">.</span></span></h1>
+      <p class="lead">Prayer times, the Quran word by word, and authentic duas. No ads. No data collection. No guilt. Open it and you're praying on time in under 30 seconds.</p>
+      <div class="cta"><a class="btn" href="#app">Open the live demo</a><a class="btn line" href="#flight">Pray on a flight</a></div>
+      <div class="specs">
+        <div><b>0</b><span>Ads, accounts,<br>trackers</span></div>
+        <div><b>&lt;30s</b><span>From icon to<br>today's times</span></div>
+        <div><b>100%</b><span>Offline, on<br>your device</span></div>
+      </div>
+    </div>
+
+    <div id="app">
+      <div class="phone">
+        <div class="screen" id="screen">
+          <div class="sbar"><span id="clock">--:--</span><span>safa.</span></div>
+          <div class="view" id="view" tabindex="0" aria-live="polite"></div>
+          <nav class="tabs" role="tablist" aria-label="App tabs">
+            <button role="tab" data-t="today" aria-selected="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>Today</button>
+            <button role="tab" data-t="quran" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z"/><path d="M12 6v14"/></svg>Quran</button>
+            <button role="tab" data-t="duas" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M7 20v-6c0-2 1-3 2-3V5c0-1 2-1 2 0v6M17 20v-6c0-2-1-3-2-3V5c0-1-2-1-2 0v6"/></svg>Duas</button>
+            <button role="tab" data-t="track" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Track</button>
+          </nav>
+        </div>
+      </div>
+      <p class="mono" style="text-align:center;margin-top:16px">Live demo · tap the tabs</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="onboarding">
+  <div class="wrap">
+    <div class="shead"><span class="mono">01 / Onboarding</span><div><h2>Icon to prayer.<br>Two gestures.</h2><p class="lead">No sign-up screen. No five-page tutorial. No paywall at launch.</p></div></div>
+    <div class="steps">
+      <div class="step"><span class="tm">0–5s</span><h3>One promise</h3><p>A single screen: no ads, no tracking, fully offline. One button: “Set my city”.</p></div>
+      <div class="step"><span class="tm">5–20s</span><h3>Place &amp; method</h3><p>One-time location stored on the phone, or type a city. The local method is pre-selected: UOIF in France, ISNA in North America. One tap to change.</p></div>
+      <div class="step"><span class="tm">20–30s</span><h3>Today</h3><p>Today's times, a countdown to the next prayer and a shortcut back to your last verse. Everything is live.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="tabs">
+  <div class="wrap">
+    <div class="shead"><span class="mono">02 / Structure</span><div><h2>Four tabs.<br>Never more than two levels deep.</h2><p class="lead">Thumb-reach navigation. Each tab answers one daily need.</p></div></div>
+    <div class="tabs4">
+      <article><span class="mono">Tab 1</span><h3>Today</h3><ul><li>Next prayer, countdown, Gregorian + Hijri date</li><li>Five prayers + sunrise, adjusted times flagged</li><li>Resume reading</li><li>Offline Qibla compass with haptics</li><li>Flight &amp; travel mode</li></ul><button class="btn line sm open" data-go="today">Open</button></article>
+      <article><span class="mono">Tab 2</span><h3>Quran</h3><ul><li>Search by surah, verse or keyword</li><li>Mushaf ↔ word-by-word toggle</li><li>Tap a word to hear it</li><li>Loop a verse, 0.75× to 1.5×</li><li>Hide words to test memory</li><li>Context &amp; tafsir drawer</li></ul><button class="btn line sm open" data-go="quran">Open</button></article>
+      <article><span class="mono">Tab 3</span><h3>Duas</h3><ul><li>Search by feeling: anxiety, exam, travel, sleep</li><li>Vowelled Arabic, transliteration, translation</li><li>Built-in counter for 3, 33, 100</li><li>Source badge on every card</li></ul><button class="btn line sm open" data-go="duas">Open</button></article>
+      <article><span class="mono">Tab 4</span><h3>Track</h3><ul><li>Weekly view, no anxious percentages</li><li>Pause switch at the very top</li><li>One gentle evening reminder</li><li>Method, offsets, offline audio</li><li>JSON backup export / import</li></ul><button class="btn line sm open" data-go="track">Open</button></article>
+    </div>
+  </div>
+</section>
+
+<section class="block flight" id="flight">
+  <div class="wrap">
+    <div class="shead"><span class="mono">03 / Flight mode</span><div><h2>Paris to Bangkok.<br>When do I pray?</h2><p class="lead">Departure, arrival, take-off time. safa. follows the plane minute by minute, reads the sun above it and gives you each prayer in both time zones.</p></div></div>
+    <div class="fl">
+      <form class="panel" onsubmit="return false">
+        <div class="field"><label for="from">From</label><select id="from"></select></div>
+        <div class="field"><label for="to">To</label><select id="to"></select></div>
+        <div class="field"><label for="dep">Take-off (local time)</label><input type="datetime-local" id="dep"></div>
+        <div class="two"><div class="field"><label for="dh">Hours</label><input type="number" id="dh" min="0" max="20" value="11"></div><div class="field"><label for="dm">Minutes</label><input type="number" id="dm" min="0" max="59" value="20"></div></div>
+        <div class="field"><label for="fmeth">Fajr / Isha angles</label><select id="fmeth"><option value="18,17">MWL · 18° / 17°</option><option value="15,15">ISNA · 15° / 15°</option><option value="12,12">UOIF · 12° / 12°</option></select></div>
+        <div class="field" style="margin:0"><label for="fasr">Asr</label><select id="fasr"><option value="1">Standard (Shafi'i, Maliki, Hanbali)</option><option value="2">Hanafi</option></select></div>
+      </form>
+      <div>
+        <p class="sum" id="flSum"></p>
+        <div class="rail" id="flOut"></div>
+        <div class="rules"><b>Travelling.</b> Most scholars allow shortening four-unit prayers to two (Qasr) and combining Dhuhr with Asr, Maghrib with Isha (Jam'). Conditions differ between schools. Ask someone of knowledge.</div>
+        <p class="small">Estimate. Great-circle route, constant speed, sea-level horizon: at cruising altitude, sunset comes a few minutes later. Not a religious ruling.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="shead"><span class="mono">04 / Rules</span><div><h2>Three rules.<br>Non-negotiable.</h2></div></div>
+    <div class="law">
+      <article><span class="k">01</span><h3>No blocking pop-ups</h3><p>Nothing stands between you and the Qibla, the times or the Quran. Not a rating request. Not a donation ask.</p></article>
+      <article><span class="k">02</span><h3>Useful empty states</h3><p>Day one, no history: Al-Kahf on Friday, morning and evening adhkar, ready to open.</p></article>
+      <article><span class="k">03</span><h3>Density under control</h3><p>Transliteration and memory tools hide behind one switch. Calm for regular readers. Reassuring for beginners.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="scope">
+  <div class="wrap">
+    <div class="shead"><span class="mono">05 / V1 scope</span><div><h2>Ship the core.<br>In four to six weeks.</h2><p class="lead">100% local. No server, no account. Proven open-source Islamic data. The technical constraint becomes the promise.</p></div></div>
+    <table class="scope">
+      <thead><tr><th>Feature</th><th>User impact</th><th>Build cost</th><th>Ships in</th></tr></thead>
+      <tbody id="scopeRows"></tbody>
+    </table>
+    <div class="cut">
+      <div><h3>AI voice coach</h3><p>The number one cost sink, and the first source of frustration when the model flags errors that aren't there. V1 gets a great audio player and word hiding instead. Voice AI comes in V2 as a paid option.</p></div>
+      <div><h3>Accounts &amp; cloud sync</h3><p>Dropping auth removes about 30% of the build and every database bill, and makes “zero data collection” literally true. A local backup file is enough.</p></div>
+      <div><h3>Crowdsourced mosques</h3><p>Iqamah times need a critical mass of users and moderation. V1 offers a manual offset per prayer to match your mosque.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap stack">
+    <div>
+      <span class="mono">06 / Stack</span>
+      <h2 style="margin:18px 0 28px">Almost zero<br>to run.</h2>
+      <div class="ledger">
+        <div><span>App</span><span>React Native (Expo) or Flutter</span></div>
+        <div><span>Prayer times &amp; Qibla</span><span>adhan-js / adhan-dart, on device</span></div>
+        <div><span>Quran text, translations, word data</span><span>Quran.com Foundation, Tanzil</span></div>
+        <div><span>Duas</span><span>Hisnul Muslim as local JSON</span></div>
+        <div><span>Bundled text</span><span>≈ 15–25 MB compressed</span></div>
+        <div><span>Reciter audio</span><span>Static storage, cached on phone</span></div>
+        <div><span>Tracker</span><span>SQLite / MMKV, local only</span></div>
+      </div>
+    </div>
+    <div class="support">
+      <span class="mono" style="color:#8b8a85">Settings › About</span>
+      <h3>Support the project.<br>Sadaqah Jariyah.</h3>
+      <p>Everything in V1 is free. One quiet screen in Settings lets people who want to cover publishing and audio hosting do so. No pop-up. No reminder. No “if you can afford it”.</p>
+      <p style="font:400 12px var(--mono);color:#8b8a85">Free forever: times, Qibla, Quran, duas, tracker, flight mode.<br>Never: ads, data resale.</p>
+    </div>
+  </div>
+</section>
+
+<section class="block" style="border-bottom:0">
+  <div class="wrap">
+    <div class="unfin">
+      <h3>What's unfinished</h3>
+      <ul>
+        <li>This is a web demo of the concept, not the native app. No widgets, no notifications, no real compass sensor.</li>
+        <li>Quran: only Al-Fatiha 1–4 is mapped word by word. Audio streams from public Quran.com recordings and needs a connection.</li>
+        <li>Duas: six examples, not the full Hisnul Muslim. References should be checked by a scholar before release.</li>
+        <li>Prayer times use a simplified solar model, not adhan-js yet. Expect a minute or two of difference with your mosque.</li>
+        <li>The tracker lives in this browser only. Clearing site data erases it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap"><span>safa. — a prototype from <a href="/">The Unfinished 30</a> by <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span><span>No trackers on this page.</span></div></footer>
+
+<script id="calc">
+const CITIES = {
+  CDG:['Paris','Europe/Paris',49.01,2.55], LHR:['London','Europe/London',51.47,-0.45], BRU:['Brussels','Europe/Brussels',50.90,4.48],
+  CMN:['Casablanca','Africa/Casablanca',33.37,-7.59], ALG:['Algiers','Africa/Algiers',36.69,3.21], TUN:['Tunis','Africa/Tunis',36.85,10.23],
+  DSS:['Dakar','Africa/Dakar',14.67,-17.07], IST:['Istanbul','Europe/Istanbul',41.26,28.74], JED:['Jeddah','Asia/Riyadh',21.68,39.16],
+  DXB:['Dubai','Asia/Dubai',25.25,55.36], DOH:['Doha','Asia/Qatar',25.27,51.61], BKK:['Bangkok','Asia/Bangkok',13.69,100.75],
+  KUL:['Kuala Lumpur','Asia/Kuala_Lumpur',2.74,101.70], CGK:['Jakarta','Asia/Jakarta',-6.13,106.66], JFK:['New York','America/New_York',40.64,-73.78],
+  YUL:['Montreal','America/Toronto',45.47,-73.74], SYD:['Sydney','Australia/Sydney',-33.94,151.18]
+};
+const RAD=Math.PI/180, DEG=180/Math.PI;
+function sun(ms, lat, lon){
+  const d = ms/86400000 + 2440587.5 - 2451545.0;
+  const g=(357.529+0.98560028*d)*RAD, q=280.459+0.98564736*d;
+  const L=(q+1.915*Math.sin(g)+0.020*Math.sin(2*g))*RAD, e=(23.439-0.00000036*d)*RAD;
+  const ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L))*DEG, dec=Math.asin(Math.sin(e)*Math.sin(L));
+  const gmst=(18.697374558+24.06570982441908*d)%24;
+  const ha=((gmst*15+lon-ra)%360+540)%360-180;
+  const alt=Math.asin(Math.sin(lat*RAD)*Math.sin(dec)+Math.cos(lat*RAD)*Math.cos(dec)*Math.cos(ha*RAD))*DEG;
+  return {alt, ha, dec:dec*DEG};
+}
+function gc(a, b, f){
+  const toV=(la,lo)=>[Math.cos(la*RAD)*Math.cos(lo*RAD),Math.cos(la*RAD)*Math.sin(lo*RAD),Math.sin(la*RAD)];
+  const A=toV(a[0],a[1]), B=toV(b[0],b[1]);
+  const w=Math.acos(Math.min(1,Math.max(-1,A[0]*B[0]+A[1]*B[1]+A[2]*B[2])));
+  if(w<1e-9) return a;
+  const s1=Math.sin((1-f)*w)/Math.sin(w), s2=Math.sin(f*w)/Math.sin(w);
+  const v=[0,1,2].map(i=>s1*A[i]+s2*B[i]);
+  return [Math.atan2(v[2],Math.hypot(v[0],v[1]))*DEG, Math.atan2(v[1],v[0])*DEG];
+}
+function tzOffset(ms, tz){
+  const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'}).formatToParts(new Date(ms)).map(x=>[x.type,x.value]));
+  return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour%24,+p.minute,+p.second)-Math.floor(ms/1000)*1000;
+}
+function localToUtc(str, tz){
+  const [dt,tm]=str.split('T'); const [y,m,d]=dt.split('-').map(Number); const [h,mi]=tm.split(':').map(Number);
+  const guess=Date.UTC(y,m-1,d,h,mi); let u=guess-tzOffset(guess,tz); u=guess-tzOffset(u,tz); return u;
+}
+/* Scan a path (fixed point or flight) minute by minute and return prayer-time crossings. */
+function scan(start, mins, posAt, o){
+  const [fa,ia]=o.angles, out=[]; let prev={p:posAt(start)}; prev.s=sun(start,prev.p[0],prev.p[1]);
+  for(let k=1;k<=mins;k++){
+    const t=start+k*60000, p=posAt(t), s=sun(t,p[0],p[1]), a0=prev.s.alt, a1=s.alt;
+    const asrAlt=Math.atan(1/(o.asr+Math.tan(Math.abs(p[0]-s.dec)*RAD)))*DEG, pm=s.ha>0;
+    if(a0<-fa && a1>=-fa && !pm) out.push(['fajr',t,p]);
+    if(a0<-0.833 && a1>=-0.833 && !pm) out.push(['sunrise',t,p]);
+    if(prev.s.ha<0 && s.ha>=0 && a1>0) out.push(['dhuhr',t,p]);
+    if(a0>asrAlt && a1<=asrAlt && pm) out.push(['asr',t,p]);
+    if(a0>-0.833 && a1<=-0.833 && pm){ out.push(['maghrib',t,p]); if(o.ishaMin) out.push(['isha',t+o.ishaMin*60000,p]); }
+    if(!o.ishaMin && a0>-ia && a1<=-ia && pm) out.push(['isha',t,p]);
+    prev={p,s};
+  }
+  return out;
+}
+function flightPrayers(o){
+  const A=CITIES[o.from], B=CITIES[o.to];
+  return scan(o.depUtc, o.durMin, t=>gc([A[2],A[3]],[B[2],B[3]],(t-o.depUtc)/(o.durMin*60000)), o);
+}
+function dayTimes(lat, lon, tz, ymd, o){
+  const start=localToUtc(ymd+'T00:00',tz);
+  const ev=scan(start, 1440, ()=>[lat,lon], o), r={};
+  ev.forEach(([k,t])=>{ if(!(k in r)) r[k]=t; });
+  return r;
+}
+function qibla(lat, lon){
+  const φ1=lat*RAD, φ2=21.4225*RAD, Δ=(39.8262-lon)*RAD;
+  return (Math.atan2(Math.sin(Δ)*Math.cos(φ2), Math.cos(φ1)*Math.sin(φ2)-Math.sin(φ1)*Math.cos(φ2)*Math.cos(Δ))*DEG+360)%360;
+}
+</script>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='safa-v1';
+let S; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+S=Object.assign({city:'CDG',method:'UOIF',offset:0,tab:'today',wbw:true,hide:false,translit:true,rem:'21:00',lastVerse:2,trk:null},S||{});
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+/* ---------- Methods ---------- */
+const METHODS={UOIF:{n:'UOIF · France',a:[12,12]},MWL:{n:'Muslim World League',a:[18,17]},ISNA:{n:'ISNA · North America',a:[15,15]},UQ:{n:'Umm Al-Qura',a:[18.5,0],isha:90}};
+const LOCAL_METHOD={CDG:'UOIF',BRU:'UOIF',JFK:'ISNA',YUL:'ISNA',JED:'UQ',DXB:'UQ',DOH:'UQ'};
+const PN={fajr:'Fajr',sunrise:'Sunrise',dhuhr:'Dhuhr',asr:'Asr',maghrib:'Maghrib',isha:'Isha'}, ORDER=['fajr','sunrise','dhuhr','asr','maghrib','isha'];
+const AR={fajr:'الفجر',sunrise:'الشروق',dhuhr:'الظهر',asr:'العصر',maghrib:'المغرب',isha:'العشاء'};
+const tfmt=(ms,tz)=>new Intl.DateTimeFormat('en-GB',{timeZone:tz,hour:'2-digit',minute:'2-digit'}).format(new Date(ms));
+const ymdIn=(ms,tz)=>new Intl.DateTimeFormat('en-CA',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(ms));
+function timesFor(dayMs){
+  const c=CITIES[S.city], m=METHODS[S.method];
+  const r=dayTimes(c[2],c[3],c[1],ymdIn(dayMs,c[1]),{angles:m.a,asr:1,ishaMin:m.isha||0});
+  ORDER.forEach(k=>{ if(r[k]&&k!=='sunrise') r[k]+=S.offset*60000; });
+  return r;
+}
+function nextPrayer(){
+  const now=Date.now(), today=timesFor(now);
+  const prays=ORDER.filter(k=>k!=='sunrise');
+  let cur=null; for(const k of prays) if(today[k]&&today[k]<=now) cur=k;
+  for(const k of prays) if(today[k]>now) return {k,t:today[k],today,cur};
+  const tm=timesFor(now+86400000); return {k:'fajr',t:tm.fajr,today,cur:'isha'};
+}
+
+/* ---------- Tracker state ---------- */
+const P5=['fajr','dhuhr','asr','maghrib','isha'], DAYS=7;
+function trkInit(){
+  const t=Array.from({length:DAYS},(_,i)=>({p:[1,1,1,1,1],pause:false}));
+  t[2].pause=true; t[2].p=[0,0,0,0,0]; t[4].p=[1,1,0,1,1]; t[DAYS-1].p=[0,0,0,0,0]; return t;
+}
+if(!Array.isArray(S.trk)||S.trk.length!==DAYS) S.trk=trkInit();
+
+/* ---------- Views ---------- */
+const view=$('#view'), screen=$('#screen');
+let timer=null;
+function renderToday(){
+  const c=CITIES[S.city], np=nextPrayer(), tz=c[1];
+  const hijri=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{timeZone:tz,day:'numeric',month:'long',year:'numeric'}).format(new Date());
+  const greg=new Intl.DateTimeFormat('en-GB',{timeZone:tz,weekday:'short',day:'numeric',month:'short'}).format(new Date());
+  const q=qibla(c[2],c[3]);
+  const done=S.trk[DAYS-1].p[P5.indexOf(np.cur)];
+  view.innerHTML=`
+    <div class="vh"><h3>Today</h3><span class="mono">${greg}</span></div>
+    <div class="sel">
+      <select id="tCity" aria-label="City">${Object.entries(CITIES).map(([k,v])=>`<option value="${k}" ${k===S.city?'selected':''}>${v[0]}</option>`).join('')}</select>
+      <select id="tMeth" aria-label="Calculation method">${Object.entries(METHODS).map(([k,v])=>`<option value="${k}" ${k===S.method?'selected':''}>${v.n}</option>`).join('')}</select>
+    </div>
+    <div class="next"><div class="dial" aria-hidden="true"><i></i></div>
+      <span class="mono">Next · ${PN[np.k]} at ${tfmt(np.t,tz)}</span>
+      <div class="t" id="cd">00:00:00</div>
+      <span class="mono">${hijri}</span>
+      <div class="row">${np.cur?`<button class="btn sm ${done?'line':''}" id="markBtn">${done?'✓ '+PN[np.cur]+' prayed':'Mark '+PN[np.cur]+' as prayed'}</button>`:'<span></span>'}</div>
+    </div>
+    <ul class="list">${ORDER.map(k=>np.today[k]?`<li class="${k===np.cur?'now':np.today[k]<Date.now()?'past':''}"><span>${PN[k]}${S.offset&&k!=='sunrise'?`<span class="adj">${S.offset>0?'+':''}${S.offset} min</span>`:''}</span><span>${tfmt(np.today[k],tz)}</span></li>`:'').join('')}</ul>
+    <div class="offset">Match your mosque <button id="oMinus" aria-label="Minus one minute">−</button><span>${S.offset>0?'+':''}${S.offset} min</span><button id="oPlus" aria-label="Plus one minute">+</button></div>
+    <div class="cards2">
+      <button class="mini" data-go="quran"><span class="mono">Resume reading</span><b>Al-Fatiha · 1:${S.lastVerse}</b></button>
+      <div class="mini"><span class="mono">Qibla</span><div style="display:flex;justify-content:space-between;align-items:end"><b style="font-family:var(--mono);font-weight:400">${q.toFixed(1)}°</b><div class="compass" aria-label="Qibla bearing ${q.toFixed(0)} degrees from north"><i style="transform:rotate(${q+180}deg)"></i></div></div></div>
+      <a class="mini" href="#flight" style="text-decoration:none;grid-column:1/-1;min-height:0"><span class="mono">Flight &amp; travel</span><b>Prayer times on a flight →</b></a>
+    </div>`;
+  const tick=()=>{ const s=Math.max(0,Math.round((np.t-Date.now())/1000)); if(s===0){renderToday();return;} const el=$('#cd'); if(el) el.textContent=[s/3600,s%3600/60,s%60].map(x=>String(Math.floor(x)).padStart(2,'0')).join(':'); };
+  tick(); clearInterval(timer); timer=setInterval(tick,1000);
+  $('#tCity').onchange=e=>{S.city=e.target.value; S.method=LOCAL_METHOD[S.city]||'MWL'; save(); renderToday();};
+  $('#tMeth').onchange=e=>{S.method=e.target.value; save(); renderToday();};
+  $('#oMinus').onclick=()=>{S.offset=Math.max(-15,S.offset-1); save(); renderToday();};
+  $('#oPlus').onclick=()=>{S.offset=Math.min(15,S.offset+1); save(); renderToday();};
+  const mb=$('#markBtn'); if(mb) mb.onclick=()=>{ const t=S.trk[DAYS-1]; const i=P5.indexOf(np.cur); t.p[i]=t.p[i]?0:1; save(); renderToday(); };
+}
+
+const VERSES=[
+  [['بِسْمِ','bismi','in the name'],['ٱللَّهِ','llāhi','of Allah'],['ٱلرَّحْمَٰنِ','ar-raḥmāni','the Most Gracious'],['ٱلرَّحِيمِ','ar-raḥīmi','the Most Merciful']],
+  [['ٱلْحَمْدُ','al-ḥamdu','all praise'],['لِلَّهِ','lillāhi','is for Allah'],['رَبِّ','rabbi','Lord'],['ٱلْعَٰلَمِينَ','al-ʿālamīna','of the worlds']],
+  [['ٱلرَّحْمَٰنِ','ar-raḥmāni','the Most Gracious'],['ٱلرَّحِيمِ','ar-raḥīmi','the Most Merciful']],
+  [['مَٰلِكِ','māliki','Master'],['يَوْمِ','yawmi','of the Day'],['ٱلدِّينِ','ad-dīni','of Judgement']]
+];
+const audio=new Audio(); audio.preload='none';
+let loopV=null, speed=1;
+const pad=(n,l=3)=>String(n).padStart(l,'0');
+function play(url, loop){
+  audio.src=url; audio.loop=!!loop; audio.playbackRate=speed;
+  audio.play().then(()=>setMsg('')).catch(()=>setMsg('Audio needs a connection. Offline packs come in the app.'));
+}
+function setMsg(t){const m=$('#qmsg'); if(m) m.textContent=t;}
+function renderQuran(){
+  view.innerHTML=`
+    <div class="vh"><h3>Al-Fatiha <span class="ar" style="font-size:22px;color:#8b8a85">الفاتحة</span></h3><span class="mono" style="color:#8b8a85">1 · 7 vv</span></div>
+    <div class="qbar">
+      <button class="chip" id="qM" aria-pressed="${!S.wbw}">Mushaf</button>
+      <button class="chip" id="qW" aria-pressed="${S.wbw}">Word by word</button>
+      <button class="chip" id="qH" aria-pressed="${S.hide}">Hide words</button>
+    </div>
+    <div id="verses" class="${S.wbw?'wbw':''} ${S.hide?'hide':''}">${VERSES.map((v,i)=>`<div class="verse"><div class="vn"><span>1:${i+1}</span><button data-loop="${i+1}" class="${loopV===i+1?'on':''}">${loopV===i+1?'■ looping':'▶ loop'}</button></div><div class="arline" lang="ar">${v.map((w,j)=>`<button class="w" data-v="${i+1}" data-w="${j+1}">${w[0]}<span class="tr">${w[1]}</span><span class="fr">${w[2]}</span></button>`).join('')}</div></div>`).join('')}</div>
+    <details class="drawer"><summary>Context &amp; tafsir</summary><p style="margin:8px 0 0">Meccan surah, recited in every unit of prayer. Classical commentators call it “the Mother of the Book” because it gathers praise of Allah, worship and the request for guidance. In the app this drawer holds a short offline summary and a reference tafsir.</p></details>
+    <div class="player"><div class="r"><span>${S.hide?'Tap a blurred word to reveal it':'Tap a word to hear it'}</span><div class="speeds">${[0.75,1,1.25,1.5].map(s=>`<button class="chip" data-s="${s}" aria-pressed="${s===speed}">${s}×</button>`).join('')}</div></div><div class="msg" id="qmsg"></div></div>`;
+  $('#qM').onclick=()=>{S.wbw=false;save();renderQuran();};
+  $('#qW').onclick=()=>{S.wbw=true;save();renderQuran();};
+  $('#qH').onclick=()=>{S.hide=!S.hide;save();renderQuran();};
+  view.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{speed=+b.dataset.s; audio.playbackRate=speed; renderQuran();});
+  view.querySelectorAll('[data-loop]').forEach(b=>b.onclick=()=>{const v=+b.dataset.loop; if(loopV===v){loopV=null;audio.pause();} else {loopV=v; S.lastVerse=v; save(); play(`https://verses.quran.com/Alafasy/mp3/001${pad(v)}.mp3`,true);} renderQuran();});
+  $('#verses').onclick=e=>{const w=e.target.closest('.w'); if(!w) return;
+    if(S.hide && !w.classList.contains('shown')){w.classList.add('shown');return;}
+    view.querySelectorAll('.w.on').forEach(x=>x.classList.remove('on')); w.classList.add('on');
+    S.lastVerse=+w.dataset.v; save(); loopV=null;
+    play(`https://audio.qurancdn.com/wbw/001_${pad(w.dataset.v)}_${pad(w.dataset.w)}.mp3`,false);};
+}
+
+const DUAS=[
+  {tags:['anxiety','worry','stress','debt'],t:'Anxiety',a:'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَالْعَجْزِ وَالْكَسَلِ، وَالْبُخْلِ وَالْجُبْنِ، وَضَلَعِ الدَّيْنِ وَغَلَبَةِ الرِّجَالِ',tl:'Allāhumma innī aʿūdhu bika minal-hammi wal-ḥazan, wal-ʿajzi wal-kasal, wal-bukhli wal-jubn, wa ḍalaʿid-dayni wa ghalabatir-rijāl.',en:'O Allah, I seek refuge in You from worry and grief, from helplessness and laziness, from miserliness and cowardice, from the weight of debt and from being overpowered by others.',src:'Sahih al-Bukhari 6369'},
+  {tags:['exam','difficulty','hard','test','work'],t:'Exam',a:'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',tl:'Allāhumma lā sahla illā mā jaʿaltahu sahlā, wa anta tajʿalul-ḥazna idhā shiʾta sahlā.',en:'O Allah, nothing is easy except what You make easy, and You make the difficult easy if You will.',src:'Sahih Ibn Hibban 2427'},
+  {tags:['travel','flight','car','journey'],t:'Travel',a:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَى رَبِّنَا لَمُنْقَلِبُونَ',tl:'Subḥānal-ladhī sakhkhara lanā hādhā wa mā kunnā lahū muqrinīn, wa innā ilā rabbinā lamunqalibūn.',en:'Glory to the One who has placed this at our service, for we could never have done it ourselves. And to our Lord we will surely return.',src:'Sahih Muslim 1342 · Quran 43:13–14'},
+  {tags:['sleep','night','bed'],t:'Sleep',a:'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا',tl:'Bismika Allāhumma amūtu wa aḥyā.',en:'In Your name, O Allah, I die and I live.',src:'Sahih al-Bukhari 6324'},
+  {tags:['morning','gratitude','waking','thanks'],t:'Morning',a:'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',tl:'Al-ḥamdu lillāhil-ladhī aḥyānā baʿda mā amātanā wa ilayhin-nushūr.',en:'Praise be to Allah who gave us life after causing us to die, and to Him is the resurrection.',src:'Sahih al-Bukhari 6312'},
+  {tags:['after prayer','dhikr','tasbih','gratitude'],t:'After prayer',a:'سُبْحَانَ اللَّهِ',tl:'Subḥānallāh.',en:'Glory be to Allah. Said 33 times after each obligatory prayer, followed by Alhamdulillah and Allahu akbar.',src:'Sahih Muslim 597',n:33}
+];
+const FEEL=['Anxiety','Exam','Travel','Sleep','Morning','After prayer'];
+let feel=null, q='', counts={};
+function renderDuas(){
+  const list=DUAS.filter(d=>(!feel||d.t===feel)&&(!q||(d.t+' '+d.tags.join(' ')+' '+d.en).toLowerCase().includes(q.toLowerCase())));
+  view.innerHTML=`
+    <div class="vh"><h3>Duas</h3><button class="chip" id="tlT" aria-pressed="${S.translit}">Transliteration</button></div>
+    <input class="search" id="dq" type="search" placeholder="How do you feel? anxious, travelling…" value="${esc(q)}" aria-label="Search duas">
+    <div class="feel">${FEEL.map(f=>`<button class="chip" data-f="${f}" aria-pressed="${feel===f}">${f}</button>`).join('')}</div>
+    <div class="${S.translit?'':'notl'}">${list.map(d=>{const i=DUAS.indexOf(d), c=counts[i]||0; return `<article class="dua"><span class="tag">${d.t}</span><p class="a" lang="ar">${d.a}</p><p class="tl">${d.tl}</p><p class="en">${d.en}</p><div class="foot"><span class="badge">${d.src}</span>${d.n?`<button class="count ${c>=d.n?'done':''}" data-c="${i}">${c} / ${d.n}</button>`:''}</div></article>`}).join('')||'<p class="mono" style="margin-top:20px">No match. Try “sleep” or “travel”.</p>'}</div>`;
+  const inp=$('#dq'); inp.oninput=e=>{q=e.target.value; feel=null; renderDuas(); const n=$('#dq'); n.focus(); n.setSelectionRange(q.length,q.length);};
+  $('#tlT').onclick=()=>{S.translit=!S.translit; save(); renderDuas();};
+  view.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{feel=feel===b.dataset.f?null:b.dataset.f; q=''; renderDuas();});
+  view.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const i=+b.dataset.c; counts[i]=(counts[i]||0)>=DUAS[i].n?0:(counts[i]||0)+1; if(navigator.vibrate&&counts[i]===DUAS[i].n) navigator.vibrate(30); b.textContent=`${counts[i]} / ${DUAS[i].n}`; b.classList.toggle('done',counts[i]>=DUAS[i].n);});
+}
+
+function renderTrack(){
+  const T=S.trk, today=T[DAYS-1];
+  const lbl=i=>{const d=new Date(); d.setDate(d.getDate()-(DAYS-1-i)); return i===DAYS-1?'Tod':d.toLocaleDateString('en-GB',{weekday:'short'}).slice(0,3);};
+  const prayed=T.filter(d=>!d.pause&&d.p.some(Boolean)).length;
+  view.innerHTML=`
+    <div class="pause"><div><b>Pause mode</b><small>Periods, illness. No reminders, streak kept.</small></div><button class="sw" role="switch" id="pz" aria-checked="${today.pause}" aria-label="Pause mode for today"></button></div>
+    <div class="vh" style="margin-top:0"><h3>This week</h3><span class="mono">tap to log</span></div>
+    <table class="wk"><thead><tr><th class="l"></th>${T.map((_,i)=>`<th>${lbl(i)}</th>`).join('')}</tr></thead>
+    <tbody>${P5.map((k,j)=>`<tr><th class="l">${PN[k]}</th>${T.map((d,i)=>`<td><button class="pd ${d.pause?'pz':d.p[j]?'on':''}" data-i="${i}" data-j="${j}" ${d.pause?'disabled':''} aria-label="${PN[k]} ${lbl(i)}${d.pause?' paused':d.p[j]?' prayed':''}"></button></td>`).join('')}</tr>`).join('')}</tbody></table>
+    <p class="days">You showed up on <b>${prayed} of ${DAYS-T.filter(d=>d.pause).length}</b> days. Paused days don't count against you.</p>
+    <div class="set">
+      <div><span>Evening reminder</span><input type="time" id="rem" value="${S.rem}" aria-label="Evening reminder time"></div>
+      <div><span>Calculation method</span><span class="v">${METHODS[S.method].n}</span></div>
+      <div><span>Backup</span><button class="chip" id="exp">Export JSON</button></div>
+      <div><span>About &amp; support</span><span class="v">Sadaqah Jariyah</span></div>
+    </div>`;
+  $('#pz').onclick=()=>{today.pause=!today.pause; save(); renderTrack();};
+  view.querySelector('.wk').onclick=e=>{const b=e.target.closest('.pd'); if(!b) return; const d=T[+b.dataset.i]; d.p[+b.dataset.j]^=1; save(); renderTrack();};
+  $('#rem').onchange=e=>{S.rem=e.target.value; save();};
+  $('#exp').onclick=()=>{const b=new Blob([JSON.stringify({app:'safa.',version:1,exported:new Date().toISOString(),tracker:S.trk,settings:{city:S.city,method:S.method,offset:S.offset,reminder:S.rem}},null,2)],{type:'application/json'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='safa-backup.json'; a.click(); URL.revokeObjectURL(a.href);};
+}
+
+const R={today:renderToday,quran:renderQuran,duas:renderDuas,track:renderTrack};
+function go(t){
+  S.tab=t; save(); clearInterval(timer); if(t!=='quran'){audio.pause();loopV=null;}
+  screen.classList.toggle('dark',t==='quran');
+  $$('.tabs [role=tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t));
+  view.scrollTop=0; R[t]();
+}
+$$('.tabs [role=tab]').forEach(b=>b.onclick=()=>go(b.dataset.t));
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]'); if(!g) return; go(g.dataset.go); if(!g.closest('#app')) $('#app').scrollIntoView({behavior:'smooth',block:'center'});});
+setInterval(()=>{$('#clock').textContent=new Intl.DateTimeFormat('en-GB',{timeZone:CITIES[S.city][1],hour:'2-digit',minute:'2-digit'}).format(new Date())},1000);
+$('#clock').textContent=new Intl.DateTimeFormat('en-GB',{timeZone:CITIES[S.city][1],hour:'2-digit',minute:'2-digit'}).format(new Date());
+go(S.tab);
+
+/* ---------- Scope table ---------- */
+const bars=n=>`<span class="bars" aria-hidden="true">${[1,2,3,4].map(i=>`<i class="${i<=n?'f':''}"></i>`).join('')}</span>`;
+$('#scopeRows').innerHTML=[
+  ['No ads, no account, local storage',4,'Very high',1,'Very low','V1'],
+  ['Quran word by word + audio',4,'Very high',1,'Low · open data','V1'],
+  ['Duas by situation (Hisnul Muslim)',3,'High',1,'Very low · local JSON','V1'],
+  ['Prayer tracker + pause mode',3,'High',1,'Very low · local state','V1'],
+  ['Reliable times + light flight mode',3,'Medium–high',2,'Low · adhan library','V1'],
+  ['Community Iqamah times',3,'High',3,'High · backend, moderation','V1.5'],
+  ['AI recitation coach',2,'Medium · bug risk',4,'Very high · GPU, latency','V2'],
+  ['Sourced religious AI assistant',2,'Medium',3,'High · RAG, validation','V2']
+].map(r=>`<tr><td>${r[0]}</td><td>${bars(r[1])}${r[2]}</td><td>${bars(r[3])}${r[4]}</td><td><span class="v ${r[5]==='V1'?'v1':''}">${r[5]}</span></td></tr>`).join('');
+
+/* ---------- Flight ---------- */
+const fromS=$('#from'), toS=$('#to');
+const opts=Object.entries(CITIES).map(([k,c])=>`<option value="${k}">${c[0]} (${k})</option>`).join('');
+fromS.innerHTML=opts; toS.innerHTML=opts; fromS.value='CDG'; toS.value='BKK';
+{const d=new Date(Date.now()+86400000), p=n=>String(n).padStart(2,'0'); $('#dep').value=`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T13:30`;}
+const ft=(ms,tz)=>new Intl.DateTimeFormat('en-GB',{timeZone:tz,weekday:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(ms));
+const hm=m=>`${Math.floor(m/60)}h${String(m%60).padStart(2,'0')}`;
+const FNOTE={fajr:'Fajr begins.',sunrise:'Sun rises under the plane. Fajr time ends.',dhuhr:'Sun at its highest. Dhuhr begins.',asr:'Asr begins.',maghrib:'Sun sets under the plane. Maghrib begins.',isha:'Isha begins.'};
+function runFlight(){
+  const from=fromS.value,to=toS.value,dep=$('#dep').value,dur=Math.max(0,(+$('#dh').value||0)*60+(+$('#dm').value||0));
+  if(!dep||!dur||from===to){$('#flSum').textContent='Pick two different cities, a take-off time and a duration.';$('#flOut').innerHTML='';return;}
+  const A=CITIES[from],B=CITIES[to],u=localToUtc(dep,A[1]);
+  const ev=flightPrayers({from,to,depUtc:u,durMin:dur,asr:+$('#fasr').value,angles:$('#fmeth').value.split(',').map(Number)}).filter(e=>e[1]<=u+dur*60000);
+  $('#flSum').textContent=`${A[0]} ${ft(u,A[1])} → ${B[0]} ${ft(u+dur*60000,B[1])} · ${ev.filter(e=>e[0]!=='sunrise').length} prayer start(s) in flight`;
+  $('#flOut').innerHTML=ev.length?ev.map(([k,t,p])=>`<div class="ev ${k!=='sunrise'?'p':''}"><div class="h"><span class="n">${PN[k]}<small lang="ar">${AR[k]}</small></span><span class="tt"><b>${ft(t,A[1])}</b> ${A[0]} · <b>${ft(t,B[1])}</b> ${B[0]}</span></div><div class="m">${FNOTE[k]} +${hm(Math.round((t-u)/60000))} after take-off · ${Math.abs(p[0]).toFixed(0)}°${p[0]>=0?'N':'S'} ${Math.abs(p[1]).toFixed(0)}°${p[1]>=0?'E':'W'}</div></div>`).join('')
+    :`<div class="ev"><div class="h"><span class="n">None</span></div><div class="m">No prayer time starts during this flight. Check the prayer due at take-off and the next one on landing.</div></div>`;
+}
+['from','to','dep','dh','dm','fasr','fmeth'].forEach(id=>$('#'+id).addEventListener('input',runFlight));
+runFlight();
+</script>
+</body>
+</html>
