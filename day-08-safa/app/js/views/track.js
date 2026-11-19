@@ -4,6 +4,8 @@ import { $, $$, esc, icon, pad, toast, download, cityField, LOGO } from '../ui.j
 import { setLocation, locateOnce } from './onboarding.js';
 import { RECITERS } from './quran.js';
 import { t, L, lang, applyLang } from '../i18n.js';
+import * as SY from '../sync.js';
+import { applyUi } from '../a11y.js';
 
 let weekOff = 0;
 export function renderTrack(root) {
@@ -29,6 +31,7 @@ export function renderTrack(root) {
         <button class="btn line sm" id="rics">${t('Add it to my calendar')}</button>
         <p class="muted small">${t('A web app cannot ring while it is closed. The calendar file gives you a reliable daily reminder; the in-app notice only shows while safa. is open.')}</p>
       </section>
+      <a class="srow" href="#/qada"><span class="st"><b>${t('Make-up prayers')}</b><span class="muted small">${t('Missed prayers and fasts, at your pace')}</span></span>${icon.chev}</a>
       <a class="srow" href="#/settings"><span class="st"><b>${t('Settings')}</b><span class="muted small">${t('Method, offsets, audio, backup')}</span></span>${icon.chev}</a>
       <a class="srow" href="#/about"><span class="st"><b>${t('About &amp; support')}</b><span class="muted small">${t('Sources, promise, Sadaqah Jariyah')}</span></span>${icon.chev}</a>`;
   };
@@ -64,7 +67,7 @@ export function renderSettings(root) {
     root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
       <section class="form">
         <h3>${t('Language')}</h3>
-        <div class="seg lang">${[['auto', t('Automatic')], ['en', 'English'], ['fr', 'Français']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
+        <div class="seg lang">${[['auto', t('Automatic')], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
         <h3>${t('Place')}</h3>
         <p class="muted small">${t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(S.loc.country) })}</p>
         <div id="scity"></div><button class="btn line sm" id="sgeo">${t('Use my location once')}</button>
@@ -84,6 +87,18 @@ export function renderSettings(root) {
         <button class="btn line sm" id="sall">${t('Save the whole Quran text for offline')}</button>
         <p class="muted small">${t('Saved audio: {x}', { x: dl.length ? dl.map(k => { const [r, s] = k.split('|'); return t('surah {s} · {r}', { s, r: esc(RECITERS[r] || r) }); }).join(', ') : t('none') })}</p>
         ${dl.length ? `<button class="btn line sm" id="sclr">${t('Delete saved audio')}</button>` : ''}
+        <h3>${t('Display &amp; accessibility')}</h3>
+        <label class="lbl">${t('Theme')}</label><div class="seg lang">${[['auto', t('Automatic')], ['light', t('Light')], ['dark', t('Dark')]].map(([k, l]) => `<button data-theme="${k}" aria-pressed="${S.ui.theme === k}">${l}</button>`).join('')}</div>
+        <label class="lbl">${t('Text size')}</label><div class="seg lang">${[[0.9, 'A−'], [1, 'A'], [1.15, 'A+'], [1.3, 'A++']].map(([k, l]) => `<button data-scale="${k}" aria-pressed="${S.ui.scale === k}" aria-label="${t('Text size')} ${Math.round(k * 100)}%">${l}</button>`).join('')}</div>
+        <label class="tog"><span>${t('High contrast')}</span><input type="checkbox" id="shc" ${S.ui.hc ? 'checked' : ''}></label>
+        <label class="tog"><span>${t('Reduce motion')}</span><input type="checkbox" id="srm" ${S.ui.motion ? 'checked' : ''}></label>
+        <h3>${t('Friday')}</h3>
+        <label class="tog"><span>${t('Al-Kahf reminder')}<small>${t('A card on Friday until you open Al-Kahf.')}</small></span><input type="checkbox" id="sfri" ${S.fri.on ? 'checked' : ''}></label>
+        <button class="btn line sm" id="sfics">${t('Add a weekly Friday reminder to my calendar')}</button>
+        <h3>${t('Sync between devices')}</h3>
+        <p class="muted small">${t('No account and no server. Create an encrypted file protected by a passphrase, send it to your other device any way you like, and merge it there. Nobody can read it without the passphrase, not even us.')}</p>
+        <input id="spass" class="inp" type="password" minlength="8" autocomplete="new-password" placeholder="${t('Passphrase (8 characters or more)')}" aria-label="${t('Passphrase')}">
+        <div class="grid2"><button class="btn line sm" id="ssync">${t('Create sync file')}</button><label class="btn line sm">${t('Merge a sync file')}<input type="file" id="smerge" accept=".safa,application/json" hidden></label></div>
         <h3>${t('Backup')}</h3>
         <p class="muted small">${t('No account, so no cloud. Keep a file and restore it on any device.')}</p>
         <div class="grid2"><button class="btn line sm" id="sexp">${t('Export backup')}</button><label class="btn line sm">${t('Import backup')}<input type="file" id="simp" accept="application/json,.json" hidden></label></div>
@@ -94,6 +109,15 @@ export function renderSettings(root) {
   let armed = 0;
   root.onclick = async e => {
     const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.theme) { S.ui.theme = b.dataset.theme; save(); applyUi(); draw(); return; }
+    if (b.dataset.scale) { S.ui.scale = +b.dataset.scale; save(); applyUi(); draw(); return; }
+    if (b.id === 'sfics') { download('safa-friday-al-kahf.ics', ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-friday-${Date.now()}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc.tz}:${(() => { const d = new Date(); d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7)); return d.toISOString().slice(0, 10).replace(/-/g, ''); })()}T090000`, 'DURATION:PT10M', 'RRULE:FREQ=WEEKLY;BYDAY=FR', 'SUMMARY:' + t('Friday · Al-Kahf'), 'DESCRIPTION:' + t('Read Al-Kahf. Send blessings on the Prophet.'), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + t('Friday · Al-Kahf'), 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar'); return; }
+    if (b.id === 'ssync') {
+      const pass = $('#spass', root).value; if (pass.length < 8) { toast(t('Choose a passphrase of 8 characters or more.')); $('#spass', root).focus(); return; }
+      b.disabled = true; const txt = await SY.seal(pass), name = `safa-sync-${dayKey()}.safa`; b.disabled = false;
+      try { const f = new File([txt], name, { type: 'application/octet-stream' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: 'safa.' }); return; } } catch (err) { /* fall back to download */ }
+      download(name, txt, 'application/octet-stream'); toast(t('Sync file created. Open it on your other device.')); return;
+    }
     if (b.dataset.lang) { S.lang = b.dataset.lang; if (S.q.tr !== 'none') S.q.tr = 'auto'; save(); applyLang(); window.dispatchEvent(new Event('safa:lang')); return; }
     if (b.dataset.off) { const p = b.dataset.off; S.offsets[p] = Math.max(-30, Math.min(30, (S.offsets[p] || 0) + +b.dataset.d)); save(); const y = window.scrollY; await draw(); window.scrollTo(0, y); return; }
     if (b.id === 'sgeo') { b.textContent = t('Locating…'); try { await locateOnce(); toast(t('Location set · {c}', { c: S.loc.name })); } catch (err) { toast(t('Location unavailable.')); } draw(); return; }
@@ -119,6 +143,15 @@ export function renderSettings(root) {
     if (id === 'smad') S.madhab = e.target.value;
     if (id === 'shij') S.hijriAdj = +e.target.value;
     if (id === 's24') S.h24 = e.target.checked;
+    if (id === 'shc') { S.ui.hc = e.target.checked; save(); applyUi(); }
+    if (id === 'srm') { S.ui.motion = e.target.checked; save(); applyUi(); }
+    if (id === 'sfri') { S.fri.on = e.target.checked; save(); }
+    if (id === 'smerge') {
+      const pass = $('#spass', root).value; if (!pass) { toast(t('Type the passphrase first.')); e.target.value = ''; return; }
+      try { SY.merge(await SY.open(await e.target.files[0].text(), pass)); toast(t('Merged. Nothing on this device was lost.')); draw(); }
+      catch (err) { toast(t('Could not open this file. Check the passphrase.')); }
+      e.target.value = ''; return;
+    }
     if (id === 'simp') {
       try { const o = JSON.parse(await e.target.files[0].text()); if (!o || o.app !== 'safa.' || !o.state || !o.state.loc) throw new Error('bad'); replaceState(o.state); toast(t('Backup restored')); }
       catch (err) { toast(t('This file is not a safa. backup.')); }

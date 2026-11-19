@@ -3,16 +3,20 @@ const KEY = 'safa.app.v1';
 const DEF = {
   v: 1, lang: 'auto', onboarded: false, loc: null, method: 'MWL', madhab: 'shafi',
   offsets: { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 }, hijriAdj: 0, h24: true,
-  q: { last: null, favs: [], wbw: false, flow: false, tr: 'auto', tl: false, fs: 1, reciter: 'Alafasy_128kbps', speed: 1, hide: 0 },
+  q: { last: null, favs: [], taf: [], dl: {}, wbw: false, flow: false, tr: 'auto', tl: false, fs: 1, reciter: 'Alafasy_128kbps', speed: 1, hide: 0 },
   d: { favs: [], tl: false },
-  days: {}, pauseOn: false, rem: { on: false, t: '21:00' }
+  days: {}, pauseOn: false, rem: { on: false, t: '21:00' },
+  ui: { theme: 'auto', scale: 1, hc: false, motion: false },
+  fri: { on: true },
+  qada: { on: false, p: { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 }, fast: 0, perDay: 1 },
+  khatm: null, hifz: { items: [], perDay: 5 }, lessons: { w: {}, last: '' }, myDuas: []
 };
 const clone = o => JSON.parse(JSON.stringify(o));
 function merge(def, got) {
   const out = clone(def);
   if (!got || typeof got !== 'object') return out;
   for (const k of Object.keys(got)) {
-    if (k in def && def[k] && typeof def[k] === 'object' && !Array.isArray(def[k]) && k !== 'days' && k !== 'loc') out[k] = merge(def[k], got[k]);
+    if (k in def && def[k] && typeof def[k] === 'object' && !Array.isArray(def[k]) && k !== 'days' && k !== 'loc' && k !== 'khatm') out[k] = merge(def[k], got[k]);
     else out[k] = got[k];
   }
   return out;
