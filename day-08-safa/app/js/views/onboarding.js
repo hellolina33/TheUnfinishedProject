@@ -23,7 +23,7 @@ export function locateOnce() {
 export function render(root, done) {
   const step1 = () => {
     root.innerHTML = `<section class="onb">
-      <div class="onb-top"><div class="onb-logo">${LOGO}</div><h1>safa<i>.</i></h1><div class="langsw" role="group" aria-label="Language"><button class="chip" data-l="en" aria-pressed="${lang() === 'en'}">EN</button><button class="chip" data-l="fr" aria-pressed="${lang() === 'fr'}">FR</button></div></div>
+      <div class="onb-top"><div class="onb-logo">${LOGO}</div><h1>safa<i>.</i></h1><div class="langsw" role="group" aria-label="Language"><button class="chip" data-l="en" aria-pressed="${lang() === 'en'}">EN</button><button class="chip" data-l="fr" aria-pressed="${lang() === 'fr'}">FR</button><button class="chip" data-l="ar" aria-pressed="${lang() === 'ar'}">ع</button></div></div>
       <div><p class="onb-tag">${t('Clear time.<br>Clear soul<i>.</i>')}</p>
       <ul class="onb-list"><li>${t('No ads')}</li><li>${t('No account, no tracking')}</li><li>${t('Works offline')}</li></ul></div>
       <button class="btn big" id="go">${t('Set my city')}</button>

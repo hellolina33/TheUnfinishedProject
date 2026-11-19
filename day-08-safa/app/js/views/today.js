@@ -2,6 +2,8 @@ import { S, save, dayKey, addDays, getDay, P5, data } from '../store.js';
 import { timesFor, ORDER, NAMES, AR, fmtTime, hijri, gregorian, weekday, qiblaBearing, methodAngles, flightPrayers, localToUtc, distanceKm, METHODS } from '../prayer.js';
 import { $, esc, icon, pad, cityField, toast } from '../ui.js';
 import { t, L } from '../i18n.js';
+import { upcoming } from './calendar.js';
+import { hifzDue } from './plan.js';
 
 function nextPrayer() {
   const now = Date.now(), key = dayKey(now), today = timesFor(key);
@@ -9,6 +11,19 @@ function nextPrayer() {
   for (const k of P5) if (today[k] && today[k] > now) return { k, t: today[k], today, cur, key };
   const tm = timesFor(addDays(key, 1));
   return { k: 'fajr', t: tm.fajr, today, cur: 'isha', key };
+}
+
+function extras() {
+  let h = '';
+  const ev = upcoming(1)[0];
+  if (ev) h += `<a class="card row" href="#/calendar"><span><span class="mono">${t('Hijri calendar')}</span><b>${esc(t(ev.name))}</b><span class="muted small">${ev.days === 0 ? t('Today') : t('in {n} d', { n: ev.days })}</span></span>${icon.chev}</a>`;
+  const due = hifzDue().length;
+  if (S.hifz.items.length) h += `<a class="card row" href="#/hifz"><span><span class="mono">${t('Memorisation')}</span><b>${due ? t('{n} portions to review', { n: due }) : t('Nothing to review today')}</b></span>${icon.chev}</a>`;
+  if (S.khatm && S.khatm.page < 604) h += `<a class="card row" href="#/khatm"><span><span class="mono">${t('Khatm')}</span><b>${S.khatm.log && S.khatm.log[dayKey()] ? t('Today’s portion done') : t('Today’s portion is waiting')}</b><span class="muted small">${t('{p} of 604 pages', { p: S.khatm.page })}</span></span>${icon.chev}</a>`;
+  if (S.qada.on) { const n = P5.reduce((a, p) => a + (S.qada.p[p] || 0), 0); h += `<a class="card row" href="#/qada"><span><span class="mono">${t('Make-up prayers')}</span><b>${n ? t('{n} left', { n }) : t('Nothing left to make up.')}</b></span>${icon.chev}</a>`; }
+  if (!Object.keys(S.days).some(k => S.days[k].p.some(Boolean))) h += `<a class="card row" href="#/learn"><span><span class="mono">${t('New to prayer?')}</span><b>${t('First steps')}</b><span class="muted small">${t('Ablution and prayer, step by step')}</span></span>${icon.chev}</a>`;
+  else h += `<a class="card row ghost" href="#/learn"><span><span class="mono">${t('Learn')}</span><b>${t('First steps')}</b></span>${icon.chev}</a>`;
+  return h;
 }
 
 export function render(root) {
@@ -19,7 +34,7 @@ export function render(root) {
     const ang = Math.PI * (1 - f), sx = 150 + 120 * Math.cos(ang), sy = 132 - 120 * Math.sin(ang);
     const isFri = weekday(now) === 'Friday', h = +new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', hourCycle: 'h23' }).format(new Date(now));
     const last = S.q.last;
-    const suggest = isFri && !day.r ? `<a class="card row" href="#/quran/18"><span><span class="mono">${t('Friday')}</span><b>${t('Read Al-Kahf')}</b></span>${icon.chev}</a>`
+    const suggest = isFri && S.fri.on && !day.k ? `<a class="card row" href="#/quran/18"><span><span class="mono">${t('Friday')}</span><b>${t('Read Al-Kahf')}</b></span>${icon.chev}</a>`
       : `<a class="card row" href="#/duas/27"><span><span class="mono">${t(h < 15 ? 'Morning adhkar' : 'Evening adhkar')}</span><b>${t('Words of remembrance')}</b></span>${icon.chev}</a>`;
     root.innerHTML = `
       <header class="vh"><div><h1>${t('Today')}</h1><a class="loc mono" href="#/settings">${esc(S.loc.name)} · ${esc(METHODS[S.method].n)}</a></div>
@@ -40,6 +55,7 @@ export function render(root) {
       }).join('')}</ul>
       <a class="card row" href="#/quran/${last ? last.s + '/' + last.v : '1'}"><span><span class="mono">${t(last ? 'Resume reading' : 'Start reading')}</span><b>${last ? esc(last.n) + ' · ' + last.s + ':' + last.v : 'Al-Fatihah · 1:1'}</b></span>${icon.chev}</a>
       ${suggest}
+      ${extras()}
       <div class="grid2">
         <a class="card tile" href="#/qibla">${icon.compass}<span><span class="mono">${t('Qibla')}</span><b>${qiblaBearing(S.loc.lat, S.loc.lng).toFixed(1)}°</b></span></a>
         <a class="card tile" href="#/flight">${icon.plane}<span><span class="mono">${t('Travel')}</span><b>${t('Flight mode')}</b></span></a>

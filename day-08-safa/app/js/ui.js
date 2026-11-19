@@ -26,7 +26,17 @@ export const icon = {
   plane: I('<path d="M3 13l18-7-7 18-2.5-7.5z"/>'),
   search: I('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/>'),
   book: I('<path d="M6 4h11a1 1 0 011 1v15H7a1.5 1.5 0 010-3h11"/>'),
-  chev: I('<path d="M9 5l7 7-7 7"/>', 1.6)
+  chev: I('<path d="M9 5l7 7-7 7"/>', 1.6),
+  repeat: I('<path d="M4 9a5 5 0 015-5h9l-3-3M20 15a5 5 0 01-5 5H6l3 3"/>'),
+  letter: I('<path d="M5 18c4 0 5-3 5-7M10 11c0-3 2-5 5-5s4 2 4 4-2 3-4 3H9"/><circle cx="16" cy="18" r="1"/>'),
+  prev: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg>',
+  next: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg>',
+  cal: I('<rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4M9 14h2M13 14h2M9 17h2"/>'),
+  learn: I('<path d="M3 9l9-4 9 4-9 4z"/><path d="M7 11v4c3 2 7 2 10 0v-4"/>'),
+  plus: I('<path d="M12 5v14M5 12h14"/>', 1.8),
+  minus: I('<path d="M5 12h14"/>', 1.8),
+  lock: I('<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/>'),
+  moon: I('<path d="M19 15A8 8 0 019 5a8 8 0 1010 10z"/>')
 };
 export const LOGO = `<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#080808"/><mask id="lg"><rect width="100" height="100" fill="#fff"/><circle cx="58" cy="42" r="25" fill="#000"/></mask><circle cx="46" cy="52" r="28" fill="#fff" mask="url(#lg)"/><circle cx="72" cy="30" r="7" fill="#E85D2A"/></svg>`;
 

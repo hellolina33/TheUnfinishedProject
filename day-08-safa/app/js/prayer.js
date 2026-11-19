@@ -1,7 +1,7 @@
 // Prayer times (adhan-js, on device), Hijri date, Qibla, in-flight prayer scan.
 import * as adhan from '../vendor/adhan.js';
 import { S } from './store.js';
-import { t, L } from './i18n.js';
+import { t, L, LB } from './i18n.js';
 
 const M_ = (n, d, p) => ({ get n() { return t(n); }, get d() { return t(d); }, p });
 const custom = (f, i) => () => { const p = adhan.CalculationMethod.Other(); p.fajrAngle = f; p.ishaAngle = i; return p; };
@@ -60,7 +60,7 @@ export function fmtTime(ms, tz = S.loc && S.loc.tz) {
   return new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: S.h24 ? 'h23' : 'h12' }).format(new Date(ms)).replace(/\s?(am|pm)/i, (m, a) => ' ' + a.toUpperCase());
 }
 export function hijri(ms, tz = S.loc && S.loc.tz) {
-  try { return new Intl.DateTimeFormat(L() + '-u-ca-islamic-umalqura', { timeZone: tz, day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(ms + (S.hijriAdj || 0) * 86400000)).replace(/\s?(AH|ère de l’Hégire|ère de l'Hégire|AH)$/i, ' AH'); } catch (e) { return ''; }
+  try { return new Intl.DateTimeFormat(LB(), { calendar: 'islamic-umalqura', numberingSystem: 'latn', timeZone: tz, day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(ms + (S.hijriAdj || 0) * 86400000)).replace(/\s?(AH|ère de l’Hégire|ère de l'Hégire|AH)$/i, ' AH'); } catch (e) { return ''; }
 }
 export const gregorian = (ms, tz = S.loc && S.loc.tz) => new Intl.DateTimeFormat(L(), { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(ms));
 export const weekday = (ms, tz = S.loc && S.loc.tz) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'long' }).format(new Date(ms));

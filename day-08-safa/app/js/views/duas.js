@@ -1,8 +1,9 @@
 import { S, save, data, dayKey, getDay } from '../store.js';
-import { $, $$, esc, icon, toast } from '../ui.js';
+import { $, $$, esc, icon, toast, download } from '../ui.js';
 import { t, lang } from '../i18n.js';
 const fr = () => lang() === 'fr';
-const title = c => (fr() && c.tf) || c.t;
+const ar = () => lang() === 'ar';
+const title = c => (fr() && c.tf) || (ar() && c.ta) || c.t;
 const fold = x => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 const FEEL = ['Anxiety', 'Sleep', 'Travel', 'Decision', 'Gratitude', 'Illness & grief', 'Forgiveness', 'Morning & evening', 'After prayer', 'Food & home', 'Mosque & prayer'];
@@ -19,6 +20,7 @@ export async function renderList(root) {
   root.innerHTML = `<header class="vh"><div><h1>${t('Duas')}</h1><span class="mono">${t('Hisnul Muslim · Fortress of the Muslim')}</span></div></header>
     <div class="searchf">${icon.search}<input id="ds" class="inp" type="search" placeholder="${t('How do you feel? anxious, travelling…')}" value="${esc(st.q)}" autocomplete="off" aria-label="${t('Search duas by feeling or situation')}"></div>
     <div class="chips scroll">${FEEL.map(f => `<button class="chip" data-feel="${esc(f)}" aria-pressed="${st.feel === f}">${esc(t(f))}</button>`).join('')}<button class="chip" data-feel="__fav" aria-pressed="${st.feel === '__fav'}">${t('Favourites')}</button></div>
+    <a class="card row" href="#/mydua"><span><span class="mono">${t('Personal')}</span><b>${t('My duas')}</b><span class="muted small">${S.myDuas.length ? t('{n} saved', { n: S.myDuas.length }) : t('Write your own, with a gentle reminder')}</span></span>${icon.chev}</a>
     <div id="dl"></div>`;
   const out = $('#dl', root);
   const draw = () => {
@@ -48,11 +50,11 @@ export async function renderChapter(root, id) {
   const counts = {};
   root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b class="clip">${esc(title(c))}</b><button class="chip" id="dtl" aria-pressed="${S.d.tl}">${t('Transliteration')}</button></header>
     <div class="dlist ${S.d.tl ? '' : 'notl'}" id="dd">${c.d.map((x, i) => `<article class="dua" data-i="${i}">
-      <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button></span></div>
+      <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button><button class="ib" data-mine="${i}" aria-label="${t('Add to my duas')}">${icon.plus}</button></span></div>
       <p class="ar" lang="ar" dir="rtl">${esc(x.ar)}</p>
-      ${(fr() && x.tf) || x.tl ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
-      <p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}
-      <div class="df"><span class="badge mono">${esc(x.ref || t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
+      ${!ar() && ((fr() && x.tf) || x.tl) ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
+      ${ar() ? '' : `<p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
+      <div class="df"><span class="dsrc"><span class="badge mono">${esc(x.ref || t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${gradeBadge(x)}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
     </article>`).join('')}
     <p class="muted small pad">${t("Text from Hisnul Muslim by Sa'id al-Qahtani. Source references are matched automatically and still need review by a person of knowledge.")}</p></div>`;
   const dd = $('#dd', root);
@@ -60,6 +62,8 @@ export async function renderChapter(root, id) {
   dd.onclick = e => {
     const cb = e.target.closest('[data-count]');
     if (cb) { const i = +cb.dataset.count, n = c.d[i].n; counts[i] = (counts[i] || 0) >= n ? 0 : (counts[i] || 0) + 1; cb.textContent = `${counts[i]} / ${n}`; cb.classList.toggle('done', counts[i] >= n); if (counts[i] >= n && navigator.vibrate) navigator.vibrate(30); return; }
+    const mb = e.target.closest('[data-mine]');
+    if (mb) { const x = c.d[+mb.dataset.mine]; S.myDuas.push({ id: Date.now().toString(36), title: title(c), ar: x.ar, text: (fr() && x.fr) || x.en, ref: x.ref || '', time: '' }); save(); toast(t('Added to my duas')); return; }
     const fb = e.target.closest('[data-fav]');
     if (fb) { const k = +fb.dataset.fav, on = S.d.favs.includes(k); S.d.favs = on ? S.d.favs.filter(x => x !== k) : [...S.d.favs, k]; save(); fb.classList.toggle('on', !on); fb.setAttribute('aria-pressed', !on); return; }
     const pb = e.target.closest('[data-play]');
@@ -73,4 +77,48 @@ export async function renderChapter(root, id) {
   };
   window.scrollTo(0, 0);
   return () => { audio.pause(); audio.removeAttribute('src'); };
+}
+
+export const GRADES = { sahih2: ['Sahih', 'In Sahih al-Bukhari or Sahih Muslim'], sahih_alb: ['Sahih', 'Graded sahih by Al-Albani'], hasan: ['Hasan', 'Graded hasan'], quran: ['Quran', 'Verse of the Quran'], ref: ['Source cited', 'Collection cited; grade not shown here'] };
+function gradeBadge(x) {
+  const g = GRADES[x.gr];
+  if (!g) return `<span class="grade none" title="${esc(t('No source matched yet. Check it with a person of knowledge.'))}">${t('To verify')}</span>`;
+  return `<span class="grade ${x.gr}" title="${esc(t(g[1]))}">${t(g[0])}</span>`;
+}
+
+/* ---------- My duas ---------- */
+export function renderMyDuas(root, id) {
+  const ics = d => {
+    const [h, m] = d.time.split(':'), k = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    download(`safa-dua-${d.id}.ics`, ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-dua-${d.id}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc.tz}:${k}T${h}${m}00`, 'DURATION:PT5M', 'RRULE:FREQ=DAILY', `SUMMARY:${d.title.replace(/[\n,;]/g, ' ')}`, `DESCRIPTION:${(d.text || '').slice(0, 300).replace(/[\n,;]/g, ' ')}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${d.title.replace(/[\n,;]/g, ' ')}`, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar');
+  };
+  const list = () => {
+    root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('My duas')}</b><a class="ib" href="#/mydua/new" aria-label="${t('New dua')}">${icon.plus}</a></header>
+      ${S.myDuas.length ? S.myDuas.map(d => `<article class="dua"><div class="dh"><b>${esc(d.title)}</b><a class="btn line sm" href="#/mydua/${d.id}">${t('Edit')}</a></div>
+        ${d.ar ? `<p class="ar" lang="ar" dir="rtl">${esc(d.ar)}</p>` : ''}${d.text ? `<p class="en">${esc(d.text)}</p>` : ''}
+        <div class="df"><span class="badge mono">${esc(d.ref || t('Personal'))}</span>${d.time ? `<button class="btn line sm" data-ics="${d.id}">${t('Daily reminder {t}', { t: d.time })}</button>` : ''}</div></article>`).join('')
+      : `<p class="muted pad">${t('Nothing yet. Write a dua in your own words, or tap + on any dua in Hisnul Muslim.')}</p><a class="btn big" href="#/mydua/new">${t('New dua')}</a>`}`;
+    root.onclick = e => { const b = e.target.closest('[data-ics]'); if (b) ics(S.myDuas.find(x => x.id === b.dataset.ics)); };
+  };
+  const edit = () => {
+    const d = id === 'new' ? { id: Date.now().toString(36), title: '', ar: '', text: '', ref: '', time: '' } : S.myDuas.find(x => x.id === id);
+    if (!d) { location.hash = '#/mydua'; return; }
+    root.innerHTML = `<header class="sub"><a href="#/mydua" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(id === 'new' ? 'New dua' : 'Edit')}</b><span class="ib"></span></header>
+      <form class="form" id="mf">
+        <label class="lbl" for="mt">${t('Title')}</label><input id="mt" class="inp" required maxlength="80" value="${esc(d.title)}" placeholder="${t('e.g. For my parents')}">
+        <label class="lbl" for="mx">${t('Your words')}</label><textarea id="mx" class="inp ta" rows="5" maxlength="2000">${esc(d.text)}</textarea>
+        <label class="lbl" for="ma">${t('Arabic (optional)')}</label><textarea id="ma" class="inp ta ar" dir="rtl" lang="ar" rows="3" maxlength="2000">${esc(d.ar)}</textarea>
+        <label class="lbl" for="mtime">${t('Daily reminder (optional)')}</label><input id="mtime" class="inp" type="time" value="${esc(d.time)}">
+        <button class="btn big" type="submit">${t('Save')}</button>
+        ${id !== 'new' ? `<button class="btn line sm danger" type="button" id="mdel">${t('Delete')}</button>` : ''}
+      </form>`;
+    $('#mf', root).onsubmit = e => {
+      e.preventDefault();
+      Object.assign(d, { title: $('#mt', root).value.trim() || t('My dua'), text: $('#mx', root).value.trim(), ar: $('#ma', root).value.trim(), time: $('#mtime', root).value });
+      if (id === 'new') S.myDuas.push(d); save(); toast(t('Saved')); location.hash = '#/mydua';
+    };
+    const del = $('#mdel', root); if (del) del.onclick = () => { S.myDuas = S.myDuas.filter(x => x.id !== d.id); save(); location.hash = '#/mydua'; };
+  };
+  if (id) edit(); else list();
+  return () => { root.onclick = null; };
 }
