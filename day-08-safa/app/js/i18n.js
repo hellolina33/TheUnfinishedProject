@@ -942,3 +942,69 @@ const AR = {
   "Sahih · graded by Al-Albani": "صحيح · بتصحيح الألباني",
   "Source cited, grade not shown": "المصدر مذكور، والدرجة غير معروضة",
 };
+
+// v1.1 · UX pass (journey review, Nov 2026)
+Object.assign(FR, {
+  'in {h} h {m}': 'dans {h} h {m}', 'in {m} min': 'dans {m} min', 'in {s} s': 'dans {s} s', '{p} at {t}': '{p} à {t}', '{p} prayed?': '{p} faite ?',
+  'sunrise': 'lever du soleil', 'May Allah accept it.': "Qu'Allah l'accepte.", 'Unticked.': 'Décochée.', 'Tools': 'Outils', 'Calendar': 'Calendrier',
+  'Welcome. Start here, one step at a time.': 'Bienvenue. Commence ici, une étape à la fois.', 'Welcome back. No question is a silly one here.': 'Content de te revoir. Ici, aucune question n’est bête.',
+  'Ablution, then prayer, step by step. Then Al-Fatiha word by word.': 'Les ablutions, puis la prière, pas à pas. Puis Al-Fatiha mot à mot.', 'Open First steps': 'Ouvrir Premiers pas',
+  'Welcome. Take your time.': 'Bienvenue. Prends ton temps.', 'Your times are ready. When you want, read a verse with its context, or find a dua for how you feel.': 'Tes horaires sont prêts. Quand tu veux, lis un verset avec son contexte, ou trouve une doua pour ce que tu ressens.',
+  'Read Al-Fatiha': 'Lire Al-Fatiha', 'Find a dua': 'Trouver une doua', 'Keep safa. on your home screen': "Garde safa. sur ton écran d'accueil",
+  'In Safari, tap Share, then “Add to Home Screen”. It opens like an app, offline, with no store.': "Dans Safari, touche Partager, puis « Sur l'écran d'accueil ». Elle s'ouvre comme une app, hors ligne, sans passer par un store.",
+  'Open your browser menu, then “Install app” or “Add to Home screen”. It opens like an app, offline, with no store.': "Ouvre le menu du navigateur, puis « Installer l'application » ou « Ajouter à l'écran d'accueil ». Elle s'ouvre comme une app, hors ligne, sans store.",
+  'Install': 'Installer', 'Today: pages {a} to {b}': "Aujourd'hui : pages {a} à {b}", 'Try again': 'Réessayer',
+  'Context': 'Contexte', 'Share this verse': 'Partager ce verset', 'Report an error in this verse': 'Signaler une erreur dans ce verset', 'Report an error': 'Signaler une erreur', 'Share': 'Partager',
+  '{n} verses': '{n} versets',
+  'You prayed on <b>{a}</b> days this week': 'Tu as prié <b>{a}</b> jours cette semaine', 'You opened the Quran on <b>{n}</b> days this week.': 'Tu as ouvert le Coran <b>{n}</b> jours cette semaine.',
+  'Each day is a fresh start. Tick a prayer when you want to.': 'Chaque jour est un nouveau départ. Coche une prière quand tu veux.',
+  'Circles: the five prayers. Squares: Quran opened, adhkar read.': 'Cercles : les cinq prières. Carrés : Coran ouvert, adhkar lus.',
+  'The backup is encrypted with the passphrase above. Without it, nobody can read the file, not even you.': 'La sauvegarde est chiffrée avec la phrase secrète ci-dessus. Sans elle, personne ne peut lire le fichier, pas même toi.',
+  'Export a readable copy (not encrypted)': 'Exporter une copie lisible (non chiffrée)',
+  'Type a passphrase of 8 characters or more above, to encrypt your backup.': 'Écris une phrase secrète de 8 caractères ou plus ci-dessus pour chiffrer ta sauvegarde.',
+  'Encrypted backup saved. Keep your passphrase.': 'Sauvegarde chiffrée enregistrée. Garde bien ta phrase secrète.',
+  'Tap again to erase everything. Export a backup first if you want to keep it.': 'Touche encore pour tout effacer. Exporte une sauvegarde avant si tu veux la garder.',
+  'Everything here is free, with nothing locked. Sadaqah Jariyah is a good deed that keeps giving after it is done. The simplest one here: share safa. with one person it could help.': "Tout est gratuit ici, rien n'est bloqué. La Sadaqah Jariyah est une bonne action qui continue de porter ses fruits. La plus simple ici : partager safa. avec une personne à qui elle peut faire du bien.",
+  'Share safa.': 'Partager safa.', 'Give feedback or report an error': 'Donner mon avis ou signaler une erreur',
+  'Version 1.1 · made by Salah, as part of The Unfinished 30. safa. stays online after the challenge.': 'Version 1.1 · faite par Salah dans le cadre de The Unfinished 30. safa. reste en ligne après le défi.',
+  'safa. Prayer times, the Quran word by word with context, and duas. No ads, no account, no guilt.': 'safa. Les horaires de prière, le Coran mot à mot avec le contexte, et des douas. Sans pub, sans compte, sans culpabilité.',
+  'Source being reviewed': 'Source en relecture',
+  "Text from Hisnul Muslim (the Fortress of the Muslim) by Sa'id al-Qahtani, the most widely used collection of duas. Sources marked “being reviewed” are waiting for a check by a person of knowledge.": "Texte de la Citadelle du Musulman (Hisnul Muslim) de Sa'id al-Qahtani, le recueil de douas le plus utilisé. Les sources « en relecture » attendent la vérification d'une personne de science.",
+  'Step 1 of 2': 'Étape 1 sur 2', 'Prayer times for your city': 'Les horaires de prière de ta ville', 'The Quran word by word, with the context of each verse': 'Le Coran mot à mot, avec le contexte de chaque verset', 'Authentic duas for every moment': 'Des douas authentiques pour chaque moment',
+  'No ads. No account. Everything stays on your phone. Works offline.': 'Zéro pub. Zéro compte. Tout reste sur ton téléphone. Fonctionne hors ligne.',
+  'New to prayer, or coming back? We go step by step.': 'Tu débutes ou tu reviens ? On avance pas à pas.',
+  'Then your times for today. Language can be changed later in Settings.': 'Ensuite, tes horaires du jour. La langue se change plus tard dans Réglages.',
+  'The one usually used in your country is already chosen. Not sure? Keep it. You can change it any time.': 'Celle utilisée d’habitude dans ton pays est déjà choisie. Pas sûr ? Garde-la. Tu pourras la changer à tout moment.',
+  'Where are you with prayer? (optional)': 'Où en es-tu avec la prière ? (facultatif)', 'I am starting': 'Je débute', 'I am coming back': 'Je reviens', 'I already pray': 'Je prie déjà',
+  'Choose a city first.': "Choisis d'abord une ville.",
+  'Five words a day': 'Cinq mots par jour', 'A few very frequent words make up a large part of the Quran. Start with five, about two minutes.': 'Quelques mots très fréquents forment une grande partie du Coran. Commence avec cinq, environ deux minutes.',
+  'Start · 5 new words · 2 min': 'Commencer · 5 nouveaux mots · 2 min', '≈ {p} pages a day': '≈ {p} pages/jour',
+  'Miss a day? The plan adjusts by itself. No debt, no catching up by hand.': 'Tu rates un jour ? Le plan se réajuste tout seul. Aucune dette, rien à rattraper à la main.',
+  'Find a verse or a dua': 'Trouver un verset ou une doua', 'patience in hardship': "la patience dans l'épreuve", 'my parents': 'mes parents', 'anxiety': 'angoisse', 'forgiveness': 'pardon', 'gratitude': 'gratitude', 'death of a loved one': "la mort d'un proche",
+  '<b>You are not alone.</b> If you are thinking about ending your life or are in danger, call now: 3114 in France (free, 24/7), or your local emergency number. Talking to someone helps.': "<b>Tu n'es pas seul.</b> Si tu penses à mettre fin à tes jours ou si tu es en danger, appelle maintenant le 3114 en France (gratuit, 24 h/24), ou le numéro d'urgence de ton pays. En parler aide.",
+  'Finish the Quran': 'Finir le Coran', 'Find': 'Chercher', 'Review': 'Révision'
+});
+FR['Tap a word to hear it'] = 'Touche un mot'; FR['Hide'] = 'Révision'; FR['How do you feel? anxious, travelling…'] = 'Comment te sens-tu ?';
+Object.assign(AR, {
+  'in {h} h {m}': 'بعد {h} س {m}', 'in {m} min': 'بعد {m} د', 'in {s} s': 'بعد {s} ث', '{p} at {t}': '{p} الساعة {t}', '{p} prayed?': 'صلّيت {p}؟',
+  'sunrise': 'الشروق', 'May Allah accept it.': 'تقبّل الله.', 'Unticked.': 'أُلغي التحديد.', 'Tools': 'أدوات', 'Calendar': 'التقويم',
+  'Welcome. Start here, one step at a time.': 'أهلاً. ابدأ من هنا، خطوة خطوة.', 'Welcome back. No question is a silly one here.': 'أهلاً بعودتك. لا يوجد سؤال سخيف هنا.',
+  'Ablution, then prayer, step by step. Then Al-Fatiha word by word.': 'الوضوء ثم الصلاة خطوة خطوة، ثم الفاتحة كلمة كلمة.', 'Open First steps': 'افتح الخطوات الأولى',
+  'Welcome. Take your time.': 'أهلاً. خذ وقتك.', 'Your times are ready. When you want, read a verse with its context, or find a dua for how you feel.': 'مواقيتك جاهزة. متى شئت، اقرأ آية مع سياقها أو ابحث عن دعاء يناسب حالك.',
+  'Read Al-Fatiha': 'اقرأ الفاتحة', 'Find a dua': 'ابحث عن دعاء', 'Keep safa. on your home screen': 'ضع safa. على الشاشة الرئيسية', 'Install': 'تثبيت',
+  'In Safari, tap Share, then “Add to Home Screen”. It opens like an app, offline, with no store.': 'في سفاري، اضغط مشاركة ثم «إضافة إلى الشاشة الرئيسية». يفتح كتطبيق، دون اتصال، دون متجر.',
+  'Open your browser menu, then “Install app” or “Add to Home screen”. It opens like an app, offline, with no store.': 'افتح قائمة المتصفح ثم «تثبيت التطبيق». يفتح كتطبيق، دون اتصال، دون متجر.',
+  'Today: pages {a} to {b}': 'اليوم: الصفحات {a} إلى {b}', 'Try again': 'أعد المحاولة', 'Context': 'السياق', 'Share this verse': 'شارك هذه الآية', 'Report an error in this verse': 'أبلغ عن خطأ في هذه الآية', 'Report an error': 'أبلغ عن خطأ', 'Share': 'مشاركة', '{n} verses': '{n} آيات',
+  'You prayed on <b>{a}</b> days this week': 'صلّيت في <b>{a}</b> أيام هذا الأسبوع', 'You opened the Quran on <b>{n}</b> days this week.': 'فتحت المصحف في <b>{n}</b> أيام هذا الأسبوع.', 'Each day is a fresh start. Tick a prayer when you want to.': 'كل يوم بداية جديدة. علّم صلاة متى شئت.',
+  'Circles: the five prayers. Squares: Quran opened, adhkar read.': 'الدوائر: الصلوات الخمس. المربعات: المصحف والأذكار.',
+  'Source being reviewed': 'المصدر قيد المراجعة', 'Step 1 of 2': 'الخطوة 1 من 2', 'Prayer times for your city': 'مواقيت الصلاة لمدينتك', 'The Quran word by word, with the context of each verse': 'القرآن كلمة كلمة مع سياق كل آية', 'Authentic duas for every moment': 'أدعية صحيحة لكل لحظة',
+  'No ads. No account. Everything stays on your phone. Works offline.': 'بلا إعلانات. بلا حساب. كل شيء يبقى على هاتفك. يعمل دون اتصال.', 'New to prayer, or coming back? We go step by step.': 'تبدأ الصلاة أو تعود إليها؟ نمضي خطوة خطوة.',
+  'Then your times for today. Language can be changed later in Settings.': 'ثم مواقيتك لليوم. يمكن تغيير اللغة لاحقاً من الإعدادات.', 'Where are you with prayer? (optional)': 'أين أنت من الصلاة؟ (اختياري)', 'I am starting': 'أبدأ', 'I am coming back': 'أعود', 'I already pray': 'أصلّي',
+  'Choose a city first.': 'اختر مدينة أولاً.', 'The one usually used in your country is already chosen. Not sure? Keep it. You can change it any time.': 'الطريقة المعتادة في بلدك مختارة. لست متأكداً؟ احتفظ بها.',
+  'Five words a day': 'خمس كلمات يومياً', 'A few very frequent words make up a large part of the Quran. Start with five, about two minutes.': 'كلمات قليلة متكررة تشكل جزءاً كبيراً من القرآن. ابدأ بخمس، دقيقتان تقريباً.', 'Start · 5 new words · 2 min': 'ابدأ · 5 كلمات · دقيقتان',
+  '≈ {p} pages a day': '≈ {p} صفحة يومياً', 'Miss a day? The plan adjusts by itself. No debt, no catching up by hand.': 'فاتك يوم؟ الخطة تتكيف وحدها.', 'Find a verse or a dua': 'ابحث عن آية أو دعاء',
+  'Share safa.': 'شارك safa.', 'Give feedback or report an error': 'رأيك أو الإبلاغ عن خطأ', 'Finish the Quran': 'ختم القرآن', 'Find': 'بحث', 'Review': 'مراجعة'
+});
+
+Object.assign(FR, { 'You prayed on <b>1</b> day this week': 'Tu as prié <b>1</b> jour cette semaine', ' and opened the Quran on <b>1</b>': ' et ouvert le Coran <b>1</b> jour', ' and opened the Quran on <b>{n}</b>': ' et ouvert le Coran <b>{n}</b> jours', 'Duas for anxiety and sorrow': "Douas contre l'angoisse et la tristesse" });
+Object.assign(AR, { 'You prayed on <b>1</b> day this week': 'صلّيت في يوم <b>1</b> هذا الأسبوع', 'Duas for anxiety and sorrow': 'أدعية الهم والحزن', '<b>You are not alone.</b> If you are thinking about ending your life or are in danger, call now: 3114 in France (free, 24/7), or your local emergency number. Talking to someone helps.': '<b>لست وحدك.</b> إن كنت تفكر في إنهاء حياتك أو في خطر، اتصل الآن برقم الطوارئ في بلدك. الحديث مع أحد يساعد.' });

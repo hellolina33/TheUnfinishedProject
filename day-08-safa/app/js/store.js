@@ -4,7 +4,7 @@ const DEF = {
   v: 1, lang: 'auto', onboarded: false, loc: null, method: 'MWL', madhab: 'shafi',
   offsets: { fajr: 0, dhuhr: 0, asr: 0, maghrib: 0, isha: 0 }, hijriAdj: 0, h24: true,
   q: { last: null, favs: [], taf: [], dl: {}, wbw: false, flow: false, tr: 'auto', tl: false, fs: 1, reciter: 'Alafasy_128kbps', speed: 1, hide: 0 },
-  d: { favs: [], tl: false },
+  d: { favs: [], tl: true },
   days: {}, pauseOn: false, rem: { on: false, t: '21:00' },
   ui: { theme: 'auto', scale: 1, hc: false, motion: false },
   fri: { on: true },

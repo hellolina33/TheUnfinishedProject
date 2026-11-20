@@ -1,4 +1,5 @@
 import { S, save, data, dayKey, getDay } from '../store.js';
+import { reportUrl } from '../ui.js';
 import { $, $$, esc, icon, toast, download } from '../ui.js';
 import { t, lang } from '../i18n.js';
 const fr = () => lang() === 'fr';
@@ -19,7 +20,7 @@ export async function renderList(root) {
   const row = c => `<a class="srow" href="#/duas/${c.id}"><span class="st"><b>${esc(title(c))}</b><span class="muted small">${t(c.d.length > 1 ? '{n} invocations' : '{n} invocation', { n: c.d.length })}</span></span>${icon.chev}</a>`;
   root.innerHTML = `<header class="vh"><div><h1>${t('Duas')}</h1><span class="mono">${t('Hisnul Muslim · Fortress of the Muslim')}</span></div></header>
     <div class="searchf">${icon.search}<input id="ds" class="inp" type="search" placeholder="${t('How do you feel? anxious, travelling…')}" value="${esc(st.q)}" autocomplete="off" aria-label="${t('Search duas by feeling or situation')}"></div>
-    <div class="chips scroll">${FEEL.map(f => `<button class="chip" data-feel="${esc(f)}" aria-pressed="${st.feel === f}">${esc(t(f))}</button>`).join('')}<button class="chip" data-feel="__fav" aria-pressed="${st.feel === '__fav'}">${t('Favourites')}</button></div>
+    <div class="chips wrapc">${FEEL.map(f => `<button class="chip" data-feel="${esc(f)}" aria-pressed="${st.feel === f}">${esc(t(f))}</button>`).join('')}<button class="chip" data-feel="__fav" aria-pressed="${st.feel === '__fav'}">${t('Favourites')}</button></div>
     <a class="card row" href="#/mydua"><span><span class="mono">${t('Personal')}</span><b>${t('My duas')}</b><span class="muted small">${S.myDuas.length ? t('{n} saved', { n: S.myDuas.length }) : t('Write your own, with a gentle reminder')}</span></span>${icon.chev}</a>
     <div id="dl"></div>`;
   const out = $('#dl', root);
@@ -55,11 +56,14 @@ export async function renderChapter(root, id) {
       ${!ar() && ((fr() && x.tf) || x.tl) ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
       ${ar() ? '' : `<p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
       <div class="df"><span class="dsrc"><span class="badge mono">${esc(x.ref || t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${gradeBadge(x)}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
+      <div class="dx"><button class="linkbtn small" data-share="${i}">${t('Share')}</button><a class="linkbtn small" href="${reportUrl('Dua ' + c.id + '.' + (i + 1))}" target="_blank" rel="noopener">${t('Report an error')}</a></div>
     </article>`).join('')}
-    <p class="muted small pad">${t("Text from Hisnul Muslim by Sa'id al-Qahtani. Source references are matched automatically and still need review by a person of knowledge.")}</p></div>`;
+    <p class="muted small pad">${t("Text from Hisnul Muslim (the Fortress of the Muslim) by Sa'id al-Qahtani, the most widely used collection of duas. Sources marked “being reviewed” are waiting for a check by a person of knowledge.")}</p></div>`;
   const dd = $('#dd', root);
   $('#dtl', root).onclick = e => { S.d.tl = !S.d.tl; save(); dd.classList.toggle('notl', !S.d.tl); e.target.setAttribute('aria-pressed', S.d.tl); };
-  dd.onclick = e => {
+  dd.onclick = async e => {
+    const sh = e.target.closest('[data-share]');
+    if (sh) { const x = c.d[+sh.dataset.share], txt = `${x.ar}\n\n${(fr() && x.fr) || x.en}\n— ${x.ref || 'Hisnul Muslim'}\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
     const cb = e.target.closest('[data-count]');
     if (cb) { const i = +cb.dataset.count, n = c.d[i].n; counts[i] = (counts[i] || 0) >= n ? 0 : (counts[i] || 0) + 1; cb.textContent = `${counts[i]} / ${n}`; cb.classList.toggle('done', counts[i] >= n); if (counts[i] >= n && navigator.vibrate) navigator.vibrate(30); return; }
     const mb = e.target.closest('[data-mine]');
@@ -82,7 +86,7 @@ export async function renderChapter(root, id) {
 export const GRADES = { sahih2: ['Sahih', 'In Sahih al-Bukhari or Sahih Muslim'], sahih_alb: ['Sahih', 'Graded sahih by Al-Albani'], hasan: ['Hasan', 'Graded hasan'], quran: ['Quran', 'Verse of the Quran'], ref: ['Source cited', 'Collection cited; grade not shown here'] };
 function gradeBadge(x) {
   const g = GRADES[x.gr];
-  if (!g) return `<span class="grade none" title="${esc(t('No source matched yet. Check it with a person of knowledge.'))}">${t('To verify')}</span>`;
+  if (!g) return `<span class="grade none" title="${esc(t('No source matched yet. Check it with a person of knowledge.'))}">${t('Source being reviewed')}</span>`;
   return `<span class="grade ${x.gr}" title="${esc(t(g[1]))}">${t(g[0])}</span>`;
 }
 

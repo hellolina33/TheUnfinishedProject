@@ -107,10 +107,11 @@ export async function renderLessons(root) {
   const home = () => {
     const d = due().length, k = known();
     root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Quranic Arabic')}</b><span class="ib"></span></header>
-      <section class="hero2"><span class="mono">${t('You recognise')}</span><div class="big">${Math.round(k / total * 100)}%</div><p class="muted">${t('of the words in the Quran, counting each time they appear.')}</p></section>
+      ${k ? `<section class="hero2"><span class="mono">${t('You recognise')}</span><div class="big">${Math.max(1, Math.round(k / total * 100))}%</div><p class="muted">${t('of the words in the Quran, counting each time they appear.')}</p></section>`
+        : `<section class="hero2"><span class="mono">${t('Five words a day')}</span><p class="lead">${t('A few very frequent words make up a large part of the Quran. Start with five, about two minutes.')}</p></section>`}
       <p class="pad">${t('Five minutes a day. The most frequent words first, each shown in a verse.')}</p>
-      <button class="btn big" id="lgo">${d ? t('Start · {n} to review + 5 new', { n: Math.min(d, 15) }) : t('Start · 5 new words')}</button>
-      <p class="muted small pad">${t('{n} words started. {k} words known.', { n: Object.keys(L.w).length, k: Object.values(L.w).filter(x => x.b >= 2).length })}</p>
+      <button class="btn big" id="lgo">${d ? t('Start · {n} to review + 5 new', { n: Math.min(d, 15) }) : t('Start · 5 new words · 2 min')}</button>
+      ${Object.keys(L.w).length ? `<p class="muted small pad">${t('{n} words started. {k} words known.', { n: Object.keys(L.w).length, k: Object.values(L.w).filter(x => x.b >= 2).length })}</p>` : ''}
       <p class="muted small pad">${t('Meanings come from the word-by-word data. They give the sense in context, not a full dictionary entry.')}</p>`;
     $('#lgo', root).onclick = () => { queue = [...due().slice(0, 15), ...fresh()]; pos = 0; shown = false; card(); };
   };

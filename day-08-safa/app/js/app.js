@@ -28,14 +28,15 @@ async function route() {
   view.onclick = null; view.onchange = null;
   if (!S.onboarded || !S.loc) {
     tabbar.hidden = true; document.body.className = 'bare'; mini.hidden = true;
-    onboarding.render(view, () => { location.hash = '#/today'; route(); });
+    onboarding.render(view, () => { route(); });
     return;
   }
+  if (!S.since) { const ks = Object.keys(S.days).sort(); S.since = ks[0] || dayKey(); save(); }
   const [name = 'today', a, b, c3] = location.hash.replace(/^#\/?/, '').split('/');
   const tab = { today: 'today', qibla: 'today', flight: 'today', calendar: 'today', learn: 'today', quran: 'quran', khatm: 'quran', hifz: 'quran', lessons: 'quran', ask: 'quran', duas: 'duas', mydua: 'duas', track: 'track', qada: 'track', settings: 'track', about: 'track' }[name] || 'today';
   const immersive = (name === 'quran' && a) || name === 'qibla';
-  document.body.className = (immersive ? 'dark bare' : '');
-  applyUi(); if (immersive) document.querySelector('meta[name=theme-color]').content = '#080808';
+  document.body.className = name === 'qibla' ? 'dark bare' : immersive ? 'bare' : '';
+  applyUi(); if (name === 'qibla') document.querySelector('meta[name=theme-color]').content = '#080808';
   tabbar.hidden = !!immersive; drawMini();
   tabbar.querySelectorAll('a').forEach(x => x.dataset.tab === tab ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
   let c;
@@ -58,7 +59,7 @@ async function route() {
     else c = renderToday(view);
   } catch (e) {
     console.error(e);
-    view.innerHTML = `<p class="muted pad">${t('This screen could not load. If you are offline, open it once with a connection and it will stay available.')}</p><a class="btn line sm" href="#/today">${t('Back to Today')}</a>`;
+    view.innerHTML = `<p class="muted pad">${t('This screen could not load. If you are offline, open it once with a connection and it will stay available.')}</p><div class="row2 pad"><button class="btn sm" onclick="location.reload()">${t('Try again')}</button><a class="btn line sm" href="#/today">${t('Back to Today')}</a></div>`;
   }
   if (my !== token) { if (typeof c === 'function') c(); return; }
   cleanup = c;
