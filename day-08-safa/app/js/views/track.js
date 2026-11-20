@@ -1,6 +1,6 @@
 import { S, save, replaceState, resetState, dayKey, addDays, getDay, P5, data } from '../store.js';
 import { METHODS, NAMES, timesFor, fmtTime } from '../prayer.js';
-import { $, $$, esc, icon, pad, toast, download, cityField, LOGO } from '../ui.js';
+import { $, $$, esc, icon, pad, toast, download, cityField, LOGO, countryName, reportUrl } from '../ui.js';
 import { setLocation, locateOnce } from './onboarding.js';
 import { RECITERS } from './quran.js';
 import { t, L, lang, applyLang } from '../i18n.js';
@@ -13,10 +13,11 @@ export function renderTrack(root) {
     const today = dayKey(), end = addDays(today, weekOff * 7), keys = Array.from({ length: 7 }, (_, i) => addDays(end, i - 6));
     const days = keys.map(k => getDay(k, false));
     const lbl = k => k === today ? t('Today') : new Intl.DateTimeFormat(L(), { weekday: 'short', timeZone: 'UTC' }).format(new Date(k + 'T12:00:00Z'));
-    const active = days.filter(d => !d.pz), shown = active.filter(d => d.p.some(Boolean)).length, read = days.filter(d => d.r).length;
+    const since = S.since || today, live = keys.map(k => k >= since);
+    const active = days.filter((d, i) => live[i] && !d.pz), shown = active.filter(d => d.p.some(Boolean)).length, read = days.filter((d, i) => live[i] && d.r).length;
     const range = new Intl.DateTimeFormat(L(), { day: 'numeric', month: 'short', timeZone: 'UTC' });
-    const cell = (k, d, j) => `<td><button class="pd ${d.pz ? 'pz' : d.p[j] ? 'on' : ''}" data-k="${k}" data-j="${j}" ${d.pz || k > today ? 'disabled' : ''} aria-pressed="${!!d.p[j]}" aria-label="${NAMES[P5[j]]}, ${lbl(k)}${d.pz ? t(', paused') : ''}"></button></td>`;
-    const cell2 = (k, d, f, name) => `<td><button class="pd sq ${d[f] ? 'on' : ''}" data-k="${k}" data-f="${f}" ${k > today ? 'disabled' : ''} aria-pressed="${!!d[f]}" aria-label="${name}, ${lbl(k)}"></button></td>`;
+    const cell = (k, d, j) => k < since ? '<td></td>' : `<td><button class="pd ${d.pz ? 'pz' : d.p[j] ? 'on' : ''}" data-k="${k}" data-j="${j}" ${d.pz || k > today ? 'disabled' : ''} aria-pressed="${!!d.p[j]}" aria-label="${NAMES[P5[j]]}, ${lbl(k)}${d.pz ? t(', paused') : ''}"></button></td>`;
+    const cell2 = (k, d, f, name) => k < since ? '<td></td>' : `<td><button class="pd sq ${d[f] ? 'on' : ''}" data-k="${k}" data-f="${f}" ${k > today ? 'disabled' : ''} aria-pressed="${!!d[f]}" aria-label="${name}, ${lbl(k)}"></button></td>`;
     root.innerHTML = `<header class="vh"><div><h1>${t('Track')}</h1></div><a class="ib" href="#/settings" aria-label="${t('Settings')}">${icon.gear}</a></header>
       <div class="pause ${S.pauseOn ? 'on' : ''}"><div><b>${t('Pause mode')}</b><small>${t('Periods, illness, hard days. Tracking freezes. Nothing is counted against you.')}</small></div><button class="sw" role="switch" id="pz" aria-checked="${S.pauseOn}" aria-label="${t('Pause mode')}"></button></div>
       <div class="wkh"><button class="ib" id="wprev" aria-label="${t('Previous week')}">${icon.back}</button><span class="mono">${range.format(new Date(keys[0] + 'T12:00:00Z'))} – ${range.format(new Date(keys[6] + 'T12:00:00Z'))}</span><button class="ib flip" id="wnext" ${weekOff >= 0 ? 'disabled' : ''} aria-label="${t('Next week')}">${icon.back}</button></div>
@@ -24,7 +25,8 @@ export function renderTrack(root) {
         <tbody>${P5.map((p, j) => `<tr><th class="l">${NAMES[p]}</th>${keys.map((k, i) => cell(k, days[i], j)).join('')}</tr>`).join('')}
         <tr class="sep"><th class="l">${t('Quran')}</th>${keys.map((k, i) => cell2(k, days[i], 'r', t('Quran reading'))).join('')}</tr>
         <tr><th class="l">${t('Adhkar')}</th>${keys.map((k, i) => cell2(k, days[i], 'a', t('Adhkar'))).join('')}</tr></tbody></table>
-      <p class="sumline">${active.length ? t('You showed up on <b>{a} of {b}</b> days', { a: shown, b: active.length }) + (read ? t(' and opened the Quran on <b>{n}</b>', { n: read }) : '') + '.' : t('This week is paused.')} ${days.some(d => d.pz) ? t('Paused days are left out.') : ''}</p>
+      <p class="sumline">${!active.length && days.some(d => d.pz) ? t('This week is paused.') : shown ? t(shown === 1 ? 'You prayed on <b>1</b> day this week' : 'You prayed on <b>{a}</b> days this week', { a: shown }) + (read ? t(read === 1 ? ' and opened the Quran on <b>1</b>' : ' and opened the Quran on <b>{n}</b>', { n: read }) : '') + '.' : read ? t('You opened the Quran on <b>{n}</b> days this week.', { n: read }) : t('Each day is a fresh start. Tick a prayer when you want to.')} ${days.some(d => d.pz) ? t('Paused days are left out.') : ''}</p>
+      <p class="muted small legend">${t('Circles: the five prayers. Squares: Quran opened, adhkar read.')}</p>
       <section class="card stack">
         <label class="tog"><span>${t('Evening check-in')}<small>${t('One gentle reminder a day. Nothing else.')}</small></span><input type="checkbox" id="ron" ${S.rem.on ? 'checked' : ''}></label>
         <div class="row2"><label class="lbl" for="rt">${t('Time')}</label><input type="time" id="rt" class="inp" value="${S.rem.t}"></div>
@@ -69,7 +71,7 @@ export function renderSettings(root) {
         <h3>${t('Language')}</h3>
         <div class="seg lang">${[['auto', t('Automatic')], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
         <h3>${t('Place')}</h3>
-        <p class="muted small">${t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(S.loc.country) })}</p>
+        <p class="muted small">${t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) })}</p>
         <div id="scity"></div><button class="btn line sm" id="sgeo">${t('Use my location once')}</button>
         <h3>${t('Prayer times')}</h3>
         <label class="lbl" for="smeth">${t('Calculation method')}</label>
@@ -101,7 +103,9 @@ export function renderSettings(root) {
         <div class="grid2"><button class="btn line sm" id="ssync">${t('Create sync file')}</button><label class="btn line sm">${t('Merge a sync file')}<input type="file" id="smerge" accept=".safa,application/json" hidden></label></div>
         <h3>${t('Backup')}</h3>
         <p class="muted small">${t('No account, so no cloud. Keep a file and restore it on any device.')}</p>
-        <div class="grid2"><button class="btn line sm" id="sexp">${t('Export backup')}</button><label class="btn line sm">${t('Import backup')}<input type="file" id="simp" accept="application/json,.json" hidden></label></div>
+        <p class="muted small">${t('The backup is encrypted with the passphrase above. Without it, nobody can read the file, not even you.')}</p>
+        <div class="grid2"><button class="btn line sm" id="sexp">${t('Export backup')}</button><label class="btn line sm">${t('Import backup')}<input type="file" id="simp" accept=".safa,application/json,.json" hidden></label></div>
+        <button class="linkbtn small" id="sexp2">${t('Export a readable copy (not encrypted)')}</button>
         <button class="btn line sm danger" id="srst">${t('Erase everything on this device')}</button>
       </section>`;
     cityField($('#scity', root), { placeholder: t('Change city'), onPick: c => { setLocation(c); toast(t('City set · {c}', { c: c[0] })); draw(); } });
@@ -121,9 +125,13 @@ export function renderSettings(root) {
     if (b.dataset.lang) { S.lang = b.dataset.lang; if (S.q.tr !== 'none') S.q.tr = 'auto'; save(); applyLang(); window.dispatchEvent(new Event('safa:lang')); return; }
     if (b.dataset.off) { const p = b.dataset.off; S.offsets[p] = Math.max(-30, Math.min(30, (S.offsets[p] || 0) + +b.dataset.d)); save(); const y = window.scrollY; await draw(); window.scrollTo(0, y); return; }
     if (b.id === 'sgeo') { b.textContent = t('Locating…'); try { await locateOnce(); toast(t('Location set · {c}', { c: S.loc.name })); } catch (err) { toast(t('Location unavailable.')); } draw(); return; }
-    if (b.id === 'sexp') { download(`safa-backup-${dayKey()}.json`, JSON.stringify({ app: 'safa.', exported: new Date().toISOString(), state: S }, null, 2)); return; }
+    if (b.id === 'sexp') {
+      const pass = $('#spass', root).value; if (pass.length < 8) { toast(t('Type a passphrase of 8 characters or more above, to encrypt your backup.')); $('#spass', root).focus(); return; }
+      b.disabled = true; const txt = await SY.seal(pass); b.disabled = false; download(`safa-backup-${dayKey()}.safa`, txt, 'application/octet-stream'); toast(t('Encrypted backup saved. Keep your passphrase.')); return;
+    }
+    if (b.id === 'sexp2') { download(`safa-backup-${dayKey()}.json`, JSON.stringify({ app: 'safa.', exported: new Date().toISOString(), state: S }, null, 2)); return; }
     if (b.id === 'sclr') { try { await caches.delete('safa-audio'); } catch (err) { /* ignore */ } S.q.dl = {}; save(); toast(t('Saved audio deleted')); draw(); return; }
-    if (b.id === 'srst') { if (Date.now() - armed < 4000) { resetState(); try { await caches.delete('safa-audio'); } catch (err) { /* ignore */ } location.hash = '#/today'; location.reload(); } else { armed = Date.now(); b.textContent = t('Tap again to erase everything'); } return; }
+    if (b.id === 'srst') { if (Date.now() - armed < 4000) { resetState(); try { await caches.delete('safa-audio'); } catch (err) { /* ignore */ } location.hash = '#/today'; location.reload(); } else { armed = Date.now(); b.textContent = t('Tap again to erase everything. Export a backup first if you want to keep it.'); } return; }
     if (b.id === 'sall') {
       b.disabled = true; let ok = 0;
       try { for (let s = 1; s <= 114; s++) { await Promise.all([fetch(`data/quran/${s}.json`), fetch(`data/tafsir/${s}.json`), fetch(`data/${lang() === 'fr' ? 'fr' : 'pk'}/${s}.json`)]); ok++; b.textContent = t('Saving… {n} / 114', { n: ok }); } await fetch(lang() === 'fr' ? 'data/search_fr.json' : 'data/search.json'); b.textContent = t('Whole Quran saved for offline ✓'); }
@@ -153,8 +161,13 @@ export function renderSettings(root) {
       e.target.value = ''; return;
     }
     if (id === 'simp') {
-      try { const o = JSON.parse(await e.target.files[0].text()); if (!o || o.app !== 'safa.' || !o.state || !o.state.loc) throw new Error('bad'); replaceState(o.state); toast(t('Backup restored')); }
-      catch (err) { toast(t('This file is not a safa. backup.')); }
+      try {
+        const txt = await e.target.files[0].text(), o = JSON.parse(txt); let st;
+        if (o && o.safa === 'sync') { const pass = $('#spass', root).value; if (!pass) { toast(t('Type the passphrase first.')); e.target.value = ''; return; } st = await SY.open(txt, pass); }
+        else { if (!o || o.app !== 'safa.') throw new Error('bad'); st = o.state; }
+        if (!st || !st.loc) throw new Error('bad'); replaceState(st); toast(t('Backup restored'));
+      } catch (err) { toast(t('Could not open this file. Check the passphrase.')); }
+      e.target.value = '';
     }
     if (['smeth', 'smad', 'shij', 's24', 'simp'].includes(id)) { save(); draw(); }
   };
@@ -168,8 +181,10 @@ export function renderAbout(root) {
       <div class="onb-logo sm">${LOGO}</div><h2>safa<i>.</i></h2><p class="lead">${t('The silent spiritual instrument.')}</p>
       <h3>${t('The promise')}</h3>
       <ul class="plain">${['No ads. Ever.', 'No account. No analytics. No tracker.', 'Your place, your prayers and your reading stay on this device.', 'No pop-up will ever stand between you and the Qibla, the times or the Quran.', 'No streak to lose. No guilt.'].map(x => `<li>${t(x)}</li>`).join('')}</ul>
+      <p class="muted small">${t('safa. is a tool, not a religious authority. Times are calculations and can differ by a minute or two from your mosque. For rulings, ask a person of knowledge.')}</p>
       <h3>${t('Support · Sadaqah Jariyah')}</h3>
-      <p>${t('Everything here is free. Contributions are not open yet: there is nothing to pay and nothing locked. If safa. helps you, share it with one person. That is the support for now.')}</p>
+      <p>${t('Everything here is free, with nothing locked. Sadaqah Jariyah is a good deed that keeps giving after it is done. The simplest one here: share safa. with one person it could help.')}</p>
+      <div class="row2"><button class="btn sm" id="ashare">${t('Share safa.')}</button><a class="btn sm line" href="${reportUrl('feedback')}" target="_blank" rel="noopener">${t('Give feedback or report an error')}</a></div>
       <h3>${t('Sources')}</h3>
       <ul class="plain small">
         <li>${t(`<b>Prayer times, Qibla:</b> adhan-js by Batoul Apps (MIT), computed on device.`)}</li>
@@ -182,7 +197,7 @@ export function renderAbout(root) {
         <li>${t(`<b>Duas:</b> Hisnul Muslim by Sa'id bin Ali bin Wahf al-Qahtani, text and audio from hisnmuslim.com.`)}</li>
         <li>${t(`<b>Cities:</b> city-timezones (MIT).`)}</li>
       </ul>
-      <p class="muted small">${t('safa. is a tool, not a religious authority. Times are calculations and can differ by a minute or two from your mosque. For rulings, ask a person of knowledge.')}</p>
-      <p class="mono">${t('Version 1.0 · a prototype from The Unfinished 30')}</p>
+      <p class="mono">${t('Version 1.1 · made by Salah, as part of The Unfinished 30. safa. stays online after the challenge.')}</p>
     </section>`;
+  const sb = $('#ashare', root); if (sb) sb.onclick = async () => { const url = location.origin + location.pathname.replace(/app\/.*$/, ''); const txt = t('safa. Prayer times, the Quran word by word with context, and duas. No ads, no account, no guilt.'); try { if (navigator.share) await navigator.share({ title: 'safa.', text: txt, url }); else { await navigator.clipboard.writeText(txt + ' ' + url); toast(t('Copied')); } } catch (e) { /* cancelled */ } };
 }

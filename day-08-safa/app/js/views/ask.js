@@ -8,6 +8,7 @@ import { surahName } from './quran.js';
 const STOP = new Set(('a an the of to in on for and or is are was be it this that what how why when who do does did can i my me we you your with from about there their them his her allah god ' +
   'le la les un une des de du d l et ou est sont a au aux en pour par sur que qui quoi comment pourquoi quand je j me mon ma mes tu te ton ta tes il elle on nous vous ils elles ce cet cette ces dans avec se sa son ses y ne pas plus dieu allah ' +
   'في من على إلى عن ما ماذا كيف لماذا هل أن إن هو هي هم أنا نحن الله').split(' '));
+const DISTRESS = /(suicid|me tuer|mourir|en finir|plus envie de vivre|kill myself|end my life|want to die|انتحار)/;
 const RULING = /\b(halal|haram|allowed|permitted|forbidden|ruling|fatwa|permis|interdit|autoris|licite|illicite|obligatoire|obligatory|حلال|حرام|يجوز|حكم|فتوى)/i;
 // A few bridges between everyday words and the vocabulary of the translations.
 const SYN = {
@@ -20,10 +21,12 @@ const stem = x => x.length > 5 ? x.slice(0, x.length - 2) : x;
 
 let last = '';
 export async function renderAsk(root) {
-  root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Sourced answers')}</b><span class="ib"></span></header>
+  root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Find a verse or a dua')}</b><span class="ib"></span></header>
     <p class="lead pad">${t('Ask a question. safa. answers only with quoted verses and duas, with their reference. It never invents an answer or gives a ruling.')}</p>
     <form id="af" class="searchf">${icon.search}<input id="aq" class="inp" type="search" placeholder="${t('e.g. patience in hardship')}" value="${esc(last)}" autocomplete="off" aria-label="${t('Your question')}"></form>
+    <div class="chips wrapc" id="aex">${['patience in hardship', 'my parents', 'anxiety', 'forgiveness', 'gratitude', 'death of a loved one'].map(x => `<button class="chip" data-ex="${esc(t(x))}">${esc(t(x))}</button>`).join('')}</div>
     <div id="ao"></div>`;
+  root.onclick = e => { const b = e.target.closest('[data-ex]'); if (!b) return; $('#aq', root).value = b.dataset.ex; run(); };
   const out = $('#ao', root);
   const run = async () => {
     const q = $('#aq', root).value.trim(); last = q; if (q.length < 3) { out.innerHTML = ''; return; }
@@ -38,7 +41,9 @@ export async function renderAsk(root) {
     ds.sort((a, b) => b[0] - a[0]);
     const ref = i => { let s = 1; while (starts[s] <= i) s++; return [s, i - starts[s - 1] + 1]; };
     const GR = { sahih2: 'Sahih · in Al-Bukhari or Muslim', sahih_alb: 'Sahih · graded by Al-Albani', hasan: 'Hasan', quran: 'Quran', ref: 'Source cited, grade not shown' };
-    out.innerHTML = (RULING.test(q) ? `<div class="note">${t('<b>This looks like a question about a ruling.</b> safa. does not give rulings. Here are related texts; for the ruling itself, ask a person of knowledge or a recognised fatwa body.')}</div>` : '')
+    if (DISTRESS.test(fold(q))) { out.innerHTML = `<div class="note care">${t('<b>You are not alone.</b> If you are thinking about ending your life or are in danger, call now: 3114 in France (free, 24/7), or your local emergency number. Talking to someone helps.')}</div><a class="card row" href="#/duas/34"><span><b>${t('Duas for anxiety and sorrow')}</b></span>${icon.chev}</a>`; return; }
+    const help = false ? `<div class="note care">${t('<b>You are not alone.</b> If you are thinking about ending your life or are in danger, call now: 3114 in France (free, 24/7), or your local emergency number. Talking to someone helps.')}</div>` : '';
+    out.innerHTML = help + (RULING.test(q) ? `<div class="note">${t('<b>This looks like a question about a ruling.</b> safa. does not give rulings. Here are related texts; for the ruling itself, ask a person of knowledge or a recognised fatwa body.')}</div>` : '')
       + (vs.length || ds.length ? '' : `<p class="muted pad">${t('No passage found. Try other words, or fewer.')}</p>`)
       + (vs.length ? `<h3 class="sect">${t('From the Quran')}</h3>` + vs.slice(0, 6).map(([, i]) => { const [s, v] = ref(i); return `<a class="quote" href="#/quran/${s}/${v}"><p ${lang() === 'ar' ? 'lang="ar" dir="rtl" class="ar"' : ''}>« ${esc(all[i])} »</p><span class="mono">${esc(surahName(meta, s))} ${s}:${v} · ${t('Translation: {x}', { x: lang() === 'fr' ? 'Rashid Maash' : lang() === 'ar' ? t('Arabic text') : 'Talal Itani' })}</span></a>`; }).join('') : '')
       + (ds.length ? `<h3 class="sect">${t('From Hisnul Muslim')}</h3>` + ds.slice(0, 4).map(([, c, x]) => `<a class="quote" href="#/duas/${c.id}"><p class="ar" lang="ar" dir="rtl">${esc(x.ar.slice(0, 220))}${x.ar.length > 220 ? '…' : ''}</p>${lang() !== 'ar' ? `<p>« ${esc(((lang() === 'fr' && x.fr) || x.en).slice(0, 260))} »</p>` : ''}<span class="mono">${esc((lang() === 'fr' && c.tf) || (lang() === 'ar' && c.ta) || c.t)}${x.ref ? ' · ' + esc(x.ref) : ''}${x.gr ? ' · ' + t(GR[x.gr] || '') : ''}</span></a>`).join('') : '')

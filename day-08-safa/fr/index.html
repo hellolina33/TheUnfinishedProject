@@ -10,9 +10,7 @@
 <meta name="theme-color" content="#080808">
 <link rel="alternate" hreflang="en" href="../">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23080808'/%3E%3Cmask id='m'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ccircle cx='58' cy='42' r='25' fill='black'/%3E%3C/mask%3E%3Ccircle cx='46' cy='52' r='28' fill='white' mask='url(%23m)'/%3E%3Ccircle cx='72' cy='30' r='7' fill='%23E85D2A'/%3E%3C/svg%3E">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter+Tight:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>@font-face{font-family:'Inter Tight';font-weight:300;font-display:swap;src:url(../app/fonts/inter-tight-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:400;font-display:swap;src:url(../app/fonts/inter-tight-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:500;font-display:swap;src:url(../app/fonts/inter-tight-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:600;font-display:swap;src:url(../app/fonts/inter-tight-latin-600-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:700;font-display:swap;src:url(../app/fonts/inter-tight-latin-600-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:400;font-display:swap;src:url(../app/fonts/inter-tight-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02FF,U+1E00-1EFF}@font-face{font-family:'Inter Tight';font-weight:500;font-display:swap;src:url(../app/fonts/inter-tight-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02FF,U+1E00-1EFF}@font-face{font-family:'Inter Tight';font-weight:600;font-display:swap;src:url(../app/fonts/inter-tight-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02FF,U+1E00-1EFF}@font-face{font-family:'JetBrains Mono';font-weight:300;font-display:swap;src:url(../app/fonts/jetbrains-mono-latin-300-normal.woff2) format('woff2')}@font-face{font-family:'JetBrains Mono';font-weight:400;font-display:swap;src:url(../app/fonts/jetbrains-mono-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'JetBrains Mono';font-weight:500;font-display:swap;src:url(../app/fonts/jetbrains-mono-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'Amiri';font-weight:400;font-display:swap;src:url(../app/fonts/amiri-arabic-400-normal.woff2) format('woff2')}@font-face{font-family:'Amiri';font-weight:700;font-display:swap;src:url(../app/fonts/amiri-arabic-400-normal.woff2) format('woff2')}</style>
 <style>
 :root{
   --obsidian:#080808;--raw:#1c1c1b;--graphite:#2a2a28;
@@ -280,15 +278,14 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
 </head>
 <body>
 
-<div class="strip"><div class="wrap"><span>PROTOTYPE · <a href="/">THE UNFINISHED 30</a></span><span class="hs">V1 · APPLI WEB INSTALLABLE</span></div></div>
 
 <header class="top"><div class="wrap">
   <a class="logo" href="#top" aria-label="Accueil safa.">
     <svg width="34" height="34" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="22" fill="#080808"/><mask id="lm"><rect width="100" height="100" fill="#fff"/><circle cx="58" cy="42" r="25" fill="#000"/></mask><circle cx="46" cy="52" r="28" fill="#fff" mask="url(#lm)"/><circle cx="72" cy="30" r="7" fill="#E85D2A"/></svg>
     <b>safa<i>.</i></b>
   </a>
-  <nav class="links" aria-label="Sections"><a href="#onboarding">30 secondes</a><a href="#tabs">Quatre onglets</a><a href="#flight">En vol</a><a href="#scope">Périmètre V1</a></nav>
-  <div class="hdr"><a class="langsw" href="../" hreflang="en" data-setlang="en">EN</a><a class="btn sm" href="../app/">Ouvrir l’app</a></div>
+  <nav class="links" aria-label="Sections"><a href="#onboarding">30 secondes</a><a href="#tabs">Quatre onglets</a><a href="#flight">En vol</a><a href="../coulisses/">Coulisses</a></nav>
+  <div class="hdr"><a class="langsw" href="../" hreflang="en" data-setlang="en">EN</a><a class="btn sm" href="../app/">Ouvrir safa.</a></div>
 </div></header>
 
 <main id="top">
@@ -296,14 +293,15 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   <div class="arc" aria-hidden="true"></div>
   <div class="wrap grid">
     <div>
-      <div class="meta"><span class="mono"><span class="dot"></span>&nbsp; L’instrument spirituel silencieux</span><span class="mono">iOS · Android · Hors ligne</span></div>
+      <div class="meta"><span class="mono"><span class="dot"></span>&nbsp; L’instrument spirituel silencieux</span><span class="mono">Sur ton téléphone · Sans store · Hors ligne</span></div>
       <h1><span>Le temps clair.</span><span>L’âme claire<span class="o">.</span></span></h1>
-      <p class="lead">Les horaires de prière, le Coran mot à mot et des douas authentiques. Zéro pub. Zéro collecte de données. Zéro culpabilité. Tu l’ouvres, et en moins de 30 secondes tu sais quand prier.</p>
-      <div class="cta"><a class="btn" href="../app/">Ouvrir l’app</a><a class="btn line" href="#flight">Prier en avion</a></div>
+      <p class="lead">Les horaires de prière, le Coran mot à mot et des douas authentiques. Zéro pub. Zéro collecte de données. Zéro culpabilité. </p>
+      <p class="lead" style="margin-top:10px"><b>Que tu pries depuis toujours, que tu reviennes ou que tu débutes : en 30 secondes, tu sais quand prier.</b></p>
+      <div class="cta"><a class="btn" href="../app/">Ouvrir safa.</a><a class="btn line" href="../app/#/learn">Tu débutes ? Commence ici</a></div>
       <div class="specs">
-        <div><b>0</b><span>Pub, compte,<br>pisteur</span></div>
-        <div><b>&lt;30s</b><span>De l’icône aux<br>horaires du jour</span></div>
-        <div><b>100%</b><span>Hors ligne, sur<br>ton appareil</span></div>
+        <div><b>0</b><span>Zéro pub,<br>zéro compte</span></div>
+        <div><b>30 s</b><span>Pour voir<br>tes horaires</span></div>
+        <div><b>100 %</b><span>Hors ligne,<br>sur ton téléphone</span></div>
       </div>
     </div>
 
@@ -320,39 +318,50 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
           </nav>
         </div>
       </div>
-      <p class="mono" style="text-align:center;margin-top:16px">Aperçu · <a href="../app/" style="color:var(--ink)">ouvrir l’app complète →</a></p>
+      <p class="mono" style="text-align:center;margin-top:16px">Aperçu · <a href="../app/" style="color:var(--ink)">ouvrir safa. →</a></p>
     </div>
   </div>
 </section>
 
-<section class="block" style="padding:56px 0"><div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap"><div><span class="mono"><span class="dot"></span>&nbsp; L’app est en ligne</span><h2 style="margin-top:12px;font-size:clamp(28px,3.4vw,44px)">Le Coran entier, 131 chapitres de douas, tes horaires. Sur ton téléphone.</h2><p class="lead" style="margin-top:12px">Ouvre-la, puis « Ajouter à l’écran d’accueil ». Elle continue de marcher hors ligne. En français et en anglais.</p></div><a class="btn" href="../app/">Ouvrir l’app</a></div></section>
+<section class="block" style="padding:56px 0"><div class="wrap" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap"><div><span class="mono"><span class="dot"></span>&nbsp; L’app est en ligne</span><h2 style="margin-top:12px;font-size:clamp(28px,3.4vw,44px)">Le Coran entier, 131 chapitres de douas, tes horaires. Sur ton téléphone.</h2><p class="lead" style="margin-top:12px">Elle s’ouvre comme une app, sans passer par un store. Sur iPhone : Safari › Partager › « Sur l’écran d’accueil ». Sur Android : menu › « Installer l’application ». Ensuite, elle marche hors ligne. En français, en anglais et en arabe.</p></div><a class="btn" href="../app/">Ouvrir safa.</a></div></section>
+
+<section class="block">
+  <div class="wrap">
+    <div class="shead"><span class="mono">La promesse</span><div><h2>Trois règles.<br>Non négociables.</h2></div></div>
+    <div class="law">
+      <article><span class="k">01</span><h3>Aucune fenêtre bloquante</h3><p>Rien ne se met entre toi et la Qibla, les horaires ou le Coran. Ni demande de note. Ni appel aux dons.</p></article>
+      <article><span class="k">02</span><h3>Utile dès le premier jour</h3><p>Sans historique, l’app propose déjà Al-Kahf le vendredi et les adhkar du matin et du soir.</p></article>
+      <article><span class="k">03</span><h3>Densité maîtrisée</h3><p>La translittération et les outils de mémorisation se cachent derrière un seul interrupteur. Calme pour les lecteurs réguliers. Rassurant pour les débutants.</p></article>
+    </div>
+  </div>
+</section>
 
 <section class="block" id="onboarding">
   <div class="wrap">
-    <div class="shead"><span class="mono">01 / Arrivée</span><div><h2>De l’icône à la prière.<br>Deux gestes.</h2><p class="lead">Pas d’inscription. Pas de tutoriel en cinq pages. Pas de paywall au lancement.</p></div></div>
+    <div class="shead"><span class="mono">Arrivée</span><div><h2>Choisis ta ville.<br>Vois l’heure. Prie.</h2><p class="lead">Pas d’inscription. Pas de tutoriel en cinq pages. Gratuit.</p></div></div>
     <div class="steps">
-      <div class="step"><span class="tm">0–5s</span><h3>Une promesse</h3><p>Un seul écran : zéro pub, zéro pistage, tout hors ligne. Un seul bouton : « Choisir ma ville ».</p></div>
-      <div class="step"><span class="tm">5–20s</span><h3>Lieu et méthode</h3><p>Ta position, une seule fois et gardée sur le téléphone, ou ta ville tapée à la main. La méthode locale est présélectionnée : UOIF en France, ISNA en Amérique du Nord. Un geste pour la changer.</p></div>
-      <div class="step"><span class="tm">20–30s</span><h3>Aujourd’hui</h3><p>Les horaires du jour, le compte à rebours vers la prochaine prière et un raccourci vers ton dernier verset. Tout est prêt.</p></div>
+      <div class="step"><span class="tm">1</span><h3>Ce que fait safa.</h3><p>Un seul écran : zéro pub, zéro pistage, tout hors ligne. Un seul bouton : « Choisir ma ville ».</p></div>
+      <div class="step"><span class="tm">2</span><h3>Ta ville</h3><p>Ta position, une seule fois et gardée sur le téléphone, ou ta ville tapée à la main. La méthode locale est présélectionnée : UOIF en France, ISNA en Amérique du Nord. Un geste pour la changer.</p></div>
+      <div class="step"><span class="tm">3</span><h3>Aujourd’hui</h3><p>Les horaires du jour, le compte à rebours vers la prochaine prière et un raccourci vers ton dernier verset. Tout est prêt.</p></div>
     </div>
   </div>
 </section>
 
 <section class="block" id="tabs">
   <div class="wrap">
-    <div class="shead"><span class="mono">02 / Structure</span><div><h2>Quatre onglets.<br>Jamais plus de deux niveaux.</h2><p class="lead">Navigation au pouce. Chaque onglet répond à un besoin du quotidien.</p></div></div>
+    <div class="shead"><span class="mono">L’app</span><div><h2>Tout tient<br>en quatre onglets.</h2><p class="lead">Simple au début. Complet quand tu veux.</p></div></div>
     <div class="tabs4">
-      <article><span class="mono">Onglet 1</span><h3>Aujourd’hui</h3><ul><li>Prochaine prière, compte à rebours, date grégorienne et hégirienne</li><li>Cinq prières et le chourouq, ajustements signalés</li><li>Reprendre la lecture</li><li>Boussole Qibla hors ligne avec vibration</li><li>Mode vol et voyage</li></ul><button class="btn line sm open" data-go="today">Voir</button></article>
+      <article><span class="mono">Onglet 1</span><h3>Aujourd’hui</h3><ul><li>Prochaine prière, compte à rebours, date grégorienne et hégirienne</li><li>Cinq prières, et le lever du soleil comme repère</li><li>Reprendre la lecture</li><li>Boussole Qibla hors ligne avec vibration</li><li>Mode vol et voyage</li></ul><button class="btn line sm open" data-go="today">Voir</button></article>
       <article><span class="mono">Onglet 2</span><h3>Coran</h3><ul><li>Recherche par sourate, verset ou mot</li><li>Bascule Mushaf ↔ mot à mot</li><li>Touche un mot pour l’écouter</li><li>Verset en boucle, de 0,75× à 1,5×</li><li>Mots masqués pour réviser</li><li>Tiroir contexte et tafsir</li></ul><button class="btn line sm open" data-go="quran">Voir</button></article>
       <article><span class="mono">Onglet 3</span><h3>Douas</h3><ul><li>Recherche par ressenti : anxiété, examen, voyage, sommeil</li><li>Arabe vocalisé, translittération, traduction</li><li>Compteur intégré pour 3, 33, 100</li><li>Source affichée sur chaque fiche</li></ul><button class="btn line sm open" data-go="duas">Voir</button></article>
-      <article><span class="mono">Onglet 4</span><h3>Suivi</h3><ul><li>Vue de la semaine, sans pourcentage anxiogène</li><li>Interrupteur Pause tout en haut</li><li>Un seul rappel doux le soir</li><li>Méthode, ajustements, audio hors ligne</li><li>Export et import de la sauvegarde</li></ul><button class="btn line sm open" data-go="track">Voir</button></article>
+      <article><span class="mono">Onglet 4</span><h3>Suivi</h3><ul><li>Vue de la semaine, sans score ni série à perdre</li><li>Interrupteur Pause tout en haut</li><li>Un seul rappel doux le soir</li><li>Méthode, ajustements, audio hors ligne</li><li>Export et import de la sauvegarde</li></ul><button class="btn line sm open" data-go="track">Voir</button></article>
     </div>
   </div>
 </section>
 
 <section class="block flight" id="flight">
   <div class="wrap">
-    <div class="shead"><span class="mono">03 / Mode avion</span><div><h2>Paris–Bangkok.<br>Quand prier ?</h2><p class="lead">Départ, arrivée, heure de décollage. safa. suit l’avion minute par minute, lit la position du soleil au-dessus de lui et te donne chaque prière dans les deux fuseaux.</p></div></div>
+    <div class="shead"><span class="mono">En voyage</span><div><h2>Paris–Bangkok.<br>Quand prier ?</h2><p class="lead">Départ, arrivée, heure de décollage. safa. suit l’avion minute par minute, lit la position du soleil au-dessus de lui et te donne chaque prière dans les deux fuseaux.</p></div></div>
     <div class="fl">
       <form class="panel" onsubmit="return false">
         <div class="field"><label for="from">Départ</label><select id="from"></select></div>
@@ -372,73 +381,24 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
   </div>
 </section>
 
-<section class="block">
-  <div class="wrap">
-    <div class="shead"><span class="mono">04 / Règles</span><div><h2>Trois règles.<br>Non négociables.</h2></div></div>
-    <div class="law">
-      <article><span class="k">01</span><h3>Aucune fenêtre bloquante</h3><p>Rien ne se met entre toi et la Qibla, les horaires ou le Coran. Ni demande de note. Ni appel aux dons.</p></article>
-      <article><span class="k">02</span><h3>Utile dès le premier jour</h3><p>Sans historique, l’app propose déjà Al-Kahf le vendredi et les adhkar du matin et du soir.</p></article>
-      <article><span class="k">03</span><h3>Densité maîtrisée</h3><p>La translittération et les outils de mémorisation se cachent derrière un seul interrupteur. Calme pour les lecteurs réguliers. Rassurant pour les débutants.</p></article>
-    </div>
-  </div>
-</section>
-
-<section class="block" id="scope">
-  <div class="wrap">
-    <div class="shead"><span class="mono">05 / Périmètre V1</span><div><h2>Livrer l’essentiel.<br>En quatre à six semaines.</h2><p class="lead">100 % local. Pas de serveur, pas de compte. Des données islamiques open source éprouvées. La contrainte technique devient la promesse.</p></div></div>
-    <table class="scope">
-      <thead><tr><th>Fonctionnalité</th><th>Impact utilisateur</th><th>Coût technique</th><th>Version</th></tr></thead>
-      <tbody id="scopeRows"></tbody>
-    </table>
-    <div class="cut">
-      <div><h3>Coach vocal IA</h3><p>Le premier gouffre financier, et la première source de frustration quand le modèle signale des erreurs qui n’existent pas. La V1 mise sur un très bon lecteur audio et le masquage des mots. L’IA vocale arrive en V2, en option payante.</p></div>
-      <div><h3>Comptes et synchro cloud</h3><p>Sans authentification, on retire environ 30 % du développement et toutes les factures de base de données, et « zéro collecte » devient vrai au sens propre. Un fichier de sauvegarde local suffit.</p></div>
-      <div><h3>Mosquées participatives</h3><p>Les horaires d’Iqamah demandent une masse critique d’utilisateurs et de la modération. La V1 propose un ajustement à la minute par prière pour coller à ta mosquée.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="block">
-  <div class="wrap stack">
-    <div>
-      <span class="mono">06 / Technique</span>
-      <h2 style="margin:18px 0 28px">Presque rien<br>à faire tourner.</h2>
-      <div class="ledger">
-        <div><span>App</span><span>React Native (Expo) ou Flutter</span></div>
-        <div><span>Horaires et Qibla</span><span>adhan-js / adhan-dart, sur l’appareil</span></div>
-        <div><span>Texte du Coran, traductions, mot à mot</span><span>Quran.com Foundation, Tanzil</span></div>
-        <div><span>Douas</span><span>La Citadelle du Musulman, en JSON local</span></div>
-        <div><span>Textes embarqués</span><span>≈ 15–25 Mo compressés</span></div>
-        <div><span>Audio des récitateurs</span><span>Stockage statique, en cache sur le téléphone</span></div>
-        <div><span>Suivi</span><span>SQLite / MMKV, uniquement en local</span></div>
-      </div>
-    </div>
-    <div class="support">
-      <span class="mono" style="color:#8b8a85">Réglages › À propos</span>
-      <h3>Soutenir le projet.<br>Sadaqah Jariyah.</h3>
-      <p>Tout est gratuit dans la V1. Un écran discret dans les réglages permet à qui le souhaite de couvrir la publication et l’hébergement audio. Pas de fenêtre. Pas de relance. Pas de « si tu en as les moyens ».</p>
-      <p style="font:400 12px var(--mono);color:#8b8a85">Gratuit pour toujours : horaires, Qibla, Coran, douas, suivi, mode avion.<br>Jamais : pub, revente de données.</p>
-    </div>
-  </div>
-</section>
 
 <section class="block" style="border-bottom:0">
   <div class="wrap">
     <div class="unfin">
-      <h3>Ce qui n’est pas fini</h3>
+      <h3>Ce qu’il faut savoir</h3>
       <ul>
         <li>L’app est une appli web installable, pas encore une app native iOS ou Android. Pas de widgets. Pas de notification de prière quand elle est fermée : elle exporte des rappels vers ton agenda à la place.</li>
         <li>Les récitations et l’audio par mot viennent de serveurs publics. L’enregistrement hors ligne de l’audio d’une sourate est en place mais doit encore être testé sur de vrais téléphones.</li>
-        <li>Les références des douas sont rattachées automatiquement pour environ la moitié de la Citadelle. Toutes doivent être vérifiées par une personne de science avant une diffusion publique.</li>
-        <li>Les droits des traductions et du tafsir sont à confirmer avant toute sortie sur les stores. Le sens mot à mot et le tafsir restent en anglais pour l’instant.</li>
-        <li>Le téléphone de cette page est un petit aperçu. L’app complète est à un geste.</li>
+        <li>Les sources des douas sont affichées sur chaque fiche. Celles marquées « en relecture » attendent la vérification d’une personne de science. Tu peux signaler une erreur depuis chaque verset et chaque doua.</li>
+        <li>Le mot à mot et l’explication Al-Mukhtasar existent en français. D’autres tafsirs ne sont disponibles qu’en anglais ou en arabe, et c’est indiqué.</li>
+        <li>Envie de voir comment l’app a été pensée ? <a href="../coulisses/">Les coulisses du projet</a>.</li>
       </ul>
     </div>
   </div>
 </section>
 </main>
 
-<footer><div class="wrap"><span>safa. — un prototype de <a href="/">The Unfinished 30</a> par <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a></span><span>Aucun pisteur sur cette page.</span></div></footer>
+<footer><div class="wrap"><span>safa. — faite à Bangkok par <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">Salah Khenissi</a>, dans le cadre de <a href="/">The Unfinished 30</a>. safa. reste en ligne après le défi.</span><span>Aucun pisteur, aucune police chargée chez un tiers. <a href="https://github.com/hellolina33/TheUnfinishedProject/issues/new?labels=safa&amp;title=safa.%20%C2%B7%20" target="_blank" rel="noopener">Signaler une erreur ou donner ton avis</a></span></div></footer>
 
 <script id="calc">
 const CITIES = {
@@ -680,7 +640,7 @@ go(S.tab);
 
 /* ---------- Scope table ---------- */
 const bars=n=>`<span class="bars" aria-hidden="true">${[1,2,3,4].map(i=>`<i class="${i<=n?'f':''}"></i>`).join('')}</span>`;
-$('#scopeRows').innerHTML=[
+if($('#scopeRows'))$('#scopeRows').innerHTML=[
   ['Zéro pub, zéro compte, stockage local',4,'Très élevé',1,'Très faible','V1'],
   ['Coran mot à mot + audio',4,'Très élevé',1,'Faible · données ouvertes','V1'],
   ['Douas par situation (Citadelle)',3,'Élevé',1,'Très faible · JSON local','V1'],

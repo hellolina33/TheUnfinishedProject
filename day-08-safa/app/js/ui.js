@@ -42,8 +42,8 @@ export const LOGO = `<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="
 
 let toastT;
 export function toast(msg) {
-  let t = $('#toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
-  t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600);
+  let t = $('#toast'); if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 4000);
 }
 
 // Bottom sheet. Non-blocking by design: tap outside or Escape closes it.
@@ -71,8 +71,13 @@ export function cityField(root, { placeholder = 'Search a city', onPick, value =
   inp.addEventListener('input', async () => {
     const cities = await data('cities.json');
     list = searchCities(cities, inp.value);
-    res.innerHTML = list.map((c, i) => `<button type="button" role="option" data-i="${i}"><b>${esc(c[0])}</b><span>${esc(c[1])}</span></button>`).join('') || (inp.value.trim().length >= 2 ? `<p class="mono pad">${t('No city found. Try a bigger city nearby.')}</p>` : '');
+    res.innerHTML = list.map((c, i) => `<button type="button" role="option" data-i="${i}"><b>${esc(c[0])}</b><span>${esc(countryName(c[2], c[1]))}</span></button>`).join('') || (inp.value.trim().length >= 2 ? `<p class="mono pad">${t('No city found. Try a bigger city nearby.')}</p>` : '');
   });
   res.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const c = list[+b.dataset.i]; inp.value = c[0]; res.innerHTML = ''; onPick(c); });
   return inp;
 }
+
+// Public issue tracker: no account data, no e-mail address exposed.
+export const reportUrl = what => `https://github.com/hellolina33/TheUnfinishedProject/issues/new?labels=safa&title=${encodeURIComponent('safa. · ' + what)}&body=${encodeURIComponent('What looks wrong, and the correct source if you know it:\n\n')}`;
+// Country names in the reader's language (the city list stores them in English).
+export function countryName(iso2, fallback) { try { return new Intl.DisplayNames([document.documentElement.lang || 'en'], { type: 'region' }).of(iso2) || fallback; } catch (e) { return fallback; } }

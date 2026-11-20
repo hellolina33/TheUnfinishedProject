@@ -1,6 +1,6 @@
 import { S, save, data, dayKey, getDay } from '../store.js';
 import { weekday } from '../prayer.js';
-import { $, $$, esc, icon, arNum, sheet, closeSheet, toast } from '../ui.js';
+import { $, $$, esc, icon, arNum, sheet, closeSheet, toast, reportUrl } from '../ui.js';
 import { t, lang } from '../i18n.js';
 import * as PL from '../player.js';
 export { RECITERS } from '../player.js';
@@ -36,7 +36,7 @@ export async function renderList(root) {
   const starts = [0]; meta.s.forEach(m => starts.push(starts[starts.length - 1] + m[3]));
   const row = (n) => { const m = meta.s[n - 1]; return `<a class="srow" href="#/quran/${n}"><span class="num mono">${n}</span><span class="st"><b>${esc(surahName(meta, n))}</b><span class="muted small">${esc(meaning(meta, n))} · ${t('{n} verses', { n: m[3] })} · ${t(m[4] ? 'Medinan' : 'Meccan')}</span></span>${lang() === 'ar' ? '' : `<span class="ar" lang="ar">${m[2]}</span>`}</a>`; };
   root.innerHTML = `<header class="vh"><div><h1>${t('Quran')}</h1></div></header>
-    <nav class="tools" aria-label="${t('Tools')}"><a href="#/khatm">${icon.book}<span>${t('Khatm')}</span></a><a href="#/hifz">${icon.repeat}<span>${t('Memorise')}</span></a><a href="#/lessons">${icon.letter}<span>${t('Arabic')}</span></a><a href="#/ask">${icon.search}<span>${t('Ask')}</span></a></nav>
+    <nav class="tools" aria-label="${t('Tools')}"><a href="#/khatm">${icon.book}<span>${t('Finish the Quran')}</span></a><a href="#/hifz">${icon.repeat}<span>${t('Memorise')}</span></a><a href="#/lessons">${icon.letter}<span>${t('Arabic')}</span></a><a href="#/ask">${icon.search}<span>${t('Find')}</span></a></nav>
     <div class="searchf">${icon.search}<input id="qs" class="inp" type="search" placeholder="${t('Surah, 2:255, or a word')}" value="${esc(listState.q)}" autocomplete="off" aria-label="${t('Search the Quran')}"></div>
     <div class="chips" role="tablist">${[['surahs', 'Surahs'], ['juz', 'Juz'], ['favs', 'Favourites']].map(([k, l]) => `<button class="chip" role="tab" data-tab="${k}" aria-selected="${listState.tab === k}">${t(l)}</button>`).join('')}</div>
     <div id="ql"></div>`;
@@ -99,9 +99,10 @@ export async function renderReader(root, sN, vN, extra) {
     const v = i + 1, fav = S.q.favs.includes(s + ':' + v);
     return `<article class="vs" id="v${v}" data-v="${v}"><div class="vhd"><span class="mono">${s}:${v}</span>${fav ? `<span class="favd">${icon.star}</span>` : ''}<button class="ib vmenu" data-menu="${v}" aria-label="${t('Verse {v} options', { v })}">${icon.more}</button></div>
       <p class="ar" lang="ar" dir="rtl">${words(x.a, x, i)} <button class="vend" data-menu="${v}" aria-label="${t('Verse {v} options', { v })}">۝${arNum(v)}</button></p>
-      <p class="tlit">${esc(x.l)}</p><p class="tr" ${trKey() === 'muyassar' ? 'lang="ar" dir="rtl"' : ''}>${esc(pk ? pk[i] : x.t)}</p></article>`;
+      <p class="tlit">${esc(x.l)}</p><p class="tr" lang="${trKey() === 'muyassar' ? 'ar' : lang()}" ${trKey() === 'muyassar' ? 'dir="rtl"' : ''}>${esc(pk ? pk[i] : x.t)}</p>
+      <div class="vact"><button class="chip ctx" data-ctx="${v}">${icon.book}${t('Context')}</button></div></article>`;
   };
-  root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)}</b><span class="mono">${esc(meaning(meta, s))} · ${n} vv</span></div>
+  root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)}</b><span class="mono">${esc(meaning(meta, s))} · ${t('{n} verses', { n })}</span></div>
       <button class="chip" id="twbw" aria-pressed="${S.q.wbw}">${t('Word by word')}</button><button class="ib" id="rset" aria-label="${t('Reader settings')}">${icon.gear}</button></header>
     <div class="${cls()}" id="rd">${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${fat.a.map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
       <nav class="rnav">${s > 1 ? `<a class="btn line sm" href="#/quran/${s - 1}">‹ ${esc(surahName(meta, s - 1))}</a>` : '<span></span>'}${s < 114 ? `<a class="btn line sm" href="#/quran/${s + 1}">${esc(surahName(meta, s + 1))} ›</a>` : ''}</nav></div>
@@ -150,7 +151,7 @@ export async function renderReader(root, sN, vN, extra) {
     let sel = (S.q.taf && S.q.taf.length ? S.q.taf : defaultTafsirs()).filter(k => TAFSIRS[k]).slice(0, 2);
     const el = sheet(`<h3>${t('Context &amp; tafsir · {k}', { k: s + ':' + v })}</h3>
       <div class="chips scroll" id="tfc">${Object.entries(TAFSIRS).map(([k, l]) => `<button class="chip" data-tk="${k}" aria-pressed="${sel.includes(k)}">${esc(t(l[0]))}</button>`).join('')}</div>
-      <p class="muted small">${t('Tap one source, or two to compare.')}</p><div class="sbody" id="tf"></div>`, { dark: true, label: t('Tafsir') });
+      <p class="muted small">${t('Tap one source, or two to compare.')}</p><div class="sbody" id="tf"></div>`, { dark: document.body.classList.contains('dark'), label: t('Tafsir') });
     const draw = async () => {
       const box = $('#tf', el); box.innerHTML = `<p class="ar" lang="ar" dir="rtl">${V[v - 1].a.join(' ')}</p><p class="muted">${t('Loading…')}</p>`;
       const parts = await Promise.all(sel.map(async k => { try { return [k, await tafsirText(k, s, v)]; } catch (e) { return [k, null]; } }));
@@ -171,14 +172,18 @@ export async function renderReader(root, sN, vN, extra) {
         <div class="looprow"><span>${t('Loop from {v} to', { v })}</span><select id="lto" class="inp" aria-label="${t('Last verse of the loop')}">${V.slice(v - 1).map((_, i) => `<option value="${v + i}" ${i === Math.min(4, n - v) ? 'selected' : ''}>${v + i}</option>`).join('')}</select><button class="btn sm" data-a="range">${t('Start')}</button></div>
         <button data-a="taf">${icon.book}${t('Context &amp; tafsir')}</button>
         <button data-a="fav">${icon.star}${t(fav ? 'Remove from favourites' : 'Add to favourites')}</button>
-        <button data-a="copy">${icon.quran}${t('Copy verse')}</button></div>`, { dark: true, label: t('Verse {v} options', { v }) });
-    el.onclick = e => {
+        <button data-a="share">${icon.plane}${t('Share this verse')}</button>
+        <button data-a="copy">${icon.quran}${t('Copy verse')}</button>
+        <a class="rep" href="${reportUrl('Quran ' + s + ':' + v)}" target="_blank" rel="noopener">${t('Report an error in this verse')}</a></div>`, { dark: document.body.classList.contains('dark'), label: t('Verse {v} options', { v }) });
+    el.onclick = async e => {
       const b = e.target.closest('[data-a]'); if (!b) return; const a = b.dataset.a;
       if (a === 'play') { PL.P.mode = 'off'; PL.playVerse(v); }
       if (a === 'loop') PL.loopVerse(v);
       if (a === 'range') PL.loopRange(v, +$('#lto', el).value);
       if (a === 'fav') { S.q.favs = fav ? S.q.favs.filter(x => x !== k) : [...S.q.favs, k]; save(); const vh = $('#v' + v + ' .vhd', rd), d = $('.favd', vh); if (fav && d) d.remove(); else if (!fav) vh.querySelector('.mono').insertAdjacentHTML('afterend', `<span class="favd">${icon.star}</span>`); toast(t(fav ? 'Removed' : 'Saved to favourites')); }
+      if (a === 'share') { const txt = `${V[v - 1].a.join(' ')}\n\n${pk ? pk[v - 1] : V[v - 1].t}\n— ${t('Quran')} ${s}:${v}\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } }
       if (a === 'copy') { const txt = `${V[v - 1].a.join(' ')}\n\n${pk ? pk[v - 1] : V[v - 1].t}\n— ${t('Quran')} ${s}:${v}`; (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => toast(t('Copied')), () => toast(t('Copy is not available here'))); }
+      if (a === 'share') { setLast(v); closeSheet(); return; }
       setLast(v); closeSheet(); if (a === 'taf') tafsir(v);
     };
   };
@@ -204,7 +209,7 @@ export async function renderReader(root, sN, vN, extra) {
         <button class="btn line" data-dl="juz">${t('Save juz {j} · {n} MB', { j: ji + 1, n: mb(juzList) })}</button>
         <button class="btn line" data-dl="all">${t('Save the whole Quran · {n} MB', { n: mb(allList) })}</button>
         <button class="btn line sm" id="stest">${t('Test the audio')}</button>
-        <p class="muted small">${t('Text, translation and tafsir are stored on the device. Audio streams unless you save it.')}</p></div>`, { dark: true, label: t('Reader settings') });
+        <p class="muted small">${t('Text, translation and tafsir are stored on the device. Audio streams unless you save it.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Reader settings') });
     el.onchange = async e => {
       const id = e.target.id;
       if (id === 'swbw') { S.q.wbw = e.target.checked; if (S.q.wbw) S.q.flow = false; }
@@ -229,6 +234,7 @@ export async function renderReader(root, sN, vN, extra) {
 
   rd.onclick = e => {
     const mb = e.target.closest('[data-menu]'); if (mb) { menu(+mb.dataset.menu); return; }
+    const cb = e.target.closest('[data-ctx]'); if (cb) { setLast(+cb.dataset.ctx); tafsir(+cb.dataset.ctx); return; }
     const w = e.target.closest('button.w'); if (!w) return;
     const v = +w.closest('.vs').dataset.v, j = +w.dataset.w, x = V[v - 1];
     if (S.q.hide && !w.classList.contains('rev') && getComputedStyle(w.querySelector('.wa')).filter !== 'none') { w.classList.add('rev'); return; }

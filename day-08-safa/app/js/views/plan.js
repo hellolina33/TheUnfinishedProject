@@ -24,7 +24,8 @@ export async function renderKhatm(root) {
     const K = S.khatm, x = khatmToday(meta);
     root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Khatm planner')}</b><span class="ib"></span></header>
       ${!K ? `<p class="lead pad">${t('Finish the whole Quran in the time you choose. safa. splits it into daily pages and adjusts if you miss a day.')}</p>
-        <div class="seg kd">${[7, 15, 30, 60, 90].map(d => `<button data-days="${d}">${t('{n} days', { n: d })}</button>`).join('')}</div>
+        <div class="seg kd">${[7, 15, 30, 60, 90].map(d => `<button data-days="${d}"><b>${t('{n} days', { n: d })}</b><small>${t('≈ {p} pages a day', { p: Math.ceil(604 / d) })}</small></button>`).join('')}</div>
+        <p class="muted small pad">${t('Miss a day? The plan adjusts by itself. No debt, no catching up by hand.')}</p>
         <p class="muted small pad">${t('Based on the 604 pages of the Madinah mushaf.')}</p>`
       : K.page >= 604 ? `<section class="hero2"><div class="big">✓</div><p>${t('Khatm complete. May Allah accept it.')}</p></section><button class="btn line big" id="kreset">${t('Start a new khatm')}</button>`
       : `<section class="hero2"><span class="mono">${t('Today')}</span><div class="big">${x.n}</div><p class="muted">${t('pages · {a} to {b}', { a: x.from, b: x.to })}</p></section>
@@ -68,8 +69,7 @@ export async function renderHifz(root) {
           <input id="ha" class="inp" type="number" min="1" value="${nextA}" aria-label="${t('From verse')}"><input id="hb" class="inp" type="number" min="1" value="${nextB}" aria-label="${t('To verse')}"></div>
           <button class="btn line sm" id="hadd2">${t('Add')}</button></details>
       </section>
-      <h3 class="sect">${t('Due today · {n}', { n: due.length })}</h3>
-      <ul class="evl">${due.map(row).join('') || `<li><span class="muted">${t('Nothing to review today.')}</span></li>`}</ul>
+      ${due.length ? `<h3 class="sect">${t('Due today · {n}', { n: due.length })}</h3><ul class="evl">${due.map(row).join('')}</ul>` : H.items.length ? `<p class="muted pad">${t('Nothing to review today.')}</p>` : ''}
       ${H.items.length > due.length ? `<h3 class="sect">${t('Later')}</h3><ul class="evl">${H.items.filter(x => x.d > today).map(row).join('')}</ul>` : ''}
       <p class="muted small pad">${t('Practise opens the reader with the portion on loop. Use “Hide” in the player to test yourself, then rate it here.')}</p>`;
   };

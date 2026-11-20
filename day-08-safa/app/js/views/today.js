@@ -16,15 +16,47 @@ function nextPrayer() {
 function extras() {
   let h = '';
   const ev = upcoming(1)[0];
-  if (ev) h += `<a class="card row" href="#/calendar"><span><span class="mono">${t('Hijri calendar')}</span><b>${esc(t(ev.name))}</b><span class="muted small">${ev.days === 0 ? t('Today') : t('in {n} d', { n: ev.days })}</span></span>${icon.chev}</a>`;
+  if (ev && ev.days <= 30) h += `<a class="card row" href="#/calendar"><span><span class="mono">${t('Hijri calendar')}</span><b>${esc(t(ev.name))}</b><span class="muted small">${ev.days === 0 ? t('Today') : t('in {n} d', { n: ev.days })}</span></span>${icon.chev}</a>`;
   const due = hifzDue().length;
   if (S.hifz.items.length) h += `<a class="card row" href="#/hifz"><span><span class="mono">${t('Memorisation')}</span><b>${due ? t('{n} portions to review', { n: due }) : t('Nothing to review today')}</b></span>${icon.chev}</a>`;
-  if (S.khatm && S.khatm.page < 604) h += `<a class="card row" href="#/khatm"><span><span class="mono">${t('Khatm')}</span><b>${S.khatm.log && S.khatm.log[dayKey()] ? t('Today’s portion done') : t('Today’s portion is waiting')}</b><span class="muted small">${t('{p} of 604 pages', { p: S.khatm.page })}</span></span>${icon.chev}</a>`;
+  if (S.khatm && S.khatm.page < 604) h += `<a class="card row" href="#/khatm"><span><span class="mono">${t('Khatm')}</span><b>${S.khatm.log && S.khatm.log[dayKey()] ? t('Today’s portion done') : t('Today: pages {a} to {b}', { a: S.khatm.page + 1, b: Math.min(604, S.khatm.page + Math.ceil((604 - S.khatm.page) / Math.max(1, khatmDaysLeft()))) })}</b><span class="muted small">${t('{p} of 604 pages', { p: S.khatm.page })}</span></span>${icon.chev}</a>`;
   if (S.qada.on) { const n = P5.reduce((a, p) => a + (S.qada.p[p] || 0), 0); h += `<a class="card row" href="#/qada"><span><span class="mono">${t('Make-up prayers')}</span><b>${n ? t('{n} left', { n }) : t('Nothing left to make up.')}</b></span>${icon.chev}</a>`; }
-  if (!Object.keys(S.days).some(k => S.days[k].p.some(Boolean))) h += `<a class="card row" href="#/learn"><span><span class="mono">${t('New to prayer?')}</span><b>${t('First steps')}</b><span class="muted small">${t('Ablution and prayer, step by step')}</span></span>${icon.chev}</a>`;
-  else h += `<a class="card row ghost" href="#/learn"><span><span class="mono">${t('Learn')}</span><b>${t('First steps')}</b></span>${icon.chev}</a>`;
   return h;
 }
+
+
+function khatmDaysLeft() { try { const st = new Date(S.khatm.start + 'T12:00:00Z'), end = st.getTime() + S.khatm.days * 86400000; return Math.max(1, Math.ceil((end - Date.now()) / 86400000)); } catch (e) { return 1; } }
+function tools() {
+  return `<nav class="tools" aria-label="${t('Tools')}">
+    <a href="#/learn">${icon.learn}<span>${t('First steps')}</span></a>
+    <a href="#/qibla">${icon.compass}<span>${t('Qibla')}</span></a>
+    <a href="#/calendar">${icon.cal}<span>${t('Calendar')}</span></a>
+    <a href="#/flight">${icon.plane}<span>${t('Travel')}</span></a></nav>`;
+}
+function welcome() {
+  if (S.hideWelcome) return '';
+  const first = !S.since || S.since >= dayKey();
+  const lvl = S.level;
+  if (lvl === 'new' || lvl === 'back') return `<section class="card welcome"><button class="ib x" data-hide="welcome" aria-label="${t('Hide')}">${icon.stop}</button>
+    <b>${t(lvl === 'new' ? 'Welcome. Start here, one step at a time.' : 'Welcome back. No question is a silly one here.')}</b>
+    <p class="muted small">${t('Ablution, then prayer, step by step. Then Al-Fatiha word by word.')}</p>
+    <a class="btn sm" href="#/learn">${t('Open First steps')}</a></section>`;
+  if (first) return `<section class="card welcome"><button class="ib x" data-hide="welcome" aria-label="${t('Hide')}">${icon.stop}</button>
+    <b>${t('Welcome. Take your time.')}</b>
+    <p class="muted small">${t('Your times are ready. When you want, read a verse with its context, or find a dua for how you feel.')}</p>
+    <div class="row2"><a class="btn sm" href="#/quran/1">${t('Read Al-Fatiha')}</a><a class="btn sm line" href="#/duas">${t('Find a dua')}</a></div></section>`;
+  return '';
+}
+function installCard() {
+  const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (standalone || S.hideInstall || !S.since || S.since >= dayKey()) return '';
+  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  return `<section class="card welcome"><button class="ib x" data-hide="install" aria-label="${t('Hide')}">${icon.stop}</button>
+    <b>${t('Keep safa. on your home screen')}</b>
+    <p class="muted small">${ios ? t('In Safari, tap Share, then “Add to Home Screen”. It opens like an app, offline, with no store.') : t('Open your browser menu, then “Install app” or “Add to Home screen”. It opens like an app, offline, with no store.')}</p>
+    ${window.__bip ? `<button class="btn sm" data-install="1">${t('Install')}</button>` : ''}</section>`;
+}
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__bip = e; });
 
 export function render(root) {
   let timer;
@@ -39,37 +71,42 @@ export function render(root) {
     root.innerHTML = `
       <header class="vh"><div><h1>${t('Today')}</h1><a class="loc mono" href="#/settings">${esc(S.loc.name)} · ${esc(METHODS[S.method].n)}</a></div>
         <div class="dates mono"><span>${esc(gregorian(now))}</span><span>${esc(hijri(now))}</span></div></header>
+      ${welcome()}
       ${day.pz ? `<a class="banner" href="#/track"><span class="dot"></span> ${t('Pause mode is on. Nothing to log today.')}</a>` : ''}
       <section class="next">
         <svg class="arc" viewBox="0 0 300 150" aria-hidden="true"><path d="M30 132A120 120 0 01270 132" class="arc-l"/><path d="M12 132H288" class="arc-h"/><circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="7" class="arc-s ${up ? '' : 'night'}"/></svg>
-        <span class="mono">${t('Next · {p} · {t}', { p: NAMES[np.k], t: fmtTime(np.t) })}</span>
-        <div class="count" id="cd" aria-live="off">00:00:00</div>
-        ${!day.pz && np.cur ? `<button class="btn sm ${day.p[P5.indexOf(np.cur)] ? 'line' : ''}" data-mark="${P5.indexOf(np.cur)}">${day.p[P5.indexOf(np.cur)] ? icon.check + t('{p} prayed', { p: NAMES[np.cur] }) : t('Mark {p} as prayed', { p: NAMES[np.cur] })}</button>` : ''}
+        <span class="nextp">${t('{p} at {t}', { p: NAMES[np.k], t: fmtTime(np.t) })}</span>
+        <div class="count words" id="cd" aria-live="off"></div>
+        ${!day.pz && np.cur ? `<button class="btn sm line" data-mark="${P5.indexOf(np.cur)}">${day.p[P5.indexOf(np.cur)] ? icon.check + t('{p} prayed', { p: NAMES[np.cur] }) : t('{p} prayed?', { p: NAMES[np.cur] })}</button>` : ''}
       </section>
       <ul class="times">${ORDER.map(k => {
         const i = P5.indexOf(k), off = k !== 'sunrise' && S.offsets[k];
-        return `<li class="${k === np.cur ? 'now' : T[k] && T[k] < now ? 'past' : ''}">
+        return `<li class="${k === np.cur ? 'now' : T[k] && T[k] < now ? 'past' : ''} ${i >= 0 ? 'pr' : 'mark'}" ${i >= 0 && !day.pz ? `data-mark="${i}"` : ''}>
           <span class="nm">${NAMES[k]}<span class="ar" lang="ar">${AR[k]}</span>${off ? `<span class="adj mono" title="${t('Adjusted manually')}">${off > 0 ? '+' : ''}${off} min</span>` : ''}</span>
           <span class="tm mono">${fmtTime(T[k])}</span>
-          ${i >= 0 ? `<button class="chk ${day.p[i] ? 'on' : ''}" data-mark="${i}" ${day.pz ? 'disabled' : ''} aria-pressed="${!!day.p[i]}" aria-label="${t('{p} prayed?', { p: NAMES[k] })}">${day.p[i] ? icon.check : ''}</button>` : '<span class="chk ghost"></span>'}</li>`;
+          ${i >= 0 ? `<button class="chk ${day.p[i] ? 'on' : ''}" data-mark="${i}" ${day.pz ? 'disabled' : ''} aria-pressed="${!!day.p[i]}" aria-label="${t('{p} prayed?', { p: NAMES[k] })}">${day.p[i] ? icon.check : ''}</button>` : `<span class="sunr mono">${t('sunrise')}</span>`}</li>`;
       }).join('')}</ul>
+      ${tools()}
       <a class="card row" href="#/quran/${last ? last.s + '/' + last.v : '1'}"><span><span class="mono">${t(last ? 'Resume reading' : 'Start reading')}</span><b>${last ? esc(last.n) + ' · ' + last.s + ':' + last.v : 'Al-Fatihah · 1:1'}</b></span>${icon.chev}</a>
       ${suggest}
       ${extras()}
-      <div class="grid2">
-        <a class="card tile" href="#/qibla">${icon.compass}<span><span class="mono">${t('Qibla')}</span><b>${qiblaBearing(S.loc.lat, S.loc.lng).toFixed(1)}°</b></span></a>
-        <a class="card tile" href="#/flight">${icon.plane}<span><span class="mono">${t('Travel')}</span><b>${t('Flight mode')}</b></span></a>
-      </div>`;
+      ${installCard()}`;
     const tick = () => {
       const s = Math.round((np.t - Date.now()) / 1000);
       if (s <= 0) { draw(); return; }
-      const el = $('#cd', root); if (el) el.textContent = `${pad(Math.floor(s / 3600))}:${pad(Math.floor(s % 3600 / 60))}:${pad(s % 60)}`;
+      const el = $('#cd', root); if (!el) return;
+      const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60);
+      const txt = s >= 3600 ? t('in {h} h {m}', { h, m: pad(m) }) : s >= 60 ? t('in {m} min', { m: m + (s % 60 ? 1 : 0) }) : t('in {s} s', { s });
+      if (el.textContent !== txt) el.textContent = txt;
     };
     clearInterval(timer); tick(); timer = setInterval(tick, 1000);
   };
-  root.onclick = e => {
+  root.onclick = async e => {
+    const hb = e.target.closest('[data-hide]'); if (hb) { if (hb.dataset.hide === 'welcome') S.hideWelcome = true; else S.hideInstall = true; save(); draw(); return; }
+    if (e.target.closest('[data-install]') && window.__bip) { try { window.__bip.prompt(); await window.__bip.userChoice; } catch (err) { /* ignore */ } window.__bip = null; draw(); return; }
     const b = e.target.closest('[data-mark]'); if (!b) return;
     const d = getDay(dayKey(), true), i = +b.dataset.mark; d.p[i] = d.p[i] ? 0 : 1; save(); draw();
+    toast(d.p[i] ? t('May Allah accept it.') : t('Unticked.'));
   };
   draw();
   return () => { clearInterval(timer); root.onclick = null; };
