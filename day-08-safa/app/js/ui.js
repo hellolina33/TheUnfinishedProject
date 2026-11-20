@@ -71,6 +71,7 @@ export function cityField(root, { placeholder = 'Search a city', onPick, value =
   inp.addEventListener('input', async () => {
     const cities = await data('cities.json');
     list = searchCities(cities, inp.value);
+    { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '', reg = tz.split('/')[0]; list = list.map((c, i) => [c, i]).sort((a, b) => ((b[0][5] === tz) * 2 + (String(b[0][5]).split('/')[0] === reg)) - ((a[0][5] === tz) * 2 + (String(a[0][5]).split('/')[0] === reg)) || a[1] - b[1]).map(x => x[0]); }
     res.innerHTML = list.map((c, i) => `<button type="button" role="option" data-i="${i}"><b>${esc(c[0])}</b><span>${esc(countryName(c[2], c[1]))}</span></button>`).join('') || (inp.value.trim().length >= 2 ? `<p class="mono pad">${t('No city found. Try a bigger city nearby.')}</p>` : '');
   });
   res.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const c = list[+b.dataset.i]; inp.value = c[0]; res.innerHTML = ''; onPick(c); });

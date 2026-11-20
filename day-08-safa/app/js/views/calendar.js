@@ -45,10 +45,13 @@ export function renderCalendar(root) {
     const lead = (new Date(keyMs(days[0][0])).getUTCDay() + 6) % 7;
     const wd = Array.from({ length: 7 }, (_, i) => civil(addDays('2024-01-01', i), { weekday: 'narrow' }));
     const up = upcoming(6);
+    { let k2 = today; for (let i = 0; i < 31; i++, k2 = addDays(k2, 1)) { const h = hijriOf(k2); if (h.d === 13) { up.unshift({ k: k2, h, name: 'White days begin (voluntary fasting)', days: i }); break; } } }
+    up.sort((a, b) => a.days - b.days);
     root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Hijri calendar')}</b><span class="ib"></span></header>
       <div class="calh"><button class="ib" id="cprev" aria-label="${t('Previous month')}">${icon.back}</button>
         <div><b>${esc(monthName(view.m, view.y))} ${view.y}</b><span class="mono">${esc(civil(days[0][0], { day: 'numeric', month: 'short' }))} – ${esc(civil(days[days.length - 1][0], { day: 'numeric', month: 'short', year: 'numeric' }))}</span></div>
         <button class="ib flip" id="cnext" aria-label="${t('Next month')}">${icon.back}</button></div>
+      <p class="muted small">${t('Big number: Hijri day. Small number: day of the usual calendar.')}</p>
       <div class="calg" role="grid">${wd.map(w => `<span class="mono">${esc(w)}</span>`).join('')}${'<span></span>'.repeat(lead)}${days.map(([dk, h]) => {
         const ev = EVENTS.find(x => x[0] === h.m && x[1] === h.d), white = h.d >= 13 && h.d <= 15;
         return `<span class="cd ${dk === today ? 'today' : ''} ${ev ? 'ev' : ''} ${white ? 'white' : ''}" title="${ev ? esc(t(ev[2])) : white ? esc(t('White day')) : ''}"><b>${h.d}</b><small>${esc(civil(dk, { day: 'numeric' }))}</small></span>`;

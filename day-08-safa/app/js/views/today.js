@@ -1,7 +1,7 @@
 import { S, save, dayKey, addDays, getDay, P5, data } from '../store.js';
 import { timesFor, ORDER, NAMES, AR, fmtTime, hijri, gregorian, weekday, qiblaBearing, methodAngles, flightPrayers, localToUtc, distanceKm, METHODS } from '../prayer.js';
 import { $, esc, icon, pad, cityField, toast } from '../ui.js';
-import { t, L } from '../i18n.js';
+import { t, L, lang } from '../i18n.js';
 import { upcoming } from './calendar.js';
 import { hifzDue } from './plan.js';
 
@@ -58,6 +58,20 @@ function installCard() {
 }
 window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__bip = e; });
 
+// A gentle, sourced verse for the day. Hope and mercy only.
+const AYAT = [[94, 5], [2, 286], [65, 3], [13, 28], [39, 53], [2, 152], [3, 139], [93, 3], [12, 87], [2, 186], [20, 46], [29, 69], [40, 60], [94, 6], [65, 2], [8, 46], [2, 153], [11, 115], [28, 24], [3, 173], [7, 56], [6, 54], [42, 30], [9, 51], [57, 4], [50, 16], [2, 45], [64, 11], [16, 128], [15, 56]];
+async function ayahOfDay(el) {
+  if (!el) return;
+  const k = dayKey(), n = (+k.replace(/-/g, '')) % AYAT.length, [s, v] = AYAT[n];
+  try {
+    const meta = await data('meta.json'), src = await data('quran/' + s + '.json');
+    let tr = src.v[v - 1].t; if (lang() === 'fr') { const f = await data('fr/' + s + '.json'); tr = f[v - 1]; }
+    const nm = lang() === 'ar' ? meta.s[s - 1][2] : meta.s[s - 1][0];
+    el.innerHTML = `<span class="mono">${t('A verse for today')}</span><p class="ar" lang="ar" dir="rtl">${src.v[v - 1].a.join(' ')}</p>${lang() !== 'ar' ? `<p>« ${esc(tr)} »</p>` : ''}<a class="mono" href="#/quran/${s}/${v}">${esc(String(nm))} ${s}:${v} · ${t('Read in context')} ›</a>`;
+    el.hidden = false;
+  } catch (e) { /* offline and not cached: skip quietly */ }
+}
+
 export function render(root) {
   let timer;
   const draw = () => {
@@ -69,19 +83,19 @@ export function render(root) {
     const suggest = isFri && S.fri.on && !day.k ? `<a class="card row" href="#/quran/18"><span><span class="mono">${t('Friday')}</span><b>${t('Read Al-Kahf')}</b></span>${icon.chev}</a>`
       : `<a class="card row" href="#/duas/27"><span><span class="mono">${t(h < 15 ? 'Morning adhkar' : 'Evening adhkar')}</span><b>${t('Words of remembrance')}</b></span>${icon.chev}</a>`;
     root.innerHTML = `
-      <header class="vh"><div><h1>${t('Today')}</h1><a class="loc mono" href="#/settings">${esc(S.loc.name)} · ${esc(METHODS[S.method].n)}</a></div>
-        <div class="dates mono"><span>${esc(gregorian(now))}</span><span>${esc(hijri(now))}</span></div></header>
+      <header class="vh"><div><h1>${t('Today')}</h1><p class="dates2">${esc(gregorian(now))} · ${esc(hijri(now))}</p><a class="loc mono" href="#/settings">${esc(S.loc.name)} · ${esc(METHODS[S.method].n)}</a></div>
+        <a class="ib" href="#/settings" aria-label="${t('Settings')}">${icon.gear}</a></header>
       ${welcome()}
       ${day.pz ? `<a class="banner" href="#/track"><span class="dot"></span> ${t('Pause mode is on. Nothing to log today.')}</a>` : ''}
       <section class="next">
         <svg class="arc" viewBox="0 0 300 150" aria-hidden="true"><path d="M30 132A120 120 0 01270 132" class="arc-l"/><path d="M12 132H288" class="arc-h"/><circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="7" class="arc-s ${up ? '' : 'night'}"/></svg>
-        <span class="nextp">${t('{p} at {t}', { p: NAMES[np.k], t: fmtTime(np.t) })}</span>
+        <span class="nextp">${t(np.t > T.isha && np.k === 'fajr' ? '{p} tomorrow at {t}' : '{p} at {t}', { p: NAMES[np.k], t: fmtTime(np.t) })}</span>
         <div class="count words" id="cd" aria-live="off"></div>
         ${!day.pz && np.cur ? `<button class="btn sm line" data-mark="${P5.indexOf(np.cur)}">${day.p[P5.indexOf(np.cur)] ? icon.check + t('{p} prayed', { p: NAMES[np.cur] }) : t('{p} prayed?', { p: NAMES[np.cur] })}</button>` : ''}
       </section>
       <ul class="times">${ORDER.map(k => {
         const i = P5.indexOf(k), off = k !== 'sunrise' && S.offsets[k];
-        return `<li class="${k === np.cur ? 'now' : T[k] && T[k] < now ? 'past' : ''} ${i >= 0 ? 'pr' : 'mark'}" ${i >= 0 && !day.pz ? `data-mark="${i}"` : ''}>
+        return `<li class="${k === np.k && T[k] > now ? 'upnext' : ''} ${k === np.cur ? 'now' : T[k] && T[k] < now ? 'past' : ''} ${i >= 0 ? 'pr' : 'mark'}" ${i >= 0 && !day.pz ? `data-mark="${i}"` : ''}>
           <span class="nm">${NAMES[k]}<span class="ar" lang="ar">${AR[k]}</span>${off ? `<span class="adj mono" title="${t('Adjusted manually')}">${off > 0 ? '+' : ''}${off} min</span>` : ''}</span>
           <span class="tm mono">${fmtTime(T[k])}</span>
           ${i >= 0 ? `<button class="chk ${day.p[i] ? 'on' : ''}" data-mark="${i}" ${day.pz ? 'disabled' : ''} aria-pressed="${!!day.p[i]}" aria-label="${t('{p} prayed?', { p: NAMES[k] })}">${day.p[i] ? icon.check : ''}</button>` : `<span class="sunr mono">${t('sunrise')}</span>`}</li>`;
@@ -89,6 +103,7 @@ export function render(root) {
       ${tools()}
       <a class="card row" href="#/quran/${last ? last.s + '/' + last.v : '1'}"><span><span class="mono">${t(last ? 'Resume reading' : 'Start reading')}</span><b>${last ? esc(last.n) + ' · ' + last.s + ':' + last.v : 'Al-Fatihah · 1:1'}</b></span>${icon.chev}</a>
       ${suggest}
+      <section class="card ayah" id="ayah" hidden></section>
       ${extras()}
       ${installCard()}`;
     const tick = () => {
@@ -100,6 +115,7 @@ export function render(root) {
       if (el.textContent !== txt) el.textContent = txt;
     };
     clearInterval(timer); tick(); timer = setInterval(tick, 1000);
+    ayahOfDay($('#ayah', root));
   };
   root.onclick = async e => {
     const hb = e.target.closest('[data-hide]'); if (hb) { if (hb.dataset.hide === 'welcome') S.hideWelcome = true; else S.hideInstall = true; save(); draw(); return; }
@@ -109,21 +125,23 @@ export function render(root) {
     toast(d.p[i] ? t('May Allah accept it.') : t('Unticked.'));
   };
   draw();
-  return () => { clearInterval(timer); root.onclick = null; };
+  const wake = () => draw(); window.addEventListener('focus', wake);
+  return () => { clearInterval(timer); root.onclick = null; window.removeEventListener('focus', wake); };
 }
 
 /* ---------- Qibla compass ---------- */
 export function renderQibla(root) {
   const q = qiblaBearing(S.loc.lat, S.loc.lng);
   let heading = null, aligned = false;
+  const hasSensor = typeof DeviceOrientationEvent !== 'undefined' && (('ontouchstart' in window) || navigator.maxTouchPoints > 0);
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Qibla')}</b><span class="ib"></span></header>
     <section class="qibla">
-      <div class="qdeg mono" id="qdeg">${q.toFixed(1)}°</div>
-      <span class="mono">${t('from north · {c}', { c: esc(S.loc.name) })}</span>
+      <p class="qhint">${t('Hold the phone flat, like a plate. Turn slowly until the orange dot reaches the top mark.')}</p>
       <div class="dial" id="dial"><div class="ring" id="ring"><span class="n">N</span><span class="e">E</span><span class="s">S</span><span class="w">W</span>
         <div class="needle" style="transform:rotate(${q}deg)"><i></i></div></div><div class="hub"></div><div class="top"></div></div>
-      <p class="muted" id="qmsg">${t('Turn on the compass, hold the phone flat and rotate until the orange dot reaches the top mark.')}</p>
-      <button class="btn" id="qgo">${t('Turn on compass')}</button>
+      <p class="qmsg" id="qmsg" aria-live="polite"></p>
+      ${hasSensor ? `<button class="btn" id="qgo">${t('Turn on compass')}</button><p class="muted small">${t('Your phone will ask to use its orientation sensor. It stays on the phone.')}</p>` : `<p class="muted">${t('This device has no compass. Face {d}° from north using any compass, or open safa. on your phone.', { d: q.toLocaleString(L(), { maximumFractionDigits: 0 }) })}</p>`}
+      <p class="mono qdeg2">${t('{d}° from north · {c}', { d: q.toLocaleString(L(), { maximumFractionDigits: 1 }), c: esc(S.loc.name) })}</p>
     </section>`;
   const ring = $('#ring', root), msg = $('#qmsg', root);
   const on = e => {
@@ -148,7 +166,7 @@ export function renderQibla(root) {
       setTimeout(() => { if (heading == null) { msg.textContent = t('No compass sensor found on this device. Face {d}° from north using any compass.', { d: q.toFixed(0) }); } }, 2500);
     } catch (e) { msg.textContent = t('Compass access was not granted. Face {d}° from north using any compass.', { d: q.toFixed(0) }); }
   };
-  $('#qgo', root).onclick = start;
+  if ($('#qgo', root)) $('#qgo', root).onclick = start;
   return () => { window.removeEventListener('deviceorientationabsolute', on, true); window.removeEventListener('deviceorientation', on, true); };
 }
 
@@ -156,15 +174,15 @@ export function renderQibla(root) {
 let F = null;
 export function renderFlight(root) {
   if (!F) { const d = new Date(Date.now() + 86400000); F = { from: [S.loc.name, S.loc.country, S.loc.iso2, S.loc.lat, S.loc.lng, S.loc.tz], to: null, dep: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T10:00`, dur: null }; }
-  root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Flight &amp; travel')}</b><span class="ib"></span></header>
+  root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Travelling')}</b><span class="ib"></span></header>
     <section class="form">
       <label class="lbl">${t('From')}</label><div id="ff"></div>
       <label class="lbl">${t('To')}</label><div id="ft"></div>
       <label class="lbl" for="fdep">${t('Take-off · local time at departure')}</label><input id="fdep" class="inp" type="datetime-local" value="${F.dep}">
-      <div class="grid2"><div><label class="lbl" for="fh">${t('Hours')}</label><input id="fh" class="inp" type="number" min="0" max="20" inputmode="numeric"></div><div><label class="lbl" for="fm">${t('Minutes')}</label><input id="fm" class="inp" type="number" min="0" max="59" inputmode="numeric"></div></div>
+      <p class="lbl">${t('Flight duration')}</p><div class="grid2"><div><label class="lbl" for="fh">${t('Hours')}</label><input id="fh" class="inp" type="number" min="0" max="20" inputmode="numeric"></div><div><label class="lbl" for="fm">${t('Minutes')}</label><input id="fm" class="inp" type="number" min="0" max="59" inputmode="numeric"></div></div>
     </section>
     <section id="fout"></section>
-    <section class="note">${t("<b>Travelling.</b> Most scholars allow shortening four-unit prayers to two (Qasr) and combining Dhuhr with Asr, and Maghrib with Isha (Jam\'). Conditions differ between schools. Ask someone of knowledge.")}</section>
+    <section class="note">${t('<b>Travelling.</b> Most scholars allow shortening and combining prayers when travelling. Conditions differ between schools: ask someone of knowledge.')}</section>
     <p class="muted small pad">${t('Estimate only. Straight great-circle route, constant speed, sea-level horizon: at cruising altitude sunset comes a few minutes later. Uses your method ({m}).', { m: esc(METHODS[S.method].n) })}</p>`;
   const out = $('#fout', root);
   const setDur = () => { if (F.from && F.to && F.dur == null) { const km = distanceKm([F.from[3], F.from[4]], [F.to[3], F.to[4]]); F.dur = Math.round((km / 850 * 60 + 35) / 5) * 5; } $('#fh', root).value = F.dur != null ? Math.floor(F.dur / 60) : ''; $('#fm', root).value = F.dur != null ? F.dur % 60 : ''; };

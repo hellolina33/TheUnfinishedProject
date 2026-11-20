@@ -27,7 +27,7 @@ const ico = {
 };
 
 const WUDU = [
-  ['heart', 'Intention', 'Make the intention in your heart to purify yourself for prayer, then say “Bismillah”.', 'بِسْمِ اللَّهِ', 'Bismillah'],
+  ['heart', 'Intention', 'Make the intention in your heart to purify yourself for prayer, then say “Bismillah”.', 'بِسْمِ اللَّهِ', 'Bismillah', 'In the name of Allah.'],
   ['hands', 'Hands', 'Wash both hands up to the wrists, three times, between the fingers too.'],
   ['mouth', 'Mouth', 'Take water in the right hand and rinse the mouth, three times.'],
   ['nose', 'Nose', 'Draw a little water into the nose and blow it out with the left hand, three times.'],
@@ -36,50 +36,60 @@ const WUDU = [
   ['head', 'Head', 'With wet hands, wipe the head once: from the front to the back of the neck and back again.'],
   ['ear', 'Ears', 'Wipe the inside of the ears with the index fingers and the back with the thumbs, once.'],
   ['feet', 'Feet', 'Wash the right foot up to and including the ankle, three times, between the toes too. Then the left.'],
-  ['finger', 'Testimony', 'After wudu, say the testimony of faith (Sahih Muslim 234).', 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'Ash-hadu an lā ilāha illallāhu waḥdahū lā sharīka lah, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh']
+  ['finger', 'Testimony', 'After wudu, say the testimony of faith (Sahih Muslim 234).', 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'Ash-hadu an lā ilāha illallāhu waḥdahū lā sharīka lah, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh', 'I bear witness that there is no god but Allah, alone, without partner, and I bear witness that Muhammad is His servant and His messenger.']
 ];
 const SALAT = [
   ['stand', 'Stand facing the Qibla', 'Stand facing the Qibla and make the intention in your heart for the prayer you are about to pray.'],
-  ['takbir', 'Opening takbir', 'Raise your hands to the shoulders or the ears and say “Allahu akbar”. Then place the right hand over the left on the chest or below the navel, as your school teaches.', 'اللَّهُ أَكْبَرُ', 'Allāhu akbar'],
-  ['stand', 'Recite', 'You may say the opening supplication, then seek refuge, say Bismillah and recite Al-Fatihah. In the first two units, add another surah, even a short one.', 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ', 'Subḥānaka-llāhumma wa bi-ḥamdik, wa tabāraka-smuk, wa taʿālā jadduk, wa lā ilāha ghayruk'],
-  ['ruku', 'Bow (ruku)', 'Say “Allahu akbar” and bow, hands on the knees, back straight. Say three times:', 'سُبْحَانَ رَبِّيَ الْعَظِيمِ', 'Subḥāna rabbiyal-ʿaẓīm'],
-  ['stand', 'Rise', 'Rise and say “Sami Allahu liman hamidah”. Once standing, say:', 'رَبَّنَا وَلَكَ الْحَمْدُ', 'Rabbanā wa lakal-ḥamd'],
-  ['sujud', 'Prostrate (sujud)', 'Say “Allahu akbar” and prostrate: forehead and nose, both palms, both knees and the toes on the ground. Say three times:', 'سُبْحَانَ رَبِّيَ الْأَعْلَى', 'Subḥāna rabbiyal-aʿlā'],
-  ['sit', 'Sit between the two prostrations', 'Say “Allahu akbar” and sit up briefly. Say:', 'رَبِّ اغْفِرْ لِي', 'Rabbi-ghfir lī'],
+  ['takbir', 'Opening takbir', 'Raise your hands to the shoulders or the ears and say “Allahu akbar”. Then place the right hand over the left on the chest or below the navel, as your school teaches.', 'اللَّهُ أَكْبَرُ', 'Allāhu akbar', 'Allah is the Greatest.'],
+  ['stand', 'Recite', 'You may say the opening supplication, then seek refuge, say Bismillah and recite Al-Fatihah. In the first two units, add another surah, even a short one.', 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ', 'Subḥānaka-llāhumma wa bi-ḥamdik, wa tabāraka-smuk, wa taʿālā jadduk, wa lā ilāha ghayruk', 'Glory and praise be to You, O Allah. Blessed is Your name, exalted is Your majesty, and there is no god but You.'],
+  ['ruku', 'Bow (ruku)', 'Say “Allahu akbar” and bow, hands on the knees, back straight. Say three times:', 'سُبْحَانَ رَبِّيَ الْعَظِيمِ', 'Subḥāna rabbiyal-ʿaẓīm', 'Glory be to my Lord, the Most Great.'],
+  ['stand', 'Rise', 'Rise and say “Sami Allahu liman hamidah”. Once standing, say:', 'رَبَّنَا وَلَكَ الْحَمْدُ', 'Rabbanā wa lakal-ḥamd', 'Our Lord, to You belongs all praise.'],
+  ['sujud', 'Prostrate (sujud)', 'Say “Allahu akbar” and prostrate: forehead and nose, both palms, both knees and the toes on the ground. Say three times:', 'سُبْحَانَ رَبِّيَ الْأَعْلَى', 'Subḥāna rabbiyal-aʿlā', 'Glory be to my Lord, the Most High.'],
+  ['sit', 'Sit between the two prostrations', 'Say “Allahu akbar” and sit up briefly. Say:', 'رَبِّ اغْفِرْ لِي', 'Rabbi-ghfir lī', 'My Lord, forgive me.'],
   ['sujud', 'Second prostration', 'Say “Allahu akbar” and prostrate again, the same way. That completes one unit (rak‘ah).'],
   ['stand', 'Next unit', 'Stand up with “Allahu akbar” and repeat from the recitation for the second unit.'],
-  ['sit', 'Sit for the testimony (tashahhud)', 'After the second unit, sit and recite:', 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'At-taḥiyyātu lillāhi waṣ-ṣalawātu waṭ-ṭayyibāt, as-salāmu ʿalayka ayyuhan-nabiyyu wa raḥmatullāhi wa barakātuh, as-salāmu ʿalaynā wa ʿalā ʿibādillāhiṣ-ṣāliḥīn, ash-hadu an lā ilāha illallāh, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh'],
-  ['sit', 'In the last sitting', 'In the final sitting, add the prayer upon the Prophet:', 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ', 'Allāhumma ṣalli ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā ṣallayta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd. Allāhumma bārik ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā bārakta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd'],
-  ['salam', 'Close with salam', 'Turn the head to the right and say the greeting, then to the left. The prayer is complete.', 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ', 'As-salāmu ʿalaykum wa raḥmatullāh']
+  ['sit', 'Sit for the testimony (tashahhud)', 'After the second unit, sit and recite:', 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'At-taḥiyyātu lillāhi waṣ-ṣalawātu waṭ-ṭayyibāt, as-salāmu ʿalayka ayyuhan-nabiyyu wa raḥmatullāhi wa barakātuh, as-salāmu ʿalaynā wa ʿalā ʿibādillāhiṣ-ṣāliḥīn, ash-hadu an lā ilāha illallāh, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh', 'Greetings, prayers and good words are for Allah. Peace be upon you, O Prophet, and the mercy of Allah and His blessings. Peace be upon us and upon the righteous servants of Allah. I bear witness that there is no god but Allah, and I bear witness that Muhammad is His servant and His messenger.'],
+  ['sit', 'In the last sitting', 'In the final sitting, add the prayer upon the Prophet:', 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ', 'Allāhumma ṣalli ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā ṣallayta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd. Allāhumma bārik ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā bārakta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd', 'O Allah, send prayers upon Muhammad and the family of Muhammad, as You sent prayers upon Ibrahim and the family of Ibrahim. You are Praiseworthy, Glorious. O Allah, bless Muhammad and the family of Muhammad, as You blessed Ibrahim and the family of Ibrahim. You are Praiseworthy, Glorious.'],
+  ['salam', 'Close with salam', 'Turn the head to the right and say the greeting, then to the left. The prayer is complete.', 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ', 'As-salāmu ʿalaykum wa raḥmatullāh', 'Peace and the mercy of Allah be upon you.']
 ];
 
 export function renderLearnHub(root) {
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('First steps')}</b><span class="ib"></span></header>
-    <p class="lead pad">${t('New to prayer, or coming back to it? Start here. Calm, one step at a time.')}</p>
+    <p class="lead pad">${t('New to prayer, or coming back to it? Start here. Calm, one step at a time.')} ${t('No question is a silly one here.')}</p>
+    <p class="muted small pad">${t('Details differ between the four schools of law. This is a general guide. Learn alongside a teacher or the imam of your mosque.')}</p>
     <a class="card row" href="#/learn/wudu"><span><span class="mono">${t('Step {n}', { n: 1 })}</span><b>${t('Ablution (wudu)')}</b><span class="muted small">${t('{n} steps · about 3 minutes', { n: WUDU.length })}</span></span>${icon.chev}</a>
-    <a class="card row" href="#/learn/salat"><span><span class="mono">${t('Step {n}', { n: 2 })}</span><b>${t('The prayer (salat)')}</b><span class="muted small">${t('{n} steps · a two-unit prayer', { n: SALAT.length })}</span></span>${icon.chev}</a>
+    <a class="card row" href="#/learn/salat"><span><span class="mono">${t('Step {n}', { n: 2 })}</span><b>${t('The prayer (salat)')}</b><span class="muted small">${t('{n} steps · a two-unit prayer · about 5 minutes', { n: SALAT.length })}</span></span>${icon.chev}</a>
     <a class="card row" href="#/quran/1"><span><span class="mono">${t('Step {n}', { n: 3 })}</span><b>${t('Learn Al-Fatihah word by word')}</b><span class="muted small">${t('Recited in every unit of prayer')}</span></span>${icon.chev}</a>
     <a class="card row" href="#/lessons"><span><span class="mono">${t('Step {n}', { n: 4 })}</span><b>${t('Five Quran words a day')}</b><span class="muted small">${t('Understand what you recite')}</span></span>${icon.chev}</a>
-    <section class="card stack"><b>${t('How many units?')}</b>
+    <section class="card stack"><b>${t('How many units?')}</b><span class="muted small">${t('Obligatory (fard) units of each prayer.')}</span>
       <ul class="times">${[['fajr', 2], ['dhuhr', 4], ['asr', 4], ['maghrib', 3], ['isha', 4]].map(([k, n]) => `<li><span class="nm">${t({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[k])}</span><span class="tm mono">${t('{n} units', { n })}</span></li>`).join('')}</ul>
       <p class="muted small">${t('In prayers of three or four units, sit for the testimony after the second unit, then stand again. In the third and fourth units, recite Al-Fatihah only.')}</p></section>
-    <p class="muted small pad">${t('Details differ between the four schools of law. This is a general guide. Learn alongside a teacher or the imam of your mosque.')}</p>`;
+`;
+  root.querySelectorAll('a.card.row').forEach((a, n) => { const k = ['wudu', 'salat', 'fatiha', 'lessons'][n]; if (S.learnDone && S.learnDone[k]) a.querySelector('.mono').insertAdjacentHTML('beforeend', ` · ✓ ${t('done')}`); });
 }
 
 export function renderSteps(root, which) {
   const list = which === 'wudu' ? WUDU : SALAT; let i = 0;
   const draw = () => {
-    const [p, title, body, ar, tl] = list[i];
+    const [p, title, body, ar, tl, mean] = list[i];
     root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="mono">${i + 1}/${list.length}</span></header>
       <div class="stepbar" aria-hidden="true">${list.map((_, j) => `<i class="${j <= i ? 'on' : ''}"></i>`).join('')}</div>
       <section class="step">
-        <div class="figw">${POSE[p] || ico[p]}</div>
+        <div class="figw" role="img" aria-label="${esc(t(title))}">${POSE[p] || ico[p]}</div>
         <h2>${t(title)}</h2><p>${t(body)}</p>
-        ${ar ? `<div class="say"><p class="ar" lang="ar" dir="rtl">${ar}</p>${lang() !== 'ar' ? `<p class="tlit">${esc(tl)}</p>` : ''}</div>` : ''}
+        ${ar ? `<div class="say"><p class="ar" lang="ar" dir="rtl">${ar}</p>${lang() !== 'ar' ? `<p class="tlit">${esc(tl)}</p>` : ''}${mean && lang() !== 'ar' ? `<p class="mean">${esc(t(mean))}</p>` : ''}</div>` : ''}
       </section>
-      <nav class="rnav"><button class="btn line" id="sp" ${i === 0 ? 'disabled' : ''}>${t('Previous')}</button>${i < list.length - 1 ? `<button class="btn" id="sn">${t('Next')}</button>` : `<a class="btn" href="#/learn">${t('Done')}</a>`}</nav>`;
+      <nav class="rnav"><button class="btn line" id="sp" ${i === 0 ? 'disabled' : ''}>${t('Previous')}</button>${i < list.length - 1 ? `<button class="btn" id="sn">${t('Next')}</button>` : `<button class="btn" id="sfin">${t('Done')}</button>`}</nav>`;
   };
-  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sn') i++; if (b.id === 'sp') i--; draw(); window.scrollTo(0, 0); };
+  const fin = () => {
+    S.learnDone = S.learnDone || {}; S.learnDone[which] = true; save();
+    const next = which === 'wudu' ? ['#/learn/salat', 'Next: the prayer'] : ['#/quran/1', 'Next: Al-Fatihah word by word'];
+    root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="ib"></span></header>
+      <section class="hero2"><div class="big">✓</div><p class="lead">${t('You are there. Come back whenever you want, as often as you need.')}</p></section>
+      <a class="btn big" href="${next[0]}">${t(next[1])}</a><a class="btn line big" href="#/learn" style="margin-top:10px">${t('Back to First steps')}</a>`;
+    window.scrollTo(0, 0);
+  };
+  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; draw(); window.scrollTo(0, 0); };
   draw();
   return () => { root.onclick = null; };
 }
@@ -116,7 +126,7 @@ export async function renderLessons(root) {
     $('#lgo', root).onclick = () => { queue = [...due().slice(0, 15), ...fresh()]; pos = 0; shown = false; card(); };
   };
   const card = async () => {
-    if (pos >= queue.length) { L.last = today; save(); root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Quranic Arabic')}</b><span class="ib"></span></header><section class="hero2"><div class="big">✓</div><p>${t('Done for today. See you tomorrow.')}</p></section><a class="btn line big" href="#/lessons">${t('Back')}</a>`; return; }
+    if (pos >= queue.length) { L.last = today; S.learnDone = S.learnDone || {}; S.learnDone.lessons = true; save(); root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Quranic Arabic')}</b><span class="ib"></span></header><section class="hero2"><div class="big">✓</div><p>${t('Done for today. See you tomorrow.')}</p></section><a class="btn line big" href="#/lessons">${t('Back')}</a>`; return; }
     const i = queue[pos], w = V[i], ex = await example(i);
     root.innerHTML = `<header class="sub"><a href="#/lessons" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Quranic Arabic')}</b><span class="mono">${pos + 1}/${queue.length}</span></header>
       <div class="stepbar" aria-hidden="true">${queue.map((_, j) => `<i class="${j <= pos ? 'on' : ''}"></i>`).join('')}</div>

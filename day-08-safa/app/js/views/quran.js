@@ -4,12 +4,15 @@ import { $, $$, esc, icon, arNum, sheet, closeSheet, toast, reportUrl } from '..
 import { t, lang } from '../i18n.js';
 import * as PL from '../player.js';
 export { RECITERS } from '../player.js';
+// Popular names people search for.
+const NICK = [[/kurs/, 2, 255, 'Ayat al-Kursi'], [/^ya ?s(ee|i)n/, 36, 0, 'Ya-Sin'], [/mulk/, 67, 0, 'Al-Mulk'], [/kahf/, 18, 0, 'Al-Kahf'], [/rahman/, 55, 0, 'Ar-Rahman'], [/waqi/, 56, 0, "Al-Waqi'ah"], [/ikhlas/, 112, 0, 'Al-Ikhlas'], [/falaq/, 113, 0, 'Al-Falaq'], [/^(an ?)?nas$/, 114, 0, 'An-Nas'], [/amana ?r/, 2, 285, 'Amana ar-Rasul'], [/fatiha/, 1, 0, 'Al-Fatihah'], [/sajda/, 32, 0, 'As-Sajdah'], [/maryam/, 19, 0, 'Maryam'], [/yusuf|joseph/, 12, 0, 'Yusuf']];
 
 const TRANS = {
   maash: ['Rashid Maash (clear French)', 'fr'], hamidullah: ['Hamidullah (classic French)', 'frh'],
   itani: ['Talal Itani (clear English)', null], pickthall: ['Pickthall (classic English)', 'pk'],
   muyassar: ['Al-Muyassar (Arabic explanation)', 'taf:ar-muyassar'], none: ['No translation', null]
 };
+const trName = () => { const x = TRANS[trKey()]; return x ? t(x[0]) : ''; };
 export const trKey = () => S.q.tr === 'auto' ? ({ fr: 'maash', ar: 'none', en: 'itani' }[lang()]) : S.q.tr;
 export const meaning = (meta, n) => lang() === 'fr' && meta.fr ? meta.fr[n - 1] : lang() === 'ar' ? meta.s[n - 1][0] : meta.s[n - 1][1];
 export const surahName = (meta, n) => lang() === 'ar' ? meta.s[n - 1][2] : meta.s[n - 1][0];
@@ -46,6 +49,8 @@ export async function renderList(root) {
     if (q) {
       const ref = q.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/), ql = q.toLowerCase().replace(/[^a-z0-9 \u0621-\u064A]/g, '');
       let html = '';
+      const nick = NICK.find(([re]) => re.test(q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')));
+      if (nick) html += `<a class="card row" href="#/quran/${nick[1]}${nick[2] ? '/' + nick[2] : ''}"><span><span class="mono">${t('Go to verse')}</span><b>${esc(nick[3])} · ${nick[1]}${nick[2] ? ':' + nick[2] : ''}</b></span>${icon.chev}</a>`;
       if (ref && +ref[1] >= 1 && +ref[1] <= 114 && +ref[2] >= 1 && +ref[2] <= meta.s[+ref[1] - 1][3]) html += `<a class="card row" href="#/quran/${+ref[1]}/${+ref[2]}"><span><span class="mono">${t('Go to verse')}</span><b>${esc(meta.s[+ref[1] - 1][0])} · ${+ref[1]}:${+ref[2]}</b></span>${icon.chev}</a>`;
       const hits = meta.s.map((m, i) => i + 1).filter(n => String(n) === q || (ql.length > 1 && (meta.s[n - 1][0].toLowerCase().replace(/[^a-z0-9 ]/g, '').includes(ql) || meta.s[n - 1][2].replace(/[\u064B-\u0652\u0670]/g, '').includes(ql) || meaning(meta, n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(ql))));
       html += hits.map(row).join('');
@@ -104,7 +109,7 @@ export async function renderReader(root, sN, vN, extra) {
   };
   root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)}</b><span class="mono">${esc(meaning(meta, s))} · ${t('{n} verses', { n })}</span></div>
       <button class="chip" id="twbw" aria-pressed="${S.q.wbw}">${t('Word by word')}</button><button class="ib" id="rset" aria-label="${t('Reader settings')}">${icon.gear}</button></header>
-    <div class="${cls()}" id="rd">${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${fat.a.map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
+    <div class="${cls()}" id="rd">${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · ${esc(trName())}</p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${fat.a.map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
       <nav class="rnav">${s > 1 ? `<a class="btn line sm" href="#/quran/${s - 1}">‹ ${esc(surahName(meta, s - 1))}</a>` : '<span></span>'}${s < 114 ? `<a class="btn line sm" href="#/quran/${s + 1}">${esc(surahName(meta, s + 1))} ›</a>` : ''}</nav></div>
     <div class="player" id="pl">
       <div class="prow"><span class="mono ptime" id="pt0">0:00</span><input type="range" id="pseek" min="0" max="1000" value="0" step="1" aria-label="${t('Position in the surah')}"><span class="mono ptime" id="pt1">${PL.fmt(PL.totalMs())}</span></div>
@@ -112,7 +117,9 @@ export async function renderReader(root, sN, vN, extra) {
         <span class="plabel mono" id="plab"></span><button class="chip" id="psp" aria-label="${t('Playback speed')}">${S.q.speed}×</button><button class="chip" id="phd" aria-label="${t('Hide words to test your memory')}"></button></div>
     </div>`;
   const rd = $('#rd', root), pl = $('#pl', root), seekEl = $('#pseek', pl);
+  if (!S.seenWordHint) { S.seenWordHint = true; save(); setTimeout(() => toast(t('Tip: tap an Arabic word to hear it and see its meaning.')), 600); }
   const setLast = v => { S.q.last = { s, v, n: name }; save(); };
+  if (s === 1) { S.learnDone = S.learnDone || {}; if (!S.learnDone.fatiha) { S.learnDone.fatiha = true; save(); } }
 
   /* colour sweep */
   let litV = null, raf = 0, dragging = false, userScroll = 0;
