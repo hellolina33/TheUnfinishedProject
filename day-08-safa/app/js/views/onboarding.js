@@ -38,7 +38,7 @@ export function render(root, done) {
       <div><span class="mono">${t('Step 2 of 2')}</span><h2>${t('Where do you pray?')}</h2>
       <p class="onb-promise">${icon.lock}<span>${t('Used on this device to compute prayer times and the Qibla. It is never sent anywhere.')}</span></p></div>
       <div class="onb-form">
-        <button class="btn line big" id="geo">${t('Use my location once')}</button>
+        <button class="btn big" id="geo">${t('Use my location once')}</button>
         <div class="or mono">${t('or')}</div>
         <div id="city"></div>
         <div id="picked" hidden>
@@ -46,6 +46,7 @@ export function render(root, done) {
           <label class="lbl" for="meth">${t('Calculation method')}</label>
           <select id="meth" class="inp">${Object.entries(METHODS).map(([k, m]) => `<option value="${k}">${esc(m.n)}</option>`).join('')}</select>
           <p class="muted small">${t('The one usually used in your country is already chosen. Not sure? Keep it. You can change it any time.')}</p>
+          <label class="tog"><span>${t('I follow the Hanafi school')}<small>${t('Asr starts later. Leave off if you are not sure.')}</small></span><input type="checkbox" id="hanafi" ${S.madhab === 'hanafi' ? 'checked' : ''}></label>
           <label class="lbl">${t('Where are you with prayer? (optional)')}</label>
           <div class="seg lvl">${[['new', 'I am starting'], ['back', 'I am coming back'], ['reg', 'I already pray']].map(([k, l]) => `<button type="button" data-lvl="${k}" aria-pressed="${S.level === k}">${t(l)}</button>`).join('')}</div>
         </div>
@@ -61,6 +62,7 @@ export function render(root, done) {
       catch (err) { e.target.textContent = t('Use my location once'); $('#hint', root).textContent = t('Location unavailable. Type your city instead.'); inp.focus(); }
     };
     $('#meth', root).onchange = e => { S.method = e.target.value; save(); };
+    $('#hanafi', root).onchange = e => { S.madhab = e.target.checked ? 'hanafi' : 'shafi'; save(); };
     $('#done', root).onclick = () => { S.onboarded = true; if (!S.since) S.since = dayKey(); save(); location.hash = S.level === 'new' ? '#/learn' : '#/today'; done(); };
     data('cities.json').catch(() => {});
   };

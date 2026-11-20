@@ -69,7 +69,7 @@ export function renderSettings(root) {
     root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
       <section class="form">
         <h3>${t('Language')}</h3>
-        <div class="seg lang">${[['auto', t('Automatic')], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
+        <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع' }[lang()]) + ')'], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
         <h3>${t('Place')}</h3>
         <p class="muted small">${t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) })}</p>
         <div id="scity"></div><button class="btn line sm" id="sgeo">${t('Use my location once')}</button>
@@ -78,6 +78,7 @@ export function renderSettings(root) {
         <select id="smeth" class="inp">${Object.entries(METHODS).map(([k, m]) => `<option value="${k}" ${S.method === k ? 'selected' : ''}>${esc(m.n)} · ${esc(m.d)}</option>`).join('')}</select>
         <label class="lbl" for="smad">${t('Asr')}</label>
         <select id="smad" class="inp"><option value="shafi" ${S.madhab === 'shafi' ? 'selected' : ''}>${t("Standard · Shafi'i, Maliki, Hanbali")}</option><option value="hanafi" ${S.madhab === 'hanafi' ? 'selected' : ''}>${t('Hanafi')}</option></select>
+        <p class="muted small">${t('Hanafi: Asr starts later. Not sure? Keep Standard, or ask your mosque.')}</p>
         <label class="lbl">${t('Match your mosque · minutes')}</label>
         <div class="offs">${P5.map(p => `<div class="off"><span>${NAMES[p]}</span><button data-off="${p}" data-d="-1" aria-label="${t('{p} minus one minute', { p: NAMES[p] })}">−</button><b class="mono">${S.offsets[p] > 0 ? '+' : ''}${S.offsets[p]}</b><button data-off="${p}" data-d="1" aria-label="${t('{p} plus one minute', { p: NAMES[p] })}">+</button><span class="mono muted">${fmtTime(timesFor(dayKey())[p])}</span></div>`).join('')}</div>
         <label class="lbl" for="shij">${t('Hijri date adjustment')}</label>
@@ -86,12 +87,13 @@ export function renderSettings(root) {
         <button class="btn line sm" id="sics">${t('Add 30 days of prayer times to my calendar')}</button>
         <h3>${t('Offline')}</h3>
         <p class="muted small">${esc(est)}</p>
-        <button class="btn line sm" id="sall">${t('Save the whole Quran text for offline')}</button>
+        <button class="btn line sm" id="sall">${t('Save the whole Quran text for offline')} · ≈ 25 MB</button>
         <p class="muted small">${t('Saved audio: {x}', { x: dl.length ? dl.map(k => { const [r, s] = k.split('|'); return t('surah {s} · {r}', { s, r: esc(RECITERS[r] || r) }); }).join(', ') : t('none') })}</p>
         ${dl.length ? `<button class="btn line sm" id="sclr">${t('Delete saved audio')}</button>` : ''}
         <h3>${t('Display &amp; accessibility')}</h3>
         <label class="lbl">${t('Theme')}</label><div class="seg lang">${[['auto', t('Automatic')], ['light', t('Light')], ['dark', t('Dark')]].map(([k, l]) => `<button data-theme="${k}" aria-pressed="${S.ui.theme === k}">${l}</button>`).join('')}</div>
         <label class="lbl">${t('Text size')}</label><div class="seg lang">${[[0.9, 'A−'], [1, 'A'], [1.15, 'A+'], [1.3, 'A++']].map(([k, l]) => `<button data-scale="${k}" aria-pressed="${S.ui.scale === k}" aria-label="${t('Text size')} ${Math.round(k * 100)}%">${l}</button>`).join('')}</div>
+        <p class="preview">${t('Preview: the words you read here change size.')}</p>
         <label class="tog"><span>${t('High contrast')}</span><input type="checkbox" id="shc" ${S.ui.hc ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Reduce motion')}</span><input type="checkbox" id="srm" ${S.ui.motion ? 'checked' : ''}></label>
         <h3>${t('Friday')}</h3>
@@ -99,10 +101,11 @@ export function renderSettings(root) {
         <button class="btn line sm" id="sfics">${t('Add a weekly Friday reminder to my calendar')}</button>
         <h3>${t('Sync between devices')}</h3>
         <p class="muted small">${t('No account and no server. Create an encrypted file protected by a passphrase, send it to your other device any way you like, and merge it there. Nobody can read it without the passphrase, not even us.')}</p>
+        <p class="muted small warn">${t('Write your passphrase down somewhere safe. If you forget it, nobody can open the file, not even safa.')}</p>
         <input id="spass" class="inp" type="password" minlength="8" autocomplete="new-password" placeholder="${t('Passphrase (8 characters or more)')}" aria-label="${t('Passphrase')}">
         <div class="grid2"><button class="btn line sm" id="ssync">${t('Create sync file')}</button><label class="btn line sm">${t('Merge a sync file')}<input type="file" id="smerge" accept=".safa,application/json" hidden></label></div>
         <h3>${t('Backup')}</h3>
-        <p class="muted small">${t('No account, so no cloud. Keep a file and restore it on any device.')}</p>
+        <p class="muted small">${t('No account, so no cloud. Keep a file and restore it on any device.')} ${/iphone|ipad/i.test(navigator.userAgent) ? t('On iPhone, Safari can clear the data of a web app you have not opened for weeks: export a backup from time to time.') : ''}</p>
         <p class="muted small">${t('The backup is encrypted with the passphrase above. Without it, nobody can read the file, not even you.')}</p>
         <div class="grid2"><button class="btn line sm" id="sexp">${t('Export backup')}</button><label class="btn line sm">${t('Import backup')}<input type="file" id="simp" accept=".safa,application/json,.json" hidden></label></div>
         <button class="linkbtn small" id="sexp2">${t('Export a readable copy (not encrypted)')}</button>
@@ -175,6 +178,7 @@ export function renderSettings(root) {
   return () => { root.onclick = null; root.onchange = null; };
 }
 
+const LINKS = [["adhan-js by Batoul Apps", "https://github.com/batoulapps/adhan-js"], ["quran-json", "https://github.com/risan/quran-json"], ["fawazahmed0/quran-api", "https://github.com/fawazahmed0/quran-api"], ["AleaToir3/hisnul-muslim-api-json", "https://github.com/AleaToir3/hisnul-muslim-api-json"], ["spa5k/tafsir_api", "https://github.com/spa5k/tafsir_api"], ["everyayah.com", "https://everyayah.com"], ["hisnmuslim.com", "https://www.hisnmuslim.com"], ["city-timezones", "https://github.com/kevinroberts/city-timezones"]];
 export function renderAbout(root) {
   root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('About')}</b><span class="ib"></span></header>
     <section class="about">
@@ -197,6 +201,8 @@ export function renderAbout(root) {
         <li>${t(`<b>Duas:</b> Hisnul Muslim by Sa'id bin Ali bin Wahf al-Qahtani, text and audio from hisnmuslim.com.`)}</li>
         <li>${t(`<b>Cities:</b> city-timezones (MIT).`)}</li>
       </ul>
+      <p><a href="../${lang() === 'fr' ? 'confidentialite' : 'privacy'}/" target="_blank" rel="noopener">${t('What safa. keeps, and what it never keeps')}</a></p>
+      <p class="muted small">${t('Open the sources:')} ${LINKS.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${n}</a>`).join(' · ')}</p>
       <p class="mono">${t('Version 1.1 · made by Salah, as part of The Unfinished 30. safa. stays online after the challenge.')}</p>
     </section>`;
   const sb = $('#ashare', root); if (sb) sb.onclick = async () => { const url = location.origin + location.pathname.replace(/app\/.*$/, ''); const txt = t('safa. Prayer times, the Quran word by word with context, and duas. No ads, no account, no guilt.'); try { if (navigator.share) await navigator.share({ title: 'safa.', text: txt, url }); else { await navigator.clipboard.writeText(txt + ' ' + url); toast(t('Copied')); } } catch (e) { /* cancelled */ } };

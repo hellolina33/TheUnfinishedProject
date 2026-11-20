@@ -62,8 +62,10 @@ export async function renderHifz(root) {
     root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Memorisation')}</b><span class="ib"></span></header>
       <p class="lead pad">${t('A new portion each day, and reviews spaced out so what you learn stays.')}</p>
       <section class="card stack"><span class="mono">${t('Next new portion')}</span><b>${esc(surahName(meta, nextS))} ${rng(nextS, nextA, nextB)}</b>
-        <div class="row2"><label class="lbl" for="hper">${t('Verses per portion')}</label><input id="hper" class="inp" type="number" min="1" max="30" value="${H.perDay}" inputmode="numeric"></div>
+        ${!H.items.length ? `<p class="muted small">${t('We start with the short surahs at the end of the Quran: they are the easiest to learn and the ones you recite in prayer.')}</p>` : ''}
+        <label class="lbl">${t('Verses per portion')}</label><div class="seg per">${[3, 5, 7].map(n => `<button data-per="${n}" aria-pressed="${H.perDay === n}">${n}</button>`).join('')}</div>
         <button class="btn" id="hadd" data-s="${nextS}" data-a="${nextA}" data-b="${nextB}">${t('Add this portion')}</button>
+        <p class="muted small">${t('You will see it again tomorrow, then in 3 days, then in 7 days, and further apart as it settles.')}</p>
         <details><summary class="mono">${t('Choose another portion')}</summary>
           <div class="grid3"><select id="hs" class="inp">${meta.s.map((m, i) => `<option value="${i + 1}" ${i + 1 === nextS ? 'selected' : ''}>${i + 1}. ${esc(surahName(meta, i + 1))}</option>`).join('')}</select>
           <input id="ha" class="inp" type="number" min="1" value="${nextA}" aria-label="${t('From verse')}"><input id="hb" class="inp" type="number" min="1" value="${nextB}" aria-label="${t('To verse')}"></div>
@@ -76,6 +78,7 @@ export async function renderHifz(root) {
   const add = (s, a, b) => { S.hifz.items.push({ id: Date.now().toString(36), s, a, b, box: 0, d: dayKey(), added: dayKey() }); save(); toast(t('Added')); draw(); };
   root.onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.per) { S.hifz.perDay = +b.dataset.per; save(); draw(); return; }
     if (b.id === 'hadd') add(+b.dataset.s, +b.dataset.a, +b.dataset.b);
     if (b.id === 'hadd2') { const s = +$('#hs', root).value, n = meta.s[s - 1][3], a = Math.min(n, Math.max(1, +$('#ha', root).value || 1)), c = Math.min(n, Math.max(a, +$('#hb', root).value || a)); add(s, a, c); }
     if (b.dataset.r != null) { const x = S.hifz.items.find(y => y.id === b.dataset.id); x.box = +b.dataset.r ? Math.min(GAP.length - 1, x.box + 1) : 0; x.d = addDays(dayKey(), GAP[x.box]); save(); draw(); }
@@ -91,21 +94,21 @@ export function renderQada(root) {
     const Q = S.qada, total = P5.reduce((a, p) => a + (Q.p[p] || 0), 0);
     const days = total ? Math.ceil(total / Math.max(1, Q.perDay)) : 0;
     root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Make-up prayers')}</b><span class="ib"></span></header>
-      <p class="lead pad">${t('Missed prayers to make up, privately, at your pace. No judgement. Every one you make up counts.')}</p>
+      <p class="lead pad">${t('Making up is coming back. Here, privately and at your pace, you can note prayers to make up. No judgement. Every one you make up counts.')}</p>
+      <p class="muted small pad">${t('Tap − each time you make one up.')}</p>
       <label class="tog card"><span>${t('Show on Today')}<small>${t('A small card with what is left.')}</small></span><input type="checkbox" id="qon" ${Q.on ? 'checked' : ''}></label>
       <ul class="times qd">${P5.map(p => `<li><span class="nm">${NAMES[p]}</span><span class="qctl"><button class="ib" data-p="${p}" data-d="-1" aria-label="${t('One made up')}">${icon.minus}</button><b class="mono">${Q.p[p] || 0}</b><button class="ib" data-p="${p}" data-d="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li>`).join('')}
         <li><span class="nm">${t('Fasting days')}</span><span class="qctl"><button class="ib" data-f="-1" aria-label="${t('One made up')}">${icon.minus}</button><b class="mono">${Q.fast || 0}</b><button class="ib" data-f="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li></ul>
-      <p class="muted small pad">${t('Tap − each time you make one up.')}</p>
       <section class="card stack"><div class="row2"><label class="lbl" for="qper">${t('Make-up prayers per day')}</label><input id="qper" class="inp" type="number" min="1" max="50" value="${Q.perDay}" inputmode="numeric"></div>
-        <p>${total ? t('{n} prayers left. At this pace, done in about {d} days, around {date}.', { n: total, d: days, date: civil(addDays(dayKey(), days), { day: 'numeric', month: 'long', year: 'numeric' }) }) : t('Nothing left to make up.')}</p>
-        <details><summary class="mono">${t('Estimate from missed years')}</summary><div class="row2"><input id="qy" class="inp" type="number" min="0" max="80" step="0.5" placeholder="${t('Years')}" inputmode="decimal"><button class="btn line sm" id="qest">${t('Add to each prayer')}</button></div><p class="muted small">${t('Adds 365 per year to each of the five prayers. Adjust by hand after.')}</p></details></section>
+        <p>${total ? t('{n} prayers left. At this pace, done in about {d} days, around {date}.', { n: total, d: days, date: civil(addDays(dayKey(), days), { day: 'numeric', month: 'long', year: 'numeric' }) }) : (Q.started ? t('Nothing left to make up.') : t('Nothing noted yet. Add prayers with +, or estimate from years below.'))}</p>
+        <details ${total ? '' : 'open'}><summary class="mono">${t('Estimate from missed years')}</summary><div class="row2"><input id="qy" class="inp" type="number" min="0" max="80" step="0.5" placeholder="${t('Years')}" inputmode="decimal"><button class="btn line sm" id="qest">${t('Add to each prayer')}</button></div><p class="muted small">${t('Adds 365 per year to each of the five prayers. Adjust by hand after.')}</p></details></section>
       <p class="muted small pad">${t('How to make up prayers, and which ones, differs between schools. Ask a person of knowledge.')}</p>`;
   };
   root.onclick = e => {
     const b = e.target.closest('button'); if (!b) return; const Q = S.qada;
-    if (b.dataset.p) { Q.p[b.dataset.p] = Math.max(0, (Q.p[b.dataset.p] || 0) + +b.dataset.d); Q.updated = Date.now(); save(); draw(); }
+    if (b.dataset.p) { Q.p[b.dataset.p] = Math.max(0, (Q.p[b.dataset.p] || 0) + +b.dataset.d); Q.started = true; Q.updated = Date.now(); save(); draw(); }
     if (b.dataset.f) { Q.fast = Math.max(0, (Q.fast || 0) + +b.dataset.f); Q.updated = Date.now(); save(); draw(); }
-    if (b.id === 'qest') { const y = Math.max(0, +$('#qy', root).value || 0); if (y) { P5.forEach(p => { Q.p[p] = (Q.p[p] || 0) + Math.round(y * 365); }); save(); draw(); } }
+    if (b.id === 'qest') { const y = Math.max(0, +$('#qy', root).value || 0); if (y) { P5.forEach(p => { Q.p[p] = (Q.p[p] || 0) + Math.round(y * 365); }); Q.started = true; save(); draw(); } }
   };
   root.onchange = e => {
     if (e.target.id === 'qon') { S.qada.on = e.target.checked; save(); }

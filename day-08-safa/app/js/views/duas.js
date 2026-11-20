@@ -7,6 +7,7 @@ const ar = () => lang() === 'ar';
 const title = c => (fr() && c.tf) || (ar() && c.ta) || c.t;
 const fold = x => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
+const CARE = { 'Anxiety': 'Take a breath. Allah does not burden a soul beyond what it can bear (Quran 2:286). Here are words the Prophet, peace be upon him, used in hard moments.', 'Illness & grief': 'May Allah ease what you carry. These duas are for you and for those you love.', 'Forgiveness': 'The door of forgiveness stays open (Quran 39:53). Start with one of these.' };
 const FEEL = ['Anxiety', 'Sleep', 'Travel', 'Decision', 'Gratitude', 'Illness & grief', 'Forgiveness', 'Morning & evening', 'After prayer', 'Food & home', 'Mosque & prayer'];
 // Plain words people type, mapped to the tags above.
 const SYN = { anxieux: 'Anxiety', anxieuse: 'Anxiety', angoisse: 'Anxiety', peur: 'Anxiety', triste: 'Anxiety', tristesse: 'Anxiety', colere: 'Anxiety', inquiet: 'Anxiety', examen: 'Decision', entretien: 'Decision', choix: 'Decision', decision: 'Decision', fatigue: 'Sleep', sommeil: 'Sleep', dormir: 'Sleep', cauchemar: 'Sleep', voyage: 'Travel', avion: 'Travel', voiture: 'Travel', merci: 'Gratitude', reconnaissant: 'Gratitude', heureux: 'Gratitude', joie: 'Gratitude', malade: 'Illness & grief', maladie: 'Illness & grief', douleur: 'Illness & grief', deuil: 'Illness & grief', mort: 'Illness & grief', pardon: 'Forgiveness', peche: 'Forgiveness', culpabilite: 'Forgiveness', matin: 'Morning & evening', soir: 'Morning & evening', manger: 'Food & home', repas: 'Food & home', jeune: 'Food & home', maison: 'Food & home', mosquee: 'Mosque & prayer', ablutions: 'Mosque & prayer', priere: 'Mosque & prayer', anxious: 'Anxiety', anxiety: 'Anxiety', stress: 'Anxiety', stressed: 'Anxiety', worried: 'Anxiety', worry: 'Anxiety', afraid: 'Anxiety', fear: 'Anxiety', sad: 'Anxiety', angry: 'Anxiety', exam: 'Decision', test: 'Decision', interview: 'Decision', choice: 'Decision', decide: 'Decision', decision: 'Decision', istikhara: 'Decision', tired: 'Sleep', sleep: 'Sleep', nightmare: 'Sleep', insomnia: 'Sleep', trip: 'Travel', flight: 'Travel', plane: 'Travel', car: 'Travel', travel: 'Travel', hajj: 'Travel', umrah: 'Travel', thankful: 'Gratitude', grateful: 'Gratitude', gratitude: 'Gratitude', happy: 'Gratitude', sick: 'Illness & grief', ill: 'Illness & grief', pain: 'Illness & grief', death: 'Illness & grief', grief: 'Illness & grief', funeral: 'Illness & grief', sorry: 'Forgiveness', guilt: 'Forgiveness', sin: 'Forgiveness', repent: 'Forgiveness', morning: 'Morning & evening', evening: 'Morning & evening', eat: 'Food & home', food: 'Food & home', fasting: 'Food & home', iftar: 'Food & home', mosque: 'Mosque & prayer', wudu: 'Mosque & prayer', adhan: 'Mosque & prayer' };
@@ -18,7 +19,7 @@ export async function renderList(root) {
   const D = await data('duas.json');
   const h = +new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', hourCycle: 'h23' }).format(new Date());
   const row = c => `<a class="srow" href="#/duas/${c.id}"><span class="st"><b>${esc(title(c))}</b><span class="muted small">${t(c.d.length > 1 ? '{n} invocations' : '{n} invocation', { n: c.d.length })}</span></span>${icon.chev}</a>`;
-  root.innerHTML = `<header class="vh"><div><h1>${t('Duas')}</h1><span class="mono">${t('Hisnul Muslim · Fortress of the Muslim')}</span></div></header>
+  root.innerHTML = `<header class="vh"><div><h1>${t('Duas')}</h1><p class="sub2">${t('From Hisnul Muslim, the most widely used collection of duas.')}</p></div></header>
     <div class="searchf">${icon.search}<input id="ds" class="inp" type="search" placeholder="${t('How do you feel? anxious, travelling…')}" value="${esc(st.q)}" autocomplete="off" aria-label="${t('Search duas by feeling or situation')}"></div>
     <div class="chips wrapc">${FEEL.map(f => `<button class="chip" data-feel="${esc(f)}" aria-pressed="${st.feel === f}">${esc(t(f))}</button>`).join('')}<button class="chip" data-feel="__fav" aria-pressed="${st.feel === '__fav'}">${t('Favourites')}</button></div>
     <a class="card row" href="#/mydua"><span><span class="mono">${t('Personal')}</span><b>${t('My duas')}</b><span class="muted small">${S.myDuas.length ? t('{n} saved', { n: S.myDuas.length }) : t('Write your own, with a gentle reminder')}</span></span>${icon.chev}</a>
@@ -28,14 +29,14 @@ export async function renderList(root) {
     const q = fold(st.q.trim());
     let list = D, head = '';
     if (st.feel === '__fav') { const f = new Set(S.d.favs); list = D.filter(c => c.d.some(x => f.has(x.id))); if (!list.length) { out.innerHTML = `<p class="muted pad">${t('No favourites yet. Tap the star on any dua.')}</p>`; return; } }
-    else if (st.feel) list = D.filter(c => c.g.includes(st.feel));
+    else if (st.feel) { list = D.filter(c => c.g.includes(st.feel)); if (CARE[st.feel]) head = `<p class="care pad">${t(CARE[st.feel])}</p>`; }
     else if (q) {
       const tag = SYN[q] || Object.keys(SYN).filter(k => k.startsWith(q) && q.length > 2).map(k => SYN[k])[0];
       list = D.filter(c => (tag && c.g.includes(tag)) || fold(title(c)).includes(q) || (q.length > 3 && c.d.some(x => fold((fr() && x.fr) || x.en).includes(q))));
       if (!list.length) { out.innerHTML = `<p class="muted pad">${t('Nothing found. Try “sleep”, “travel” or “anxious”.')}</p>`; return; }
     } else {
       const sug = h < 15 ? [[27, 'Morning', 'Words of remembrance'], [1, 'On waking', 'When you wake up']] : [[27, 'Evening', 'Words of remembrance'], [28, 'Tonight', 'Before sleeping']];
-      head = `<div class="grid2">${sug.map(([id, k, tt]) => `<a class="card tile col" href="#/duas/${id}"><span class="mono">${t(k)}</span><b>${t(tt)}</b></a>`).join('')}</div><p class="mono pad">${t('All chapters · {n}', { n: D.length })}</p>`;
+      head = `<p class="mono pad">${t('For this moment of the day')}</p><div class="grid2">${sug.map(([id, k, tt]) => `<a class="card tile col" href="#/duas/${id}"><span class="mono">${t(k)}</span><b>${t(tt)}</b></a>`).join('')}</div><p class="mono pad">${t('All chapters · {n}', { n: D.length })}</p>`;
     }
     out.innerHTML = head + list.map(row).join('');
   };
@@ -51,7 +52,7 @@ export async function renderChapter(root, id) {
   const counts = {};
   root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b class="clip">${esc(title(c))}</b><button class="chip" id="dtl" aria-pressed="${S.d.tl}">${t('Transliteration')}</button></header>
     <div class="dlist ${S.d.tl ? '' : 'notl'}" id="dd">${c.d.map((x, i) => `<article class="dua" data-i="${i}">
-      <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button><button class="ib" data-mine="${i}" aria-label="${t('Add to my duas')}">${icon.plus}</button></span></div>
+      <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen to this dua')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button><button class="ib" data-mine="${i}" aria-label="${t('Add to my duas')}" title="${t('Add to my duas')}">${icon.plus}</button></span></div>
       <p class="ar" lang="ar" dir="rtl">${esc(x.ar)}</p>
       ${!ar() && ((fr() && x.tf) || x.tl) ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
       ${ar() ? '' : `<p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
@@ -101,7 +102,8 @@ export function renderMyDuas(root, id) {
       ${S.myDuas.length ? S.myDuas.map(d => `<article class="dua"><div class="dh"><b>${esc(d.title)}</b><a class="btn line sm" href="#/mydua/${d.id}">${t('Edit')}</a></div>
         ${d.ar ? `<p class="ar" lang="ar" dir="rtl">${esc(d.ar)}</p>` : ''}${d.text ? `<p class="en">${esc(d.text)}</p>` : ''}
         <div class="df"><span class="badge mono">${esc(d.ref || t('Personal'))}</span>${d.time ? `<button class="btn line sm" data-ics="${d.id}">${t('Daily reminder {t}', { t: d.time })}</button>` : ''}</div></article>`).join('')
-      : `<p class="muted pad">${t('Nothing yet. Write a dua in your own words, or tap + on any dua in Hisnul Muslim.')}</p><a class="btn big" href="#/mydua/new">${t('New dua')}</a>`}`;
+      : `<p class="muted pad">${t('Nothing yet. Write a dua in your own words, or tap + on any dua in Hisnul Muslim.')}</p><p class="muted small pad">${t('Ideas: for your parents, for your health, for a decision, for someone who left.')}</p><a class="btn big" href="#/mydua/new">${t('New dua')}</a>`}
+      <p class="muted small pad lockline">${icon.lock} ${t('Your duas stay on this phone. Nobody else can see them.')}</p>`;
     root.onclick = e => { const b = e.target.closest('[data-ics]'); if (b) ics(S.myDuas.find(x => x.id === b.dataset.ics)); };
   };
   const edit = () => {

@@ -64,7 +64,11 @@ async function route() {
   if (my !== token) { if (typeof c === 'function') c(); return; }
   cleanup = c;
   if (!(name === 'quran' && a)) window.scrollTo(0, 0);
+  const h = view.querySelector('h1, header.sub b'); if (h && navCount > 1) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
 }
+let navCount = 0; window.addEventListener('hashchange', () => navCount++);
+// The back arrow returns to where you came from, not always to the parent tab.
+view.addEventListener('click', e => { const a = e.target.closest('header.sub > a.ib:first-child'); if (!a || navCount < 1) return; e.preventDefault(); history.back(); }, true);
 // Mini player: recitation keeps going while you browse other tabs.
 const mini = document.createElement('div'); mini.id = 'mini'; mini.hidden = true; document.body.appendChild(mini);
 function drawMini() {
@@ -92,5 +96,8 @@ setInterval(async () => {
   toast(body);
 }, 30000);
 
-if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(reg => {
+  reg.addEventListener('updatefound', () => { const w = reg.installing; if (!w) return; w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) {
+    const b = document.createElement('button'); b.className = 'updbar'; b.textContent = t('A new version of safa. is ready · Reload'); b.onclick = () => location.reload(); document.body.appendChild(b); } }); });
+}).catch(() => {}));
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
