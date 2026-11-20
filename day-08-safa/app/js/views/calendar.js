@@ -1,6 +1,6 @@
 // Hijri calendar (Umm al-Qura, with a local moon-sighting offset) and key dates.
 import { S, save, dayKey, addDays } from '../store.js';
-import { $, $$, esc, icon } from '../ui.js';
+import { $, $$, esc, icon, download } from '../ui.js';
 import { t, L, LB } from '../i18n.js';
 
 const fmtNum = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura-nu-latn', { timeZone: 'UTC', day: 'numeric', month: 'numeric', year: 'numeric' });
@@ -58,12 +58,13 @@ export function renderCalendar(root) {
       }).join('')}</div>
       <p class="muted small"><span class="dot"></span> ${t('Key date')} · <span class="wd"></span> ${t('White days (13–15): voluntary fasting')}</p>
       <h3 class="sect">${t('Coming up')}</h3>
-      <ul class="evl">${up.map(e => `<li><span><b>${esc(t(e.name))}</b><span class="muted small">${esc(e.h.d + ' ' + monthName(e.h.m, e.h.y) + ' ' + e.h.y)} · ${esc(civil(e.k, { weekday: 'long', day: 'numeric', month: 'long' }))}</span></span><span class="mono">${e.days === 0 ? t('Today') : t('in {n} d', { n: e.days })}</span></li>`).join('')}</ul>
+      <ul class="evl">${up.map(e => `<li><span><b>${esc(t(e.name))}</b><span class="muted small">${esc(e.h.d + ' ' + monthName(e.h.m, e.h.y) + ' ' + e.h.y)} · ${esc(civil(e.k, { weekday: 'long', day: 'numeric', month: 'long' }))}</span></span><span class="evr"><span class="mono">${e.days === 0 ? t('Today') : t('in {n} d', { n: e.days })}</span><button class="linkbtn small" data-ics="${e.k}|${esc(t(e.name))}">${t('Add to calendar')}</button></span></li>`).join('')}</ul>
       <section class="card stack"><b>${t('Moon sighting')}</b><p class="muted small">${t('Dates follow the Umm al-Qura calendar. Your country may announce the month a day earlier or later. Shift it here.')}</p>
         <div class="seg">${[-2, -1, 0, 1, 2].map(n => `<button data-adj="${n}" aria-pressed="${(S.hijriAdj || 0) === n}">${n > 0 ? '+' : ''}${n}</button>`).join('')}</div></section>`;
   };
   root.onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.ics) { const [k, nm] = b.dataset.ics.split('|'), d = k.replace(/-/g, ''), nx = addDays(k, 1).replace(/-/g, ''); download(`safa-${d}.ics`, ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-${d}-${Date.now()}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;VALUE=DATE:${d}`, `DTEND;VALUE=DATE:${nx}`, `SUMMARY:${nm.replace(/[,;]/g, ' ')}`, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar'); return; }
     if (b.id === 'cprev') { view.m--; if (view.m < 1) { view.m = 12; view.y--; } draw(); }
     if (b.id === 'cnext') { view.m++; if (view.m > 12) { view.m = 1; view.y++; } draw(); }
     if (b.dataset.adj != null) { S.hijriAdj = +b.dataset.adj; save(); view = null; draw(); }
