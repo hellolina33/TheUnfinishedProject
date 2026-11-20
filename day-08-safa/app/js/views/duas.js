@@ -18,12 +18,12 @@ audio.addEventListener('error', () => { if (audio.getAttribute('src')) toast(t('
 export async function renderList(root) {
   const D = await data('duas.json');
   const h = +new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', hourCycle: 'h23' }).format(new Date());
-  const row = c => `<a class="srow" href="#/duas/${c.id}"><span class="st"><b>${esc(title(c))}</b><span class="muted small">${t(c.d.length > 1 ? '{n} invocations' : '{n} invocation', { n: c.d.length })}</span></span>${icon.chev}</a>`;
+  const row = c => `<a class="srow" href="#/duas/${c.id}"><span class="st"><b>${esc(title(c))}</b>${!ar() && c.ta ? `<span class="arn" lang="ar">${esc(c.ta)}</span>` : ''}<span class="muted small">${t(c.d.length > 1 ? '{n} invocations' : '{n} invocation', { n: c.d.length })}</span></span>${icon.chev}</a>`;
   root.innerHTML = `<header class="vh"><div><h1>${t('Duas')}</h1><p class="sub2">${t('From Hisnul Muslim, the most widely used collection of duas.')}</p></div></header>
     <div class="searchf">${icon.search}<input id="ds" class="inp" type="search" placeholder="${t('How do you feel? anxious, travelling…')}" value="${esc(st.q)}" autocomplete="off" aria-label="${t('Search duas by feeling or situation')}"></div>
     <div class="chips wrapc">${FEEL.map(f => `<button class="chip" data-feel="${esc(f)}" aria-pressed="${st.feel === f}">${esc(t(f))}</button>`).join('')}<button class="chip" data-feel="__fav" aria-pressed="${st.feel === '__fav'}">${t('Favourites')}</button></div>
-    <a class="card row" href="#/mydua"><span><span class="mono">${t('Personal')}</span><b>${t('My duas')}</b><span class="muted small">${S.myDuas.length ? t('{n} saved', { n: S.myDuas.length }) : t('Write your own, with a gentle reminder')}</span></span>${icon.chev}</a>
     <div id="dl"></div>`;
+  const mine = `<a class="card row" href="#/mydua"><span><span class="mono">${t('Personal')}</span><b>${t('My duas')}</b><span class="muted small">${S.myDuas.length ? t('{n} saved', { n: S.myDuas.length }) : t('Write your own, with a gentle reminder')}</span></span>${icon.chev}</a>`;
   const out = $('#dl', root);
   const draw = () => {
     const q = fold(st.q.trim());
@@ -36,7 +36,7 @@ export async function renderList(root) {
       if (!list.length) { out.innerHTML = `<p class="muted pad">${t('Nothing found. Try “sleep”, “travel” or “anxious”.')}</p>`; return; }
     } else {
       const sug = h < 15 ? [[27, 'Morning', 'Words of remembrance'], [1, 'On waking', 'When you wake up']] : [[27, 'Evening', 'Words of remembrance'], [28, 'Tonight', 'Before sleeping']];
-      head = `<p class="mono pad">${t('For this moment of the day')}</p><div class="grid2">${sug.map(([id, k, tt]) => `<a class="card tile col" href="#/duas/${id}"><span class="mono">${t(k)}</span><b>${t(tt)}</b></a>`).join('')}</div><p class="mono pad">${t('All chapters · {n}', { n: D.length })}</p>`;
+      head = `<p class="mono pad">${t('For this moment of the day')}</p><div class="grid2">${sug.map(([id, k, tt]) => `<a class="card tile col" href="#/duas/${id}"><span class="mono">${t(k)}</span><b>${t(tt)}</b></a>`).join('')}</div>${mine}<p class="mono pad">${t('All chapters · {n}', { n: D.length })}</p>`;
     }
     out.innerHTML = head + list.map(row).join('');
   };
@@ -53,12 +53,14 @@ export async function renderChapter(root, id) {
   root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b class="clip">${esc(title(c))}</b><button class="chip" id="dtl" aria-pressed="${S.d.tl}">${t('Transliteration')}</button></header>
     <div class="dlist ${S.d.tl ? '' : 'notl'}" id="dd">${c.d.map((x, i) => `<article class="dua" data-i="${i}">
       <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen to this dua')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button><button class="ib" data-mine="${i}" aria-label="${t('Add to my duas')}" title="${t('Add to my duas')}">${icon.plus}</button></span></div>
-      <p class="ar" lang="ar" dir="rtl">${esc(x.ar)}</p>
+      <p class="ar" lang="ar" dir="rtl">${esc(String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'))}</p>
       ${!ar() && ((fr() && x.tf) || x.tl) ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
-      ${ar() ? '' : `<p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
+      ${ar() ? '' : `<span class="mono senslbl">${t('Meaning')}</span><p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
       <div class="df"><span class="dsrc"><span class="badge mono">${esc(x.ref || t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${gradeBadge(x)}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
       <div class="dx"><button class="linkbtn small" data-share="${i}">${t('Share')}</button><a class="linkbtn small" href="${reportUrl('Dua ' + c.id + '.' + (i + 1))}" target="_blank" rel="noopener">${t('Report an error')}</a></div>
     </article>`).join('')}
+    <p class="endsur">${t('May Allah accept your duas.')}</p>
+    ${D.findIndex(z => z.id === c.id) < D.length - 1 ? `<a class="btn line sm" href="#/duas/${D[D.findIndex(z => z.id === c.id) + 1].id}">${t('Next chapter')}: ${esc(title(D[D.findIndex(z => z.id === c.id) + 1]))} ›</a>` : ''}
     <p class="muted small pad">${t("Text from Hisnul Muslim (the Fortress of the Muslim) by Sa'id al-Qahtani, the most widely used collection of duas. Sources marked “being reviewed” are waiting for a check by a person of knowledge.")}</p></div>`;
   const dd = $('#dd', root);
   $('#dtl', root).onclick = e => { S.d.tl = !S.d.tl; save(); dd.classList.toggle('notl', !S.d.tl); e.target.setAttribute('aria-pressed', S.d.tl); };

@@ -57,22 +57,23 @@ export function renderLearnHub(root) {
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('First steps')}</b><span class="ib"></span></header>
     <p class="lead pad">${t('New to prayer, or coming back to it? Start here. Calm, one step at a time.')} ${t('No question is a silly one here.')}</p>
     <p class="muted small pad">${t('Details differ between the four schools of law. This is a general guide. Learn alongside a teacher or the imam of your mosque.')}</p>
+    <p class="care pad">${t('Afraid of getting it wrong? “Actions are judged by intentions” (Sahih al-Bukhari 1). Allah knows your heart while you learn.')}</p>
     <a class="card row" href="#/learn/wudu"><span><span class="mono">${t('Step {n}', { n: 1 })}</span><b>${t('Ablution (wudu)')}</b><span class="muted small">${t('{n} steps · about 3 minutes', { n: WUDU.length })}</span></span>${icon.chev}</a>
     <a class="card row" href="#/learn/salat"><span><span class="mono">${t('Step {n}', { n: 2 })}</span><b>${t('The prayer (salat)')}</b><span class="muted small">${t('{n} steps · a two-unit prayer · about 5 minutes', { n: SALAT.length })}</span></span>${icon.chev}</a>
     <a class="card row" href="#/quran/1"><span><span class="mono">${t('Step {n}', { n: 3 })}</span><b>${t('Learn Al-Fatihah word by word')}</b><span class="muted small">${t('Recited in every unit of prayer')}</span></span>${icon.chev}</a>
     <a class="card row" href="#/lessons"><span><span class="mono">${t('Step {n}', { n: 4 })}</span><b>${t('Five Quran words a day')}</b><span class="muted small">${t('Understand what you recite')}</span></span>${icon.chev}</a>
     <section class="card stack"><b>${t('How many units?')}</b><span class="muted small">${t('Obligatory (fard) units of each prayer.')}</span>
-      <ul class="times">${[['fajr', 2], ['dhuhr', 4], ['asr', 4], ['maghrib', 3], ['isha', 4]].map(([k, n]) => `<li><span class="nm">${t({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[k])}</span><span class="tm mono">${t('{n} units', { n })}</span></li>`).join('')}</ul>
+      <div class="units">${[['fajr', 2], ['dhuhr', 4], ['asr', 4], ['maghrib', 3], ['isha', 4]].map(([k, n]) => `<div><b>${n}</b><span>${t({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[k])}</span></div>`).join('')}</div>
       <p class="muted small">${t('In prayers of three or four units, sit for the testimony after the second unit, then stand again. In the third and fourth units, recite Al-Fatihah only.')}</p></section>
 `;
   root.querySelectorAll('a.card.row').forEach((a, n) => { const k = ['wudu', 'salat', 'fatiha', 'lessons'][n]; if (S.learnDone && S.learnDone[k]) a.querySelector('.mono').insertAdjacentHTML('beforeend', ` · ✓ ${t('done')}`); });
 }
 
 export function renderSteps(root, which) {
-  const list = which === 'wudu' ? WUDU : SALAT; let i = 0;
+  const list = which === 'wudu' ? WUDU : SALAT; S.learnPos = S.learnPos || {}; let i = Math.min(list.length - 1, S.learnPos[which] || 0);
   const draw = () => {
     const [p, title, body, ar, tl, mean] = list[i];
-    root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="mono">${i + 1}/${list.length}</span></header>
+    root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="mono">${t('Step {a} of {b}', { a: i + 1, b: list.length })}</span></header>
       <div class="stepbar" aria-hidden="true">${list.map((_, j) => `<i class="${j <= i ? 'on' : ''}"></i>`).join('')}</div>
       <section class="step">
         <div class="figw" role="img" aria-label="${esc(t(title))}">${POSE[p] || ico[p]}</div>
@@ -82,14 +83,14 @@ export function renderSteps(root, which) {
       <nav class="rnav"><button class="btn line" id="sp" ${i === 0 ? 'disabled' : ''}>${t('Previous')}</button>${i < list.length - 1 ? `<button class="btn" id="sn">${t('Next')}</button>` : `<button class="btn" id="sfin">${t('Done')}</button>`}</nav>`;
   };
   const fin = () => {
-    S.learnDone = S.learnDone || {}; S.learnDone[which] = true; save();
+    S.learnDone = S.learnDone || {}; S.learnDone[which] = true; S.learnPos[which] = 0; save();
     const next = which === 'wudu' ? ['#/learn/salat', 'Next: the prayer'] : ['#/quran/1', 'Next: Al-Fatihah word by word'];
     root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="ib"></span></header>
       <section class="hero2"><div class="big">✓</div><p class="lead">${t('You are there. Come back whenever you want, as often as you need.')}</p></section>
       <a class="btn big" href="${next[0]}">${t(next[1])}</a><a class="btn line big" href="#/learn" style="margin-top:10px">${t('Back to First steps')}</a>`;
     window.scrollTo(0, 0);
   };
-  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; draw(); window.scrollTo(0, 0); };
+  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; S.learnPos[which] = i; save(); draw(); window.scrollTo(0, 0); };
   draw();
   return () => { root.onclick = null; };
 }
@@ -112,7 +113,8 @@ export async function renderLessons(root) {
     // Prefer an example from the surah you read last, when the word appears there.
     if (S.q.last) { try { const sur = await data(`quran/${S.q.last.s}.json`), b = bare(w.a); for (let k = 0; k < sur.v.length; k++) { const idx = sur.v[k].a.findIndex(x => bare(x) === b); if (idx >= 0) { s = S.q.last.s; v = k + 1; j = idx; break; } } } catch (e) { /* offline */ } }
     const sur = await data(`quran/${s}.json`).catch(() => null);
-    return (exCache[i] = { s, v, j, words: sur ? sur.v[v - 1].a : null });
+    let tr = null; try { tr = lang() === 'fr' ? (await data(`fr/${s}.json`))[v - 1] : lang() === 'en' && sur ? sur.v[v - 1].t : null; } catch (e) { /* offline */ }
+    return (exCache[i] = { s, v, j, words: sur ? sur.v[v - 1].a : null, tr });
   };
   const home = () => {
     const d = due().length, k = known();
@@ -134,7 +136,7 @@ export async function renderLessons(root) {
         <p class="lw ar" lang="ar" dir="rtl">${w.a}</p>
         <button class="btn line sm" id="lplay">${icon.play}${t('Listen')}</button>
         ${ex.words ? `<p class="lex ar" lang="ar" dir="rtl">${ex.words.map((x, k) => k === ex.j ? `<mark>${x}</mark>` : x).join(' ')}</p><a class="mono" href="#/quran/${ex.s}/${ex.v}">${ex.s}:${ex.v}</a>` : ''}
-        ${shown ? `<p class="lm">${esc(meaningOf(w)) || '—'}</p>` : ''}
+        ${shown ? `<p class="lm">${esc(meaningOf(w)) || '—'}</p>${ex.tr ? `<p class="lext">« ${esc(ex.tr)} »</p>` : ''}` : ''}
       </section>
       ${shown ? `<div class="grid2"><button class="btn line" data-r="0">${t('Not yet')}</button><button class="btn" data-r="1">${t('I knew it')}</button></div>` : `<button class="btn big" id="lshow">${t('Show the meaning')}</button>`}`;
     const a = new Audio(); a.preload = 'none';

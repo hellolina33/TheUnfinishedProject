@@ -99,13 +99,14 @@ export function renderQada(root) {
       <label class="tog card"><span>${t('Show on Today')}<small>${t('A small card with what is left.')}</small></span><input type="checkbox" id="qon" ${Q.on ? 'checked' : ''}></label>
       <ul class="times qd">${P5.map(p => `<li><span class="nm">${NAMES[p]}</span><span class="qctl"><button class="ib" data-p="${p}" data-d="-1" aria-label="${t('One made up')}">${icon.minus}</button><b class="mono">${Q.p[p] || 0}</b><button class="ib" data-p="${p}" data-d="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li>`).join('')}
         <li><span class="nm">${t('Fasting days')}</span><span class="qctl"><button class="ib" data-f="-1" aria-label="${t('One made up')}">${icon.minus}</button><b class="mono">${Q.fast || 0}</b><button class="ib" data-f="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li></ul>
-      <section class="card stack"><div class="row2"><label class="lbl" for="qper">${t('Make-up prayers per day')}</label><input id="qper" class="inp" type="number" min="1" max="50" value="${Q.perDay}" inputmode="numeric"></div>
+      <section class="card stack"><label class="lbl">${t('Make-up prayers per day')}</label><div class="seg per">${[1, 2, 5, 10].map(n => `<button data-qper="${n}" aria-pressed="${Q.perDay === n}">${n}</button>`).join('')}</div>
         <p>${total ? t('{n} prayers left. At this pace, done in about {d} days, around {date}.', { n: total, d: days, date: civil(addDays(dayKey(), days), { day: 'numeric', month: 'long', year: 'numeric' }) }) : (Q.started ? t('Nothing left to make up.') : t('Nothing noted yet. Add prayers with +, or estimate from years below.'))}</p>
         <details ${total ? '' : 'open'}><summary class="mono">${t('Estimate from missed years')}</summary><div class="row2"><input id="qy" class="inp" type="number" min="0" max="80" step="0.5" placeholder="${t('Years')}" inputmode="decimal"><button class="btn line sm" id="qest">${t('Add to each prayer')}</button></div><p class="muted small">${t('Adds 365 per year to each of the five prayers. Adjust by hand after.')}</p></details></section>
       <p class="muted small pad">${t('How to make up prayers, and which ones, differs between schools. Ask a person of knowledge.')}</p>`;
   };
   root.onclick = e => {
     const b = e.target.closest('button'); if (!b) return; const Q = S.qada;
+    if (b.dataset.qper) { Q.perDay = +b.dataset.qper; save(); draw(); return; }
     if (b.dataset.p) { Q.p[b.dataset.p] = Math.max(0, (Q.p[b.dataset.p] || 0) + +b.dataset.d); Q.started = true; Q.updated = Date.now(); save(); draw(); }
     if (b.dataset.f) { Q.fast = Math.max(0, (Q.fast || 0) + +b.dataset.f); Q.updated = Date.now(); save(); draw(); }
     if (b.id === 'qest') { const y = Math.max(0, +$('#qy', root).value || 0); if (y) { P5.forEach(p => { Q.p[p] = (Q.p[p] || 0) + Math.round(y * 365); }); Q.started = true; save(); draw(); } }

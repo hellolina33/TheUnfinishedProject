@@ -1055,3 +1055,22 @@ Object.assign(AR, {
 });
 
 Object.assign(FR, { 'What safa. keeps, and what it never keeps': 'Ce que safa. garde, et ce qu’elle ne garde jamais' });
+
+// v1.3 · UX wave 3
+Object.assign(FR, {
+  'Surah {n}': 'Sourate {n}', 'Surah, Ayat al-Kursi, 2:255 or a word': 'Sourate, Ayat al-Kursi, 2:255 ou un mot', 'Verse of prostration': 'Verset de prosternation',
+  'End of the surah. May Allah make it light for you and accept it.': "Fin de la sourate. Qu'Allah te la rende légère et l'accepte.", 'Copied: Arabic, translation and reference.': 'Copié : arabe, traduction et référence.',
+  'Loop from {v} to': 'Répéter du verset {v} au', 'Next verse': 'Verset suivant', 'Context &amp; tafsir · {k}': 'Contexte et tafsir (explication) · {k}',
+  'Listening uses about 1 MB per minute of mobile data, unless the surah is saved.': "L'écoute utilise environ 1 Mo de données mobiles par minute, sauf si la sourate est enregistrée.",
+  'Not yet': 'À revoir', 'I knew it': 'Je le connais', 'Step {a} of {b}': 'Étape {a} sur {b}',
+  'Afraid of getting it wrong? “Actions are judged by intentions” (Sahih al-Bukhari 1). Allah knows your heart while you learn.': 'Peur de mal faire ? « Les actions ne valent que par les intentions » (Sahih al-Bukhari 1). Allah connaît ton cœur pendant que tu apprends.',
+  "Jumu'a": "Jumu'a", 'Share today’s times': 'Partager les horaires du jour', 'A hard day? Pause mode': 'Un jour difficile ? Mode pause',
+  'Makkah · {d} km from you': 'La Mecque · à {d} km de toi', 'Keep away from magnets, phone cases with magnets and car dashboards: they can mislead the compass.': 'Éloigne-toi des aimants, des coques aimantées et du tableau de bord : ils peuvent tromper la boussole.',
+  'From (your city by default)': 'Départ (ta ville par défaut)', 'Meaning': 'Sens', 'May Allah accept your duas.': "Qu'Allah accepte tes douas.", 'Next chapter': 'Chapitre suivant',
+  'Where are you?': 'Où es-tu ?', 'Next prayer: {p} at {t}': 'Prochaine prière : {p} à {t}', 'Reminders: add your times to your phone calendar from Settings, whenever you want.': 'Rappels : ajoute tes horaires à l’agenda de ton téléphone depuis Réglages, quand tu veux.',
+  'Taking a while? You can also type your city below.': 'Ça prend du temps ? Tu peux aussi taper ta ville ci-dessous.', 'Add to calendar': 'Ajouter à l’agenda',
+  'No passage found. Try other words, or fewer: “patience”, “parents”, “fear”. For a personal question, a person of knowledge will help you better.': 'Aucun passage trouvé. Essaie d’autres mots, ou moins de mots : « patience », « parents », « peur ». Pour une question personnelle, une personne de science t’aidera mieux.',
+  'Tip: you can dictate your question with the microphone on your keyboard.': 'Astuce : tu peux dicter ta question avec le micro du clavier.',
+  'White days (13–15): voluntary fasting': 'Jours blancs (13–15) : jeûne recommandé, facultatif', 'Words of remembrance': 'Adhkar (invocations)'
+});
+Object.assign(AR, { 'Verse of prostration': 'آية سجدة', 'Next verse': 'الآية التالية', 'Meaning': 'المعنى', 'Next chapter': 'الباب التالي', 'Where are you?': 'أين أنت؟', 'Share today’s times': 'شارك مواقيت اليوم', 'A hard day? Pause mode': 'يوم صعب؟ وضع الإيقاف', 'Add to calendar': 'أضف إلى التقويم', "Jumu'a": 'الجمعة', 'Step {a} of {b}': 'الخطوة {a} من {b}' });
