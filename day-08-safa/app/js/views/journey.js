@@ -4,7 +4,7 @@ import { esc, icon, sheet, closeSheet, toast, reportUrl } from '../ui.js';
 import { t, lang, applyLang } from '../i18n.js';
 import { SALAT } from './learn.js';
 import { contextSheet, compareSheet } from './quran.js';
-import { PATHS, FAQ_TOPICS } from './learning-paths.js';
+import { PATHS, FAQ_TOPICS, PATH_THEMES, resumeLearning } from './learning-paths.js';
 const L = (fr,en,ar) => ({fr,en,ar})[lang()];
 const pick = o => o?.[lang()] || '';
 const titles = () => ({home:L('Au fil de la vie','Through life','في مراحل الحياة'),facts:L('100 repères sur l’islam','100 reference points on Islam','مئة معلومة عن الإسلام'),faq:L('Questions, simplement','Questions, simply','أسئلة ببساطة'),prayer:L('Comprendre chaque rakʿa','Understand every rakah','افهم كل ركعة')});
@@ -43,11 +43,11 @@ const momentGroups = [
 const firstSentence = x => { const m = String(x).match(/^.+?[.!?؟](\s|$)/); return m ? m[0].trim() : String(x); };
 const words = text => L(...text);
 const photo = (image, extra = '') => `<img src="illustrations/${image}.webp" alt="" width="483" height="272" decoding="async" ${extra}>`;
-const learningState = path => S.learningPaths?.[path.id] || { current:0, completed:[], at:0 };
+const learningState = path => resumeLearning(path, S.learningPaths?.[path.id]);
 const progressSummary = (done,total) => L(`${done} sur ${total} terminées`,`${done} of ${total} completed`,`اكتملت ${done} من ${total}`);
 const pathProgress = path => {
   const {completed} = learningState(path);
-  return completed.length ? `<p class="learning-progress-label">${progressSummary(completed.length,path.steps.length)}</p>` :
+  return completed.length ? `<p class="learning-progress-label">${completed.length===path.steps.length?L('Parcours terminé','Path completed','اكتمل المسار'):progressSummary(completed.length,path.steps.length)}</p>` :
     `<p class="learning-progress-label">${L(`${path.steps.length} étapes`,`${path.steps.length} steps`,`${path.steps.length} خطوات`)}</p>`;
 };
 const pathCard = path => `
@@ -56,6 +56,7 @@ const pathCard = path => `
     <div><h3>${words(path.title)}</h3><p>${words(path.intro)}</p>${pathProgress(path)}</div>
     <span class="learning-arrow">${icon.chev}</span>
   </a>`;
+let selectedTheme='all';
 function home(root,D) {
   const recent = PATHS.filter(path=>{
     const state=learningState(path);
@@ -72,7 +73,9 @@ function home(root,D) {
       </div>
     </section>
     <h2 class="learning-heading">${L('Parcours d’apprentissage','Learning paths','مسارات التعلّم')}</h2>
-    <div class="learning-grid">${PATHS.map(pathCard).join('')}</div>
+    <div class="chips wrapc learning-filters" role="group" aria-label="${L('Filtrer les parcours par thème','Filter paths by topic','تصفية المسارات حسب الموضوع')}">${[['all',['Tous','All','الكل']],...PATH_THEMES].map(([key,label])=>`<button type="button" class="chip" data-learning-theme="${key}" aria-pressed="${selectedTheme===key}">${words(label)}</button>`).join('')}</div>
+    <p class="muted small learning-result-count" id="learning-result-count" role="status"></p>
+    <div class="learning-grid" id="learning-grid"></div>
     <div class="learning-resources">
       <a class="learning-resource" href="#/journey/faq">${icon.help}<span><strong>${L('Questions fréquentes','Frequently asked questions','الأسئلة الشائعة')}</strong><small>${L('32 réponses par thème','32 answers by topic','٣٢ إجابة حسب الموضوع')}</small></span>${icon.chev}</a>
       <a class="learning-resource" href="#/journey/facts">${icon.book}<span><strong>${titles().facts}</strong><small>${L('À lire ou à mettre de côté','Read or save for later','للقراءة أو الحفظ')}</small></span>${icon.chev}</a>
@@ -81,13 +84,21 @@ function home(root,D) {
     ${momentGroups.map(([ids,title]) => `<details class="moment-group">
       <summary>${L(...title)}</summary><div class="j-list">${ids.map(id => D.moments.find(m=>m.id===id)).filter(Boolean).map(m => `
         <a class="j-moment compact" href="#/journey/${m.id}"><span><b>${esc(pick(m.title))}</b><small>${esc(firstSentence(pick(m.intro)))}</small></span>${icon.chev}</a>`).join('')}</div></details>`).join('')}${note()}`;
+  const applyTheme=()=>{
+    const visible=PATHS.filter(path=>selectedTheme==='all'||selectedTheme===path.theme);
+    root.querySelector('#learning-grid').innerHTML=visible.map(pathCard).join('');
+    root.querySelector('#learning-result-count').textContent=L(`${visible.length} parcours`,`${visible.length} learning paths`,`${visible.length} مسارات`);
+    root.querySelectorAll('[data-learning-theme]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.learningTheme===selectedTheme)));
+  };
+  root.querySelectorAll('[data-learning-theme]').forEach(button=>button.onclick=()=>{selectedTheme=button.dataset.learningTheme;applyTheme();});
+  applyTheme();
 }
 function pathPage(root,D,path) {
   let state=learningState(path);
   let current=Math.max(0,Math.min(state.current,path.steps.length-1));
   let selected=null;
   const storeProgress=()=>{
-    state={ ...state,current,at:Date.now() };
+    state={ ...state,current,total:path.steps.length,at:Date.now() };
     (S.learningPaths ||= {})[path.id]=state;
     save();
   };
@@ -117,6 +128,7 @@ function pathPage(root,D,path) {
         <h2 tabindex="-1" id="learning-step">${words(step.title)}</h2>
         <p>${esc(pick(fact.body))}</p>
         ${sourceLinks(D,fact.sources)}
+        ${step.practice?`<div class="learning-practice"><h3>${L('À essayer','Try this','جرّب هذا')}</h3><p>${words(step.practice)}</p></div>`:''}
         <a class="learning-resource" href="#/${step.to}">${icon.book}<strong>${L('Ouvrir le support de cette étape','Open this step’s material','افتح مادة هذه الخطوة')}</strong>${icon.chev}</a>
         ${step.check?`<details class="learning-check"><summary>${L('Se tester','Check your understanding','اختبر فهمك')}</summary>
           <p><strong>${words(step.check.prompt)}</strong></p>

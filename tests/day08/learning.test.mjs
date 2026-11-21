@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
-import { PATHS, FAQ_TOPICS } from '../../day-08-safa/app/js/views/learning-paths.js';
+import { PATHS, FAQ_TOPICS, PATH_THEMES, resumeLearning } from '../../day-08-safa/app/js/views/learning-paths.js';
 
 const app = new URL('../../day-08-safa/app/', import.meta.url);
 const content = JSON.parse(readFileSync(new URL('data/journey.json', app)));
@@ -9,6 +9,7 @@ const shell = readFileSync(new URL('sw.js', app), 'utf8');
 
 test('Every learning step has a sourced fact and a valid Safa destination', () => {
   const facts = new Map(content.facts.map(fact => [fact.id, fact]));
+  const faq = new Set(content.faq.map(item => item.id));
   const moments = new Set(content.moments.map(moment => moment.id));
   assert.equal(new Set(PATHS.map(path => path.id)).size, PATHS.length);
   for (const path of PATHS) {
@@ -21,7 +22,7 @@ test('Every learning step has a sourced fact and a valid Safa destination', () =
       else if (screen === 'learn') assert.equal(section, 'wudu');
       else {
         assert.equal(screen, 'journey');
-        assert.ok(moments.has(section) || section === 'prayer' || (section === 'facts' && facts.has(Number(arg))));
+        assert.ok(moments.has(section) || section === 'prayer' || (section === 'facts' && facts.has(Number(arg))) || (section === 'faq' && faq.has(Number(arg))), step.to);
       }
       if (step.check) assert.ok(step.check.options[step.check.correct]?.every(Boolean));
     }
@@ -37,4 +38,27 @@ test('The FAQ groups every question and ships its illustrations for offline use'
     assert.ok(shell.includes(`'${path}'`),path);
   }
   for (const file of ['learning.css','js/views/learning-paths.js']) assert.ok(shell.includes(`'${file}'`));
+});
+
+
+test('Expanded paths preserve previously completed lessons and resume at the extension', () => {
+  const oldFirstFacts = {
+    'first-prayer': [11, 16, 12],
+    'quran-start': [3, 32, 33],
+    daily: [61, 63, 62],
+    ramadan: [72, 74, 76],
+    returning: [46, 34, 50],
+  };
+  const themes = new Set(PATH_THEMES.map(([theme]) => theme));
+  for (const path of PATHS) {
+    assert.ok(themes.has(path.theme), path.id);
+    const previous = oldFirstFacts[path.id];
+    if (!previous) continue;
+    assert.deepEqual(path.steps.slice(0,3).map(step => step.fact), previous);
+    assert.ok(path.steps.length > previous.length);
+    assert.deepEqual(resumeLearning(path, { current:2, completed:[0,1,2], at:50 }).completed, [0,1,2]);
+    assert.equal(resumeLearning(path, { current:2, completed:[0,1,2], at:50 }).current, 3);
+    assert.equal(resumeLearning(path, { current:1, completed:[0], at:50 }).current, 1);
+    assert.equal(resumeLearning(path, { current:2, completed:[0,1,2], total:path.steps.length, at:50 }).current, 2);
+  }
 });
