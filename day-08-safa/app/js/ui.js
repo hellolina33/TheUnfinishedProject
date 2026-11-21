@@ -1,4 +1,4 @@
-import { data } from './store.js';
+import { data, S, save } from './store.js';
 import { searchCities } from './prayer.js';
 import { t } from './i18n.js';
 
@@ -63,17 +63,26 @@ export function toast(msg) {
 }
 
 // Bottom sheet. Non-blocking by design: tap outside or Escape closes it.
+// A visible close button; focus goes back to the control that opened the sheet, without scrolling.
+let opener = null;
 export function sheet(html, opts = {}) {
-  closeSheet();
+  const from = opts.opener || (document.activeElement !== document.body ? document.activeElement : null);
+  closeSheet(true);
+  opener = from;
   const wrap = document.createElement('div'); wrap.className = 'sheet-wrap' + (opts.dark ? ' dark' : '');
-  wrap.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(opts.label || 'Options')}"><div class="grab" aria-hidden="true"></div>${html}</div>`;
+  wrap.innerHTML = `<div class="sheet" role="dialog" aria-modal="true" aria-label="${esc(opts.label || 'Options')}"><div class="grab" aria-hidden="true"></div><button class="ib sheet-x" data-close aria-label="${esc(t('Close'))}">${icon.stop}</button>${html}</div>`;
   document.body.appendChild(wrap);
   requestAnimationFrame(() => wrap.classList.add('on'));
   wrap.addEventListener('click', e => { if (e.target === wrap || e.target.closest('[data-close]')) closeSheet(); });
-  const f = wrap.querySelector('button,input,select,a'); if (f && !opts.noFocus) f.focus({ preventScroll: true });
+  wrap.addEventListener('keydown', e => { if (e.key === 'Escape') { e.stopPropagation(); closeSheet(); } });
+  const f = [...wrap.querySelectorAll('button,input,select,a')].find(x => !x.classList.contains('sheet-x')) || wrap.querySelector('.sheet-x'); if (f && !opts.noFocus) f.focus({ preventScroll: true });
   return wrap.firstElementChild;
 }
-export function closeSheet() { $$('.sheet-wrap').forEach(w => w.remove()); }
+export function closeSheet(keepFocus) {
+  const had = $$('.sheet-wrap').length; $$('.sheet-wrap').forEach(w => w.remove());
+  if (had && !keepFocus && opener && opener.isConnected) { try { opener.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }
+  if (!keepFocus) opener = null;
+}
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
 
 export function download(name, text, type = 'application/json') {
@@ -88,9 +97,14 @@ export function cityField(root, { placeholder = 'Search a city', onPick, value =
   const inp = $('input', root), res = $('.cityr', root), sug = $('.citys', root); let list = [], act = -1;
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '', reg = tz.split('/')[0];
   const setAct = i => { act = i; $$('[role=option]', res).forEach((b, k) => b.setAttribute('aria-selected', k === i)); const b = $('#' + id + '-' + i, res); if (b) { inp.setAttribute('aria-activedescendant', b.id); b.scrollIntoView({ block: 'nearest' }); } else inp.removeAttribute('aria-activedescendant'); };
-  const pick = c => { inp.value = c[0]; res.innerHTML = ''; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); if (sug) sug.hidden = true; onPick(c); };
+  const pick = c => { inp.value = c[0]; res.innerHTML = ''; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); if (sug) sug.hidden = true;
+    S.recentCities = [c, ...(S.recentCities || []).filter(x => !(x[0] === c[0] && x[2] === c[2]))].slice(0, 5); save(); onPick(c); };
+  // Recently used cities, with their country, when the field is empty.
+  const showRecent = () => { const r = S.recentCities || []; if (inp.value.trim() || !r.length) return; list = r; res.innerHTML = `<p class="mono cityh">${esc(t('Recent cities'))}</p>` + r.map((c, i) => `<button type="button" role="option" id="${id}-${i}" aria-selected="false" data-i="${i}"><b>${esc(c[0])}</b><span>${esc(countryName(c[2], c[1]))}</span></button>`).join(''); inp.setAttribute('aria-expanded', 'true'); act = -1; };
+  inp.addEventListener('focus', showRecent);
   if (sug && tz) data('cities.json').then(cities => { const near = cities.filter(c => c[5] === tz).slice(0, 3); if (!near.length) return; sug.innerHTML = `<span class="mono">${t('Near you?')}</span>` + near.map((c, i) => `<button type="button" class="chip" data-s="${i}">${esc(c[0])}</button>`).join(''); sug.hidden = false; sug.onclick = e => { const b = e.target.closest('[data-s]'); if (b) pick(near[+b.dataset.s]); }; }).catch(() => {});
   inp.addEventListener('input', async () => {
+    if (!inp.value.trim()) { res.innerHTML = ''; list = []; showRecent(); return; }
     const cities = await data('cities.json');
     list = searchCities(cities, inp.value);
     list = list.map((c, i) => [c, i]).sort((a, b) => ((b[0][5] === tz) * 2 + (String(b[0][5]).split('/')[0] === reg)) - ((a[0][5] === tz) * 2 + (String(a[0][5]).split('/')[0] === reg)) || a[1] - b[1]).map(x => x[0]);

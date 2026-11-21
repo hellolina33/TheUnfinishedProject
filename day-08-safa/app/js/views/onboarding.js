@@ -6,7 +6,7 @@ import { t, lang, applyLang } from '../i18n.js';
 
 export function setLocation(c, coords) {
   S.loc = { name: c[0], country: c[1], iso2: c[2], lat: coords ? coords.lat : c[3], lng: coords ? coords.lng : c[4], tz: coords ? (Intl.DateTimeFormat().resolvedOptions().timeZone || c[5]) : c[5] };
-  S.method = methodFor(c[2]); save();
+  S.method = methodFor(c[2]); S.homeLoc = null; save();
 }
 export function locateOnce() {
   return new Promise((resolve, reject) => {
@@ -25,14 +25,20 @@ export function render(root, done, { startAtCity = false } = {}) {
   let active = true;
   const step1 = () => {
     root.innerHTML = `<section class="onb">
-      <div class="onb-top"><div class="onb-logo">${LOGO}</div><h1>safa<i>.</i></h1><div class="langsw" role="group" aria-label="Language"><button class="chip" data-l="en" aria-pressed="${lang() === 'en'}">EN</button><button class="chip" data-l="fr" aria-pressed="${lang() === 'fr'}">FR</button><button class="chip" data-l="ar" aria-pressed="${lang() === 'ar'}" lang="ar">عربي</button></div></div>
+      <div class="onb-top"><div class="onb-logo">${LOGO}</div><h1>safa<i>.</i></h1><div class="langsw" role="group" aria-label="${copy('Langue', 'Language', 'اللغة')}"><span class="mono">${copy('Langue', 'Language', 'اللغة')}</span><button class="chip" data-l="en" aria-pressed="${lang() === 'en'}">EN</button><button class="chip" data-l="fr" aria-pressed="${lang() === 'fr'}">FR</button><button class="chip" data-l="ar" aria-pressed="${lang() === 'ar'}" lang="ar">عربي</button></div></div>
       <div><span class="mono">${t('Step 1 of 2')}</span><p class="onb-tag">${t('Clear time.<br>Clear soul<i>.</i>')}</p>
       <ul class="onb-feat"><li>${icon.today}<span>${t('Prayer times for your city')}</span></li><li>${icon.quran}<span>${t('The Quran word by word, with the context of each verse')}</span></li><li>${icon.duas}<span>${t('Authentic duas for every moment')}</span></li></ul>
       <p class="onb-promise">${icon.lock}<span>${t('No ads. No account. Everything stays on your phone. Works offline.')}</span></p>
       <p class="muted small">${t('New to prayer, or coming back? We go step by step.')}</p></div>
-      <div><a class="btn line big" href="#/home">${copy('Découvrir Safa','Explore Safa','استكشف صفا')}</a><button class="btn big" id="go">${t('Set my city')}</button><p class="muted small center">${t('Then your times for today. Language can be changed later in Settings.')}</p></div>
+      <div class="onb-choice"><p class="lbl">${copy('Par où commencer ? (facultatif)', 'Where to start? (optional)', 'من أين تبدأ؟ (اختياري)')}</p>
+        <button class="btn big" id="go">${copy('Voir les horaires', 'See prayer times', 'عرض المواقيت')}</button>
+        <a class="btn line big" href="#/journey/prayer" data-start>${copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة')}</a>
+        <a class="btn line big" href="#/quran/1" data-start>${copy('Lire le Coran', 'Read the Quran', 'قراءة القرآن')}</a>
+        ${S.onboarded ? `<a class="linkbtn small center" href="#/plus">${copy('Retour au menu', 'Back to the menu', 'العودة إلى القائمة')}</a>` : `<a class="linkbtn small center" href="#/home" data-start>${copy('Juste découvrir', 'Just explore', 'مجرد استكشاف')}</a>`}
+        <p class="muted small center">${t('Then your times for today. Language can be changed later in Settings.')}</p></div>
     </section>`;
     $('#go', root).onclick = step2;
+    root.querySelectorAll('[data-start]').forEach(a => a.addEventListener('click', () => { if (!S.onboarded) { S.onboarded = true; save(); } }));
     root.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { S.lang = b.dataset.l; save(); applyLang(); window.dispatchEvent(new CustomEvent('safa:lang', { detail: { tabsOnly: true } })); step1(); });
   };
   const step2 = (direct = false) => {

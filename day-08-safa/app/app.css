@@ -448,3 +448,15 @@ body.dark,html.night{--tq:#6cc24f;--ti:#6f9cf0;--td:#d38ae6;--tk:#f0716b;--tg:#f
 .btn.danger{color:#b3261e;border-color:#b3261e}
 .dark .btn.danger,body.dark .btn.danger{color:#ff8a80;border-color:#ff8a80}
 .card.undo{justify-content:space-between;align-items:center;gap:12px}
+/* Wave 7: compact player, word panel, reader settings */
+.player:not(.full) .pseekrow,.player:not(.full) .pchips{display:none}
+.player .pctl{gap:10px}.player .pmore{color:#cfcdc7}.player .pmore[aria-expanded=true]{color:#fff;background:#3a3a37;border-radius:50%}
+body:has(.player:not(.full)) .reader{padding-bottom:160px}
+.hidebar{justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:8px 0}
+.tjlink{display:block;margin:6px 0 2px}
+.wpanel{text-align:center}.wpanel .wbig{font-size:44px;line-height:1.6;margin:6px 0}.wpanel .row2{justify-content:center;gap:8px;margin-top:12px}.wpanel .btn svg{width:16px;height:16px;vertical-align:-3px}
+.sbody .shd{margin:18px 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.sbody .shd:first-child{margin-top:4px}
+.trsrc .linkbtn{font:inherit;text-decoration:underline;text-underline-offset:3px}
+.sheet{position:relative}.sheet-x{position:absolute;top:8px;inset-inline-end:8px;width:44px;height:44px;z-index:2}.sheet-x svg{width:18px;height:18px}
+.sheet h3:first-of-type{padding-inline-end:44px}

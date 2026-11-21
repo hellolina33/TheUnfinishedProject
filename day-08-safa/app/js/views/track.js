@@ -29,14 +29,8 @@ export function renderTrack(root) {
       <p class="sumline">${!active.length && days.some(d => d.pz) ? t('This week is paused.') : shown ? t(shown === 1 ? 'You prayed on <b>1</b> day this week' : 'You prayed on <b>{a}</b> days this week', { a: shown }) + (read ? t(read === 1 ? ' and opened the Quran on <b>1</b>' : ' and opened the Quran on <b>{n}</b>', { n: read }) : '') + '.' : read ? t('You opened the Quran on <b>{n}</b> days this week.', { n: read }) : t('Each day is a fresh start. Tick a prayer when you want to.')} ${days.some(d => d.pz) ? t('Paused days are left out.') : ''}</p>
       <p class="muted small legend">${t('Circles: the five prayers. Squares: Quran opened, adhkar read.')}</p>
       <details class="daytxt"><summary class="linkbtn small">${t('Read the week as text')}</summary><ul>${keys.map((k, i) => { if (k < since || k > today) return ''; const d = days[i], n = d.p.filter(Boolean).length, bits = []; if (d.pz) bits.push(t('paused')); else { if (n) bits.push(t(n === 1 ? '1 prayer ticked' : '{n} prayers ticked', { n })); if (d.r) bits.push(t('Quran opened')); if (d.a) bits.push(t('adhkar read')); } return `<li><b>${esc(new Intl.DateTimeFormat(L(), { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(k + 'T12:00:00Z')))}</b> · ${bits.length ? bits.join(' · ') : t('nothing logged')}</li>`; }).join('')}</ul></details>
-      <section class="card stack">
-        <label class="tog"><span>${t('Evening check-in')}<small>${t('One gentle reminder a day. Nothing else.')}</small></span><input type="checkbox" id="ron" ${S.rem.on ? 'checked' : ''}></label>
-        <div class="row2"><label class="lbl" for="rt">${t('Time')}</label><input type="time" id="rt" class="inp" value="${S.rem.t}"></div>
-        <button class="btn line sm" id="rics">${t('Add it to my calendar')}</button>
-        <p class="muted small">${t('A web app cannot ring while it is closed. The calendar file gives you a reliable daily reminder; the in-app notice only shows while safa. is open.')}</p>
-      </section>
+      <a class="card row" href="#/settings/reminders"><span><span class="mono">${t('Reminders')}</span><b>${t('Evening check-in')}</b><span class="muted small">${S.rem.on ? t('On at {t}', { t: S.rem.t }) : t('Off')}</span></span>${icon.chev}</a>
       <a class="srow" href="#/qada"><span class="st"><b>${t('Make-up prayers')}</b><span class="muted small">${t('Missed prayers and fasts, at your pace')}</span></span>${icon.chev}</a>
-      <a class="srow" href="#/settings"><span class="st"><b>${t('Settings')}</b><span class="muted small">${t('Method, offsets, audio, backup')}</span></span>${icon.chev}</a>
       <a class="srow" href="#/about"><span class="st"><b>${t('About &amp; support')}</b><span class="muted small">${t('Sources, promise, Sadaqah Jariyah')}</span></span>${icon.chev}</a>`;
   };
   root.onclick = async e => {
@@ -69,18 +63,32 @@ export function renderTrack(root) {
   return () => { root.onclick = null; root.onchange = null; };
 }
 
-export async function renderSettings(root) {
-  let meta = null;
+const SECS = () => [['lang', t('Language'), t('App language')], ['display', t('Display'), t('Theme, text size, contrast, Arabic size')], ['times', t('Prayer times'), t('City, method, mosque times')], ['reminders', t('Reminders'), t('Evening check-in, Friday, calendar')], ['offline', t('Offline'), t('Quran text and audio on this device')], ['data', t('Data'), t('Backup, sync between devices, erase')]];
+function summary(st) {
+  const n = (x) => (x || []).length, days = Object.values(st.days || {}).filter(d => d && ((d.p || []).some(Boolean) || d.r || d.a)).length, qd = st.qada ? Object.values(st.qada.p || {}).reduce((a, b) => a + (b || 0), 0) : 0;
+  const rows = [[t('City'), st.loc ? esc(st.loc.name) : '—'], [t('Days tracked'), days], [t('Quran favourites'), n(st.q && st.q.favs)], [t('Favourite duas'), n(st.d && st.d.favs)], [t('My duas'), n(st.myDuas)], [t('Memorisation'), n(st.hifz && st.hifz.items)], [t('Khatm'), st.khatm ? t('page {p}', { p: st.khatm.page }) : '—'], [t('Make-up prayers'), qd]];
+  return `<ul class="evl sumv">${rows.map(([k, v]) => `<li><span>${k}</span><b>${v}</b></li>`).join('')}</ul>`;
+}
+export async function renderSettings(root, sec) {
+  let meta = null, advOpen = false, pending = null;
+  if (sec && !SECS().some(x => x[0] === sec)) sec = null;
   const draw = async () => {
     if (!meta) { try { meta = await data('meta.json'); } catch (e) { /* offline */ } }
     let est = ''; try { const e = await navigator.storage.estimate(); est = t('{n} MB used on this device', { n: (e.usage / 1048576).toLocaleString(L(), { maximumFractionDigits: 1 }) }); } catch (e) { /* not supported */ }
     const dl = Object.keys(S.q.dl || {});
+    let cachedN = null; if (sec === 'offline') { try { const ks = new Set((await Promise.all((await caches.keys()).filter(k => k.startsWith('safa')).map(async k => (await (await caches.open(k)).keys()).map(r => r.url)))).flat()); cachedN = 0; for (let i = 1; i <= 114; i++) if ([...ks].some(u => u.endsWith(`/data/quran/${i}.json`))) cachedN++; } catch (e) { /* no cache api */ } }
     if (!location.hash.startsWith('#/settings')) return;
-    root.innerHTML = `<header class="sub"><a href="#/plus" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
-      <nav class="chips wrapc stoc" aria-label="${t('Sections')}"><button class="chip" data-go="st1">${t('Language')}</button><button class="chip" data-go="st2">${t('Place')}</button><button class="chip" data-go="st3">${t('Prayer times')}</button><button class="chip" data-go="st4">${t('Offline')}</button><button class="chip" data-go="st5">${t('Display &amp; accessibility')}</button><button class="chip" data-go="st6">${t('Friday')}</button><button class="chip" data-go="st7">${t('Sync between devices')}</button><button class="chip" data-go="st8">${t('Backup')}</button></nav>
+    if (!sec) {
+      root.innerHTML = `<header class="sub"><a href="#/plus" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
+        <nav class="home-quick sidx" aria-label="${t('Sections')}">${SECS().map(([k, n, d]) => `<a class="home-row" href="#/settings/${k}"><span><strong>${n}</strong><small>${d}</small></span>${icon.chev}</a>`).join('')}</nav>`;
+      return;
+    }
+    const secName = SECS().find(x => x[0] === sec)[1];
+    root.innerHTML = `<header class="sub"><a href="#/settings" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${secName}</b><span class="ib"></span></header>
       <section class="form">
-        <h3 id="st1">${t('Language')}</h3>
+<div class="sgrp" data-sec="lang">
         <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع' }[lang()]) + ')'], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
+</div><div class="sgrp" data-sec="times">
         <h3 id="st2">${t('Place')}</h3>
         <p class="muted small">${S.loc ? t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) }) : t('Choose a city first.')}</p>
         <div id="scity"></div><button class="btn line sm" id="sgeo">${t('Use my location once')}</button>
@@ -90,58 +98,83 @@ export async function renderSettings(root) {
         <label class="lbl" for="smad">${t('Asr')}</label>
         <select id="smad" class="inp"><option value="shafi" ${S.madhab === 'shafi' ? 'selected' : ''}>${t("Standard · Shafi'i, Maliki, Hanbali")}</option><option value="hanafi" ${S.madhab === 'hanafi' ? 'selected' : ''}>${t('Hanafi')}</option></select>
         <p class="muted small">${t('Hanafi: Asr starts later. Not sure? Keep Standard, or ask your mosque.')}</p>
-        ${S.loc ? `<label class="lbl">${t('Match your mosque · minutes')}</label>
+        ${S.loc ? `<details class="adv" ${advOpen ? 'open' : ''}><summary class="linkbtn">${t('Advanced prayer time settings')}</summary><label class="lbl">${t('Match your mosque · minutes')}</label>
         <div class="offs">${P5.map(p => `<div class="off"><span>${NAMES[p]}</span><button data-off="${p}" data-d="-1" aria-label="${t('{p} minus one minute', { p: NAMES[p] })}">−</button><b class="mono">${S.offsets[p] > 0 ? '+' : ''}${S.offsets[p]}</b><button data-off="${p}" data-d="1" aria-label="${t('{p} plus one minute', { p: NAMES[p] })}">+</button><span class="mono muted">${fmtTime(timesFor(dayKey())[p])}</span></div>`).join('')}</div>
         <details class="mosq"><summary class="linkbtn small">${t('Copy your mosque’s times instead')}</summary>
           <p class="muted small">${t('Type today’s times from your mosque. safa. keeps the difference and applies it every day.')}</p>
           <div class="grid2">${P5.map(p => `<label class="lbl" for="mq-${p}">${NAMES[p]}</label><input id="mq-${p}" data-mq="${p}" class="inp" type="time" value="${new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(timesFor(dayKey())[p] - (S.offsets[p] || 0) * 60000))}">`).join('')}</div>
-          <button class="btn line sm" id="smq">${t('Use these times')}</button></details>` : ''}
+          <button class="btn line sm" id="smq">${t('Use these times')}</button></details></details>` : ''}
         <label class="lbl" for="shij">${t('Hijri date adjustment')}</label>
         <select id="shij" class="inp">${[-2, -1, 0, 1, 2].map(n => `<option value="${n}" ${S.hijriAdj === n ? 'selected' : ''}>${t(Math.abs(n) === 1 ? '{n} day' : '{n} days', { n: (n > 0 ? '+' : '') + n })}</option>`).join('')}</select>
         <label class="tog"><span>${t('24-hour clock')}</span><input type="checkbox" id="s24" ${S.h24 ? 'checked' : ''}></label>
-        ${S.loc ? `<button class="btn line sm" id="sics">${t('Add 30 days of prayer times to my calendar')}</button>` : ''}
+</div><div class="sgrp" data-sec="offline">
         <h3 id="st4">${t('Offline')}</h3>
         <p class="muted small">${esc(est)}</p>
+        <ul class="evl sumv"><li><span>${t('Prayer times, guides, duas')}</span><b>${t('Available')}</b></li><li><span>${t('Quran text')}</span><b>${cachedN == null ? '…' : t('{n} of 114 surahs', { n: cachedN })}</b></li><li><span>${t('Audio')}</span><b>${t('{n} surahs saved', { n: dl.length })}</b></li></ul>
         <button class="btn line sm" id="sall">${t('Save the whole Quran text for offline')} · ≈ 25 MB</button>
         <label class="lbl">${t('Saved audio')}</label>
         ${dl.length ? `<ul class="evl adl">${dl.map(k => { const [r, s] = k.split('|'); return `<li><span>${t('surah {s} · {r}', { s, r: esc(RECITERS[r] || r) })}</span><button class="linkbtn small" data-adel="${esc(k)}">${t('Remove')}</button></li>`; }).join('')}</ul>` : `<p class="muted small">${t('None yet. Choose a surah to keep for listening offline.')}</p>`}
         <div class="row2"><select id="sasel" class="inp" aria-label="${t('Surah to save')}">${meta ? meta.s.map((m, i) => `<option value="${i + 1}">${i + 1}. ${esc(lang() === 'ar' ? m[2] : m[0])}</option>`).join('') : ''}</select><button class="btn line sm" id="sasave">${t('Save audio')}</button></div>
         <p class="muted small">${t('With your current reciter: {r}.', { r: esc(RECITERS[S.q.reciter] || '') })}</p>
         ${dl.length ? `<button class="btn line sm" id="sclr">${t('Delete saved audio')}</button>` : ''}
-        <h3 id="st5">${t('Display &amp; accessibility')}</h3>
+</div><div class="sgrp" data-sec="display">
         <label class="lbl">${t('Theme')}</label><div class="seg lang">${[['auto', t('Automatic')], ['light', t('Light')], ['dark', t('Dark')]].map(([k, l]) => `<button data-theme="${k}" aria-pressed="${S.ui.theme === k}">${l}</button>`).join('')}</div>
         <label class="lbl">${t('Text size')}</label><div class="seg lang">${[[0.9, 'A−'], [1, 'A'], [1.15, 'A+'], [1.3, 'A++']].map(([k, l]) => `<button data-scale="${k}" aria-pressed="${S.ui.scale === k}" aria-label="${t('Text size')} ${Math.round(k * 100)}%">${l}</button>`).join('')}</div>
-        <p class="preview">${t('Preview: the words you read here change size.')}</p>
+        <div class="preview2"><p>${t('Preview: the words you read here change size.')}</p><p class="ar" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p></div>
+        <label class="lbl">${t('Arabic size in the Quran reader')}</label><div class="seg">${[0, 1, 2, 3].map(i => `<button data-qfs="${i}" aria-pressed="${S.q.fs === i}" style="font-size:${14 + i * 4}px">ع</button>`).join('')}</div>
+        <p class="muted small">${t('Independent of the menu text size.')}</p>
         <label class="tog"><span>${t('High contrast')}</span><input type="checkbox" id="shc" ${S.ui.hc ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Reduce motion')}</span><input type="checkbox" id="srm" ${S.ui.motion ? 'checked' : ''}></label>
+</div><div class="sgrp" data-sec="reminders">
+        <h3>${t('Evening check-in')}</h3>
+        <label class="tog"><span>${t('Evening check-in')}<small>${t('One gentle reminder a day. Nothing else.')}</small></span><input type="checkbox" id="ron" ${S.rem.on ? 'checked' : ''}></label>
+        <div class="row2"><label class="lbl" for="rt">${t('Time')}</label><input type="time" id="rt" class="inp" value="${S.rem.t}"></div>
+        <button class="btn line sm" id="rics">${t('Add it to my calendar')}</button>
+        <p class="muted small">${t('A web app cannot ring while it is closed. The calendar file gives you a reliable daily reminder; the in-app notice only shows while safa. is open.')}</p>
         <h3 id="st6">${t('Friday')}</h3>
         <label class="tog"><span>${t('Al-Kahf reminder')}<small>${t('A card on Friday until you open Al-Kahf.')}</small></span><input type="checkbox" id="sfri" ${S.fri.on ? 'checked' : ''}></label>
         <button class="btn line sm" id="sfics">${t('Add a weekly Friday reminder to my calendar')}</button>
+        <h3>${t('Prayer times')}</h3>
+        ${S.loc ? `<button class="btn line sm" id="sics">${t('Add 30 days of prayer times to my calendar')}</button>` : `<p class="muted small">${t('Choose a city first.')}</p>`}
+</div><div class="sgrp" data-sec="data">
+        <h3>${t('Passphrase')}</h3>
+        <p class="muted small warn">${t('Write your passphrase down somewhere safe. If you forget it, nobody can open the file, not even safa.')}</p>
+        <input id="spass" class="inp" type="password" minlength="8" autocomplete="new-password" placeholder="${t('Passphrase (8 characters or more)')}" aria-label="${t('Passphrase')}">
+        <h3 id="st8">${t('Backup')}</h3>
+        <p class="muted small">${t('No account, so no cloud. Keep a file and restore it on any device.')} ${/iphone|ipad/i.test(navigator.userAgent) ? t('On iPhone, Safari can clear the data of a web app you have not opened for weeks: export a backup from time to time.') : ''}</p>
+        <p class="muted small">${t('The backup is encrypted with the passphrase above. Without it, nobody can read the file, not even you.')}</p>
+        <div class="grid2"><button class="btn sm" id="sexp">${t('Export backup')}</button><label class="btn line sm">${t('Import backup')}<input type="file" id="simp" accept=".safa,application/json,.json" hidden></label></div>
+        <div id="restore"></div>
         <h3 id="st7">${t('Sync between devices')}</h3>
         <p class="muted small">${t('No account and no server. Create an encrypted file protected by a passphrase, send it to your other device any way you like, and merge it there. Nobody can read it without the passphrase, not even us.')}</p>
-        <p class="muted small warn">${t('Write your passphrase down somewhere safe. If you forget it, nobody can open the file, not even safa.')}</p>
         <details class="howto"><summary class="linkbtn small">${t('How it works, step by step')}</summary><ol class="small">
           <li>${t('On your old phone: type a passphrase below, then tap “Create sync file”.')}</li>
           <li>${t('Send the file to yourself: AirDrop, email, WhatsApp to yourself, a USB cable.')}</li>
           <li>${t('On your new phone: open safa., go to Settings, type the same passphrase.')}</li>
           <li>${t('Tap “Merge a sync file” and pick the file. Your ticks, duas and plans are now on both phones.')}</li></ol></details>
-        <input id="spass" class="inp" type="password" minlength="8" autocomplete="new-password" placeholder="${t('Passphrase (8 characters or more)')}" aria-label="${t('Passphrase')}">
         <div class="grid2"><button class="btn line sm" id="ssync">${t('Create sync file')}</button><label class="btn line sm">${t('Merge a sync file')}<input type="file" id="smerge" accept=".safa,application/json" hidden></label></div>
-        <h3 id="st8">${t('Backup')}</h3>
-        <p class="muted small">${t('No account, so no cloud. Keep a file and restore it on any device.')} ${/iphone|ipad/i.test(navigator.userAgent) ? t('On iPhone, Safari can clear the data of a web app you have not opened for weeks: export a backup from time to time.') : ''}</p>
-        <p class="muted small">${t('The backup is encrypted with the passphrase above. Without it, nobody can read the file, not even you.')}</p>
-        <div class="grid2"><button class="btn line sm" id="sexp">${t('Export backup')}</button><label class="btn line sm">${t('Import backup')}<input type="file" id="simp" accept=".safa,application/json,.json" hidden></label></div>
-        <button class="linkbtn small" id="sexp2">${t('Export a readable copy (not encrypted)')}</button>
+        <details class="adv"><summary class="linkbtn">${t('Advanced options')}</summary><button class="btn line sm" id="sexp2">${t('Export a readable copy (not encrypted)')}</button><p class="muted small">${t('Anyone who opens this file can read it.')}</p></details>
         <button class="btn line sm danger" id="srst">${t('Erase everything on this device')}</button>
-      </section>`;
+      </div></section>`;
+    root.querySelectorAll('.sgrp').forEach(g => { g.hidden = g.dataset.sec !== sec; });
+    const adv = root.querySelector('[data-sec="times"] details.adv'); if (adv) adv.addEventListener('toggle', () => { advOpen = adv.open; });
+    if (pending) showRestore();
     cityField($('#scity', root), { placeholder: t('Change city'), onPick: c => { setLocation(c); toast(t('City set · {c}', { c: c[0] })); draw(); } });
   };
   let armed = 0;
   root.onclick = async e => {
-    const go = e.target.closest('[data-go]'); if (go) { const h = document.getElementById(go.dataset.go); if (h) { h.scrollIntoView({ block: 'start' }); window.scrollBy(0, -64); } return; }
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.theme) { S.ui.theme = b.dataset.theme; save(); applyUi(); draw(); return; }
     if (b.dataset.scale) { S.ui.scale = +b.dataset.scale; save(); applyUi(); draw(); return; }
+    if (b.dataset.qfs) { S.q.fs = +b.dataset.qfs; save(); root.querySelectorAll('[data-qfs]').forEach(x => x.setAttribute('aria-pressed', x === b)); return; }
+    if (b.id === 'rics') {
+      const [h, m] = S.rem.t.split(':'), k = dayKey().replace(/-/g, ''), tz = S.loc?.tz || Intl.DateTimeFormat().resolvedOptions().timeZone;
+      download('safa-evening-check-in.ics', ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-evening-${Date.now()}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${tz}:${k}T${h}${m}00`, 'DURATION:PT5M', 'RRULE:FREQ=DAILY', 'SUMMARY:' + t('safa. · evening check-in'), 'DESCRIPTION:' + t('Evening adhkar. A few verses. Tick today.'), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + t('safa. · evening check-in'), 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar');
+      return;
+    }
+    if (b.id === 'rsok' && pending) { if (pending.mode === 'merge') { SY.merge(pending.st); toast(t('Merged. Nothing on this device was lost.')); } else { replaceState(pending.st); toast(t('Backup restored')); } pending = null; draw(); return; }
+    if (b.id === 'rsmerge' && pending) { SY.merge(pending.st); pending = null; toast(t('Merged. Nothing on this device was lost.')); draw(); return; }
+    if (b.id === 'rsno') { pending = null; $('#restore', root).innerHTML = ''; return; }
     if (b.id === 'sfics') { download('safa-friday-al-kahf.ics', ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-friday-${Date.now()}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc?.tz || Intl.DateTimeFormat().resolvedOptions().timeZone}:${(() => { const d = new Date(); d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7)); return d.toISOString().slice(0, 10).replace(/-/g, ''); })()}T090000`, 'DURATION:PT10M', 'RRULE:FREQ=WEEKLY;BYDAY=FR', 'SUMMARY:' + t('Friday · Al-Kahf'), 'DESCRIPTION:' + t('Read Al-Kahf. Send blessings on the Prophet.'), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + t('Friday · Al-Kahf'), 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar'); return; }
     if (b.id === 'ssync') {
       const pass = $('#spass', root).value; if (pass.length < 8) { toast(t('Choose a passphrase of 8 characters or more.')); $('#spass', root).focus(); return; }
@@ -179,8 +212,20 @@ export async function renderSettings(root) {
       lines.push('END:VCALENDAR'); download('safa-prayer-times.ics', lines.join('\r\n'), 'text/calendar'); return;
     }
   };
+  function showRestore() {
+    const box = $('#restore', root); if (!box || !pending) return;
+    box.innerHTML = `<div class="card stack" role="status"><b>${t('This file contains:')}</b>${summary(pending.st)}<p class="muted small">${pending.mode === 'merge' ? t('Merging keeps everything on this device and adds what is in the file.') : t('Restoring replaces everything on this device with the file. Merging keeps both.')}</p><div class="row2"><button class="btn sm" id="rsok">${pending.mode === 'merge' ? t('Merge') : t('Restore')}</button>${pending.mode === 'merge' ? '' : `<button class="btn line sm" id="rsmerge">${t('Merge instead')}</button>`}<button class="btn line sm" id="rsno">${t('Cancel')}</button></div></div>`;
+    box.querySelector('#rsok').focus();
+  }
   root.onchange = async e => {
     const id = e.target.id;
+    if (id === 'rt') { S.rem.t = e.target.value || '21:00'; save(); }
+    if (id === 'ron') {
+      S.rem.on = e.target.checked;
+      if (S.rem.on && 'Notification' in window && Notification.permission === 'default') { try { await Notification.requestPermission(); } catch (err) { /* ignore */ } }
+      if (S.rem.on && (!('Notification' in window) || Notification.permission !== 'granted')) toast(t('Notifications are off for this browser. Use the calendar reminder.'));
+      save();
+    }
     if (id === 'smeth') S.method = e.target.value;
     if (id === 'smad') S.madhab = e.target.value;
     if (id === 'shij') S.hijriAdj = +e.target.value;
@@ -190,7 +235,7 @@ export async function renderSettings(root) {
     if (id === 'sfri') { S.fri.on = e.target.checked; save(); }
     if (id === 'smerge') {
       const pass = $('#spass', root).value; if (!pass) { toast(t('Type the passphrase first.')); e.target.value = ''; return; }
-      try { SY.merge(await SY.open(await e.target.files[0].text(), pass)); toast(t('Merged. Nothing on this device was lost.')); draw(); }
+      try { pending = { st: await SY.open(await e.target.files[0].text(), pass), mode: 'merge' }; showRestore(); }
       catch (err) { toast(t('Could not open this file. Check the passphrase.')); }
       e.target.value = ''; return;
     }
@@ -199,11 +244,11 @@ export async function renderSettings(root) {
         const txt = await e.target.files[0].text(), o = JSON.parse(txt); let st;
         if (o && o.safa === 'sync') { const pass = $('#spass', root).value; if (!pass) { toast(t('Type the passphrase first.')); e.target.value = ''; return; } st = await SY.open(txt, pass); }
         else { if (!o || o.app !== 'safa.') throw new Error('bad'); st = o.state; }
-        if (!st || !st.loc) throw new Error('bad'); replaceState(st); toast(t('Backup restored'));
+        if (!st || !st.loc) throw new Error('bad'); pending = { st, mode: 'restore' }; showRestore();
       } catch (err) { toast(t('Could not open this file. Check the passphrase.')); }
       e.target.value = '';
     }
-    if (['smeth', 'smad', 'shij', 's24', 'simp'].includes(id)) { save(); draw(); }
+    if (['smeth', 'smad', 'shij', 's24'].includes(id)) { save(); draw(); }
   };
   await draw(); data('cities.json').catch(() => {});
   return () => { root.onclick = null; root.onchange = null; };
@@ -211,7 +256,7 @@ export async function renderSettings(root) {
 
 const LINKS = [["adhan-js by Batoul Apps", "https://github.com/batoulapps/adhan-js"], ["quran-json", "https://github.com/risan/quran-json"], ["fawazahmed0/quran-api", "https://github.com/fawazahmed0/quran-api"], ["AleaToir3/hisnul-muslim-api-json", "https://github.com/AleaToir3/hisnul-muslim-api-json"], ["spa5k/tafsir_api", "https://github.com/spa5k/tafsir_api"], ["everyayah.com", "https://everyayah.com"], ["hisnmuslim.com", "https://www.hisnmuslim.com"], ["city-timezones", "https://github.com/kevinroberts/city-timezones"]];
 export function renderAbout(root) {
-  root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('About')}</b><span class="ib"></span></header>
+  root.innerHTML = `<header class="sub"><a href="#/plus" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('About')}</b><span class="ib"></span></header>
     <section class="about">
       <div class="onb-logo sm">${LOGO}</div><h2>safa<i>.</i></h2><p class="lead">${t('The silent spiritual instrument.')}</p>
       <h3>${t('The promise')}</h3>
