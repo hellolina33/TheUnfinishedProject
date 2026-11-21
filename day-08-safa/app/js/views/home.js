@@ -11,7 +11,6 @@ const link = (href, title, graphic, detail = '') => `
     ${icon.chev}
   </a>`;
 
-const cover = key => `<img class="home-thumb" src="illustrations/covers/${key}.webp" alt="" width="64" height="64">`;
 const group = (title, content) => `<section class="home-group"><h2>${title}</h2>${content}</section>`;
 
 function prayerSummary() {
@@ -42,9 +41,9 @@ export function renderHome(root) {
   const favorites = (S.q.favs || []).length > 0 || (S.d.favs || []).length > 0;
   root.innerHTML = `
     <header class="home-head"><h1>safa<span>.</span></h1>
-      <label class="home-language"><span class="visually-hidden">${copy('Langue', 'Language', 'اللغة')}</span>
+      <label class="home-language">${icon.globe}<span class="visually-hidden">${copy('Langue', 'Language', 'اللغة')}</span>
       <select id="home-language" class="inp">${[['fr','Français'],['en','English'],['ar','العربية']].map(([id, label]) =>
-        `<option value="${id}" ${lang() === id ? 'selected' : ''}>${label}</option>`).join('')}</select></label>
+        `<option value="${id}" ${lang() === id ? 'selected' : ''}>${label}</option>`).join('')}</select>${icon.down}</label>
     </header>
     <section class="home-hero">
       <div><p>${esc(prayer.detail)}</p><h2>${esc(prayer.label)}</h2>
@@ -52,12 +51,12 @@ export function renderHome(root) {
       <img src="illustrations/covers/morning.webp" alt="" width="140" height="165">
     </section>
     <div class="home-quick">
-      ${link('journey/prayer', copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة'), cover('prayer'), copy('Gestes et paroles, rakʿa par rakʿa', 'Postures and words, unit by unit', 'الهيئات والأذكار ركعة ركعة'))}
-      ${link(continueRoute, recent ? copy('Continuer ma lecture', 'Continue reading', 'متابعة القراءة') : t('Read Al-Fatiha'), cover('quran'), recent ? `${recent.s}:${recent.v || 1}` : '')}
+      ${link('journey/prayer', copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة'), icon.prayerMat, copy('Gestes et paroles, rakʿa par rakʿa', 'Postures and words, unit by unit', 'الهيئات والأذكار ركعة ركعة'))}
+      ${link(continueRoute, recent ? copy('Continuer ma lecture', 'Continue reading', 'متابعة القراءة') : t('Read Al-Fatiha'), icon.quran, recent ? `${recent.s}:${recent.v || 1}` : '')}
     </div>
     ${group(copy('Apprendre et pratiquer', 'Learn and practise', 'تعلم ومارس'),
-      link(journey ? `journey/${journey.id}` : 'journey', journey ? copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري') : t('Through life'), cover('learn'), journey?.title?.[lang()]) +
-      link('learn/wudu', t('Ablution (wudu)'), cover('wudu')) +
+      link(journey ? `journey/${journey.id}` : 'journey', journey ? copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري') : t('Through life'), icon.pathway, journey?.title?.[lang()]) +
+      link('learn/wudu', t('Ablution (wudu)'), icon.droplet) +
       link('journey/faq', copy('Questions fréquentes', 'Frequently asked questions', 'الأسئلة الشائعة'), icon.help))}
     ${group(t('Tools'), link('duas', t('Duas'), icon.duas) + link('qibla', t('Qibla'), icon.compass) +
       (favorites ? link('plus/favorites', copy('Mes favoris', 'My favourites', 'مفضلتي'), icon.bookmark) : ''))}
