@@ -11,6 +11,7 @@ import { renderCalendar } from './views/calendar.js';
 import { renderLearnHub, renderSteps, renderLessons } from './views/learn.js';
 import { renderKhatm, renderHifz, renderQada } from './views/plan.js';
 import { renderAsk } from './views/ask.js';
+import { renderJourney } from './views/journey.js';
 import * as PL from './player.js';
 import { applyUi } from './a11y.js';
 
@@ -26,18 +27,19 @@ async function route() {
   const my = ++token;
   if (typeof cleanup === 'function') { try { cleanup(); } catch (e) { /* ignore */ } } cleanup = null; closeSheet();
   view.onclick = null; view.onchange = null;
-  if (!S.onboarded || !S.loc) {
+  const [name = 'today', a, b, c3] = location.hash.replace(/^#\/?/, '').split('/');
+  if ((!S.onboarded || !S.loc) && name !== 'journey') {
     tabbar.hidden = true; document.body.className = 'bare'; mini.hidden = true;
     onboarding.render(view, () => { route(); });
     return;
   }
   if (!S.since) { const ks = Object.keys(S.days).sort(); S.since = ks[0] || dayKey(); save(); }
-  const [name = 'today', a, b, c3] = location.hash.replace(/^#\/?/, '').split('/');
+
   const tab = { today: 'today', qibla: 'today', flight: 'today', calendar: 'today', learn: 'today', quran: 'quran', khatm: 'quran', hifz: 'quran', lessons: 'quran', ask: 'quran', duas: 'duas', mydua: 'duas', track: 'track', qada: 'track', settings: 'track', about: 'track' }[name] || 'today';
   const immersive = (name === 'quran' && a) || name === 'qibla';
   document.body.className = name === 'qibla' ? 'dark bare' : immersive ? 'bare' : '';
   applyUi(); if (name === 'qibla') document.querySelector('meta[name=theme-color]').content = '#080808';
-  tabbar.hidden = !!immersive; drawMini();
+  tabbar.hidden = !!immersive || !S.onboarded; drawMini();
   tabbar.querySelectorAll('a').forEach(x => x.dataset.tab === tab ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
   view.classList.remove('vin'); void view.offsetWidth; view.classList.add('vin');
   let c;
@@ -46,6 +48,7 @@ async function route() {
     else if (name === 'flight') c = renderFlight(view);
     else if (name === 'quran') c = a ? await renderReader(view, a, b, c3) : await quranList(view);
     else if (name === 'calendar') c = renderCalendar(view);
+    else if (name === 'journey') c = await renderJourney(view, a, b);
     else if (name === 'learn') c = a ? renderSteps(view, a, b) : renderLearnHub(view);
     else if (name === 'lessons') c = await renderLessons(view);
     else if (name === 'khatm') c = await renderKhatm(view);
