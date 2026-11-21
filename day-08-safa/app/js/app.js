@@ -39,6 +39,9 @@ window.addEventListener('safa:lang', event => {
 
 let cleanup = null, token = 0;
 let lastRoute = location.hash;
+let enteredRoute;
+let entrance;
+const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
 const scrollPositions = new Map();
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 async function route() {
@@ -72,6 +75,7 @@ async function route() {
     if (anchor.dataset.tab === tab) anchor.setAttribute('aria-current', 'page');
     else anchor.removeAttribute('aria-current');
   }
+  view.dataset.screen = tab;
   let c;
   try {
     const needsCity = ['qibla', 'track'].includes(name);
@@ -114,6 +118,16 @@ async function route() {
   }
   if (my !== token) return;
   cleanup = c;
+  if (enteredRoute !== current) {
+    entrance?.cancel();
+    if (!motionPreference.matches && !document.documentElement.classList.contains('rm') && view.animate) {
+      entrance = view.animate(
+        [{ opacity: .66, translate: '0 7px' }, { opacity: 1, translate: '0 0' }],
+        { duration: 210, easing: 'cubic-bezier(.2,.75,.25,1)' }
+      );
+    }
+    enteredRoute = current;
+  }
   decorateToggles(view);
   { const h = view.querySelector('h1, header.sub b, .onb h2'); const name2 = h ? h.textContent.trim() : ''; document.title = name2 && !/^safa\.?$/.test(name2) ? `${name2} · safa.` : 'safa.'; }
   const heading = view.querySelector('h1, header.sub b, .onb h2');
