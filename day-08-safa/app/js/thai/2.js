@@ -149,7 +149,7 @@ export default {
   "Change the translation in Reading options, under Text.": "เปลี่ยนคำแปลในตัวเลือกการอ่าน ภายใต้หัวข้อข้อความ",
   "word {n}": "คำ {n}",
   "Listen to this word": "ฟังคำนี้",
-  "Play the verse": "เล่นท่อนเพลง",
+  "Play the verse": "ฟังอายะฮ์นี้",
   "Word": "คำ",
   "Pause the recitation first.": "หยุดการอ่านก่อน",
   "Do not show again": "อย่าแสดงอีก",
