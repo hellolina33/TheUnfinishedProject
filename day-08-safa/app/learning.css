@@ -82,7 +82,8 @@
   object-position: 50% 56%;
   background: #b5a17d;
 }
-.learning-card:first-child img { block-size: 100%; min-block-size: 105px; }
+.learning-card:first-child img { position: absolute; inset-block: 0; inset-inline-start: 0; inline-size: 38%; block-size: 100%; }
+.learning-card:first-child > div { grid-column: 2; align-self: center; min-block-size: 110px; display: flex; flex-direction: column; justify-content: center; }
 .learning-card > div { padding: 12px 26px 12px 12px; padding-inline: 12px 26px; }
 .learning-card h3 { font-weight: 600; line-height: 1.24; overflow-wrap: anywhere; }
 .journey .learning-card p { margin: 4px 0 0; font-size: .82rem; line-height: 1.35; color: var(--mut); }

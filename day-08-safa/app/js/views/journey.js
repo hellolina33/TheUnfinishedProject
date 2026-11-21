@@ -18,7 +18,7 @@ const nav = () => {
   ].map(([route,title])=>`<a href="#/journey${route?'/'+route:''}" ${section===route||(!route&&section==='path')?'aria-current="page"':''}>${title}</a>`).join('')}</nav>`;
 };
 const languagePicker = () => `<div class="j-langs" aria-label="${L('Langue','Language','اللغة')}">${[['fr','FR'],['en','EN'],['ar','العربية']].map(([l,n])=>`<button class="chip" data-jlang="${l}" aria-pressed="${lang()===l}" ${l==='ar'?'lang="ar" dir="rtl"':''}>${n}</button>`).join('')}</div>`;
-const header = title => `<header class="sub"><a href="#/journey" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${esc(title)}</b><a class="j-brand" href="#/home" aria-label="${L('Accueil','Home','الرئيسية')}">safa<span>.</span></a></header>${nav()}${languagePicker()}`;
+const header = (title, parent = "journey") => `<header class="sub"><a href="#/${parent}" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${esc(title)}</b><a class="j-brand" href="#/home" aria-label="${L('Accueil','Home','الرئيسية')}">safa<span>.</span></a></header>${nav()}${languagePicker()}`;
 const note = () => `<details class="j-note"><summary>${L('Comment lire ce guide','How to read this guide','كيف تقرأ هذا الدليل')}</summary><p>${L('Une synthèse d’introduction sunnite, avec des divergences entre écoles signalées. Les illustrations montrent des repères généraux, pas tous les détails d’une école. Ce contenu n’a pas été validé par un conseil religieux et ne remplace pas un avis adapté à une situation personnelle.','An introductory Sunni synthesis with school differences flagged. Illustrations show general reference points, not every detail of a school. This content has not been validated by a religious board and does not replace guidance for a personal situation.','ملخص سني للمبتدئ مع بيان اختلاف المذاهب. والرسوم توضح المعالم العامة لا جميع تفاصيل المذهب. لم تراجعه هيئة شرعية، ولا يغني عن سؤال مناسب للحالة الشخصية.')}</p><p>${L('Les mentions « obligatoire » s’appliquent sous les conditions et dispenses précisées. « Repère » explique ; « recommandé » ajoute ; « selon l’école » signale une divergence. Aucune jauge ne mesure la foi.','“Obligatory” applies subject to conditions and exemptions. “Reference” explains; “recommended” adds; “by school” flags differences. No gauge measures faith.','تراعى الشروط والرخص في وصف الواجب. والمعلومة للتوضيح والمستحب للزيادة ووصف اختلاف المذهب للتنبيه. ولا يوجد مقياس للإيمان.')}</p></details>`;
 const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f\u064b-\u065f]/g,'').toLowerCase()
   .replace(/rak[ʿ‘’3’'ʻ]?(?:at|ah|a)s?/g, 'raka').replace(/\b(?:salah|salat|prayers?|prieres?)\b/g, 'salat');
@@ -62,7 +62,7 @@ function home(root,D) {
     return state.at && state.completed.length<path.steps.length;
   }).sort((a,b)=>learningState(b).at-learningState(a).at)[0];
   const featured = recent || PATHS[0];
-  root.innerHTML = header(L('Apprendre','Learn','تعلّم')) + `
+  root.innerHTML = header(L('Apprendre','Learn','تعلّم'),'home') + `
     <section class="learning-hero">
       ${photo('covers/courtyard','fetchpriority="high"')}
       <div><h1>${L('Apprendre','Learn','تعلّم')}</h1>
@@ -210,7 +210,7 @@ function faqPage(root,D,entry) {
     if(cat==='top'&&!query)list.sort((a,b)=>TOP_FAQ.indexOf(a.id)-TOP_FAQ.indexOf(b.id));
     root.querySelector('#j-faq-title').textContent=query?L('Résultats','Results','نتائج البحث'):activeTopic?words(activeTopic.title):
       root.querySelector(`.faq-modes [data-faq-filter="${cat}"]`).textContent;
-    root.querySelector('#j-faq-count').textContent=L(`${list.length} réponse(s)`,`${list.length} answer(s)`,`${list.length} إجابة`);
+    root.querySelector('#j-faq-count').textContent=L(`${list.length} réponse${list.length===1?'':'s'}`,`${list.length} answer${list.length===1?'':'s'}`,`${list.length} إجابة`);
     root.querySelector('#j-faq-results').innerHTML=list.map(f=>faqItem(D,f,f.id===focus)).join('')||
       `<div class="faq-empty"><p>${L('Aucun résultat pour cette recherche.','No results for this search.','لا نتائج لهذا البحث.')}</p><button class="btn line sm" id="faq-reset">${L('Voir toutes les questions','Show all questions','عرض جميع الأسئلة')}</button></div>`;
     root.querySelector('#faq-reset')?.addEventListener('click',()=>setCat('all'));
