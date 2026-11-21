@@ -270,7 +270,7 @@ body.hasmini #view{padding-bottom:calc(var(--tab) + var(--sab) + 96px)}
 .hact{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 /* learn */
 .step{display:flex;flex-direction:column;gap:10px;padding:8px 0}.step h2{font-size:30px}.step p{margin:0;font-size:17px}
-.figw{display:grid;place-items:center;border:1px solid var(--line);border-radius:26px;padding:18px;color:var(--fg)}.fig{width:min(46vw,190px);height:auto}
+.figw{display:grid;place-items:center;overflow:hidden;border:1px solid var(--line);border-radius:26px;padding:12px;background:#f6f5f2;min-height:220px}.learn-illustration{display:block;width:100%;max-width:440px;height:clamp(200px,55vw,300px);object-fit:contain;direction:ltr}
 .say{border:1px solid var(--ember);border-radius:20px;padding:14px 16px}.say .ar{font-size:24px;line-height:2;margin:0}.say .tlit{display:block;margin-top:6px}
 .stepbar{display:flex;gap:4px;margin:6px 0 14px}.stepbar i{flex:1;height:3px;border-radius:2px;background:var(--line)}.stepbar i.on{background:var(--ember)}
 .hero2{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:26px 0 16px}.hero2 .big{font:300 64px/1 var(--mono);letter-spacing:-.05em}.hero2 p{margin:0}
