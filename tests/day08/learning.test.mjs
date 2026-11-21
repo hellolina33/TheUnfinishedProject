@@ -120,3 +120,12 @@ test('The published Thai Quran aligns with all 6,236 existing verse references',
   });
   assert.equal(verses.reduce((a,b) => a+b), 6236);
 });
+
+test('The Quran list can get the weekday before any city is configured', async () => {
+  const { weekday, gregorian, fmtTime } = await import('../../day-08-safa/app/js/prayer.js');
+  const { S } = await import('../../day-08-safa/app/js/store.js');
+  assert.equal(S.loc, null);
+  assert.match(weekday(Date.now()), /day$/);
+  assert.ok(gregorian(Date.now()));
+  assert.match(fmtTime(Date.now()), /\d{2}:\d{2}/);
+});

@@ -7,7 +7,7 @@ import { thaiSurah, thaiQuranIndex, THAI_QURAN_LABEL } from '../thai-quran.js';
 import { tajweed, RULES } from '../tajweed.js';
 export { RECITERS } from '../player.js';
 // Popular names people search for.
-const NICK = [[/kurs/, 2, 255, 'Ayat al-Kursi'], [/^ya ?s(ee|i)n/, 36, 0, 'Ya-Sin'], [/mulk/, 67, 0, 'Al-Mulk'], [/kahf/, 18, 0, 'Al-Kahf'], [/rahman/, 55, 0, 'Ar-Rahman'], [/waqi/, 56, 0, "Al-Waqi'ah"], [/ikhlas/, 112, 0, 'Al-Ikhlas'], [/falaq/, 113, 0, 'Al-Falaq'], [/^(an ?)?nas$/, 114, 0, 'An-Nas'], [/amana ?r/, 2, 285, 'Amana ar-Rasul'], [/fatiha/, 1, 0, 'Al-Fatihah'], [/sajda/, 32, 0, 'As-Sajdah'], [/maryam/, 19, 0, 'Maryam'], [/yusuf|joseph/, 12, 0, 'Yusuf']];
+const NICK = [[/ฟาติ[หฮะ]+/, 1, 0, 'Al-Fatihah'], [/บะเกาะเราะฮ์/, 2, 0, 'Al-Baqarah'], [/กะฮ์ฟ/, 18, 0, 'Al-Kahf'], [/ยาซีน/, 36, 0, 'Ya-Sin'], [/อิคลาศ/, 112, 0, 'Al-Ikhlas'], [/kurs/, 2, 255, 'Ayat al-Kursi'], [/^ya ?s(ee|i)n/, 36, 0, 'Ya-Sin'], [/mulk/, 67, 0, 'Al-Mulk'], [/kahf/, 18, 0, 'Al-Kahf'], [/rahman/, 55, 0, 'Ar-Rahman'], [/waqi/, 56, 0, "Al-Waqi'ah"], [/ikhlas/, 112, 0, 'Al-Ikhlas'], [/falaq/, 113, 0, 'Al-Falaq'], [/^(an ?)?nas$/, 114, 0, 'An-Nas'], [/amana ?r/, 2, 285, 'Amana ar-Rasul'], [/fatiha/, 1, 0, 'Al-Fatihah'], [/sajda/, 32, 0, 'As-Sajdah'], [/maryam/, 19, 0, 'Maryam'], [/yusuf|joseph/, 12, 0, 'Yusuf']];
 
 const TRANS = {
   maash: ['Rashid Maash (clear French)', 'fr'], hamidullah: ['Hamidullah (classic French)', 'frh'],
@@ -110,7 +110,7 @@ export async function renderList(root, section) {
   const draw = async () => {
     const q = listState.q.trim();
     if (q) {
-      const ref = q.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/), ql = q.toLowerCase().replace(/[^a-z0-9 \u0621-\u064A]/g, '');
+      const ref = q.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/), ql = q.toLowerCase().replace(/[^a-z0-9 \u0621-\u064A\u0e00-\u0e7f]/g, '');
       let html = '';
       const nick = NICK.find(([re]) => re.test(q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')));
       if (nick) html += `<a class="card row" href="#/quran/${nick[1]}${nick[2] ? '/' + nick[2] : ''}"><span><span class="mono">${t('Go to verse')}</span><b>${esc(nick[3])} · ${nick[1]}${nick[2] ? ':' + nick[2] : ''}</b></span>${icon.chev}</a>`;
