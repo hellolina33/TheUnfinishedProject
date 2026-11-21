@@ -43,10 +43,11 @@ export const currentTime = () => audio.currentTime * 1000;
 
 function src(v) { return v === 0 ? verseUrl(1, 1) : verseUrl(P.s, v); }
 export function playVerse(v, offsetMs = 0) {
+  clearTimeout(gapT); P.gap = false;
   P.v = v; P.word = false; P.seekTo = offsetMs / 1000;
   audio.src = src(v); audio.playbackRate = S.q.speed;
   audio.play().catch(() => {});
-  if (v >= 1) { S.q.last = { s: P.s, v, n: P.name }; const d = getDay(dayKey(), true); if (!d.r) d.r = 1; save(); }
+  if (v >= 1) { S.q.heard = { s: P.s, v, n: P.name, at: Date.now() }; const d = getDay(dayKey(), true); if (!d.r) d.r = 1; save(); }
   meta(); emit();
 }
 /* Play modes, like a classic Quran app.
@@ -74,7 +75,7 @@ export function toggle() { if (P.v == null) return playFrom(1); if (audio.paused
 /* Sleep timer: minutes from now, or 'end' to stop at the end of the surah (loops end too). */
 export function setSleep(x) { P.sleep = x === 'end' ? 'end' : x ? Date.now() + x * 60000 : 0; if (x === 'end' && P.mode !== 'off') P.mode = 'off'; emit(); }
 export const sleepLeft = () => P.sleep === 'end' ? 'end' : P.sleep ? Math.max(0, P.sleep - Date.now()) : 0;
-export function stop() { audio.pause(); audio.removeAttribute('src'); P.v = null; P.mode = 'off'; P.word = false; emit(); }
+export function stop() { clearTimeout(gapT); P.gap = false; audio.pause(); audio.removeAttribute('src'); P.v = null; P.mode = 'off'; P.word = false; emit(); }
 export function seek(ms) {
   if (!P.durs) return;
   let v = hasBasmala(P.s) ? 0 : 1, acc = 0;
@@ -99,18 +100,22 @@ audio.addEventListener('loadedmetadata', () => {
   meta(); emit();
 });
 export const __ended = () => audio.dispatchEvent(new Event('ended')); // for automated checks
+// A silence before each repetition, so the listener can recite it back.
+let gapT = 0;
+function again(f) { const g = +S.q.gap || 0; clearTimeout(gapT); if (!g) return f(); P.gap = true; emit(); gapT = setTimeout(() => { P.gap = false; if (P.v != null) f(); }, g * 1000); }
+export function setGap(g) { S.q.gap = g; save(); emit(); }
 audio.addEventListener('ended', () => {
   if (P.word) { P.word = false; emit(); return; }
   if (P.v == null) return;
   P.ends = (P.ends || 0) + 1;
-  if (P.mode === 'verse') return playVerse(P.v);
-  if (P.mode === 'range') return playVerse(P.v < P.b ? P.v + 1 : P.a);
+  if (P.mode === 'verse') return again(() => playVerse(P.v));
+  if (P.mode === 'range') return P.v < P.b ? playVerse(P.v + 1) : again(() => playVerse(P.a));
   // A group of verses ends: stop, or start the group again.
-  if (P.gB && P.v >= P.gB && P.sleep !== 'end') { if (pm() === 'repeat') return playVerse(P.gA === 1 && hasBasmala(P.s) ? 0 : P.gA); P.v = null; emit(); position(); return; }
+  if (P.gB && P.v >= P.gB && P.sleep !== 'end') { if (pm() === 'repeat') return again(() => playVerse(P.gA === 1 && hasBasmala(P.s) ? 0 : P.gA)); P.v = null; emit(); position(); return; }
   if (P.v < P.n) return playVerse(P.v + 1);
   // End of the surah.
   if (P.sleep === 'end') { P.sleep = 0; P.v = null; emit(); position(); return; }
-  if (pm() === 'repeat') { setGroup(1); return playVerse(hasBasmala(P.s) ? 0 : 1); }
+  if (pm() === 'repeat') { setGroup(1); return again(() => playVerse(hasBasmala(P.s) ? 0 : 1)); }
   if (pm() === 'next' && P.s < 114) { gotoSurah(P.s + 1, true); return; }
   P.v = null; emit(); position();
 });
@@ -172,12 +177,17 @@ export function wordProgress(nWords) {
 }
 
 /* Offline audio */
-export async function saveAudio(list, onStep) {
+// Saved files are skipped, so a paused download picks up where it stopped.
+export async function saveAudio(list, onStep, ctl = {}) {
   const c = await caches.open('safa-audio'); let i = 0;
   for (const [s, v] of list) {
+    if (ctl.stop) { const e = new Error('paused'); e.paused = true; throw e; }
     const u = verseUrl(s, v);
     if (!(await c.match(u))) { const r = await fetch(u, { mode: 'no-cors' }); await c.put(u, r); }
     i++; if (onStep) onStep(i, list.length);
   }
+}
+export async function countSaved(list) {
+  try { const c = await caches.open('safa-audio'); const keys = new Set((await c.keys()).map(r => r.url)); return list.filter(([s, v]) => keys.has(verseUrl(s, v))).length; } catch (e) { return 0; }
 }
 export function fmt(ms) { ms = Math.max(0, ms | 0); const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + String(m).padStart(2, '0') : m) + ':' + String(s % 60).padStart(2, '0'); }

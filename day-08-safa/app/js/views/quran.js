@@ -123,20 +123,20 @@ export async function renderReader(root, sN, vN, extra) {
   };
   root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)} <span class="arn" lang="ar">${m[2]}</span></b><span class="mono">${esc(meaning(meta, s))} · ${t('{n} verses', { n })}</span></div>
       <button class="icon-action reader-options" id="rset">${icon.sliders}<span>${t('Reading options')}</span></button></header>
-    <div class="${cls()}" id="rd">${S.q.tj !== false && lang() !== 'xx' ? `<button class="tjleg" id="tjleg" aria-label="${t('Tajweed colours: what they mean')}">${RULES.map(r => `<span class="tj-${r}">${t(TJN[r])}</span>`).join('')}</button>` : ''}${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · ${esc(trName())}</p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${(S.q.tj !== false ? tajweed(fat.a) : fat.a).map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
+    <div class="${cls()}" id="rd">${S.q.tj !== false ? (S.q.tjSeen ? `<button class="linkbtn small tjlink" id="tjleg">${t('Tajweed colours: what they mean')}</button>` : `<button class="tjleg" id="tjleg" aria-label="${t('Tajweed colours: what they mean')}">${RULES.map(r => `<span class="tj-${r}">${t(TJN[r])}</span>`).join('')}</button>`) : ''}<div id="hidebar"></div>${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · <button class="linkbtn small" id="trcred">${esc(trName())} ⓘ</button></p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${(S.q.tj !== false ? tajweed(fat.a) : fat.a).map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
       <p class="endsur">${t('End of the surah. May Allah make it light for you and accept it.')}</p>
       <nav class="rnav">${s > 1 ? `<a class="btn line sm" href="#/quran/${s - 1}">‹ ${esc(surahName(meta, s - 1))}</a>` : '<span></span>'}${s < 114 ? `<a class="btn line sm" href="#/quran/${s + 1}">${esc(surahName(meta, s + 1))} ›</a>` : ''}</nav></div>
-    <div class="player" id="pl">
-      <div class="prow"><span class="mono ptime" id="pt0">0:00</span><input type="range" id="pseek" min="0" max="1000" value="0" step="1" aria-label="${t('Position in the surah')}"><span class="mono ptime" id="pt1">${PL.fmt(PL.totalMs())}</span></div>
-      <div class="prow pctl"><button class="ib" id="psprev" aria-label="${t('Previous surah')}" ${s <= 1 ? 'disabled' : ''}>${icon.sprev}</button><button class="ib" id="pprev" aria-label="${t('Previous verse')}">${icon.vprev}</button><button class="pbtn" id="pp" aria-label="${t('Play')}">${icon.play}</button><button class="ib" id="pnext" aria-label="${t('Next verse')}">${icon.vnext}</button><button class="ib" id="psnext" aria-label="${t('Next surah')}" ${s >= 114 ? 'disabled' : ''}>${icon.snext}</button></div>
+    <div class="player ${S.q.pfull ? 'full' : ''}" id="pl">
+      <div class="prow pseekrow"><span class="mono ptime" id="pt0">0:00</span><input type="range" id="pseek" min="0" max="1000" value="0" step="1" aria-label="${t('Position in the surah')}"><span class="mono ptime" id="pt1">${PL.fmt(PL.totalMs())}</span></div>
+      <div class="prow pctl"><button class="ib" id="psprev" aria-label="${t('Previous surah')}" ${s <= 1 ? 'disabled' : ''}>${icon.sprev}</button><button class="ib" id="pprev" aria-label="${t('Previous verse')}">${icon.vprev}</button><button class="pbtn" id="pp" aria-label="${t('Play')}">${icon.play}</button><button class="ib" id="pnext" aria-label="${t('Next verse')}">${icon.vnext}</button><button class="ib" id="psnext" aria-label="${t('Next surah')}" ${s >= 114 ? 'disabled' : ''}>${icon.snext}</button><button class="ib pmore" id="pmore" aria-expanded="${!!S.q.pfull}" aria-label="${t('More audio settings')}">${icon.sliders}</button></div>
       <p class="pinfo mono"><span class="plabel" id="plab"></span> <span class="pvr" id="pvr" aria-live="off"></span></p>
-      <div class="pchips"><button class="chip" id="pmode" aria-label="${t('Play mode')}"></button><button class="chip" id="psp" aria-label="${t('Playback speed')}">${t('Speed')} ${S.q.speed}×</button><button class="chip" id="phd" aria-label="${t('Hide words to test your memory')}"></button><button class="chip" id="prc" aria-label="${t('Change reciter')}"><span id="prcn">${esc(PL.RECITERS[S.q.reciter])}</span> ▾</button><button class="chip" id="psl" aria-label="${t('Sleep timer')}">${t('Timer')}</button></div>
+      <div class="pchips"><button class="chip" id="pmode" aria-label="${t('Play mode')}"></button><button class="chip" id="psp" aria-label="${t('Playback speed')}">${t('Speed')} ${S.q.speed}×</button><button class="chip" id="prc" aria-label="${t('Change reciter')}"><span id="prcn">${esc(PL.RECITERS[S.q.reciter])}</span> ▾</button><button class="chip" id="psl" aria-label="${t('Sleep timer')}">${t('Timer')}</button></div>
     </div>`;
   const rd = $('#rd', root), pl = $('#pl', root), seekEl = $('#pseek', pl);
   // The player lives outside the scrolling view, so it always stays at the bottom of the screen.
   document.querySelectorAll('body > .player').forEach(x => x.remove()); document.body.appendChild(pl);
-  if (!S.seenWordHint) { S.seenWordHint = true; save(); setTimeout(() => toast(t('Tip: tap an Arabic word to hear it and see its meaning.')), 600); }
-  const setLast = v => { S.q.last = { s, v, n: name }; S.q.seen = S.q.seen || {}; S.q.seen[s] = 1; save(); };
+  if (!S.seenWordHint) { S.seenWordHint = true; save(); setTimeout(() => toast(t('Tip: tap an Arabic word to see its meaning and hear it.')), 600); }
+  const setLast = v => { S.q.last = { s, v, n: name, at: Date.now() }; S.q.seen = S.q.seen || {}; S.q.seen[s] = 1; save(); };
   if (s === 1) { S.learnDone = S.learnDone || {}; if (!S.learnDone.fatiha) { S.learnDone.fatiha = true; save(); } }
 
   /* colour sweep */
@@ -166,7 +166,8 @@ export async function renderReader(root, sN, vN, extra) {
     $('#prcn', pl).textContent = PL.RECITERS[S.q.reciter];
     $('#pmode', pl).textContent = modeLabel();
     const sl = PL.sleepLeft(); $('#psl', pl).textContent = sl === 'end' ? t('Stops at the end') : sl ? t('Stops in {m} min', { m: Math.ceil(sl / 60000) }) : t('Timer'); $('#psl', pl).setAttribute('aria-pressed', !!sl);
-    const hb = $('#phd', pl); hb.textContent = t(['Hide', 'Hide ⅓', 'Hide ½', 'Hide all'][S.q.hide]); hb.setAttribute('aria-pressed', S.q.hide > 0);
+    if (PL.P.gap && on) $('#plab', pl).textContent = t('Your turn: recite…');
+    const hbEl = $('#hidebar', root); if (hbEl) hbEl.innerHTML = S.q.hide ? `<div class="card row hidebar"><span>${t(['', 'A third of the words are hidden.', 'Half of the words are hidden.', 'All words are hidden.'][S.q.hide])}</span><button class="btn line sm" id="unhide">${t('Back to normal reading')}</button></div>` : '';
     kick();
   };
   const off = PL.onChange(() => { if (PL.P.auto && PL.P.s !== s) { PL.P.auto = false; location.hash = '#/quran/' + PL.P.s; return; } drawPlayer(); });
@@ -247,20 +248,33 @@ export async function renderReader(root, sN, vN, extra) {
     const surahList = range([s, 1], [s, n]); const ji = juzOf();
     const juzList = range(meta.juz[ji], ji < 29 ? (meta.juz[ji + 1][1] > 1 ? [meta.juz[ji + 1][0], meta.juz[ji + 1][1] - 1] : [meta.juz[ji + 1][0] - 1, meta.s[meta.juz[ji + 1][0] - 2][3]]) : [114, 6]);
     const allList = range([1, 1], [114, 6]);
+    let ctl = {};
+    const saved = await PL.countSaved(allList);
     const el = sheet(`<h3>${t('Reader')}</h3><div class="sbody">
+        <h4 class="shd">${t('Text')}</h4>
         <label class="tog"><span>${t('Word by word')}<small>${t('Arabic, transliteration and meaning under each word')}${lang() === 'fr' ? ' · ' + t('French meanings by Dr Usama Nonnenmacher') : ''}</small></span><input type="checkbox" id="swbw" ${S.q.wbw ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Mushaf flow')}<small>${t('Continuous Arabic, no translation')}</small></span><input type="checkbox" id="sflow" ${S.q.flow ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Verse transliteration')}</span><input type="checkbox" id="stl" ${S.q.tl ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Tajweed colours')}<small>${t('Qalqala, iqlab, idgham, ikhfa, ghunna')}</small></span><input type="checkbox" id="stj" ${S.q.tj !== false ? 'checked' : ''}></label>
         <label class="lbl" for="str">${t('Translation')}</label><select id="str" class="inp">${Object.entries(TRANS).map(([k, l]) => `<option value="${k}" ${trKey() === k ? 'selected' : ''}>${t(l[0])}</option>`).join('')}</select>
         <label class="lbl">${t('Arabic size')}</label><div class="seg">${[0, 1, 2, 3].map(i => `<button data-fs="${i}" aria-pressed="${S.q.fs === i}" style="font-size:${14 + i * 4}px">ع</button>`).join('')}</div>
+        <h4 class="shd">${t('Listening')}</h4>
         <label class="lbl" for="srec">${t('Reciter')}</label><select id="srec" class="inp">${Object.entries(PL.RECITERS).map(([k, l]) => `<option value="${k}" ${S.q.reciter === k ? 'selected' : ''}>${l}</option>`).join('')}</select><p class="muted small">${t('Every reciter here follows the text word by word: the colour moves with the voice.')}</p>
-        <label class="lbl">${t('Offline audio')}</label>
+        <label class="lbl">${t('Speed')}</label><div class="seg">${[0.75, 1, 1.25, 1.5].map(x => `<button data-spd="${x}" aria-pressed="${S.q.speed === x}">${x}×</button>`).join('')}</div>
+        <button class="btn line sm" id="smode">${t('Play mode')} · ${esc(modeLabel())}</button>
+        <label class="lbl">${t('Silence before each repetition')}</label><div class="seg">${[0, 3, 5, 10].map(x => `<button data-gap="${x}" aria-pressed="${(+S.q.gap || 0) === x}">${x ? x + ' s' : t('None')}</button>`).join('')}</div>
+        <p class="muted small">${t('When a verse or group repeats, a pause lets you recite it back.')}</p>
+        <h4 class="shd">${t('Memorise')}</h4>
+        <label class="lbl">${t('Hide words to test your memory')}</label><div class="seg">${[0, 1, 2, 3].map(i => `<button data-hide="${i}" aria-pressed="${S.q.hide === i}">${t(['None', '⅓', '½', 'All'][i])}</button>`).join('')}</div>
+        <a class="btn line sm" href="#/hifz">${t('Memorisation plan')}</a>
+        <h4 class="shd">${t('Offline audio')}</h4>
+        <p class="muted small">${t('{a} of {b} verses already saved for this reciter.', { a: saved.toLocaleString(), b: allList.length.toLocaleString() })}</p>
         <button class="btn line" data-dl="surah">${S.q.dl[key] ? t('Audio saved for offline ✓') : t('Save this surah · {n} MB', { n: mb(surahList) })}</button>
         <button class="btn line" data-dl="juz">${t('Save juz {j} · {n} MB', { j: ji + 1, n: mb(juzList) })}</button>
-        <button class="btn line" data-dl="all">${t('Save the whole Quran · {n} MB', { n: mb(allList) })}</button>
+        <button class="btn line" data-dl="all">${t('Save the whole Quran…')}</button>
+        <div id="dlconfirm"></div>
         <button class="btn line sm" id="stest">${t('Test the audio')}</button>
-        <p class="muted small">${t('Listening uses about 1 MB per minute of mobile data, unless the surah is saved.')}</p><p class="muted small">${t('Text, translation and tafsir are stored on the device. Audio streams unless you save it.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Reader settings') });
+        <p class="muted small">${t('Listening uses about 1 MB per minute of mobile data, unless the surah is saved.')}</p><p class="muted small">${t('Text, translation and tafsir are stored on the device. Audio streams unless you save it.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Reader settings'), opener: $('#rset', root) });
     el.onchange = async e => {
       const id = e.target.id;
       if (id === 'swbw') { S.q.wbw = e.target.checked; if (S.q.wbw) S.q.flow = false; }
@@ -274,25 +288,44 @@ export async function renderReader(root, sN, vN, extra) {
     el.onclick = async e => {
       const f = e.target.closest('[data-fs]'); if (f) { S.q.fs = +f.dataset.fs; save(); refresh(); $$('[data-fs]', el).forEach(x => x.setAttribute('aria-pressed', x === f)); return; }
       if (e.target.id === 'stest') { PL.playFrom(1); closeSheet(); return; }
+      const sp = e.target.closest('[data-spd]'); if (sp) { PL.setSpeed(+sp.dataset.spd); $$('[data-spd]', el).forEach(x => x.setAttribute('aria-pressed', x === sp)); return; }
+      const gp = e.target.closest('[data-gap]'); if (gp) { PL.setGap(+gp.dataset.gap); $$('[data-gap]', el).forEach(x => x.setAttribute('aria-pressed', x === gp)); return; }
+      const hd = e.target.closest('[data-hide]'); if (hd) { S.q.hide = +hd.dataset.hide; save(); refresh(); $$('[data-hide]', el).forEach(x => x.setAttribute('aria-pressed', x === hd)); return; }
+      if (e.target.id === 'smode') { closeSheet(); modes(); return; }
+      if (e.target.id === 'dlpause') { ctl.stop = true; return; }
+      if (e.target.id === 'dlno') { $('#dlconfirm', el).innerHTML = ''; return; }
       const d = e.target.closest('[data-dl]'); if (!d || d.disabled) return;
+      if (d.dataset.dl === 'all' && !d.dataset.ok) {
+        $('#dlconfirm', el).innerHTML = `<div class="card stack"><p>${t('The whole Quran with {r}: about {n} MB, {m} still to download. Wi-Fi recommended.', { r: esc(PL.RECITERS[S.q.reciter]), n: mb(allList), m: (allList.length - saved).toLocaleString() + ' ' + t('verses') })}</p><div class="row2"><button class="btn sm" data-dl="all" data-ok="1">${t('Download')}</button><button class="btn line sm" id="dlno">${t('Cancel')}</button></div></div>`;
+        return;
+      }
       const list = { surah: surahList, juz: juzList, all: allList }[d.dataset.dl]; d.disabled = true;
+      ctl = {}; if (d.dataset.dl !== 'surah') { d.insertAdjacentHTML('afterend', `<button class="btn line sm" id="dlpause">${t('Pause the download')}</button>`); }
       try {
-        await PL.saveAudio(list, (i, tot) => { d.textContent = t('Saving… {a} / {b}', { a: i, b: tot }); });
+        await PL.saveAudio(list, (i, tot) => { d.textContent = t('Saving… {a} / {b}', { a: i, b: tot }); }, ctl);
+        $('#dlpause', el)?.remove();
         if (d.dataset.dl === 'surah') S.q.dl[key] = n; else if (d.dataset.dl === 'all') { for (let ss = 1; ss <= 114; ss++) S.q.dl[S.q.reciter + '|' + ss] = meta.s[ss - 1][3]; } else { new Set(juzList.map(x => x[0])).forEach(ss => { if (juzList.filter(x => x[0] === ss).length === meta.s[ss - 1][3]) S.q.dl[S.q.reciter + '|' + ss] = meta.s[ss - 1][3]; }); }
         save(); d.textContent = t('Audio saved for offline ✓');
-      } catch (err) { d.disabled = false; d.textContent = t('Could not save. Check your connection and retry.'); }
+      } catch (err) { $('#dlpause', el)?.remove(); d.disabled = false; d.textContent = err.paused ? t('Paused. Tap to resume where it stopped.') : t('Could not save. Check your connection and retry.'); }
     };
   };
 
   rd.onclick = e => {
+    if (e.target.id === 'unhide') { S.q.hide = 0; save(); refresh(); return; }
+    if (e.target.id === 'trcred') { sheet(`<h3>${t('Translation')}</h3><div class="sbody"><p><b>${esc(trName())}</b></p><p class="muted small">${t('A translation conveys the meaning; it is not the Quran itself. The Arabic text is the Uthmani script (King Fahd Complex, Hafs).')}</p><p class="muted small">${t('Change the translation in Reading options, under Text.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Translation'), opener: e.target }); return; }
+    if (e.target.closest('#tjleg') && !S.q.tjSeen) { S.q.tjSeen = true; save(); }
     if (e.target.closest('#tjleg')) { sheet(`<h3>${t('Tajweed colours')}</h3><div class="sbody">${RULES.map(r => `<p><b class="tj-${r}">${t(TJN[r])}</b> · ${t(TJD[r])}</p>`).join('')}<p class="muted small">${t('Colours are computed from the Uthmani script, not checked by a teacher. Learn tajweed with a teacher. Report any mistake.')}</p><p class="muted small">${t('Turn the colours off in Aa.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Tajweed colours') }); return; }
     const mb = e.target.closest('[data-menu]'); if (mb) { menu(+mb.dataset.menu); return; }
     const cb = e.target.closest('[data-ctx]'); if (cb) { setLast(+cb.dataset.ctx); tafsir(+cb.dataset.ctx); return; }
     const w = e.target.closest('button.w'); if (!w) return;
     const v = +w.closest('.vs').dataset.v, j = +w.dataset.w, x = V[v - 1];
     if (S.q.hide && !w.classList.contains('rev') && getComputedStyle(w.querySelector('.wa')).filter !== 'none') { w.classList.add('rev'); return; }
-    $$('.w.on', rd).forEach(y => y.classList.remove('on')); w.classList.add('on'); setLast(v);
-    if (PL.playWord(s, v, j + 1)) drawPlayer(x.w ? `${x.w[j][0]} · ${gloss(x, v - 1, j)}` : `${s}:${v}`);
+    $$('.w.on', rd).forEach(y => y.classList.remove('on')); w.classList.add('on');
+    setLast(v);
+    // The word panel opens silently; listening is its own explicit button.
+    const wp = sheet(`<div class="wpanel"><p class="ar wbig" lang="ar" dir="rtl">${x.a[j]}</p>${x.w ? `<p class="mono">${esc(x.w[j][0])}</p>${gloss(x, v - 1, j) ? `<p>${esc(gloss(x, v - 1, j))}</p>` : ''}` : ''}<p class="muted small">${esc(name)} · ${s}:${v} · ${t('word {n}', { n: j + 1 })}</p>
+      <div class="row2"><button class="btn" id="wlisten">${icon.play} ${t('Listen to this word')}</button><button class="btn line" id="wfrom">${t('Play the verse')}</button></div></div>`, { dark: document.body.classList.contains('dark'), label: t('Word'), opener: w });
+    wp.onclick = ev => { if (ev.target.closest('#wlisten')) { if (!PL.playWord(s, v, j + 1)) toast(t('Pause the recitation first.')); } if (ev.target.closest('#wfrom')) { closeSheet(); PL.P.mode = 'off'; PL.playVerse(v); } };
   };
   let lp; rd.addEventListener('pointerdown', e => { const vs = e.target.closest('.vs'); if (!vs) return; lp = setTimeout(() => { lp = null; menu(+vs.dataset.v); }, 550); });
   const cancel = () => { if (lp) clearTimeout(lp); }; rd.addEventListener('pointerup', cancel); rd.addEventListener('pointermove', cancel); rd.addEventListener('pointercancel', cancel);
@@ -302,7 +335,7 @@ export async function renderReader(root, sN, vN, extra) {
     if (id === 'pp') { if (PL.P.s === s && PL.P.v != null) PL.toggle(); else PL.playFrom(S.q.last && S.q.last.s === s ? S.q.last.v : 1); }
     if (id === 'pprev') PL.prev(); if (id === 'pnext') PL.next();
     if (id === 'psp') { const sp = [0.75, 1, 1.25, 1.5]; PL.setSpeed(sp[(sp.indexOf(S.q.speed) + 1) % sp.length]); }
-    if (id === 'phd') { S.q.hide = (S.q.hide + 1) % 4; save(); refresh(); }
+    if (id === 'pmore') { S.q.pfull = !S.q.pfull; save(); pl.classList.toggle('full', S.q.pfull); $('#pmore', pl).setAttribute('aria-expanded', S.q.pfull); }
     if (id === 'prc') reciters();
     if (id === 'pmode') modes();
     if (id === 'psprev' || id === 'psnext') { const s2 = s + (id === 'psnext' ? 1 : -1), was = PL.P.s === s && PL.P.v != null && PL.isPlaying(); if (was) PL.gotoSurah(s2, true); else location.hash = '#/quran/' + s2; }

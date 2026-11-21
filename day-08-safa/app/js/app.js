@@ -12,7 +12,7 @@ import { renderLearnHub, renderSteps, renderLessons } from './views/learn.js';
 import { renderKhatm, renderHifz, renderQada } from './views/plan.js';
 import { renderAsk } from './views/ask.js';
 import { copy, renderHome, renderPlus } from './views/home.js';
-import { renderJourney } from './views/journey.js';
+import { renderJourney, renderFavorites } from './views/journey.js';
 import * as PL from './player.js';
 import { applyUi } from './a11y.js';
 
@@ -24,7 +24,7 @@ const drawTabs = () => {
     ['today', copy('Prier', 'Pray', 'الصلاة'), icon.today],
     ['quran', t('Quran'), icon.quran],
     ['journey', copy('Apprendre', 'Learn', 'التعلم'), icon.learn],
-    ['plus', copy('Plus', 'More', 'المزيد'), icon.more],
+    ['plus', copy('Menu', 'Menu', 'القائمة'), icon.more],
   ];
   tabbar.innerHTML = tabs.map(([key, label, graphic]) => `<a href="#/${key}" data-tab="${key}">${graphic}<span>${label}</span></a>`).join('');
   tabbar.setAttribute('aria-label', t('Main'));
@@ -60,7 +60,7 @@ async function route() {
   const tab = {
     today: 'today', qibla: 'today', setup: 'today', quran: 'quran', khatm: 'quran', hifz: 'quran',
     journey: 'journey', learn: 'journey', lessons: 'journey', ask: 'journey',
-    plus: 'plus', flight: 'plus', calendar: 'plus', duas: 'plus', mydua: 'plus', track: 'plus',
+    plus: 'plus', favorites: 'plus', flight: 'plus', calendar: 'plus', duas: 'plus', mydua: 'plus', track: 'plus',
     qada: 'plus', settings: 'plus', about: 'plus',
   }[name] || 'home';
   document.body.className = name === 'qibla' ? 'dark' : '';
@@ -74,14 +74,16 @@ async function route() {
   }
   let c;
   try {
-    const needsCity = ['today', 'qibla', 'track'].includes(name);
+    const needsCity = ['qibla', 'track'].includes(name);
     if (name === 'welcome' || name === 'setup' || (needsCity && !S.loc)) {
       const destination = needsCity ? current : '#/today';
       c = onboarding.render(view, () => {
         if (location.hash === destination) route();
         else location.hash = destination;
       }, { startAtCity: name === 'setup' || needsCity });
-    } else if (name === 'plus') c = renderPlus(view, a);
+    } else if (name === 'today' && !S.loc) c = renderNoCity(view);
+    else if (name === 'plus') c = renderPlus(view, a);
+    else if (name === 'favorites') c = await renderFavorites(view, a);
     else if (name === 'qibla') c = renderQibla(view);
     else if (name === 'flight') c = renderFlight(view);
     else if (name === 'quran') c = a && a !== 'favorites' ? await renderReader(view, a, b, c3) : await quranList(view, a);
@@ -94,9 +96,9 @@ async function route() {
     else if (name === 'qada') c = renderQada(view);
     else if (name === 'ask') c = await renderAsk(view);
     else if (name === 'mydua') c = renderMyDuas(view, a);
-    else if (name === 'duas') c = a && a !== 'favorites' ? await renderChapter(view, a) : await duaList(view, a);
+    else if (name === 'duas') c = a && a !== 'favorites' ? await renderChapter(view, a, b) : await duaList(view, a);
     else if (name === 'track') c = renderTrack(view);
-    else if (name === 'settings') c = await renderSettings(view);
+    else if (name === 'settings') c = await renderSettings(view, a);
     else if (name === 'about') c = renderAbout(view);
     else if (name === 'today') c = renderToday(view);
     else c = renderHome(view);
@@ -107,17 +109,43 @@ async function route() {
       : copy('Ce contenu n’est pas encore disponible hors ligne.', 'This content is not yet available offline.', 'هذا المحتوى غير متاح بعد دون اتصال.');
     view.innerHTML = `<p class="pad" role="alert">${message}</p><div class="row2 pad"><button class="btn sm" id="route-retry">${t('Try again')}</button><a class="btn line sm" href="#/home">${copy('Accueil','Home','الرئيسية')}</a></div>`;
     view.querySelector('#route-retry').onclick = route;
+    // Back online: try again by itself, once.
+    if (!navigator.onLine) window.addEventListener('online', () => { if (location.hash === current) route(); }, { once: true });
   }
   if (my !== token) return;
   cleanup = c;
+  decorateToggles(view);
+  { const h = view.querySelector('h1, header.sub b, .onb h2'); const name2 = h ? h.textContent.trim() : ''; document.title = name2 && !/^safa\.?$/.test(name2) ? `${name2} · safa.` : 'safa.'; }
   const heading = view.querySelector('h1, header.sub b, .onb h2');
   if (heading && document.activeElement?.closest('#view, #tabbar')) {
     heading.setAttribute('tabindex', '-1');
     heading.focus({ preventScroll: true });
   }
-  if (!(name === 'quran' && a && a !== 'favorites') && !(name === 'journey' && a === 'facts' && b) && !(name === 'plus' && a === 'favorites')) {
+  if (!(name === 'quran' && a && a !== 'favorites') && !(name === 'journey' && (a === 'facts' || a === 'faq') && b) && !(name === 'plus' && a === 'favorites')) {
     window.scrollTo(0, scrollPositions.get(current) || 0);
   }
+}
+// Every switch shows its state in words, not only by position or colour.
+function decorateToggles(root) {
+  root.querySelectorAll('label.tog input[type=checkbox]').forEach(inp => {
+    let st = inp.parentElement.querySelector('.tstate');
+    if (!st) { st = document.createElement('span'); st.className = 'tstate mono'; st.setAttribute('aria-hidden', 'true'); inp.before(st); }
+    st.textContent = inp.checked ? copy('Activé', 'On', 'مفعل') : copy('Désactivé', 'Off', 'متوقف');
+  });
+}
+document.addEventListener('change', e => { if (e.target.matches?.('label.tog input[type=checkbox]')) decorateToggles(e.target.closest('label').parentElement); });
+new MutationObserver(() => { document.querySelectorAll('.sheet-wrap').forEach(decorateToggles); }).observe(document.body, { childList: true });
+// Prayer tab without a city: the guide stays reachable here.
+function renderNoCity(root) {
+  root.innerHTML = `<header class="vh"><div><h1>${copy('Prier', 'Pray', 'الصلاة')}</h1></div></header>
+    <section class="card stack"><b>${copy('Choisis ta ville pour afficher tes horaires.', 'Choose your city to see your prayer times.', 'اختر مدينتك لعرض مواقيتك.')}</b>
+      <p class="muted small">${t('Used on this device to compute prayer times and the Qibla. It is never sent anywhere.')}</p>
+      <a class="btn" href="#/setup">${t('Set my city')}</a></section>
+    <h2 class="sect">${copy('En attendant', 'Meanwhile', 'وفي الأثناء')}</h2>
+    <div class="home-quick">
+      <a class="home-row" href="#/journey/prayer"><span class="home-symbol" aria-hidden="true">${icon.prayerMat}</span><span><strong>${copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة')}</strong><small>${copy('Gestes et paroles, rakʿa par rakʿa', 'Postures and words, unit by unit', 'الهيئات والأذكار ركعة ركعة')}</small></span>${icon.chev}</a>
+      <a class="home-row" href="#/learn/wudu"><span class="home-symbol" aria-hidden="true">${icon.droplet}</span><span><strong>${t('Ablution (wudu)')}</strong></span>${icon.chev}</a>
+    </div>`;
 }
 // Mini player: recitation keeps going while you browse other tabs.
 const mini = document.createElement('div'); mini.id = 'mini'; mini.hidden = true; document.body.appendChild(mini);

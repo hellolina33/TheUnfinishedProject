@@ -8,6 +8,7 @@ export function applyUi() {
   h.classList.toggle('hc', !!u.hc);
   h.classList.toggle('rm', !!u.motion || matchMedia('(prefers-reduced-motion: reduce)').matches);
   h.style.setProperty('--zoom', u.scale || 1);
+  h.classList.toggle('big', (u.scale || 1) >= 1.15);
   const meta = document.querySelector('meta[name=theme-color]');
   if (meta && !document.body.classList.contains('dark')) meta.content = night ? '#080808' : '#ecebe7';
 }

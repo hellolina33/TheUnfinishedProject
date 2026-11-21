@@ -51,12 +51,13 @@ export async function renderList(root, section) {
 }
 
 const MOMENTS = ['Morning & evening', 'Mosque & prayer', 'After prayer', 'Sleep', 'Food & home', 'Travel', 'Anxiety', 'Illness & grief', 'Forgiveness', 'Gratitude', 'Decision'];
-export async function renderChapter(root, id) {
+export async function renderChapter(root, id, one) {
   const D = await data('duas.json'), c = D.find(x => x.id === +id);
   if (!c) { location.hash = '#/duas'; return; }
   const counts = {};
+  const focusI = one ? Math.min(c.d.length, Math.max(1, +one)) - 1 : -1;
   root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b class="clip">${esc(title(c))}</b><button class="chip" id="dtl" aria-pressed="${S.d.tl}">${t('Transliteration')}</button></header>
-    <div class="dlist ${S.d.tl ? '' : 'notl'}" id="dd">${c.d.map((x, i) => `<article class="dua" data-i="${i}">
+    <div class="dlist ${S.d.tl ? '' : 'notl'}" id="dd">${c.d.map((x, i) => `<article class="dua" data-i="${i}" ${focusI >= 0 && i !== focusI ? 'hidden' : ''}>
       <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen to this dua')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button></span></div>
       <p class="ar" lang="ar" dir="rtl">${esc(String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'))}</p>
       ${!ar() && ((fr() && x.tf) || x.tl) ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
@@ -64,10 +65,12 @@ export async function renderChapter(root, id) {
       <div class="df"><span class="dsrc"><span class="badge mono">${x.ref ? esc(t('Reported by {r}', { r: x.ref })) : esc(t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${gradeBadge(x)}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
       <div class="dx"><button class="linkbtn small" data-mine="${i}">+ ${t('Add to My duas')}</button><button class="linkbtn small" data-share="${i}">${t('Share')}</button><button class="linkbtn small" data-img="${i}">${t('Share as image')}</button><a class="linkbtn small" href="${reportUrl('Dua ' + c.id + '.' + (i + 1))}" target="_blank" rel="noopener">${t('Report an error')}</a></div>
     </article>`).join('')}
+    ${focusI >= 0 && c.d.length > 1 ? `<button class="btn line sm" id="dall">${t('See the whole chapter ({n} duas)', { n: c.d.length })}</button>` : ''}
     <p class="endsur">${t('May Allah accept your duas.')}</p>
     ${D.findIndex(z => z.id === c.id) < D.length - 1 ? `<a class="btn line sm" href="#/duas/${D[D.findIndex(z => z.id === c.id) + 1].id}">${t('Next chapter')}: ${esc(title(D[D.findIndex(z => z.id === c.id) + 1]))} ›</a>` : ''}
     <p class="muted small pad">${t("Text from Hisnul Muslim (the Fortress of the Muslim) by Sa'id al-Qahtani, the most widely used collection of duas. Sources marked “being reviewed” are waiting for a check by a person of knowledge.")}</p></div>`;
   const dd = $('#dd', root);
+  if ($('#dall', root)) $('#dall', root).onclick = e => { dd.querySelectorAll('article[hidden]').forEach(x => { x.hidden = false; }); e.target.remove(); };
   $('#dtl', root).onclick = e => { S.d.tl = !S.d.tl; save(); dd.classList.toggle('notl', !S.d.tl); e.target.setAttribute('aria-pressed', S.d.tl); };
   dd.onclick = async e => {
     const gb = e.target.closest('[data-grade]'); if (gb) { const g = GRADES[gb.dataset.grade]; toast(g ? t(g[1]) + (gb.dataset.grade.startsWith('sahih') ? ' · ' + t('Sahih means authentic.') : '') : t('No source matched yet. Check it with a person of knowledge.')); return; }
