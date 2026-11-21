@@ -98,13 +98,14 @@ export async function exportNotes(kind) {
 let listState = { tab: 'surahs', q: '' };
 export async function renderList(root, section) {
   if (section === 'favorites') { listState.tab = 'favs'; listState.q = ''; }
+  if (section === 'hizb') { listState.tab = 'hizb'; listState.q = ''; listState.y = 0; }
   const meta = await data('meta.json');
   const starts = [0]; meta.s.forEach(m => starts.push(starts[starts.length - 1] + m[3]));
   const row = (n) => { const m = meta.s[n - 1]; return `<a class="srow ${S.q.seen && S.q.seen[n] ? 'seen' : ''}" href="#/quran/${n}" aria-label="${esc(t('Surah {n}', { n }) + ', ' + surahName(meta, n) + ', ' + meaning(meta, n) + ', ' + t('{n} verses', { n: m[3] }))}"><span class="num mono">${n}</span><span class="st"><b>${esc(surahName(meta, n))}</b><span class="muted small">${esc(meaning(meta, n))} · ${t('{n} verses', { n: m[3] })} · ${t(m[4] ? 'Medinan' : 'Meccan')}</span></span>${lang() === 'ar' ? '' : `<span class="ar" lang="ar">${m[2]}</span>`}</a>`; };
   root.innerHTML = `<header class="vh"><div><h1>${t('Quran')}</h1></div></header>
     <nav class="tools tools2" aria-label="${t('Tools')}"><a href="#/khatm">${icon.book}<span>${t('Finish the Quran')}<small>${t('A plan, pages per day')}</small></span></a><a href="#/hifz">${icon.repeat}<span>${t('Memorise')}<small>${t('Short portions, spaced reviews')}</small></span></a><a href="#/lessons">${icon.letter}<span>${t('Arabic')}<small>${t('5 Quran words a day')}</small></span></a><a href="#/ask">${icon.search}<span>${t('Find')}<small>${t('A verse or a dua by topic')}</small></span></a></nav>
     <div class="searchf">${icon.search}<input id="qs" class="inp" type="search" placeholder="${t('Surah, Ayat al-Kursi, 2:255 or a word')}" value="${esc(listState.q)}" autocomplete="off" aria-label="${t('Search the Quran')}"></div>
-    <div class="chips" role="tablist">${[['surahs', 'Surahs'], ['juz', 'Juz'], ['favs', 'Favourites'], ['notes', 'Notes']].map(([k, l]) => `<button class="chip" role="tab" data-tab="${k}" aria-selected="${listState.tab === k}">${t(l)}</button>`).join('')}</div>
+    <div class="chips" role="tablist">${[['surahs', 'Surahs'], ['juz', 'Juz'], ['hizb', 'Hizb'], ['favs', 'Favourites'], ['notes', 'Notes']].map(([k, l]) => `<button class="chip" role="tab" data-tab="${k}" aria-selected="${listState.tab === k}">${t(l)}</button>`).join('')}</div>
     <div id="ql"></div>`;
   const out = $('#ql', root);
   const draw = async () => {
@@ -131,7 +132,19 @@ export async function renderList(root, section) {
       out.innerHTML = html || `<p class="muted pad">${t('Nothing found. Try a surah name, a verse like 2:255, or a word.')}</p>`;
       return;
     }
-    if (listState.tab === 'juz') { out.innerHTML = meta.juz.map((j, i) => `<a class="srow" href="#/quran/${j[0]}/${j[1]}"><span class="num mono">${i + 1}</span><span class="st"><b>${t('Juz {n}', { n: i + 1 })}</b><span class="muted small">${t('Starts at {s}', { s: esc(meta.s[j[0] - 1][0]) + ' ' + j[0] + ':' + j[1] })}</span></span>${icon.chev}</a>`).join(''); return; }
+    if (listState.tab === 'juz' || listState.tab === 'hizb') {
+      const isHizb = listState.tab === 'hizb';
+      const parts = isHizb ? meta.hizb : meta.juz;
+      const intro = isHizb ? `<p class="muted small pad">${t('Each hizb is half a juz.')}</p>` : '';
+      out.innerHTML = intro + parts.map(([surah, verse], i) => {
+        const n = i + 1;
+        const start = `${surahName(meta, surah)} ${surah}:${verse}`;
+        const ref = t('Starts at {s}', { s: `<bdi>${esc(start)}</bdi>` });
+        const detail = isHizb ? `${t('Juz {n}', { n: Math.ceil(n / 2) })} · ${ref}` : ref;
+        return `<a class="srow" href="#/quran/${surah}/${verse}"><span class="num mono" aria-hidden="true">${n}</span><span class="st"><b>${t(isHizb ? 'Hizb {n}' : 'Juz {n}', { n })}</b><span class="muted small">${detail}</span></span>${icon.chev}</a>`;
+      }).join('');
+      return;
+    }
     if (listState.tab === 'favs') { out.innerHTML = S.q.favs.length ? S.q.favs.map(k => { const [s, v] = k.split(':').map(Number); return `<a class="srow" href="#/quran/${s}/${v}"><span class="num mono">${icon.star}</span><span class="st"><b>${esc(meta.s[s - 1][0])} ${s}:${v}</b></span>${icon.chev}</a>`; }).join('') : `<p class="muted pad">${t('No favourites yet. Open a verse menu and tap Favourite.')}</p>`; return; }
     if (listState.tab === 'notes') {
       const ns = Object.entries(S.q.notes || {}).sort((a, b) => b[1].at - a[1].at);

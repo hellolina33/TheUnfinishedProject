@@ -90,7 +90,7 @@ async function route() {
     else if (name === 'favorites') c = await renderFavorites(view, a);
     else if (name === 'qibla') c = renderQibla(view);
     else if (name === 'flight') c = renderFlight(view);
-    else if (name === 'quran') c = a && a !== 'favorites' ? await renderReader(view, a, b, c3) : await quranList(view, a);
+    else if (name === 'quran') c = a && a !== 'favorites' && a !== 'hizb' ? await renderReader(view, a, b, c3) : await quranList(view, a);
     else if (name === 'calendar') c = renderCalendar(view);
     else if (name === 'journey') c = await renderJourney(view, a, b);
     else if (name === 'learn') c = a ? renderSteps(view, a, b) : renderLearnHub(view);
