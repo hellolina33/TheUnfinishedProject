@@ -57,9 +57,9 @@ function resumeCard() {
   const j = S.journeyRecent;
   if (j?.id && !SENSITIVE.includes(j.id) && !(S.journeyDone || {})[j.id]) c.push({ at: j.at || 0, html: feature(`journey/${j.id}`, copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري'), icon.pathway, 'learn', j.title?.[lang()] || '') });
   const g = S.guideRecent;
-  if (g?.href) c.push({ at: g.at || 0, html: feature(g.href, copy('Reprendre le guide', 'Resume the guide', 'متابعة الدليل'), icon.prayerMat, 'prayer', g.title?.[lang()] || '') });
+  if (g?.href) c.push({ at: g.at || 0, guide: true, html: feature(g.href, copy('Reprendre le guide', 'Resume the guide', 'متابعة الدليل'), icon.prayerMat, 'prayer', g.title?.[lang()] || '') });
   c.sort((a, b) => b.at - a.at);
-  return c[0]?.html || '';
+  return c[0];
 }
 
 const homeCleanup = new WeakMap();
@@ -72,7 +72,7 @@ export function renderHome(root) {
   const learn = feature('journey/prayer', copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة'), icon.prayerMat, 'prayer', copy('Gestes et paroles, rakʿa par rakʿa', 'Postures and words, unit by unit', 'الهيئات والأذكار ركعة ركعة'));
   const resume = resumeCard();
   const read = feature('quran/1', t('Read Al-Fatiha'), icon.quran, 'quran');
-  const quick = early ? [learn, resume || read] : [resume || learn, resume ? learn : read];
+  const quick = !resume ? [learn, read] : resume.guide ? [resume.html, read] : early ? [learn, resume.html] : [resume.html, learn];
   const np = S.loc ? nextPrayer() : null;
   const tone = np && ['maghrib','isha'].includes(np.k) ? 'dusk' : '';
   const pinned = pins();
