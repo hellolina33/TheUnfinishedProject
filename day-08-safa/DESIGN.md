@@ -7,3 +7,7 @@ Safa accompagne la prière, la lecture du Coran et l’apprentissage sur télép
 - Bandeau illustré sur l’accueil. Les illustrations de prière et de lecture servent de repères sur leurs deux cartes. Les autres destinations sont présentées en lignes, avec des séparateurs.
 - Le mouvement signale le changement de page, la sélection et l’ouverture d’un panneau. Entrées de 180 à 420 ms, avec un faible déplacement. Aucune boucle d’animation décorative. Le réglage Safa et la préférence système de mouvement réduit désactivent ces effets.
 - Les illustrations de gestes et les textes religieux restent ceux des guides existants. Les illustrations décoratives ne décrivent aucun geste et sont ignorées par les lecteurs d’écran.
+
+## Apprendre
+
+L’accueil des parcours ouvre sur une cour illustrée, puis des cartes par thème. Chaque étape associe une lecture sourcée à une action et à un support existant. Les coches enregistrent les étapes terminées sur l’appareil. Les questions de révision sont facultatives et sans points. Dans la FAQ, les visuels identifient les thèmes. Les réponses et leurs sources restent consultables indépendamment du parcours.
