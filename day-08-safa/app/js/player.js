@@ -83,6 +83,7 @@ audio.addEventListener('loadedmetadata', () => {
 audio.addEventListener('ended', () => {
   if (P.word) { P.word = false; emit(); return; }
   if (P.v == null) return;
+  P.ends = (P.ends || 0) + 1;
   if (P.mode === 'verse') return playVerse(P.v);
   if (P.mode === 'range') return playVerse(P.v < P.b ? P.v + 1 : P.a);
   if (P.v < P.n) return playVerse(P.v + 1);

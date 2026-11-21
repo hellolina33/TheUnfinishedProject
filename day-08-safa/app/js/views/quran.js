@@ -47,7 +47,7 @@ export async function renderList(root) {
   const starts = [0]; meta.s.forEach(m => starts.push(starts[starts.length - 1] + m[3]));
   const row = (n) => { const m = meta.s[n - 1]; return `<a class="srow ${S.q.seen && S.q.seen[n] ? 'seen' : ''}" href="#/quran/${n}" aria-label="${esc(t('Surah {n}', { n }) + ', ' + surahName(meta, n) + ', ' + meaning(meta, n) + ', ' + t('{n} verses', { n: m[3] }))}"><span class="num mono">${n}</span><span class="st"><b>${esc(surahName(meta, n))}</b><span class="muted small">${esc(meaning(meta, n))} · ${t('{n} verses', { n: m[3] })} · ${t(m[4] ? 'Medinan' : 'Meccan')}</span></span>${lang() === 'ar' ? '' : `<span class="ar" lang="ar">${m[2]}</span>`}</a>`; };
   root.innerHTML = `<header class="vh"><div><h1>${t('Quran')}</h1></div></header>
-    <nav class="tools" aria-label="${t('Tools')}"><a href="#/khatm">${icon.book}<span>${t('Finish the Quran')}</span></a><a href="#/hifz">${icon.repeat}<span>${t('Memorise')}</span></a><a href="#/lessons">${icon.letter}<span>${t('Arabic')}</span></a><a href="#/ask">${icon.search}<span>${t('Find')}</span></a></nav>
+    <nav class="tools tools2" aria-label="${t('Tools')}"><a href="#/khatm">${icon.book}<span>${t('Finish the Quran')}<small>${t('A plan, pages per day')}</small></span></a><a href="#/hifz">${icon.repeat}<span>${t('Memorise')}<small>${t('Short portions, spaced reviews')}</small></span></a><a href="#/lessons">${icon.letter}<span>${t('Arabic')}<small>${t('5 Quran words a day')}</small></span></a><a href="#/ask">${icon.search}<span>${t('Find')}<small>${t('A verse or a dua by topic')}</small></span></a></nav>
     <div class="searchf">${icon.search}<input id="qs" class="inp" type="search" placeholder="${t('Surah, Ayat al-Kursi, 2:255 or a word')}" value="${esc(listState.q)}" autocomplete="off" aria-label="${t('Search the Quran')}"></div>
     <div class="chips" role="tablist">${[['surahs', 'Surahs'], ['juz', 'Juz'], ['favs', 'Favourites']].map(([k, l]) => `<button class="chip" role="tab" data-tab="${k}" aria-selected="${listState.tab === k}">${t(l)}</button>`).join('')}</div>
     <div id="ql"></div>`;
@@ -117,12 +117,12 @@ export async function renderReader(root, sN, vN, extra) {
       <div class="vact"><button class="chip ctx" data-ctx="${v}">${icon.book}${t('Context')}</button></div></article>`;
   };
   root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)} <span class="arn" lang="ar">${m[2]}</span></b><span class="mono">${esc(meaning(meta, s))} · ${t('{n} verses', { n })}</span></div>
-      <button class="chip" id="twbw" aria-pressed="${S.q.wbw}">${t('Word by word')}</button><button class="ib" id="rset" aria-label="${t('Reader settings')}">${icon.gear}</button></header>
+      <button class="aa" id="rset" aria-label="${t('Display: word by word, translation, size, reciter')}">Aa</button></header>
     <div class="${cls()}" id="rd">${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · ${esc(trName())}</p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${fat.a.map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
       <p class="endsur">${t('End of the surah. May Allah make it light for you and accept it.')}</p>
       <nav class="rnav">${s > 1 ? `<a class="btn line sm" href="#/quran/${s - 1}">‹ ${esc(surahName(meta, s - 1))}</a>` : '<span></span>'}${s < 114 ? `<a class="btn line sm" href="#/quran/${s + 1}">${esc(surahName(meta, s + 1))} ›</a>` : ''}</nav></div>
     <div class="player" id="pl">
-      <div class="prow"><span class="mono ptime" id="pt0">0:00</span><input type="range" id="pseek" min="0" max="1000" value="0" step="1" aria-label="${t('Position in the surah')}"><span class="mono ptime" id="pt1">${PL.fmt(PL.totalMs())}</span></div>
+      <div class="prow"><span class="mono ptime" id="pt0">0:00</span><input type="range" id="pseek" min="0" max="1000" value="0" step="1" aria-label="${t('Position in the surah')}"><span class="mono ptime" id="pt1">${PL.fmt(PL.totalMs())}</span></div><p class="pvr mono" id="pvr" aria-live="off"></p>
       <div class="prow"><button class="ib" id="pprev" aria-label="${t('Previous verse')}">${icon.prev}</button><button class="pbtn" id="pp" aria-label="${t('Play')}">${icon.play}</button><button class="ib" id="pnext" aria-label="${t('Next verse')}">${icon.next}</button>
         <span class="plabel mono" id="plab"></span><button class="chip" id="psp" aria-label="${t('Playback speed')}">${t('Speed')} ${S.q.speed}×</button><button class="chip" id="phd" aria-label="${t('Hide words to test your memory')}"></button></div>
       <div class="prow p3"><button class="linkbtn small" id="prc" aria-label="${t('Change reciter')}">${t('Reciter')} · <b id="prcn">${esc(PL.RECITERS[S.q.reciter])}</b> ▾</button><button class="chip" id="psl" aria-label="${t('Sleep timer')}">${t('Timer')}</button></div>
@@ -147,6 +147,7 @@ export async function renderReader(root, sN, vN, extra) {
     const tot = PL.totalMs(), pos = PL.posMs();
     if (!dragging) { seekEl.value = tot ? Math.round(pos / tot * 1000) : 0; seekEl.setAttribute('aria-valuetext', `${PL.fmt(pos)} / ${PL.fmt(tot)}`); }
     $('#pt0', pl).textContent = PL.fmt(pos); $('#pt1', pl).textContent = PL.fmt(tot);
+    { const on = PL.P.s === s && PL.P.v != null; const vr = on ? Math.max(0, PL.startOf(PL.P.v + 1) - pos) : 0; $('#pvr', pl).textContent = on && PL.P.v > 0 ? t('Verse {v} · {r} left in this verse · {a} left in the surah', { v: PL.P.v, r: PL.fmt(Math.min(vr, PL.startOf(PL.P.v + 1) - PL.startOf(PL.P.v))), a: PL.fmt(tot - pos) }) : ''; }
     if (PL.isPlaying()) raf = requestAnimationFrame(frame);
   };
   const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
@@ -162,7 +163,7 @@ export async function renderReader(root, sN, vN, extra) {
   };
   const off = PL.onChange(() => drawPlayer());
   drawPlayer();
-  const refresh = () => { rd.className = cls(); $('#twbw', root).setAttribute('aria-pressed', S.q.wbw); $$('.w.rev', rd).forEach(w => w.classList.remove('rev')); drawPlayer(); };
+  const refresh = () => { rd.className = cls(); $$('.w.rev', rd).forEach(w => w.classList.remove('rev')); drawPlayer(); };
 
   seekEl.addEventListener('input', () => { dragging = true; $('#pt0', pl).textContent = PL.fmt(seekEl.value / 1000 * PL.totalMs()); });
   seekEl.addEventListener('change', () => { dragging = false; PL.seek(seekEl.value / 1000 * PL.totalMs()); });
@@ -175,7 +176,7 @@ export async function renderReader(root, sN, vN, extra) {
     const draw = async () => {
       const box = $('#tf', el); box.innerHTML = `<p class="ar" lang="ar" dir="rtl">${V[v - 1].a.join(' ')}</p><p class="muted">${t('Loading…')}</p>`;
       const parts = await Promise.all(sel.map(async k => { try { return [k, await tafsirText(k, s, v)]; } catch (e) { return [k, null]; } }));
-      box.innerHTML = `<p class="ar" lang="ar" dir="rtl">${V[v - 1].a.join(' ')}</p>${lang() !== 'ar' ? `<p class="trq">« ${esc(pk ? pk[v - 1] : V[v - 1].t)} »</p>` : ''}` + parts.map(([k, x]) => `<section class="tfs"><span class="mono">${esc(t(TAFSIRS[k][0]))}${TAFSIRS[k][2] !== lang() ? ` · <em class="lng">${t({ en: 'in English', ar: 'in Arabic', fr: 'in French' }[TAFSIRS[k][2]])}</em>` : ''}</span>${TDESC[k] ? `<p class="tdesc">${t(TDESC[k])}</p>` : ''}${x == null ? `<p class="muted">${t('Not saved on this device yet. Connect once to keep it offline.')}</p>` : x ? `<div class="tfx ${x.length > 420 ? 'clamp' : ''}"><p lang="${TAFSIRS[k][2]}" ${TAFSIRS[k][2] === 'ar' ? 'dir="rtl"' : ''}>${esc(x).replace(/\n+/g, '</p><p>')}</p></div>${x.length > 420 ? `<button class="linkbtn small" data-more>${t('Read more')}</button>` : ''}` : `<p class="muted">${t('No text from this source for this verse.')}</p>`}</section>`).join('');
+      box.innerHTML = `<div class="qblk"><span class="mono">${t('Quran')} · ${s}:${v}</span><p class="ar" lang="ar" dir="rtl">${V[v - 1].a.join(' ')}</p>${lang() !== 'ar' ? `<p class="trq">« ${esc(pk ? pk[v - 1] : V[v - 1].t)} »</p>` : ''}</div><p class="legend2 small">${t('Solid line: the Quran. Dotted line: explanation by scholars.')}</p>` + parts.map(([k, x]) => `<section class="tfs"><span class="mono">${esc(t(TAFSIRS[k][0]))}${TAFSIRS[k][2] !== lang() ? ` · <em class="lng">${t({ en: 'in English', ar: 'in Arabic', fr: 'in French' }[TAFSIRS[k][2]])}</em>` : ''}</span>${TDESC[k] ? `<p class="tdesc">${t(TDESC[k])}</p>` : ''}${x == null ? `<p class="muted">${t('Not saved on this device yet. Connect once to keep it offline.')}</p>` : x ? `<div class="tfx ${x.length > 420 ? 'clamp' : ''}"><p lang="${TAFSIRS[k][2]}" ${TAFSIRS[k][2] === 'ar' ? 'dir="rtl"' : ''}>${esc(x).replace(/\n+/g, '</p><p>')}</p></div>${x.length > 420 ? `<button class="linkbtn small" data-more>${t('Read more')}</button>` : ''}` : `<p class="muted">${t('No text from this source for this verse.')}</p>`}</section>`).join('');
     };
     el.onclick = e => {
       const nv = e.target.closest('[data-nextv]'); if (nv) { closeSheet(); setLast(+nv.dataset.nextv); tafsir(+nv.dataset.nextv); return; }
@@ -283,7 +284,6 @@ export async function renderReader(root, sN, vN, extra) {
       el.onclick = e => { const b = e.target.closest('[data-sl]'); if (!b) return; const k = b.dataset.sl; PL.setSleep(k === 'end' ? 'end' : +k); closeSheet(); drawPlayer(); if (k !== '0') toast(k === 'end' ? t('The recitation will stop at the end of the surah.') : t('The recitation will stop in {m} minutes.', { m: k })); };
     }
   };
-  $('#twbw', root).onclick = () => { S.q.wbw = !S.q.wbw; if (S.q.wbw) S.q.flow = false; save(); refresh(); };
   $('#rset', root).onclick = settings;
 
   let st; const onScroll = () => { clearTimeout(st); st = setTimeout(() => {
@@ -297,9 +297,37 @@ export async function renderReader(root, sN, vN, extra) {
   if (startV > 1) requestAnimationFrame(() => { const el = $('#v' + startV, rd); if (el) { el.scrollIntoView({ block: 'start' }); window.scrollBy(0, -70); } }); else window.scrollTo(0, 0);
   // Memorisation sessions open the reader with a loop: #/quran/s/v/loop-a-b
   const lm = (extra || '').match(/^loop-(\d+)-(\d+)$/); if (lm) { PL.loopRange(+lm[1], +lm[2]); }
+  // Guided memorisation: listen ×3, read ×3, recite from memory, verse by verse. #/quran/s/a/coach-a-b
+  const cm = (extra || '').match(/^coach-(\d+)-(\d+)$/); let coachOff = null;
+  if (cm) {
+    const A = +cm[1], B = Math.min(n, +cm[2]), hide0 = S.q.hide; let cv = A, ph = 0, reads = 0, base = 0;
+    const box = document.createElement('section'); box.className = 'coach'; box.setAttribute('aria-live', 'polite'); rd.prepend(box);
+    const go = v => { const el = $('#v' + v, rd); if (el) { el.scrollIntoView({ block: 'center' }); } };
+    const cdraw = () => {
+      const steps = [t('Listen ×3'), t('Read ×3'), t('Recite from memory')];
+      box.innerHTML = `<div class="ch"><span class="mono">${t('Guided memorisation')} · ${s}:${cv} (${cv - A + 1}/${B - A + 1})</span><a class="linkbtn small" href="#/hifz">${t('Stop')}</a></div>
+        <ol class="csteps">${steps.map((x, i) => `<li class="${i < ph ? 'ok' : i === ph ? 'on' : ''}">${x}</li>`).join('')}</ol>
+        ${ph === 0 ? `<button class="btn" id="c0">${PL.P.mode === 'verse' && PL.P.v === cv && PL.isPlaying() ? t('Listening… {n}/3', { n: Math.min(3, (PL.P.ends || 0) - base + 1) }) : t('Listen to verse {v} three times', { v: cv })}</button><button class="linkbtn small" id="cskip">${t('Skip listening')}</button>` : ''}
+        ${ph === 1 ? `<p class="small">${t('Read it aloud, looking at the text.')}</p><button class="btn" id="c1">${t('I read it · {n}/3', { n: reads })}</button>` : ''}
+        ${ph === 2 ? `<p class="small">${t('The words are hidden. Recite, then tap a word to check it.')}</p><div class="row2"><button class="btn" id="c2">${cv < B ? t('I know it · next verse') : t('I know it · finish')}</button><button class="btn line" id="c3">${t('Again')}</button></div>` : ''}
+        ${ph === 3 ? `<p>${t('Portion done. May Allah make it firm in your heart.')}</p><a class="btn" href="#/hifz">${t('Back to memorisation')}</a>` : ''}`;
+    };
+    const setPh = x => { ph = x; if (x === 2) { S.q.hide = 3; } else S.q.hide = 0; refresh(); go(cv); cdraw(); };
+    box.addEventListener('click', e => {
+      const id = (e.target.closest('button') || {}).id;
+      if (id === 'c0') { base = PL.P.ends || 0; PL.loopVerse(cv); cdraw(); }
+      if (id === 'cskip') { PL.stop(); setPh(1); }
+      if (id === 'c1') { reads++; if (reads >= 3) setPh(2); else cdraw(); }
+      if (id === 'c2') { reads = 0; if (cv < B) { cv++; setPh(0); } else { S.q.hide = hide0; save(); refresh(); ph = 3; cdraw(); } }
+      if (id === 'c3') { reads = 0; setPh(0); }
+    });
+    const unsub = PL.onChange(() => { if (ph === 0 && PL.P.mode === 'verse' && PL.P.v === cv) { if ((PL.P.ends || 0) - base >= 3) { PL.stop(); setPh(1); } else cdraw(); } });
+    coachOff = () => { unsub(); S.q.hide = hide0; save(); };
+    setPh(0);
+  }
   if (PL.P.s === s && PL.P.v != null) kick();
   return () => {
-    off(); cancelAnimationFrame(raf); window.removeEventListener('scroll', onScroll); window.removeEventListener('touchmove', onUser); window.removeEventListener('wheel', onUser); closeSheet();
+    if (coachOff) { coachOff(); } off(); cancelAnimationFrame(raf); window.removeEventListener('scroll', onScroll); window.removeEventListener('touchmove', onUser); window.removeEventListener('wheel', onUser); closeSheet();
     // Keep reciting when leaving the screen only if the user goes to another tab; the mini control lives in the tab bar.
   };
 }

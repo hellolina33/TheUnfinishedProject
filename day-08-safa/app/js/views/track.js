@@ -3,6 +3,7 @@ import { METHODS, NAMES, timesFor, fmtTime } from '../prayer.js';
 import { $, $$, esc, icon, pad, toast, download, cityField, LOGO, countryName, reportUrl, sheet, closeSheet } from '../ui.js';
 import { setLocation, locateOnce } from './onboarding.js';
 import { RECITERS } from './quran.js';
+import * as PL from '../player.js';
 import { t, L, lang, applyLang } from '../i18n.js';
 import * as SY from '../sync.js';
 import { applyUi } from '../a11y.js';
@@ -69,7 +70,9 @@ export function renderTrack(root) {
 }
 
 export function renderSettings(root) {
+  let meta = null;
   const draw = async () => {
+    if (!meta) { try { meta = await data('meta.json'); } catch (e) { /* offline */ } }
     let est = ''; try { const e = await navigator.storage.estimate(); est = t('{n} MB used on this device', { n: (e.usage / 1048576).toLocaleString(L(), { maximumFractionDigits: 1 }) }); } catch (e) { /* not supported */ }
     const dl = Object.keys(S.q.dl || {});
     root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
@@ -88,6 +91,10 @@ export function renderSettings(root) {
         <p class="muted small">${t('Hanafi: Asr starts later. Not sure? Keep Standard, or ask your mosque.')}</p>
         <label class="lbl">${t('Match your mosque · minutes')}</label>
         <div class="offs">${P5.map(p => `<div class="off"><span>${NAMES[p]}</span><button data-off="${p}" data-d="-1" aria-label="${t('{p} minus one minute', { p: NAMES[p] })}">−</button><b class="mono">${S.offsets[p] > 0 ? '+' : ''}${S.offsets[p]}</b><button data-off="${p}" data-d="1" aria-label="${t('{p} plus one minute', { p: NAMES[p] })}">+</button><span class="mono muted">${fmtTime(timesFor(dayKey())[p])}</span></div>`).join('')}</div>
+        <details class="mosq"><summary class="linkbtn small">${t('Copy your mosque’s times instead')}</summary>
+          <p class="muted small">${t('Type today’s times from your mosque. safa. keeps the difference and applies it every day.')}</p>
+          <div class="grid2">${P5.map(p => `<label class="lbl" for="mq-${p}">${NAMES[p]}</label><input id="mq-${p}" data-mq="${p}" class="inp" type="time" value="${new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(timesFor(dayKey())[p] - (S.offsets[p] || 0) * 60000))}">`).join('')}</div>
+          <button class="btn line sm" id="smq">${t('Use these times')}</button></details>
         <label class="lbl" for="shij">${t('Hijri date adjustment')}</label>
         <select id="shij" class="inp">${[-2, -1, 0, 1, 2].map(n => `<option value="${n}" ${S.hijriAdj === n ? 'selected' : ''}>${t(Math.abs(n) === 1 ? '{n} day' : '{n} days', { n: (n > 0 ? '+' : '') + n })}</option>`).join('')}</select>
         <label class="tog"><span>${t('24-hour clock')}</span><input type="checkbox" id="s24" ${S.h24 ? 'checked' : ''}></label>
@@ -95,7 +102,10 @@ export function renderSettings(root) {
         <h3 id="st4">${t('Offline')}</h3>
         <p class="muted small">${esc(est)}</p>
         <button class="btn line sm" id="sall">${t('Save the whole Quran text for offline')} · ≈ 25 MB</button>
-        <p class="muted small">${t('Saved audio: {x}', { x: dl.length ? dl.map(k => { const [r, s] = k.split('|'); return t('surah {s} · {r}', { s, r: esc(RECITERS[r] || r) }); }).join(', ') : t('none') })}</p>
+        <label class="lbl">${t('Saved audio')}</label>
+        ${dl.length ? `<ul class="evl adl">${dl.map(k => { const [r, s] = k.split('|'); return `<li><span>${t('surah {s} · {r}', { s, r: esc(RECITERS[r] || r) })}</span><button class="linkbtn small" data-adel="${esc(k)}">${t('Remove')}</button></li>`; }).join('')}</ul>` : `<p class="muted small">${t('None yet. Choose a surah to keep for listening offline.')}</p>`}
+        <div class="row2"><select id="sasel" class="inp" aria-label="${t('Surah to save')}">${meta ? meta.s.map((m, i) => `<option value="${i + 1}">${i + 1}. ${esc(lang() === 'ar' ? m[2] : m[0])}</option>`).join('') : ''}</select><button class="btn line sm" id="sasave">${t('Save audio')}</button></div>
+        <p class="muted small">${t('With your current reciter: {r}.', { r: esc(RECITERS[S.q.reciter] || '') })}</p>
         ${dl.length ? `<button class="btn line sm" id="sclr">${t('Delete saved audio')}</button>` : ''}
         <h3 id="st5">${t('Display &amp; accessibility')}</h3>
         <label class="lbl">${t('Theme')}</label><div class="seg lang">${[['auto', t('Automatic')], ['light', t('Light')], ['dark', t('Dark')]].map(([k, l]) => `<button data-theme="${k}" aria-pressed="${S.ui.theme === k}">${l}</button>`).join('')}</div>
@@ -109,6 +119,11 @@ export function renderSettings(root) {
         <h3 id="st7">${t('Sync between devices')}</h3>
         <p class="muted small">${t('No account and no server. Create an encrypted file protected by a passphrase, send it to your other device any way you like, and merge it there. Nobody can read it without the passphrase, not even us.')}</p>
         <p class="muted small warn">${t('Write your passphrase down somewhere safe. If you forget it, nobody can open the file, not even safa.')}</p>
+        <details class="howto"><summary class="linkbtn small">${t('How it works, step by step')}</summary><ol class="small">
+          <li>${t('On your old phone: type a passphrase below, then tap “Create sync file”.')}</li>
+          <li>${t('Send the file to yourself: AirDrop, email, WhatsApp to yourself, a USB cable.')}</li>
+          <li>${t('On your new phone: open safa., go to Settings, type the same passphrase.')}</li>
+          <li>${t('Tap “Merge a sync file” and pick the file. Your ticks, duas and plans are now on both phones.')}</li></ol></details>
         <input id="spass" class="inp" type="password" minlength="8" autocomplete="new-password" placeholder="${t('Passphrase (8 characters or more)')}" aria-label="${t('Passphrase')}">
         <div class="grid2"><button class="btn line sm" id="ssync">${t('Create sync file')}</button><label class="btn line sm">${t('Merge a sync file')}<input type="file" id="smerge" accept=".safa,application/json" hidden></label></div>
         <h3 id="st8">${t('Backup')}</h3>
@@ -141,6 +156,13 @@ export function renderSettings(root) {
       b.disabled = true; const txt = await SY.seal(pass); b.disabled = false; download(`safa-backup-${dayKey()}.safa`, txt, 'application/octet-stream'); toast(t('Encrypted backup saved. Keep your passphrase.')); return;
     }
     if (b.id === 'sexp2') { download(`safa-backup-${dayKey()}.json`, JSON.stringify({ app: 'safa.', exported: new Date().toISOString(), state: S }, null, 2)); return; }
+    if (b.id === 'smq') {
+      const T = timesFor(dayKey()); let n = 0;
+      P5.forEach(p => { const v = ($('#mq-' + p, root) || {}).value; if (!v) return; const [h, m] = v.split(':').map(Number); const base = new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(T[p] - (S.offsets[p] || 0) * 60000)).split(':').map(Number); let d = h * 60 + m - (base[0] * 60 + base[1]); if (d > 720) d -= 1440; if (d < -720) d += 1440; S.offsets[p] = Math.max(-90, Math.min(90, d)); n++; });
+      save(); toast(t('Your mosque’s times are applied.')); const y = window.scrollY; await draw(); window.scrollTo(0, y); return;
+    }
+    const ad = e.target.closest('[data-adel]'); if (ad) { const k = ad.dataset.adel, [r, ss] = k.split('|'), nv = S.q.dl[k]; try { const c = await caches.open('safa-audio'); for (let v = 1; v <= nv; v++) await c.delete(PL.verseUrl(+ss, v, r)); } catch (err) { /* ignore */ } delete S.q.dl[k]; save(); toast(t('Removed')); draw(); return; }
+    if (b.id === 'sasave') { S.q.dl = S.q.dl || {}; const ss = +$('#sasel', root).value, nv = meta.s[ss - 1][3], k = S.q.reciter + '|' + ss; b.disabled = true; try { await PL.saveAudio(Array.from({ length: nv }, (_, i) => [ss, i + 1]), (i, tot) => { b.textContent = t('Saving… {a} / {b}', { a: i, b: tot }); }); S.q.dl[k] = nv; save(); toast(t('Audio saved for offline ✓')); draw(); } catch (err) { b.disabled = false; b.textContent = t('Could not save. Check your connection and retry.'); } return; }
     if (b.id === 'sclr') { try { await caches.delete('safa-audio'); } catch (err) { /* ignore */ } S.q.dl = {}; save(); toast(t('Saved audio deleted')); draw(); return; }
     if (b.id === 'srst') { if (Date.now() - armed < 4000) { resetState(); try { await caches.delete('safa-audio'); } catch (err) { /* ignore */ } location.hash = '#/today'; location.reload(); } else { armed = Date.now(); b.textContent = t('Tap again to erase everything. Export a backup first if you want to keep it.'); } return; }
     if (b.id === 'sall') {

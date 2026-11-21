@@ -58,7 +58,7 @@ export async function renderHifz(root) {
     const nextA = last && last.b < meta.s[last.s - 1][3] ? last.b + 1 : 1;
     const nextB = Math.min(meta.s[nextS - 1][3], nextA + H.perDay - 1);
     const row = x => `<li><span><b>${esc(surahName(meta, x.s))} ${rng(x.s, x.a, x.b)}</b><span class="muted small">${t('Level {n}', { n: x.box + 1 })} · ${x.d <= today ? t('due today') : t('next on {d}', { d: civil(x.d, { day: 'numeric', month: 'short' }) })}</span></span>
-      <span class="hact"><a class="btn line sm" href="#/quran/${x.s}/${x.a}/loop-${x.a}-${x.b}">${t('Practise')}</a>${x.d <= today ? `<button class="btn sm line" data-r="0" data-id="${x.id}">${t('Hard')}</button><button class="btn sm" data-r="1" data-id="${x.id}">${t('Solid')}</button>` : ''}</span></li>`;
+      <span class="hact"><a class="btn sm" href="#/quran/${x.s}/${x.a}/coach-${x.a}-${x.b}">${t('Guided')}</a><a class="btn line sm" href="#/quran/${x.s}/${x.a}/loop-${x.a}-${x.b}">${t('Practise')}</a>${x.d <= today ? `<button class="btn sm line" data-r="0" data-id="${x.id}">${t('Hard')}</button><button class="btn sm" data-r="1" data-id="${x.id}">${t('Solid')}</button>` : ''}</span></li>`;
     root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Memorisation')}</b><span class="ib"></span></header>
       <p class="lead pad">${t('A new portion each day, and reviews spaced out so what you learn stays.')}</p>
       <section class="card stack"><span class="mono">${t('Next new portion')}</span><b>${esc(surahName(meta, nextS))} ${rng(nextS, nextA, nextB)}</b>
@@ -73,7 +73,7 @@ export async function renderHifz(root) {
       </section>
       ${due.length ? `<h3 class="sect">${t('Due today · {n}', { n: due.length })}</h3><ul class="evl">${due.map(row).join('')}</ul>` : H.items.length ? `<p class="muted pad">${t('Nothing to review today.')}</p>` : ''}
       ${H.items.length > due.length ? `<h3 class="sect">${t('Later')}</h3><ul class="evl">${H.items.filter(x => x.d > today).map(row).join('')}</ul>` : ''}
-      <p class="muted small pad">${t('Practise opens the reader with the portion on loop. Use “Hide” in the player to test yourself, then rate it here.')}</p>`;
+      <p class="muted small pad">${t('Guided: listen to each verse three times, read it three times, then recite it from memory.')} ${t('Practise opens the reader with the portion on loop. Use “Hide” in the player to test yourself, then rate it here.')}</p>`;
   };
   const add = (s, a, b) => { S.hifz.items.push({ id: Date.now().toString(36), s, a, b, box: 0, d: dayKey(), added: dayKey() }); save(); toast(t('Added')); draw(); };
   root.onclick = e => {

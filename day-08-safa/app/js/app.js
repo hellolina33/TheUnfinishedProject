@@ -46,7 +46,7 @@ async function route() {
     else if (name === 'flight') c = renderFlight(view);
     else if (name === 'quran') c = a ? await renderReader(view, a, b, c3) : await quranList(view);
     else if (name === 'calendar') c = renderCalendar(view);
-    else if (name === 'learn') c = a ? renderSteps(view, a) : renderLearnHub(view);
+    else if (name === 'learn') c = a ? renderSteps(view, a, b) : renderLearnHub(view);
     else if (name === 'lessons') c = await renderLessons(view);
     else if (name === 'khatm') c = await renderKhatm(view);
     else if (name === 'hifz') c = await renderHifz(view);
@@ -80,6 +80,8 @@ function drawMini() {
 }
 mini.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'mpp') PL.toggle(); if (b.id === 'mst') PL.stop(); });
 PL.onChange(drawMini);
+// Links from the landing can carry ?lang=ar (or fr, en) for a first visit.
+{ const q = new URLSearchParams(location.search).get('lang'); if (!S.onboarded && ['fr', 'en', 'ar'].includes(q)) { S.lang = q; save(); applyLang(); drawTabs(); } }
 window.addEventListener('hashchange', route);
 route();
 
@@ -97,6 +99,11 @@ setInterval(async () => {
   toast(body);
 }, 30000);
 
+if ('serviceWorker' in navigator) {
+  const warm = () => { const c = navigator.serviceWorker.controller; if (c) c.postMessage('warm'); };
+  window.addEventListener('load', () => setTimeout(() => ('requestIdleCallback' in window ? requestIdleCallback(warm, { timeout: 8000 }) : warm()), 2500));
+  navigator.serviceWorker.addEventListener('controllerchange', () => setTimeout(warm, 3000));
+}
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(reg => {
   reg.addEventListener('updatefound', () => { const w = reg.installing; if (!w) return; w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) {
     const b = document.createElement('button'); b.className = 'updbar'; b.textContent = t('A new version of safa. is ready · Reload'); b.onclick = () => location.reload(); document.body.appendChild(b); } }); });

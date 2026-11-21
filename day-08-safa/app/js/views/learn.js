@@ -53,6 +53,14 @@ const SALAT = [
   ['salam', 'Close with salam', 'Turn the head to the right and say the greeting, then to the left. The prayer is complete.', 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ', 'As-salāmu ʿalaykum wa raḥmatullāh', 'Peace and the mercy of Allah be upon you.']
 ];
 
+// My first week: seven small steps, one a day, ticked by hand.
+const WEEK = [['Day 1', 'See your prayer times and tick one prayer', '#/today'], ['Day 2', 'Learn the ablution, step by step', '#/learn/wudu'], ['Day 3', 'Walk through the prayer once', '#/learn/salat'],
+  ['Day 4', 'Read Al-Fatihah word by word', '#/quran/1'], ['Day 5', 'Read the morning or evening adhkar', '#/duas/27'], ['Day 6', 'Learn your first five Quran words', '#/lessons'], ['Day 7', 'Pray one prayer with the guided mode', '#/learn/salat/guided']];
+function weekCard() {
+  const w = S.week1 || [], done = WEEK.filter((_, i) => w[i]).length;
+  return `<section class="card stack week" id="wk"><span class="mono">${t('My first week')}</span><b>${t(done === WEEK.length ? 'Your first week is done. Keep the steps that help you.' : 'Seven small steps. One a day, or at your pace.')}</b>
+    <ol>${WEEK.map(([d, x, h], i) => `<li class="${w[i] ? 'ok' : ''}"><button class="chk ${w[i] ? 'on' : ''}" data-wk="${i}" role="checkbox" aria-checked="${!!w[i]}" aria-label="${esc(t(x))}">${w[i] ? icon.check : ''}</button><a href="${h}"><span class="mono">${t(d)}</span>${t(x)}</a></li>`).join('')}</ol></section>`;
+}
 export function renderLearnHub(root) {
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('First steps')}</b><span class="ib"></span></header>
     <p class="lead pad">${t('New to prayer, or coming back to it? Start here. Calm, one step at a time.')} ${t('No question is a silly one here.')}</p>
@@ -62,10 +70,16 @@ export function renderLearnHub(root) {
     <a class="card row" href="#/learn/salat"><span><span class="mono">${t('Step {n}', { n: 2 })}</span><b>${t('The prayer (salat)')}</b><span class="muted small">${t('{n} steps · a two-unit prayer · about 5 minutes', { n: SALAT.length })}</span></span>${icon.chev}</a>
     <a class="card row" href="#/quran/1"><span><span class="mono">${t('Step {n}', { n: 3 })}</span><b>${t('Learn Al-Fatihah word by word')}</b><span class="muted small">${t('Recited in every unit of prayer')}</span></span>${icon.chev}</a>
     <a class="card row" href="#/lessons"><span><span class="mono">${t('Step {n}', { n: 4 })}</span><b>${t('Five Quran words a day')}</b><span class="muted small">${t('Understand what you recite')}</span></span>${icon.chev}</a>
+    ${weekCard()}
     <section class="card stack"><b>${t('How many units?')}</b><span class="muted small">${t('Obligatory (fard) units of each prayer.')}</span>
       <div class="units">${[['fajr', 2], ['dhuhr', 4], ['asr', 4], ['maghrib', 3], ['isha', 4]].map(([k, n]) => `<div><b>${n}</b><span>${t({ fajr: 'Fajr', dhuhr: 'Dhuhr', asr: 'Asr', maghrib: 'Maghrib', isha: 'Isha' }[k])}</span></div>`).join('')}</div>
       <p class="muted small">${t('In prayers of three or four units, sit for the testimony after the second unit, then stand again. In the third and fourth units, recite Al-Fatihah only.')}</p></section>
+    <h3 class="sect">${t('Go further')}</h3>
+    <a class="srow" href="#/hifz"><span class="st"><b>${t('Memorise')}</b><span class="muted small">${t('Short portions, spaced reviews')}</span></span>${icon.chev}</a>
+    <a class="srow" href="#/ask"><span class="st"><b>${t('Find a verse or a dua')}</b><span class="muted small">${t('A verse or a dua by topic')}</span></span>${icon.chev}</a>
+    <a class="srow" href="#/duas/27"><span class="st"><b>${t('Morning adhkar')}</b><span class="muted small">${t('Words of remembrance')}</span></span>${icon.chev}</a>
 `;
+  root.onclick = e => { const b = e.target.closest('[data-wk]'); if (!b) return; S.week1 = S.week1 || []; const i = +b.dataset.wk; S.week1[i] = !S.week1[i]; save(); const c = $('#wk', root); if (c) c.outerHTML = weekCard(); if (S.week1[i]) toast(t('One step. That counts.')); };
   root.querySelectorAll('a.card.row').forEach((a, n) => { const k = ['wudu', 'salat', 'fatiha', 'lessons'][n]; if (S.learnDone && S.learnDone[k]) a.querySelector('.mono').insertAdjacentHTML('beforeend', ` · ✓ ${t('done')}`); });
 }
 
@@ -76,8 +90,19 @@ export function phon(tl) {
   if (lang() === 'fr') x = x.replace(/sh/gi, m => m[0] === 'S' ? 'Ch' : 'ch').replace(/û/g, 'oû').replace(/u/g, 'ou').replace(/U/g, 'Ou').replace(/j/g, 'dj').replace(/J/g, 'Dj');
   return x.replace(/\s+/g, ' ');
 }
-export function renderSteps(root, which) {
+// Guided prayer: the screen stays on and moves to the next step on its own. Seconds per step (salat only).
+const GDUR = [8, 6, 45, 12, 8, 12, 8, 12, 6, 30, 25, 8];
+let wakeLock = null;
+const wakeOn = async () => { try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (e) { /* not allowed */ } };
+function wakeOff() { try { if (wakeLock) wakeLock.release(); } catch (e) { /* ignore */ } wakeLock = null; try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } }
+export function renderSteps(root, which, mode) {
   const list = which === 'wudu' ? WUDU : SALAT; S.learnPos = S.learnPos || {}; let i = Math.min(list.length - 1, S.learnPos[which] || 0);
+  let guided = which === 'salat' && mode === 'guided', gT = 0, gEnd = 0, gPaused = false, gLeft = 0, voice = !!S.guideVoice;
+  if (guided) { i = 0; wakeOn(); }
+  const say = () => { if (!voice || !('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); const [, ti, bo] = list[i]; const u = new SpeechSynthesisUtterance(t(ti) + '. ' + t(bo)); u.lang = lang() === 'fr' ? 'fr-FR' : lang() === 'ar' ? 'ar' : 'en-GB'; u.rate = .95; speechSynthesis.speak(u); } catch (e) { /* unsupported */ } };
+  const startStep = () => { clearInterval(gT); if (!guided) return; gEnd = Date.now() + GDUR[i] * 1000; gPaused = false; say();
+    gT = setInterval(() => { if (gPaused) return; const left = Math.max(0, gEnd - Date.now()), el = $('#gleft', root); if (el) { el.textContent = Math.ceil(left / 1000) + ' s'; const b = $('#gbar', root); if (b) b.style.width = (100 - left / (GDUR[i] * 10)) + '%'; }
+      if (!left) { if (i < list.length - 1) { i++; draw(); startStep(); } else { clearInterval(gT); fin(); } } }, 250); };
   const draw = () => {
     const [p, title, body, ar, tl, mean] = list[i];
     root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="mono">${t('Step {a} of {b}', { a: i + 1, b: list.length })}</span></header>
@@ -87,9 +112,11 @@ export function renderSteps(root, which) {
         <h2>${t(title)}</h2><p>${t(body)}</p>
         ${ar ? `<div class="say"><p class="ar" lang="ar" dir="rtl">${ar}</p>${lang() !== 'ar' ? `<p class="tlit">${esc(S.phon ? phon(tl) : tl)}</p><button class="linkbtn small" id="sph" aria-pressed="${!!S.phon}">${t(S.phon ? 'Show the precise transliteration' : 'Show a simple phonetic reading')}</button>` : ''}${mean && lang() !== 'ar' ? `<p class="mean">${esc(t(mean))}</p>` : ''}</div>` : ''}
       </section>
+      ${guided ? `<div class="guide"><div class="gtrack"><i id="gbar"></i></div><div class="row2"><span class="mono" id="gleft"></span><button class="chip" id="gpause" aria-pressed="${gPaused}">${t(gPaused ? 'Resume' : 'Pause')}</button><button class="chip" id="gvoice" aria-pressed="${voice}">${t('Read aloud')}</button></div><p class="muted small">${t('The screen stays on. Each step moves on by itself. Pause whenever you need.')}</p></div>` : which === 'salat' ? `<a class="btn line sm" href="#/learn/salat/guided">${t('Pray with me (guided mode)')}</a>` : ''}
       <nav class="rnav"><button class="btn line" id="sp" ${i === 0 ? 'disabled' : ''}>${t('Previous')}</button>${i < list.length - 1 ? `<button class="btn" id="sn">${t('Next')}</button>` : `<button class="btn" id="sfin">${t('Done')}</button>`}</nav>`;
   };
   const fin = () => {
+    clearInterval(gT); wakeOff(); if (guided) { S.week1 = S.week1 || []; S.week1[6] = true; }
     S.learnDone = S.learnDone || {}; S.learnDone[which] = true; S.learnPos[which] = 0; save();
     const next = which === 'wudu' ? ['#/learn/salat', 'Next: the prayer'] : ['#/quran/1', 'Next: Al-Fatihah word by word'];
     root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="ib"></span></header>
@@ -97,11 +124,16 @@ export function renderSteps(root, which) {
       <a class="btn big" href="${next[0]}">${t(next[1])}</a><a class="btn line big" href="#/learn" style="margin-top:10px">${t('Back to First steps')}</a>`;
     window.scrollTo(0, 0);
   };
-  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sph') { S.phon = !S.phon; save(); draw(); return; } if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; S.learnPos[which] = i; save(); draw(); window.scrollTo(0, 0); };
-  draw();
-  return () => { root.onclick = null; };
+  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sph') { S.phon = !S.phon; save(); draw(); return; }
+    if (b.id === 'gpause') { gPaused = !gPaused; if (gPaused) gLeft = gEnd - Date.now(); else gEnd = Date.now() + gLeft; b.setAttribute('aria-pressed', gPaused); b.textContent = t(gPaused ? 'Resume' : 'Pause'); return; }
+    if (b.id === 'gvoice') { voice = !voice; S.guideVoice = voice; save(); b.setAttribute('aria-pressed', voice); if (voice) say(); else speechSynthesis.cancel(); return; }
+    if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; if (!guided) S.learnPos[which] = i; save(); draw(); startStep(); window.scrollTo(0, 0); };
+  draw(); startStep();
+  return () => { root.onclick = null; clearInterval(gT); wakeOff(); };
 }
 
+// Keep the sound of each word you study, so “Listen” works offline next time.
+const keepAudio = u => { try { caches.open('safa-audio').then(c => c.match(u).then(r => r || fetch(u, { mode: 'no-cors' }).then(x => c.put(u, x)))).catch(() => {}); } catch (e) { /* no cache API */ } };
 /* ---------- Five words a day (Leitner boxes, local only) ---------- */
 const GAP = [0, 1, 3, 7, 16, 35];
 const bare = w => w.normalize('NFKD').replace(/[ً-ٰٟۖ-ۭ]/g, '').replace(/[ٱأإآ]/g, 'ا').replace(/[^ء-ي]/g, '');
@@ -147,7 +179,7 @@ export async function renderLessons(root) {
       </section>
       ${shown ? `<div class="grid2"><button class="btn line" data-r="0">${t('Not yet')}</button><button class="btn" data-r="1">${t('I knew it')}</button></div>` : `<button class="btn big" id="lshow">${t('Show the meaning')}</button>`}`;
     const a = new Audio(); a.preload = 'none';
-    $('#lplay', root).onclick = () => { a.src = `https://audio.qurancdn.com/wbw/${String(ex.s).padStart(3, '0')}_${String(ex.v).padStart(3, '0')}_${String(ex.j + 1).padStart(3, '0')}.mp3`; a.play().catch(() => toast(t('Audio needs a connection.'))); };
+    $('#lplay', root).onclick = () => { a.src = `https://audio.qurancdn.com/wbw/${String(ex.s).padStart(3, '0')}_${String(ex.v).padStart(3, '0')}_${String(ex.j + 1).padStart(3, '0')}.mp3`; keepAudio(a.src); a.play().catch(() => toast(t('Audio needs a connection.'))); };
     root.onclick = e => {
       const b = e.target.closest('button'); if (!b) return;
       if (b.id === 'lshow') { shown = true; card(); }
