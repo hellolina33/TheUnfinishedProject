@@ -4,10 +4,19 @@ import { esc, icon, sheet, closeSheet, toast, reportUrl } from '../ui.js';
 import { t, lang, applyLang } from '../i18n.js';
 import { SALAT } from './learn.js';
 import { contextSheet, compareSheet } from './quran.js';
+import { PATHS, FAQ_TOPICS } from './learning-paths.js';
 const L = (fr,en,ar) => ({fr,en,ar})[lang()];
 const pick = o => o?.[lang()] || '';
 const titles = () => ({home:L('Au fil de la vie','Through life','في مراحل الحياة'),facts:L('100 repères sur l’islam','100 reference points on Islam','مئة معلومة عن الإسلام'),faq:L('Questions, simplement','Questions, simply','أسئلة ببساطة'),prayer:L('Comprendre chaque rakʿa','Understand every rakah','افهم كل ركعة')});
-const nav = () => `<nav class="j-nav" aria-label="${L('Parcours','Learning navigation','التنقل في الدليل')}">${[['',titles().home],['prayer',L('La prière','Prayer','الصلاة')],['facts',L('100 repères','100 essentials','مئة معلومة')],['faq',L('FAQ','FAQ','الأسئلة')]].map(([h,n])=>`<a href="#/journey${h?'/'+h:''}" ${location.hash===('#/journey'+(h?'/'+h:''))?'aria-current="page"':''}>${n}</a>`).join('')}</nav>`;
+const nav = () => {
+  const section = location.hash.split('/')[2] || '';
+  return `<nav class="j-nav learning-nav" aria-label="${L('Apprendre','Learning','التعلّم')}">${[
+    ['',L('Parcours','Paths','المسارات')],
+    ['prayer',L('La prière','Prayer','الصلاة')],
+    ['facts',L('100 repères','100 essentials','مئة معلومة')],
+    ['faq',L('FAQ','FAQ','الأسئلة الشائعة')],
+  ].map(([route,title])=>`<a href="#/journey${route?'/'+route:''}" ${section===route||(!route&&section==='path')?'aria-current="page"':''}>${title}</a>`).join('')}</nav>`;
+};
 const languagePicker = () => `<div class="j-langs" aria-label="${L('Langue','Language','اللغة')}">${[['fr','FR'],['en','EN'],['ar','العربية']].map(([l,n])=>`<button class="chip" data-jlang="${l}" aria-pressed="${lang()===l}" ${l==='ar'?'lang="ar" dir="rtl"':''}>${n}</button>`).join('')}</div>`;
 const header = title => `<header class="sub"><a href="#/journey" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${esc(title)}</b><a class="j-brand" href="#/home" aria-label="${L('Accueil','Home','الرئيسية')}">safa<span>.</span></a></header>${nav()}${languagePicker()}`;
 const note = () => `<details class="j-note"><summary>${L('Comment lire ce guide','How to read this guide','كيف تقرأ هذا الدليل')}</summary><p>${L('Une synthèse d’introduction sunnite, avec des divergences entre écoles signalées. Les illustrations montrent des repères généraux, pas tous les détails d’une école. Ce contenu n’a pas été validé par un conseil religieux et ne remplace pas un avis adapté à une situation personnelle.','An introductory Sunni synthesis with school differences flagged. Illustrations show general reference points, not every detail of a school. This content has not been validated by a religious board and does not replace guidance for a personal situation.','ملخص سني للمبتدئ مع بيان اختلاف المذاهب. والرسوم توضح المعالم العامة لا جميع تفاصيل المذهب. لم تراجعه هيئة شرعية، ولا يغني عن سؤال مناسب للحالة الشخصية.')}</p><p>${L('Les mentions « obligatoire » s’appliquent sous les conditions et dispenses précisées. « Repère » explique ; « recommandé » ajoute ; « selon l’école » signale une divergence. Aucune jauge ne mesure la foi.','“Obligatory” applies subject to conditions and exemptions. “Reference” explains; “recommended” adds; “by school” flags differences. No gauge measures faith.','تراعى الشروط والرخص في وصف الواجب. والمعلومة للتوضيح والمستحب للزيادة ووصف اختلاف المذهب للتنبيه. ولا يوجد مقياس للإيمان.')}</p></details>`;
@@ -24,7 +33,6 @@ const sourceLinks = (D,ids) => {
 };
 const kind = k => ({obligation:L('Obligatoire · sous conditions','Obligatory · with conditions','واجب بشروطه'),sunnah:L('Recommandé','Recommended','مستحب'),difference:L('Selon l’école / la situation','By school / situation','بحسب المذهب والحالة'),learn:L('Repère','Reference','معلومة'),care:L('Conseil pratique','Practical guidance','إرشاد عملي')})[k];
 function factCard(D,f,open=false){const read=!!S.journeyRead?.[f.id];return `<details class="j-fact" id="fact-${f.id}" ${open?'open':''}><summary><span class="j-num">${String(f.id).padStart(2,'0')}</span><span>${esc(pick(f.title))}</span></summary><div class="j-fact-body"><span class="j-tag">${kind(f.kind)}</span><p>${esc(pick(f.body))}</p>${sourceLinks(D,f.sources)}<div class="j-fact-acts"><button class="j-read" data-read="${f.id}" aria-pressed="${read}">${read?'✓ ':''}${read?L('Lu','Read','تمت القراءة'):L('Marquer comme lu','Mark as read','وضع علامة القراءة')}</button><button class="j-read" data-keep="${f.id}" aria-pressed="${!!(S.journeySaved||[]).includes(f.id)}">${(S.journeySaved||[]).includes(f.id)?L('Mis de côté','Saved','محفوظ'):L('Mettre de côté','Save for later','احفظ لوقت لاحق')}</button><a class="j-report" href="${reportUrl(L('Repère','Essential','معلومة')+' '+f.id+' · '+pick(f.title))}" target="_blank" rel="noopener">${L('Signaler une erreur','Report an error','الإبلاغ عن خطأ')}</a></div></div></details>`;}
-const shortcuts = () => `<div class="j-shortcuts"><a href="#/journey/prayer"><b>${L('Prier, rakʿa par rakʿa','Pray, unit by unit','صل ركعة ركعة')}</b><span>${L('5 prières · paroles · voix · sourates','5 prayers · words · voice · surahs','خمس صلوات وأذكار وجهر وسور')}</span></a><a href="#/journey/facts"><b>${L('100 repères','100 essentials','مئة معلومة')}</b><span>${L('10 thèmes · références liées','10 themes · linked references','عشرة أبواب بمراجع')}</span></a><a href="#/journey/faq"><b>${L('32 réponses accessibles','32 accessible answers','٣٢ جوابا ميسرا')}</b><span>${L('Découvrir et pratiquer','Discover and practise','تعرف وتعلم التطبيق')}</span></a></div>`;
 const momentGroups = [
   [['begin','before-prayer','during-prayer','after-prayer','morning'],['Je débute','I am starting','أبدأ']],
   [['work','meals','evening','friday','wealth'],['Au quotidien','Day to day','في الحياة اليومية']],
@@ -33,16 +41,117 @@ const momentGroups = [
   [['illness','return','separation','bereavement','end-of-life'],['Je traverse une épreuve','Going through a hard time','أمر بمحنة']],
 ];
 const firstSentence = x => { const m = String(x).match(/^.+?[.!?؟](\s|$)/); return m ? m[0].trim() : String(x); };
-const firstPrayer = () => `<section class="j-first"><h2>${L('Ma première prière','My first prayer','صلاتي الأولى')}</h2><p class="muted small">${L('Trois étapes, dans l’ordre.','Three steps, in order.','ثلاث خطوات بالترتيب.')}</p><ol>${[['#/journey/before-prayer',L('Se préparer','Get ready','الاستعداد')],['#/learn/wudu',L('Faire les ablutions','Make wudu','الوضوء')],['#/journey/prayer/fajr',L('Prier Fajr, pas à pas','Pray Fajr, step by step','صلاة الفجر خطوة خطوة')]].map(([h,n],i)=>`<li><a href="${h}"><span class="j-num">${i+1}</span><span>${n}</span>${icon.chev}</a></li>`).join('')}</ol></section>`;
+const words = text => L(...text);
+const photo = (image, extra = '') => `<img src="illustrations/${image}.webp" alt="" width="483" height="272" decoding="async" ${extra}>`;
+const learningState = path => S.learningPaths?.[path.id] || { current:0, completed:[], at:0 };
+const progressSummary = (done,total) => L(`${done} sur ${total} terminées`,`${done} of ${total} completed`,`اكتملت ${done} من ${total}`);
+const pathProgress = path => {
+  const {completed} = learningState(path);
+  return completed.length ? `<p class="learning-progress-label">${progressSummary(completed.length,path.steps.length)}</p>` :
+    `<p class="learning-progress-label">${L(`${path.steps.length} étapes`,`${path.steps.length} steps`,`${path.steps.length} خطوات`)}</p>`;
+};
+const pathCard = path => `
+  <a class="learning-card" href="#/journey/path/${path.id}">
+    ${photo(path.image,'loading="lazy"')}
+    <div><h3>${words(path.title)}</h3><p>${words(path.intro)}</p>${pathProgress(path)}</div>
+    <span class="learning-arrow">${icon.chev}</span>
+  </a>`;
 function home(root,D) {
-  root.innerHTML = header(titles().home) + `
-    <section class="journey-intro"><div><h1>${titles().home}</h1>
-      <p>${L('Choisis un guide ou le moment que tu vis.','Choose a guide or a moment you are living.','اختر دليلا أو المرحلة التي تعيشها.')}</p></div>
-      <img src="illustrations/covers/learn.webp" alt="" width="120" height="120"></section>
-    ${firstPrayer()}${shortcuts()}<h2 class="sect">${L('Ce que je vis','What I am living','ما أعيشه')}</h2>
-    ${momentGroups.map(([ids,title],i) => `<details class="moment-group" ${i===0?'open':''}>
+  const recent = PATHS.filter(path=>{
+    const state=learningState(path);
+    return state.at && state.completed.length<path.steps.length;
+  }).sort((a,b)=>learningState(b).at-learningState(a).at)[0];
+  const featured = recent || PATHS[0];
+  root.innerHTML = header(L('Apprendre','Learn','تعلّم')) + `
+    <section class="learning-hero">
+      ${photo('covers/courtyard','fetchpriority="high"')}
+      <div><h1>${L('Apprendre','Learn','تعلّم')}</h1>
+        <p>${L('Choisis un sujet. Avance à ton rythme.','Choose a topic and go at your own pace.','اختر موضوعًا وتقدّم على مهلك.')}</p>
+        <a class="btn" href="#/journey/path/${featured.id}">${recent?L('Reprendre mon parcours','Resume my path','متابعة مساري'):words(featured.title)} ${icon.chev}</a>
+        ${recent?`<p class="learning-resume">${words(featured.title)} · ${L('Étape','Step','الخطوة')} ${learningState(featured).current+1}</p>`:''}
+      </div>
+    </section>
+    <h2 class="learning-heading">${L('Parcours d’apprentissage','Learning paths','مسارات التعلّم')}</h2>
+    <div class="learning-grid">${PATHS.map(pathCard).join('')}</div>
+    <div class="learning-resources">
+      <a class="learning-resource" href="#/journey/faq">${icon.help}<span><strong>${L('Questions fréquentes','Frequently asked questions','الأسئلة الشائعة')}</strong><small>${L('32 réponses par thème','32 answers by topic','٣٢ إجابة حسب الموضوع')}</small></span>${icon.chev}</a>
+      <a class="learning-resource" href="#/journey/facts">${icon.book}<span><strong>${titles().facts}</strong><small>${L('À lire ou à mettre de côté','Read or save for later','للقراءة أو الحفظ')}</small></span>${icon.chev}</a>
+    </div>
+    <h2 class="learning-heading">${L('Ce que je vis','What I am living','ما أعيشه')}</h2>
+    ${momentGroups.map(([ids,title]) => `<details class="moment-group">
       <summary>${L(...title)}</summary><div class="j-list">${ids.map(id => D.moments.find(m=>m.id===id)).filter(Boolean).map(m => `
         <a class="j-moment compact" href="#/journey/${m.id}"><span><b>${esc(pick(m.title))}</b><small>${esc(firstSentence(pick(m.intro)))}</small></span>${icon.chev}</a>`).join('')}</div></details>`).join('')}${note()}`;
+}
+function pathPage(root,D,path) {
+  let state=learningState(path);
+  let current=Math.max(0,Math.min(state.current,path.steps.length-1));
+  let selected=null;
+  const storeProgress=()=>{
+    state={ ...state,current,at:Date.now() };
+    (S.learningPaths ||= {})[path.id]=state;
+    save();
+  };
+  const move=(step)=>{
+    current=step;selected=null;storeProgress();draw();
+    const heading=root.querySelector('#learning-step');
+    heading.focus({preventScroll:true});heading.scrollIntoView({block:'start'});
+  };
+  const draw=()=>{
+    const step=path.steps[current], fact=D.facts.find(item=>item.id===step.fact);
+    const finished=state.completed.includes(current);
+    const last=current===path.steps.length-1;
+    const allComplete=state.completed.length===path.steps.length;
+    root.innerHTML=header(words(path.title))+`
+      <section class="learning-path-head">
+        ${photo(path.image)}
+        <div><h1>${words(path.title)}</h1><p>${words(path.intro)}</p></div>
+      </section>
+      <ol class="learning-timeline" aria-label="${L('Étapes du parcours','Path steps','خطوات المسار')}">${path.steps.map((item,i)=>`
+        <li><button type="button" data-learning-index="${i}" ${i===current?'aria-current="step"':''}>
+          <span class="learning-node" aria-hidden="true">${state.completed.includes(i)?icon.check:i+1}</span>
+          <span>${words(item.title)}${state.completed.includes(i)?`<small>${L('Terminée','Completed','مكتملة')}</small>`:''}</span>
+        </button></li>`).join('')}</ol>
+      ${state.completed.length?`<div class="learning-completed" role="status">${icon.check}<span>${allComplete?L('Parcours terminé','Path completed','اكتمل المسار'):progressSummary(state.completed.length,path.steps.length)}</span></div>`:''}
+      <section class="learning-step-panel">
+        <p class="learning-step-kicker">${L('Étape','Step','الخطوة')} ${current+1} / ${path.steps.length}</p>
+        <h2 tabindex="-1" id="learning-step">${words(step.title)}</h2>
+        <p>${esc(pick(fact.body))}</p>
+        ${sourceLinks(D,fact.sources)}
+        <a class="learning-resource" href="#/${step.to}">${icon.book}<strong>${L('Ouvrir le support de cette étape','Open this step’s material','افتح مادة هذه الخطوة')}</strong>${icon.chev}</a>
+        ${step.check?`<details class="learning-check"><summary>${L('Se tester','Check your understanding','اختبر فهمك')}</summary>
+          <p><strong>${words(step.check.prompt)}</strong></p>
+          <div class="learning-choices">${step.check.options.map((option,i)=>`<button class="btn line sm" data-learning-answer="${i}" aria-pressed="${selected===i}">${words(option)}</button>`).join('')}</div>
+          <p class="learning-feedback" id="learning-feedback" role="status"></p></details>`:''}
+      </section>
+      <div class="learning-actions">
+        ${current>0?`<button class="btn line sm" id="learning-prev">${t('Previous')}</button>`:''}
+        <button class="btn" id="learning-done">${finished?(last?L('Retour aux parcours','Back to paths','العودة إلى المسارات'):L('Étape suivante','Next step','الخطوة التالية')):L('Terminer l’étape','Complete step','أكمل الخطوة')}</button>
+        ${finished?`<button class="linkbtn" id="learning-undo">${L('Annuler la validation','Undo completion','إلغاء الإكمال')}</button>`:''}
+      </div>${note()}`;
+    root.querySelectorAll('[data-learning-index]').forEach(button=>button.onclick=()=>move(Number(button.dataset.learningIndex)));
+    root.querySelector('#learning-prev')?.addEventListener('click',()=>move(current-1));
+    root.querySelector('#learning-done').onclick=()=>{
+      if (!finished) {
+        state.completed=[...state.completed,current];storeProgress();
+      }
+      if (!last) { move(current+1); return; }
+      if (finished) { location.hash='#/journey'; return; }
+      draw();root.querySelector('#learning-step').focus({preventScroll:true});
+    };
+    root.querySelector('#learning-undo')?.addEventListener('click',()=>{
+      state.completed=state.completed.filter(index=>index!==current);
+      storeProgress();draw();root.querySelector('#learning-done').focus();
+    });
+    root.querySelectorAll('[data-learning-answer]').forEach(button=>button.onclick=()=>{
+      selected=Number(button.dataset.learningAnswer);
+      root.querySelectorAll('[data-learning-answer]').forEach(option=>option.setAttribute('aria-pressed',String(option===button)));
+      const feedback=root.querySelector('#learning-feedback');
+      feedback.textContent=selected===step.check.correct?
+        L('C’est bien ça.','That’s right.','إجابة صحيحة.'):
+        L('Relis le repère au-dessus puis réessaie.','Read the reference above and try again.','راجع المعلومة أعلاه ثم أعد المحاولة.');
+    });
+  };
+  storeProgress();draw();
 }
 const linksMap=()=>({prayer:['#/journey/prayer',L('Guide de prière détaillé','Detailed prayer guide','دليل الصلاة المفصل')],facts:['#/journey/facts',L('Les 100 repères','The 100 essentials','المعلومات المئة')],faq:['#/journey/faq',L('Ouvrir la FAQ','Open the FAQ','افتح الأسئلة')],wudu:['#/learn/wudu',L('Ablutions illustrées','Illustrated wudu','وضوء مصور')],salat:['#/learn/salat',L('Postures illustrées','Illustrated postures','هيئات مصورة')]});
 function momentPage(root,D,m){S.journeyRecent={id:m.id,title:m.title,at:Date.now()};save();const first=m.links[0]&&linksMap()[m.links[0]];root.innerHTML=header(pick(m.title))+`<h1>${esc(pick(m.title))}</h1><p class="lead pad">${esc(pick(m.intro))}</p>${first?`<section class="card stack j-start"><span class="mono">${L('Pour commencer','To start','للبدء')}</span><a class="btn" href="${first[0]}">${first[1]}</a></section>`:''}<img class="j-banner" src="illustrations/life/${m.image}.webp" alt="" width="483" height="272" loading="lazy">${m.phases.map((ids,i)=>`<section class="j-phase"><span class="mono">${i+1} / 3</span><h2>${[L('Se préparer','Prepare','استعد'),L('Vivre ce moment','Live this moment','عش هذه المرحلة'),L('Continuer','Continue','واصل')][i]}</h2>${ids.map(id=>factCard(D,D.facts[id-1],true)).join('')}</section>`).join('')}<div class="j-actions">${m.links.slice(1).map(k=>{const [h,n]=linksMap()[k];return `<a class="btn line sm" href="${h}">${n}</a>`}).join('')}</div>${note()}`;}
@@ -61,12 +170,62 @@ root.querySelector('#j-search').oninput=e=>{q=e.target.value;limit=10;update();}
 const TOP_FAQ=[21,23,26,22,31];
 function faqItem(D,f,open){const ans=pick(f.answer)||'';const lead=firstSentence(ans||pick(D.facts[(f.facts||[])[0]-1]?.body||''));const rest=ans.slice(lead.length).trim();
  return `<details class="j-faq" id="faq-${f.id}" ${open?'open':''}><summary>${esc(pick(f.question))}</summary><p class="j-lead">${esc(lead)}</p><details class="j-more"><summary class="linkbtn small">${L('Nuances et sources','Nuances and sources','التفاصيل والمصادر')}</summary>${rest?`<p>${esc(rest)}</p>`:''}${f.facts?f.facts.map(i=>`<p><b>${esc(pick(D.facts[i-1].title))}.</b> ${esc(pick(D.facts[i-1].body))}</p>`).join(''):''}${sourceLinks(D,[...(f.sources||[]),...(f.facts||[]).flatMap(i=>D.facts[i-1].sources)])}</details>${[23,24,25].includes(f.id)?`<a class="btn line sm" href="#/journey/prayer">${L('Voir chaque rakʿa','See every unit','تفصيل كل ركعة')}</a>`:''}<div class="j-fact-acts"><button class="j-read" data-share-faq="${f.id}">${L('Partager cette question','Share this question','مشاركة هذا السؤال')}</button><a class="j-report" href="${reportUrl('FAQ '+f.id+' · '+pick(f.question))}" target="_blank" rel="noopener">${L('Signaler une erreur','Report an error','الإبلاغ عن خطأ')}</a></div></details>`;}
-function faqPage(root,D,focus){focus=Number(focus)||0;root.innerHTML=header(titles().faq)+`<h1>${titles().faq}</h1><p class="pad muted">${L('20 questions de découverte inspirées de la conférence du Dr Zakir Naik, puis 12 questions de pratique. Les réponses ont été rédigées pour Safa et renvoient à leurs sources.','20 discovery questions inspired by Dr Zakir Naik’s talk, followed by 12 practice questions. Safa’s answers link to their sources.','٢٠ سؤالا للتعرف مستوحاة من محاضرة الدكتور ذاكر نايك، و١٢ للممارسة. تميز الأجوبة بين العقيدة والأحكام والوقائع القابلة للتحقق.')}</p><label class="lbl" for="j-faq-search">${L('Ta question','Your question','سؤالك')}</label><input class="inp" id="j-faq-search" type="search"><div class="chips"><button class="chip" data-faq-filter="top" aria-pressed="true">${L('Les plus fréquentes','Most asked','الأكثر سؤالا')}</button><button class="chip" data-faq-filter="practice" aria-pressed="false">${L('Pratiquer','Practice','الممارسة')}</button><button class="chip" data-faq-filter="discover" aria-pressed="false">${L('Découvrir','Discover','التعرف')}</button><button class="chip" data-faq-filter="all" aria-pressed="false">${L('Toutes','All','الكل')}</button></div><p class="mono" role="status" id="j-faq-count"></p><div id="j-faq-results"></div>${note()}`;
- let q='',cat=focus&&!TOP_FAQ.includes(focus)?'all':'top';
- const update=()=>{const list=D.faq.filter(f=>(q?true:cat==='all'||(cat==='top'?TOP_FAQ.includes(f.id):f.category===cat))&&norm(pick(f.question)+' '+pick(f.answer)+' '+(f.facts||[]).map(i=>pick(D.facts[i-1].body)).join(' ')).includes(norm(q)));if(cat==='top'&&!q)list.sort((a,b)=>TOP_FAQ.indexOf(a.id)-TOP_FAQ.indexOf(b.id));root.querySelector('#j-faq-count').textContent=`${list.length} / 32`;root.querySelector('#j-faq-results').innerHTML=list.map(f=>faqItem(D,f,f.id===focus)).join('')||`<p>${L('Aucun résultat. Essaie un autre mot, ou parcours « Pratiquer » et « Découvrir ».','No results. Try another word, or browse “Practice” and “Discover”.','لا نتائج؛ جرب كلمة أخرى أو تصفح الممارسة والتعرف.')}</p>`;};
- const setCat=c=>{cat=c;root.querySelectorAll('[data-faq-filter]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.faqFilter===c));update();};
- setCat(cat);root.querySelector('#j-faq-search').oninput=e=>{q=e.target.value;update();};root.querySelectorAll('[data-faq-filter]').forEach(b=>b.onclick=()=>setCat(b.dataset.faqFilter));
- if(focus)requestAnimationFrame(()=>{const el=root.querySelector(`#faq-${focus}`);if(el){el.scrollIntoView({block:'start'});el.querySelector('summary').focus({preventScroll:true});}});}
+function faqPage(root,D,entry) {
+  const focus=Number(entry)||0;
+  const topic=FAQ_TOPICS.find(item=>item.id===entry);
+  let q='',cat=topic?.id||(focus&&!TOP_FAQ.includes(focus)?'all':'top');
+  root.innerHTML=header(L('Questions fréquentes','Frequently asked questions','الأسئلة الشائعة'))+`
+    <section class="faq-mast">
+      ${photo('life/learning')}
+      <div><h1>${L('Questions fréquentes','Frequently asked questions','الأسئلة الشائعة')}</h1><p>${L('Trouve une réponse et ouvre ses sources.','Find an answer and open its sources.','اعثر على إجابة واطّلع على مصادرها.')}</p></div>
+    </section>
+    <form class="faq-search" role="search">
+      <label class="lbl" for="j-faq-search">${L('Rechercher dans la FAQ','Search the FAQ','ابحث في الأسئلة الشائعة')}</label>
+      <div>${icon.search}<input class="inp" id="j-faq-search" type="search" placeholder="${L('Ex. ablutions, Fajr, Coran','E.g. wudu, Fajr, Quran','مثل: الوضوء، الفجر، القرآن')}"></div>
+    </form>
+    <h2 class="learning-heading">${L('Explorer par thème','Explore by topic','استكشف حسب الموضوع')}</h2>
+    <div class="faq-topics" role="group" aria-label="${L('Thèmes de la FAQ','FAQ topics','موضوعات الأسئلة الشائعة')}">${FAQ_TOPICS.map(item=>`
+      <button type="button" class="faq-topic" data-faq-filter="${item.id}" aria-pressed="false">
+        ${photo(item.image,'loading="lazy"')}<span>${icon[item.icon]}${words(item.title)}</span>
+      </button>`).join('')}</div>
+    <div class="chips wrapc faq-modes">
+      <button class="chip" data-faq-filter="top" aria-pressed="true">${L('Les plus fréquentes','Most asked','الأكثر سؤالًا')}</button>
+      <button class="chip" data-faq-filter="practice" aria-pressed="false">${L('Pratiquer','Practice','الممارسة')}</button>
+      <button class="chip" data-faq-filter="discover" aria-pressed="false">${L('Découvrir','Discover','التعرّف')}</button>
+      <button class="chip" data-faq-filter="all" aria-pressed="false">${L('Toutes les questions','All questions','جميع الأسئلة')}</button>
+    </div>
+    <h2 id="j-faq-title" class="learning-heading"></h2>
+    <p class="faq-count" role="status" id="j-faq-count"></p><div id="j-faq-results"></div>
+    <details class="j-note"><summary>${L('D’où viennent ces questions ?','Where do these questions come from?','من أين جاءت هذه الأسئلة؟')}</summary><p>${L('Les 20 questions de découverte s’inspirent de la conférence du Dr Zakir Naik. Les réponses de Safa et les 12 questions sur la pratique renvoient à leurs propres sources.','The 20 discovery questions are inspired by Dr Zakir Naik’s talk. Safa’s answers and the 12 practice questions link to their own sources.','الأسئلة العشرون للتعرّف مستوحاة من محاضرة الدكتور ذاكر نايك، وتُرفق إجابات صفا والأسئلة العملية الاثنا عشر بمصادرها.')}</p></details>${note()}`;
+  const input=root.querySelector('#j-faq-search');
+  const update=()=>{
+    const activeTopic=FAQ_TOPICS.find(item=>item.id===cat);
+    const query=norm(q).trim();
+    const keywords=query.split(/\s+/).filter(Boolean);
+    const list=D.faq.filter(f=>{
+      if(!query) return activeTopic?activeTopic.ids.includes(f.id):cat==='all'||(cat==='top'?TOP_FAQ.includes(f.id):f.category===cat);
+      const text=norm(pick(f.question)+' '+pick(f.answer)+' '+(f.facts||[]).map(i=>pick(D.facts[i-1].body)).join(' '));
+      return keywords.every(word=>text.includes(word));
+    });
+    if(cat==='top'&&!query)list.sort((a,b)=>TOP_FAQ.indexOf(a.id)-TOP_FAQ.indexOf(b.id));
+    root.querySelector('#j-faq-title').textContent=query?L('Résultats','Results','نتائج البحث'):activeTopic?words(activeTopic.title):
+      root.querySelector(`.faq-modes [data-faq-filter="${cat}"]`).textContent;
+    root.querySelector('#j-faq-count').textContent=L(`${list.length} réponse(s)`,`${list.length} answer(s)`,`${list.length} إجابة`);
+    root.querySelector('#j-faq-results').innerHTML=list.map(f=>faqItem(D,f,f.id===focus)).join('')||
+      `<div class="faq-empty"><p>${L('Aucun résultat pour cette recherche.','No results for this search.','لا نتائج لهذا البحث.')}</p><button class="btn line sm" id="faq-reset">${L('Voir toutes les questions','Show all questions','عرض جميع الأسئلة')}</button></div>`;
+    root.querySelector('#faq-reset')?.addEventListener('click',()=>setCat('all'));
+    root.querySelectorAll('[data-faq-filter]').forEach(btn=>btn.setAttribute('aria-pressed',String(!query&&btn.dataset.faqFilter===cat)));
+  };
+  const setCat=value=>{cat=value;q='';input.value='';update();};
+  root.querySelector('.faq-search').onsubmit=event=>event.preventDefault();
+  input.oninput=event=>{q=event.target.value;update();};
+  root.querySelectorAll('[data-faq-filter]').forEach(button=>button.onclick=()=>setCat(button.dataset.faqFilter));
+  update();
+  if(focus)requestAnimationFrame(()=>{
+    const el=root.querySelector(`#faq-${focus}`);
+    if(el){el.querySelector('summary').focus({preventScroll:true});el.scrollIntoView({block:'start'});}
+  });
+}
 const prayers=[{id:'fajr',name:['Fajr','Fajr','الفجر'],n:2,loud:[1,2]},{id:'dhuhr',name:['Dhuhr','Dhuhr','الظهر'],n:4,loud:[]},{id:'asr',name:['Asr','Asr','العصر'],n:4,loud:[]},{id:'maghrib',name:['Maghrib','Maghrib','المغرب'],n:3,loud:[1,2]},{id:'isha',name:['Isha','Isha','العشاء'],n:4,loud:[1,2]}];
 const pname=p=>L(...p.name);
 const voiceBadge=high=>`<span class="j-voice ${high?'loud':''}">${high?L('À voix haute','Aloud','جهرا'):L('À voix basse','Quiet','سرا')}</span>`;
@@ -136,7 +295,7 @@ function rakah(D,p,n,role,additional,only){stepNo=0;const final=n===p.n,high=p.l
  ${final?cycleStep('salam',L('Terminer par le salam','End with salam','اختم بالسلام'),L('La forme courante est le salut à droite puis à gauche. Le nombre requis et certains détails diffèrent selon l’école.','The common form greets right then left. The required number and some details differ by school.','الصفة الشائعة السلام يمينا ثم يسارا، ويختلف القدر الواجب وبعض التفاصيل حسب المذهب.'),say(SALAT[11])):n!==2?`<p class="j-callout">${L('Se relever avec Allahu akbar. Il n’y a pas d’assise de tashahhud à la fin de cette unité.','Rise with Allahu akbar. There is no tashahhud sitting at the end of this unit.','قم مكبرا، ولا تشهد في ختام هذه الركعة.')}</p>`:''}
  <div class="j-actions">${n>1?`<button class="btn line sm" data-unit="${n-1}">${t('Previous')}</button>`:''}${n<p.n?`<button class="btn sm" data-unit="${n+1}">${t('Next')}</button>`:''}</div>
  ${sourceLinks(D,['b757','b776','b831','m402'])}</div></details>`;}
-export async function renderJourney(root,page,arg){root.innerHTML=`<p class="pad" role="status">${t('Loading…')}</p>`;const D=await data('journey.json');if(page==='prayer'){[D.fatiha,D.fatihaFr]=await Promise.all([data('quran/1.json'),data('fr/1.json')]);}root.classList.add('journey');if(page==='facts')library(root,D,arg);else if(page==='faq')faqPage(root,D,arg);else if(page==='prayer')prayerPage(root,D,arg);else {const m=D.moments.find(x=>x.id===page);if(m)momentPage(root,D,m);else home(root,D);}
+export async function renderJourney(root,page,arg){root.innerHTML=`<p class="pad" role="status">${t('Loading…')}</p>`;const D=await data('journey.json');if(page==='prayer'){[D.fatiha,D.fatihaFr]=await Promise.all([data('quran/1.json'),data('fr/1.json')]);}root.classList.add('journey');if(page==='facts')library(root,D,arg);else if(page==='faq')faqPage(root,D,arg);else if(page==='prayer')prayerPage(root,D,arg);else if(page==='path'){const path=PATHS.find(item=>item.id===arg);if(path)pathPage(root,D,path);else home(root,D);}else {const m=D.moments.find(x=>x.id===page);if(m)momentPage(root,D,m);else home(root,D);}
  root.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.jlang){S.lang=b.dataset.jlang;save();applyLang();window.dispatchEvent(new Event('safa:lang'));}else if(b.hasAttribute('data-read')){const id=Number(b.dataset.read);S.journeyRead=S.journeyRead||{};S.journeyRead[id]=!S.journeyRead[id];save();b.setAttribute('aria-pressed',!!S.journeyRead[id]);b.textContent=(S.journeyRead[id]?'✓ ':'')+(S.journeyRead[id]?L('Lu','Read','تمت القراءة'):L('Marquer comme lu','Mark as read','وضع علامة القراءة'));
    // A life moment whose readings are all marked read is complete: Home stops suggesting it.
    S.journeyDone=S.journeyDone||{};for(const m of D.moments){S.journeyDone[m.id]=m.phases.flat().every(i=>S.journeyRead[i])?1:0;}save();}
