@@ -46,7 +46,8 @@ const BISM = 'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّح�
 
 /* ---------- Surah list ---------- */
 let listState = { tab: 'surahs', q: '' };
-export async function renderList(root) {
+export async function renderList(root, section) {
+  if (section === 'favorites') { listState.tab = 'favs'; listState.q = ''; }
   const meta = await data('meta.json');
   const starts = [0]; meta.s.forEach(m => starts.push(starts[starts.length - 1] + m[3]));
   const row = (n) => { const m = meta.s[n - 1]; return `<a class="srow ${S.q.seen && S.q.seen[n] ? 'seen' : ''}" href="#/quran/${n}" aria-label="${esc(t('Surah {n}', { n }) + ', ' + surahName(meta, n) + ', ' + meaning(meta, n) + ', ' + t('{n} verses', { n: m[3] }))}"><span class="num mono">${n}</span><span class="st"><b>${esc(surahName(meta, n))}</b><span class="muted small">${esc(meaning(meta, n))} · ${t('{n} verses', { n: m[3] })} · ${t(m[4] ? 'Medinan' : 'Meccan')}</span></span>${lang() === 'ar' ? '' : `<span class="ar" lang="ar">${m[2]}</span>`}</a>`; };

@@ -15,9 +15,10 @@ let st = { q: '', feel: null };
 const audio = new Audio(); audio.preload = 'none';
 audio.addEventListener('error', () => { if (audio.getAttribute('src')) toast(t('Audio needs a connection.')); });
 
-export async function renderList(root) {
+export async function renderList(root, section) {
+  if (section === 'favorites') { st.feel = '__fav'; st.q = ''; }
   const D = await data('duas.json');
-  const h = +new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', hourCycle: 'h23' }).format(new Date());
+  const h = +new Intl.DateTimeFormat('en-GB', { timeZone: S.loc?.tz || Intl.DateTimeFormat().resolvedOptions().timeZone, hour: '2-digit', hourCycle: 'h23' }).format(new Date());
   const row = c => `<a class="srow" href="#/duas/${c.id}"><span class="st"><b>${esc(title(c))}</b>${!ar() && c.ta ? `<span class="arn" lang="ar">${esc(c.ta)}</span>` : ''}<span class="muted small">${t(c.d.length > 1 ? '{n} invocations' : '{n} invocation', { n: c.d.length })}</span></span>${icon.chev}</a>`;
   root.innerHTML = `<header class="vh"><div><h1>${t('Duas')}</h1><p class="sub2">${t('From Hisnul Muslim, the most widely used collection of duas.')}</p></div></header>
     <div class="searchf">${icon.search}<input id="ds" class="inp" type="search" placeholder="${t('How do you feel? anxious, travelling…')}" value="${esc(st.q)}" autocomplete="off" aria-label="${t('Search duas by feeling or situation')}"></div>
@@ -103,7 +104,7 @@ function gradeBadge(x) {
 export function renderMyDuas(root, id) {
   const ics = d => {
     const [h, m] = d.time.split(':'), k = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-    download(`safa-dua-${d.id}.ics`, ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-dua-${d.id}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc.tz}:${k}T${h}${m}00`, 'DURATION:PT5M', 'RRULE:FREQ=DAILY', `SUMMARY:${d.title.replace(/[\n,;]/g, ' ')}`, `DESCRIPTION:${(d.text || '').slice(0, 300).replace(/[\n,;]/g, ' ')}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${d.title.replace(/[\n,;]/g, ' ')}`, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar');
+    download(`safa-dua-${d.id}.ics`, ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-dua-${d.id}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc?.tz || Intl.DateTimeFormat().resolvedOptions().timeZone}:${k}T${h}${m}00`, 'DURATION:PT5M', 'RRULE:FREQ=DAILY', `SUMMARY:${d.title.replace(/[\n,;]/g, ' ')}`, `DESCRIPTION:${(d.text || '').slice(0, 300).replace(/[\n,;]/g, ' ')}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${d.title.replace(/[\n,;]/g, ' ')}`, 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar');
   };
   const list = () => {
     root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('My duas')}</b><a class="ib" href="#/mydua/new" aria-label="${t('New dua')}">${icon.plus}</a></header>
