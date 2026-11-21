@@ -18,5 +18,6 @@ jobs:
       - run: npm ci
       - run: npm audit --audit-level=moderate
       - run: npm run validate:day04
+      - run: node --test tests/day08/*.test.mjs
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:browser

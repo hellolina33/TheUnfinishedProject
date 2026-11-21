@@ -4,7 +4,7 @@ import { $, $$, esc, icon, toast } from '../ui.js';
 import { t, lang } from '../i18n.js';
 
 // Local illustrations are shared across languages; the enclosing label is translated.
-const illustration = (key, title) => `<img class="learn-illustration" src="illustrations/${key}.webp" alt="" aria-hidden="true" width="484" height="363" decoding="async" fetchpriority="high">`;
+const illustration = (key, title) => `<img class="learn-illustration" src="illustrations/${S.journeyFigure === 'woman' && ['stand','takbir','recite','ruku','rise','sujud','sit','tashahhud','salam'].includes(key) ? 'women/' : ''}${key}.webp" alt="" aria-hidden="true" width="484" height="363" decoding="async" fetchpriority="high">`;
 
 const WUDU = [
   ['intention', 'Intention', 'Make the intention in your heart to purify yourself for prayer, then say “Bismillah”.', 'بِسْمِ اللَّهِ', 'Bismillah', 'In the name of Allah.'],
@@ -18,7 +18,7 @@ const WUDU = [
   ['feet', 'Feet', 'Wash the right foot up to and including the ankle, three times, between the toes too. Then the left.'],
   ['testimony', 'Testimony', 'After wudu, say the testimony of faith (Sahih Muslim 234).', 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'Ash-hadu an lā ilāha illallāhu waḥdahū lā sharīka lah, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh', 'I bear witness that there is no god but Allah, alone, without partner, and I bear witness that Muhammad is His servant and His messenger.']
 ];
-const SALAT = [
+export const SALAT = [
   ['stand', 'Stand facing the Qibla', 'Stand facing the Qibla and make the intention in your heart for the prayer you are about to pray.'],
   ['takbir', 'Opening takbir', 'Raise your hands to the shoulders or the ears and say “Allahu akbar”. Then place the right hand over the left on the chest or below the navel, as your school teaches.', 'اللَّهُ أَكْبَرُ', 'Allāhu akbar', 'Allah is the Greatest.'],
   ['recite', 'Recite', 'You may say the opening supplication, then seek refuge, say Bismillah and recite Al-Fatihah. In the first two units, add another surah, even a short one.', 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ', 'Subḥānaka-llāhumma wa bi-ḥamdik, wa tabāraka-smuk, wa taʿālā jadduk, wa lā ilāha ghayruk', 'Glory and praise be to You, O Allah. Blessed is Your name, exalted is Your majesty, and there is no god but You.'],
@@ -43,6 +43,8 @@ function weekCard() {
 }
 export function renderLearnHub(root) {
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('First steps')}</b><span class="ib"></span></header>
+    <a class="card stack" href="#/journey"><b>${t('Through life')}</b><span class="muted small">${t('100 essentials · 24 life moments · 32 questions')}</span></a>
+    <a class="card stack" href="#/journey/prayer"><b>${t('Every rakah: words and recitation')}</b><span class="muted small">${t('Al-Fatihah, surahs, aloud or quiet')}</span></a>
     <p class="lead pad">${t('New to prayer, or coming back to it? Start here. Calm, one step at a time.')} ${t('No question is a silly one here.')}</p>
     <p class="muted small pad">${t('Details differ between the four schools of law. This is a general guide. Learn alongside a teacher or the imam of your mosque.')}</p>
     <p class="care pad">${t('Afraid of getting it wrong? “Actions are judged by intentions” (Sahih al-Bukhari 1). Allah knows your heart while you learn.')}</p>
@@ -87,6 +89,7 @@ export function renderSteps(root, which, mode) {
     const [p, title, body, ar, tl, mean] = list[i];
     root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="mono">${t('Step {a} of {b}', { a: i + 1, b: list.length })}</span></header>
       <div class="stepbar" aria-hidden="true">${list.map((_, j) => `<i class="${j <= i ? 'on' : ''}"></i>`).join('')}</div>
+      ${which === 'salat' ? `<div class="j-figure-switch"><span>${t('Illustration')}</span><button class="chip" data-learn-figure="man" aria-pressed="${S.journeyFigure !== 'woman'}">${t('Man')}</button><button class="chip" data-learn-figure="woman" aria-pressed="${S.journeyFigure === 'woman'}">${t('Woman')}</button></div><a class="linkbtn small" href="#/journey/prayer">${t('Every rakah: words and recitation')} ↗</a>` : ''}
       <section class="step">
         <div class="figw" role="img" aria-label="${esc(t(title))}">${illustration(p, title)}</div>
         <h2>${t(title)}</h2><p>${t(body)}</p>
@@ -104,7 +107,7 @@ export function renderSteps(root, which, mode) {
       <a class="btn big" href="${next[0]}">${t(next[1])}</a><a class="btn line big" href="#/learn" style="margin-top:10px">${t('Back to First steps')}</a>`;
     window.scrollTo(0, 0);
   };
-  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sph') { S.phon = !S.phon; save(); draw(); return; }
+  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.dataset.learnFigure) { S.journeyFigure = b.dataset.learnFigure; save(); draw(); return; } if (b.id === 'sph') { S.phon = !S.phon; save(); draw(); return; }
     if (b.id === 'gpause') { gPaused = !gPaused; if (gPaused) gLeft = gEnd - Date.now(); else gEnd = Date.now() + gLeft; b.setAttribute('aria-pressed', gPaused); b.textContent = t(gPaused ? 'Resume' : 'Pause'); return; }
     if (b.id === 'gvoice') { voice = !voice; S.guideVoice = voice; save(); b.setAttribute('aria-pressed', voice); if (voice) say(); else speechSynthesis.cancel(); return; }
     if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; if (!guided) S.learnPos[which] = i; save(); draw(); startStep(); window.scrollTo(0, 0); };

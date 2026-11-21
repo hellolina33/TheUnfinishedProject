@@ -18,6 +18,14 @@ export function applyLang() { const l = lang(); document.documentElement.lang = 
 export const missing = () => ({ fr: FR, ar: AR });
 
 const FR = {
+"Through life":"Au fil de la vie",
+"100 essentials · 24 life moments · 32 questions":"100 repères · 24 moments de vie · 32 questions",
+"Every rakah: words and recitation":"Chaque rakʿa : paroles et récitation",
+"Al-Fatihah, surahs, aloud or quiet":"Al-Fatiha, sourates, voix haute ou basse",
+"Illustration":"Illustration",
+"Man":"Homme",
+"Woman":"Femme",
+
   // tabs + common
   'Today': "Aujourd'hui", 'Quran': 'Coran', 'Duas': 'Douas', 'Track': 'Suivi',
   'Back': 'Retour', 'Main': 'Principal', 'Settings': 'Réglages', 'About': 'À propos', 'Loading…': 'Chargement…',
@@ -412,6 +420,14 @@ const FR = {
 };
 
 const AR = {
+"Through life":"في مراحل الحياة",
+"100 essentials · 24 life moments · 32 questions":"مئة معلومة و٢٤ مرحلة و٣٢ سؤالا",
+"Every rakah: words and recitation":"كل ركعة: أذكار وقراءة",
+"Al-Fatihah, surahs, aloud or quiet":"الفاتحة والسور والجهر والإسرار",
+"Illustration":"الرسم",
+"Man":"رجل",
+"Woman":"امرأة",
+
   "Main": "القائمة الرئيسية",
   "This screen could not load. If you are offline, open it once with a connection and it will stay available.": "تعذّر تحميل هذه الشاشة. إن كنت دون اتصال، افتحها مرة مع الاتصال لتبقى متاحة.",
   "Back to Today": "العودة إلى اليوم",

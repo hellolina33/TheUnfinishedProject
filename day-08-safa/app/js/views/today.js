@@ -51,6 +51,7 @@ function khatmDaysLeft() { try { const st = new Date(S.khatm.start + 'T12:00:00Z
 function tools() {
   return `<nav class="tools" aria-label="${t('Tools')}">
     <a href="#/learn">${icon.learn}<span>${t('First steps')}</span></a>
+    <a href="#/journey">${icon.learn}<span>${t('Through life')}</span></a>
     <a href="#/qibla">${icon.compass}<span>${t('Qibla')}</span></a>
     <a href="#/calendar">${icon.cal}<span>${t('Calendar')}</span></a>
     <a href="#/flight">${icon.plane}<span>${t('Travel')}</span></a></nav>`;
