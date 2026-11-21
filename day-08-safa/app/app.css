@@ -441,3 +441,10 @@ body.dark,html.night{--tq:#6cc24f;--ti:#6f9cf0;--td:#d38ae6;--tk:#f0716b;--tg:#f
 @media print{body{background:white!important;color:black!important}.tabbar,#mini,.j-nav,.j-tools,.j-read,.j-toggle,.j-actions,.journey>.sub{display:none!important}#view{max-width:100%;padding:0}.j-fact,.j-faq,.j-rakah{break-inside:avoid;border-color:#999}.j-table{min-width:0}.j-sources a{color:#333}.j-moment{break-inside:avoid}.j-cycle-step>img{height:140px}}
 
 .journey .j-say .tlit,.journey .j-fatiha .tlit{display:block}.j-langs{display:flex;gap:5px;justify-content:flex-end;margin:-10px 0 18px}.j-langs .chip{font-size:10px;padding:5px 9px;min-height:30px}@media print{.j-langs{display:none!important}}
+/* Wave 7: make-up prayers */
+.qctl .qn{width:5.6em;text-align:center;font:inherit;font-size:16px;border:1px solid transparent;border-radius:10px;background:transparent;color:inherit;padding:6px 2px;-moz-appearance:textfield}
+.qctl .qn:focus{border-color:var(--ink);outline:none}
+.qctl .qn::-webkit-outer-spin-button,.qctl .qn::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.btn.danger{color:#b3261e;border-color:#b3261e}
+.dark .btn.danger,body.dark .btn.danger{color:#ff8a80;border-color:#ff8a80}
+.card.undo{justify-content:space-between;align-items:center;gap:12px}

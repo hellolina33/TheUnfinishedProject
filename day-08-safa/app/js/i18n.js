@@ -1482,3 +1482,35 @@ Object.assign(AR, {
 "The noon (or meem before ب) is half hidden, with a nasal sound held for two counts.": "النطق بالنون (أو الميم قبل الباء) بين الإظهار والإدغام مع غنة بمقدار حركتين.",
 "Noon or meem with shadda: hold the nasal sound for two counts.": "النون والميم المشددتان: غنة بمقدار حركتين."
 });
+
+// Wave 7: make-up prayers reset.
+Object.assign(FR, {
+  "Tap − each time you make one up. Tap a number to type it.": "Touche − à chaque prière rattrapée. Touche un nombre pour le saisir.",
+  "Counters reset to zero.": "Compteurs remis à zéro.",
+  "Undo": "Annuler",
+  "Counters restored.": "Compteurs restaurés.",
+  "Estimate capped at 80 years.": "Estimation limitée à 80 ans.",
+  "Adds 365 per year to each of the five prayers, up to 80 years. Adjust by hand after.": "Ajoute 365 par année à chacune des cinq prières, jusqu’à 80 ans. Ajuste ensuite à la main.",
+  "Start over": "Repartir de zéro",
+  "Sets the counters back to zero. You can undo right after.": "Remet les compteurs à zéro. Tu peux annuler juste après.",
+  "Reset make-up prayers": "Réinitialiser les prières à rattraper",
+  "Choose what goes back to zero.": "Choisis ce qui revient à zéro.",
+  "The five prayers": "Les cinq prières",
+  "Prayers and fasting days": "Prières et jours de jeûne",
+  "Cancel": "Annuler"
+});
+Object.assign(AR, {
+  "Tap − each time you make one up. Tap a number to type it.": "اضغط − كلما قضيت صلاة. اضغط على الرقم لكتابته.",
+  "Counters reset to zero.": "أُعيدت العدادات إلى الصفر.",
+  "Undo": "تراجع",
+  "Counters restored.": "استُعيدت العدادات.",
+  "Estimate capped at 80 years.": "التقدير محدود بثمانين سنة.",
+  "Adds 365 per year to each of the five prayers, up to 80 years. Adjust by hand after.": "يضيف 365 عن كل سنة لكل صلاة من الخمس، حتى 80 سنة. عدّل يدويًا بعد ذلك.",
+  "Start over": "البدء من جديد",
+  "Sets the counters back to zero. You can undo right after.": "يعيد العدادات إلى الصفر. يمكنك التراجع مباشرة بعد ذلك.",
+  "Reset make-up prayers": "إعادة ضبط الصلوات الفائتة",
+  "Choose what goes back to zero.": "اختر ما يعود إلى الصفر.",
+  "The five prayers": "الصلوات الخمس",
+  "Prayers and fasting days": "الصلوات وأيام الصيام",
+  "Cancel": "إلغاء"
+});
