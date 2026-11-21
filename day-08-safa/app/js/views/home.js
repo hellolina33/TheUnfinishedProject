@@ -74,7 +74,9 @@ export function renderPlus(root, section) {
   root.innerHTML = `<section class="home-plus"><h1>${copy('Plus', 'More', 'المزيد')}</h1>
     ${group(t('Tools'), link('duas', t('Duas'), icon.duas) + link('qibla', t('Qibla'), icon.compass) +
       link('calendar', t('Calendar'), icon.cal) + link('flight', t('Travel'), cover('travel')) +
-      link('track', t('Track'), icon.track))}
+      link('track', t('Track'), icon.track) +
+      link('journey/ramadan', copy('Ramadan', 'Ramadan', 'رمضان'), '<img class="home-thumb" src="illustrations/life/ramadan.webp" alt="" width="64" height="64">') +
+      link('ask', t('Find'), icon.search))}
     ${group(t('Settings'), link('settings', t('Settings'), icon.gear || icon.today) +
       link('setup', copy('Configurer les horaires', 'Set prayer times', 'ضبط المواقيت'), icon.today) +
       link('welcome', copy('Revoir le guide de démarrage', 'Review the getting-started guide', 'مراجعة دليل البدء'), icon.learn) +

@@ -119,3 +119,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 }
 
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+body.dark .tabbar { background: var(--bg); }
+.tabbar a { color: var(--mut); }
+body.dark .tabbar a[aria-current="page"] { background: color-mix(in srgb, var(--fg) 10%, var(--bg)); }
+.j-nav { flex-wrap: wrap; margin-block-end: 12px; }
+.j-nav a, .j-brand { display: inline-flex; align-items: center; min-block-size: 48px; }
+.j-fact > summary, .setup-advanced > summary { min-block-size: 48px; }
