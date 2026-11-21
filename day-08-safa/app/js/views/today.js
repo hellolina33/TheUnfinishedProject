@@ -113,7 +113,7 @@ export function render(root) {
       : `<a class="card row" href="#/duas/27"><span><span class="mono">${t(h < 15 ? 'Morning adhkar' : 'Evening adhkar')}</span><b>${t('Words of remembrance')}</b></span>${icon.chev}</a>`;
     root.innerHTML = `
       <header class="vh"><div><h1>${t('Today')}</h1><p class="dates2">${esc(gregorian(now))} · ${esc(hijri(now))}</p><a class="loc mono" href="#/settings">${esc(S.loc.name)} · ${esc(METHODS[S.method].n)}</a></div>
-        <a class="ib" href="#/settings" aria-label="${t('Settings')}">${icon.gear}</a></header>
+        <a class="icon-action" href="#/settings">${icon.gear}<span>${t('Settings')}</span></a></header>
       ${welcome()}
       ${day.pz ? `<a class="banner" href="#/track"><span class="dot"></span> ${t('Pause mode is on. Nothing to log today.')}</a>` : ''}
       <section class="next">

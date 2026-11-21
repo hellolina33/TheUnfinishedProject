@@ -69,12 +69,46 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 }
 .home-row + .home-row { margin-block-start: 7px; }
 .home-quick .home-row { margin-block-start: 0; }
-.home-row > svg:first-child { width: 22px; height: 22px; justify-self: center; }
+.home-symbol {
+  display: grid;
+  place-items: center;
+  inline-size: 44px;
+  block-size: 44px;
+  justify-self: center;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--ember) 8%, var(--card));
+  color: var(--fg);
+  overflow: hidden;
+}
+.home-symbol svg { inline-size: 22px; block-size: 22px; }
+.home-symbol:has(img) { inline-size: 48px; block-size: 48px; }
+.home-plus .home-row { background: var(--card); }
+.home-plus .home-row:hover { background: color-mix(in srgb, var(--fg) 5%, var(--card)); }
+.icon-action {
+  display: inline-flex;
+  flex: none;
+  align-self: flex-start;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-block-size: 48px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding-inline: 10px;
+  background: var(--card);
+  color: var(--fg);
+  font-size: .8125rem;
+  font-weight: 600;
+}
+.icon-action svg { inline-size: 20px; block-size: 20px; flex: none; }
+.icon-action:hover { background: color-mix(in srgb, var(--fg) 6%, var(--card)); }
+.reader-options span { max-inline-size: 8ch; line-height: 1.15; text-align: start; }
+.vh > div:first-child { min-inline-size: 0; overflow-wrap: anywhere; }
 .home-row > svg:last-child { width: 16px; height: 16px; }
 [dir=rtl] .home-row > svg:last-child { transform: scaleX(-1); }
 .home-row strong, .home-row small { display: block; overflow-wrap: anywhere; }
 .home-row small, .home-offline { color: var(--mut); font-size: .84rem; }
-.home-thumb { width: 48px; height: 48px; border-radius: 9px; object-fit: cover; }
+.home-thumb { width: 100%; height: 100%; object-fit: cover; }
 .home-offline { line-height: 1.5; }
 
 /* Illustrations, references and prayer summary */
