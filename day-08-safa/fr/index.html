@@ -19,6 +19,7 @@
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 .who{font-size:14px;color:var(--mute,#6d6c68);margin-top:14px}
 .srcs{columns:2;gap:28px;font-size:14px;line-height:1.6}@media(max-width:700px){.srcs{columns:1}}
+.vidbtn{margin-top:14px;background:none;border:0;padding:8px 0;font:500 15px/1.2 inherit;color:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.vdlg{border:0;border-radius:18px;padding:16px;max-width:min(420px,94vw);background:#111;color:#eee;text-align:center}.vdlg::backdrop{background:rgba(0,0,0,.7)}.vdlg video{width:100%;height:auto;max-height:76vh;border-radius:10px;background:#000}.vdlg p{font-size:14px;margin:10px 0}.vdlg .btn{color:#eee!important;background:transparent!important;border:1px solid #666!important}
 </style>
 <style>
 :root{
@@ -308,6 +309,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
       <p class="lead">Les horaires de prière, le Coran mot à mot et des douas authentiques. Zéro pub. Zéro collecte de données. Zéro culpabilité. </p>
       <p class="lead" style="margin-top:10px"><b>Que tu pries depuis toujours, que tu reviennes ou que tu débutes : en 30 secondes, tu sais quand prier.</b></p>
       <div class="cta"><a class="btn" href="../app/">Ouvrir safa.</a><a class="btn line" href="../app/#/learn">Tu débutes ? Commence ici</a></div>
+      <button class="vidbtn" type="button" onclick="var d=document.getElementById('vdlg');d.showModal();d.querySelector('video').play().catch(function(){})">▶ Voir la vidéo · 45 s</button>
       <p class="who">Faite par Salah, à Bangkok. D’abord pour lui, puis pour toi. <a href="../confidentialite/">Ce que safa. garde, et ce qu’elle ne garde jamais</a>.</p>
       <div class="specs">
         <div><b>0</b><span>Zéro pub,<br>zéro compte</span></div>
@@ -684,5 +686,6 @@ function runFlight(){
 runFlight();
 </script>
 <script>(function(){try{var k='safa-site-lang';document.querySelectorAll('[data-setlang]').forEach(function(a){a.addEventListener('click',function(){localStorage.setItem(k,a.dataset.setlang)})})}catch(e){}})();</script>
+<dialog id="vdlg" class="vdlg" aria-label="safa. · 45 s"><video src="../media/safa-45s.mp4" poster="../media/safa-45s.jpg" controls muted playsinline preload="none" width="360" height="640"></video><p>Le texte est à l’écran : elle se comprend sans le son.</p><form method="dialog"><button class="btn line" onclick="this.closest('dialog').querySelector('video').pause()">Fermer</button></form></dialog>
 </body>
 </html>

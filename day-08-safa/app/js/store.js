@@ -40,6 +40,7 @@ export function addDays(key, n) {
 export function getDay(key, create) {
   let d = S.days[key];
   if (!d) { d = { p: [0, 0, 0, 0, 0], r: 0, a: 0, pz: 0 }; if (create) S.days[key] = d; }
+  if (S.pauseOn && S.pauseUntil && dayKey() > S.pauseUntil) { S.pauseOn = false; S.pauseUntil = null; }
   if (S.pauseOn && key === dayKey() && !d.pz) { d.pz = 1; S.days[key] = d; }
   return d;
 }

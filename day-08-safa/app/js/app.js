@@ -39,6 +39,7 @@ async function route() {
   applyUi(); if (name === 'qibla') document.querySelector('meta[name=theme-color]').content = '#080808';
   tabbar.hidden = !!immersive; drawMini();
   tabbar.querySelectorAll('a').forEach(x => x.dataset.tab === tab ? x.setAttribute('aria-current', 'page') : x.removeAttribute('aria-current'));
+  view.classList.remove('vin'); void view.offsetWidth; view.classList.add('vin');
   let c;
   try {
     if (name === 'qibla') c = renderQibla(view);
