@@ -1,7 +1,7 @@
 // Khatm planner, memorisation plan, missed prayers (qada). All local.
 import { S, save, data, dayKey, addDays, P5 } from '../store.js';
 import { NAMES } from '../prayer.js';
-import { $, $$, esc, icon, toast } from '../ui.js';
+import { $, $$, esc, icon, toast, sheet, closeSheet } from '../ui.js';
 import { t, L } from '../i18n.js';
 import { surahName } from './quran.js';
 
@@ -89,32 +89,64 @@ export async function renderHifz(root) {
 }
 
 /* ---------- Missed prayers (qada) ---------- */
+const QMAX = 29220; // 80 years of one daily prayer: a ceiling against typing slips.
 export function renderQada(root) {
+  let undo = null, note = '';
   const draw = () => {
     const Q = S.qada, total = P5.reduce((a, p) => a + (Q.p[p] || 0), 0);
     const days = total ? Math.ceil(total / Math.max(1, Q.perDay)) : 0;
-    root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Make-up prayers')}</b><span class="ib"></span></header>
+    const any = total || Q.fast;
+    root.innerHTML = `<header class="sub"><a href="#/plus" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Make-up prayers')}</b><span class="ib"></span></header>
       <p class="lead pad">${t('Making up is coming back. Here, privately and at your pace, you can note prayers to make up. No judgement. Every one you make up counts.')}</p>
-      <p class="muted small pad">${t('Tap − each time you make one up.')}</p>
+      <p class="muted small pad">${t('Tap − each time you make one up. Tap a number to type it.')}</p>
+      ${undo ? `<div class="card row undo" role="status"><span>${t('Counters reset to zero.')}</span><button class="btn line sm" id="qundo">${t('Undo')}</button></div>` : ''}
+      ${note ? `<p class="card small" role="status">${note}</p>` : ''}
       <label class="tog card"><span>${t('Show on Today')}<small>${t('A small card with what is left.')}</small></span><input type="checkbox" id="qon" ${Q.on ? 'checked' : ''}></label>
-      <ul class="times qd">${P5.map(p => `<li><span class="nm">${NAMES[p]}</span><span class="qctl"><button class="ib" data-p="${p}" data-d="-1" aria-label="${t('One made up')}">${icon.minus}</button><b class="mono">${Q.p[p] || 0}</b><button class="ib" data-p="${p}" data-d="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li>`).join('')}
-        <li><span class="nm">${t('Fasting days')}</span><span class="qctl"><button class="ib" data-f="-1" aria-label="${t('One made up')}">${icon.minus}</button><b class="mono">${Q.fast || 0}</b><button class="ib" data-f="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li></ul>
+      <ul class="times qd">${P5.map(p => `<li><span class="nm">${NAMES[p]}</span><span class="qctl"><button class="ib" data-p="${p}" data-d="-1" aria-label="${t('One made up')}">${icon.minus}</button><input class="mono qn" type="number" inputmode="numeric" min="0" max="${QMAX}" data-qn="${p}" value="${Q.p[p] || 0}" aria-label="${NAMES[p]}"><button class="ib" data-p="${p}" data-d="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li>`).join('')}
+        <li><span class="nm">${t('Fasting days')}</span><span class="qctl"><button class="ib" data-f="-1" aria-label="${t('One made up')}">${icon.minus}</button><input class="mono qn" type="number" inputmode="numeric" min="0" max="${QMAX}" data-qn="fast" value="${Q.fast || 0}" aria-label="${t('Fasting days')}"><button class="ib" data-f="1" aria-label="${t('Add one to make up')}">${icon.plus}</button></span></li></ul>
       <section class="card stack"><label class="lbl">${t('Make-up prayers per day')}</label><div class="seg per">${[1, 2, 5, 10].map(n => `<button data-qper="${n}" aria-pressed="${Q.perDay === n}">${n}</button>`).join('')}</div>
-        <p>${total ? t('{n} prayers left. At this pace, done in about {d} days, around {date}.', { n: total, d: days, date: civil(addDays(dayKey(), days), { day: 'numeric', month: 'long', year: 'numeric' }) }) : (Q.started ? t('Nothing left to make up.') : t('Nothing noted yet. Add prayers with +, or estimate from years below.'))}</p>
-        <details ${total ? '' : 'open'}><summary class="mono">${t('Estimate from missed years')}</summary><div class="row2"><input id="qy" class="inp" type="number" min="0" max="80" step="0.5" placeholder="${t('Years')}" inputmode="decimal"><button class="btn line sm" id="qest">${t('Add to each prayer')}</button></div><p class="muted small">${t('Adds 365 per year to each of the five prayers. Adjust by hand after.')}</p></details></section>
+        <p>${total ? t('{n} prayers left. At this pace, done in about {d} days, around {date}.', { n: total.toLocaleString(L()), d: days.toLocaleString(L()), date: civil(addDays(dayKey(), days), { day: 'numeric', month: 'long', year: 'numeric' }) }) : (Q.started ? t('Nothing left to make up.') : t('Nothing noted yet. Add prayers with +, or estimate from years below.'))}</p>
+        <details ${total ? '' : 'open'}><summary class="mono">${t('Estimate from missed years')}</summary><div class="row2"><input id="qy" class="inp" type="number" min="0" max="80" step="0.5" placeholder="${t('Years')}" inputmode="decimal"><button class="btn line sm" id="qest">${t('Add to each prayer')}</button></div><p class="muted small">${t('Adds 365 per year to each of the five prayers, up to 80 years. Adjust by hand after.')}</p></details></section>
+      ${any ? `<section class="card stack"><b>${t('Start over')}</b><p class="muted small">${t('Sets the counters back to zero. You can undo right after.')}</p><button class="btn line sm danger" id="qreset">${t('Reset make-up prayers')}</button></section>` : ''}
       <p class="muted small pad">${t('How to make up prayers, and which ones, differs between schools. Ask a person of knowledge.')}</p>`;
   };
+  const snap = () => JSON.parse(JSON.stringify({ p: S.qada.p, fast: S.qada.fast, started: S.qada.started }));
   root.onclick = e => {
     const b = e.target.closest('button'); if (!b) return; const Q = S.qada;
+    note = '';
     if (b.dataset.qper) { Q.perDay = +b.dataset.qper; save(); draw(); return; }
-    if (b.dataset.p) { Q.p[b.dataset.p] = Math.max(0, (Q.p[b.dataset.p] || 0) + +b.dataset.d); Q.started = true; Q.updated = Date.now(); save(); draw(); }
-    if (b.dataset.f) { Q.fast = Math.max(0, (Q.fast || 0) + +b.dataset.f); Q.updated = Date.now(); save(); draw(); }
-    if (b.id === 'qest') { const y = Math.max(0, +$('#qy', root).value || 0); if (y) { P5.forEach(p => { Q.p[p] = (Q.p[p] || 0) + Math.round(y * 365); }); Q.started = true; save(); draw(); } }
+    if (b.dataset.p) { Q.p[b.dataset.p] = Math.min(QMAX, Math.max(0, (Q.p[b.dataset.p] || 0) + +b.dataset.d)); Q.started = true; Q.updated = Date.now(); undo = null; save(); draw(); }
+    if (b.dataset.f) { Q.fast = Math.min(QMAX, Math.max(0, (Q.fast || 0) + +b.dataset.f)); Q.updated = Date.now(); undo = null; save(); draw(); }
+    if (b.id === 'qest') {
+      const raw = +$('#qy', root).value || 0, y = Math.min(80, Math.max(0, raw));
+      if (!y) return;
+      if (raw > 80) note = t('Estimate capped at 80 years.');
+      P5.forEach(p => { Q.p[p] = Math.min(QMAX, (Q.p[p] || 0) + Math.round(y * 365)); });
+      Q.started = true; undo = null; save(); draw();
+    }
+    if (b.id === 'qreset') {
+      const el = sheet(`<h3>${t('Reset make-up prayers')}</h3><p class="muted small">${t('Choose what goes back to zero.')}</p><div class="acts"><button data-qr="p">${t('The five prayers')}</button><button data-qr="all">${t('Prayers and fasting days')}</button><button data-close>${t('Cancel')}</button></div>`, { label: t('Reset make-up prayers') });
+      el.onclick = e2 => {
+        const x = e2.target.closest('[data-qr]'); if (!x) return;
+        undo = snap();
+        P5.forEach(p => { Q.p[p] = 0; });
+        if (x.dataset.qr === 'all') Q.fast = 0;
+        Q.started = false; Q.updated = Date.now(); save(); closeSheet(); draw();
+        root.querySelector('#qundo')?.focus();
+      };
+    }
+    if (b.id === 'qundo' && undo) { Object.assign(Q, { p: undo.p, fast: undo.fast, started: undo.started }); undo = null; save(); draw(); toast(t('Counters restored.')); }
   };
   root.onchange = e => {
     if (e.target.id === 'qon') { S.qada.on = e.target.checked; save(); }
-    if (e.target.id === 'qper') { S.qada.perDay = Math.max(1, Math.min(50, +e.target.value || 1)); save(); draw(); }
+    if (e.target.dataset.qn) {
+      const k = e.target.dataset.qn, n = Math.min(QMAX, Math.max(0, Math.round(+e.target.value || 0)));
+      if (k === 'fast') S.qada.fast = n; else { S.qada.p[k] = n; S.qada.started = true; }
+      S.qada.updated = Date.now(); undo = null; note = ''; save(); draw();
+    }
   };
+  // Clamp values saved by older versions (no ceiling before).
+  P5.forEach(p => { if ((S.qada.p[p] || 0) > QMAX) S.qada.p[p] = QMAX; }); if ((S.qada.fast || 0) > QMAX) S.qada.fast = QMAX;
   draw();
   return () => { root.onclick = null; root.onchange = null; };
 }
