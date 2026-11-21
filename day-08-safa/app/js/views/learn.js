@@ -3,53 +3,33 @@ import { S, save, data, dayKey, addDays } from '../store.js';
 import { $, $$, esc, icon, toast } from '../ui.js';
 import { t, lang } from '../i18n.js';
 
-/* ---------- simple line figures ---------- */
-const fig = p => `<svg class="fig" viewBox="0 0 120 120" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${p}<path d="M8 112h104" stroke-width="1.5" opacity=".4"/></svg>`;
-const POSE = {
-  stand: fig('<circle cx="60" cy="18" r="9"/><path d="M60 27v42M60 69l-8 43M60 69l8 43M60 38l-10 18M60 38l10 18"/>'),
-  takbir: fig('<circle cx="60" cy="18" r="9"/><path d="M60 27v42M60 69l-8 43M60 69l8 43M60 36l-14-4-2-14M60 36l14-4 2-14"/>'),
-  ruku: fig('<circle cx="22" cy="48" r="9"/><path d="M31 52h40M71 52l-6 60M71 52l8 60M40 52l2 28M50 52l2 28"/>'),
-  sujud: fig('<circle cx="22" cy="100" r="8"/><path d="M30 96l38-24M68 72l14 40M68 72l26 14v26M36 92l-6 18M44 87l-4 22"/>'),
-  sit: fig('<circle cx="56" cy="34" r="9"/><path d="M56 43v36M56 79h26l6 33M56 79l-16 33h44M56 54l14 20"/>'),
-  salam: fig('<circle cx="56" cy="34" r="9"/><path d="M56 43v36M56 79h26l6 33M56 79l-16 33h44M56 54l14 20M70 30l10-6"/>')
-};
-const ico = {
-  hands: fig('<path d="M40 100V60c0-6 8-6 8 0v-24c0-6 8-6 8 0v20-28c0-6 8-6 8 0v28-20c0-6 8-6 8 0v40c0 14-8 24-20 24s-12-6-12-20z"/><path d="M30 30c2 6 2 10 0 14M90 30c-2 6-2 10 0 14"/>'),
-  mouth: fig('<circle cx="60" cy="56" r="34"/><path d="M44 70c8 8 24 8 32 0M48 46h4M68 46h4M86 30l10-10"/>'),
-  nose: fig('<circle cx="60" cy="56" r="34"/><path d="M60 40v22l-6 4M48 46h4M68 46h4M52 76h16"/>'),
-  face: fig('<ellipse cx="60" cy="56" rx="30" ry="38"/><path d="M48 50h4M68 50h4M52 76h16M20 30c6-4 12-4 18 0M82 30c6-4 12-4 18 0"/>'),
-  arm: fig('<path d="M20 90c20-6 40-10 60-30l14-14M80 60l8 10M94 46l6-6"/><path d="M30 40c4 4 4 8 0 12M44 32c4 4 4 8 0 12"/>'),
-  head: fig('<circle cx="60" cy="62" r="30"/><path d="M34 46c10-14 42-14 52 0M40 24c12-8 28-8 40 0"/>'),
-  ear: fig('<path d="M70 30c-20-6-34 8-30 28 2 12 12 14 12 26s14 16 20 4"/><path d="M60 50c4-6 12-4 10 4"/>'),
-  feet: fig('<path d="M30 100c-4-20 2-50 10-60h14c4 16 6 40 12 52 4 8-2 12-10 12H38c-4 0-7-2-8-4zM70 100c0-20 4-50 10-60h14"/>'),
-  heart: fig('<path d="M60 96L26 62c-10-10-10-26 2-34 10-6 22-2 32 10 10-12 22-16 32-10 12 8 12 24 2 34z"/>'),
-  finger: fig('<path d="M54 100V40c0-6 8-6 8 0v40M62 70c0-6 8-6 8 0v10c0-6 8-6 8 0v8c0 12-6 18-16 18h-8"/><path d="M58 26v-8"/>')
-};
+// Local illustrations are shared across languages; the enclosing label is translated.
+const illustration = (key, title) => `<img class="learn-illustration" src="illustrations/${key}.webp" alt="" aria-hidden="true" width="484" height="363" decoding="async" fetchpriority="high">`;
 
 const WUDU = [
-  ['heart', 'Intention', 'Make the intention in your heart to purify yourself for prayer, then say “Bismillah”.', 'بِسْمِ اللَّهِ', 'Bismillah', 'In the name of Allah.'],
+  ['intention', 'Intention', 'Make the intention in your heart to purify yourself for prayer, then say “Bismillah”.', 'بِسْمِ اللَّهِ', 'Bismillah', 'In the name of Allah.'],
   ['hands', 'Hands', 'Wash both hands up to the wrists, three times, between the fingers too.'],
   ['mouth', 'Mouth', 'Take water in the right hand and rinse the mouth, three times.'],
   ['nose', 'Nose', 'Draw a little water into the nose and blow it out with the left hand, three times.'],
   ['face', 'Face', 'Wash the whole face, from the hairline to the chin and from ear to ear, three times.'],
-  ['arm', 'Arms', 'Wash the right arm from the fingertips up to and including the elbow, three times. Then the left.'],
+  ['arms', 'Arms', 'Wash the right arm from the fingertips up to and including the elbow, three times. Then the left.'],
   ['head', 'Head', 'With wet hands, wipe the head once: from the front to the back of the neck and back again.'],
-  ['ear', 'Ears', 'Wipe the inside of the ears with the index fingers and the back with the thumbs, once.'],
+  ['ears', 'Ears', 'Wipe the inside of the ears with the index fingers and the back with the thumbs, once.'],
   ['feet', 'Feet', 'Wash the right foot up to and including the ankle, three times, between the toes too. Then the left.'],
-  ['finger', 'Testimony', 'After wudu, say the testimony of faith (Sahih Muslim 234).', 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'Ash-hadu an lā ilāha illallāhu waḥdahū lā sharīka lah, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh', 'I bear witness that there is no god but Allah, alone, without partner, and I bear witness that Muhammad is His servant and His messenger.']
+  ['testimony', 'Testimony', 'After wudu, say the testimony of faith (Sahih Muslim 234).', 'أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'Ash-hadu an lā ilāha illallāhu waḥdahū lā sharīka lah, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh', 'I bear witness that there is no god but Allah, alone, without partner, and I bear witness that Muhammad is His servant and His messenger.']
 ];
 const SALAT = [
   ['stand', 'Stand facing the Qibla', 'Stand facing the Qibla and make the intention in your heart for the prayer you are about to pray.'],
   ['takbir', 'Opening takbir', 'Raise your hands to the shoulders or the ears and say “Allahu akbar”. Then place the right hand over the left on the chest or below the navel, as your school teaches.', 'اللَّهُ أَكْبَرُ', 'Allāhu akbar', 'Allah is the Greatest.'],
-  ['stand', 'Recite', 'You may say the opening supplication, then seek refuge, say Bismillah and recite Al-Fatihah. In the first two units, add another surah, even a short one.', 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ', 'Subḥānaka-llāhumma wa bi-ḥamdik, wa tabāraka-smuk, wa taʿālā jadduk, wa lā ilāha ghayruk', 'Glory and praise be to You, O Allah. Blessed is Your name, exalted is Your majesty, and there is no god but You.'],
+  ['recite', 'Recite', 'You may say the opening supplication, then seek refuge, say Bismillah and recite Al-Fatihah. In the first two units, add another surah, even a short one.', 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، وَتَبَارَكَ اسْمُكَ، وَتَعَالَى جَدُّكَ، وَلَا إِلَهَ غَيْرُكَ', 'Subḥānaka-llāhumma wa bi-ḥamdik, wa tabāraka-smuk, wa taʿālā jadduk, wa lā ilāha ghayruk', 'Glory and praise be to You, O Allah. Blessed is Your name, exalted is Your majesty, and there is no god but You.'],
   ['ruku', 'Bow (ruku)', 'Say “Allahu akbar” and bow, hands on the knees, back straight. Say three times:', 'سُبْحَانَ رَبِّيَ الْعَظِيمِ', 'Subḥāna rabbiyal-ʿaẓīm', 'Glory be to my Lord, the Most Great.'],
-  ['stand', 'Rise', 'Rise and say “Sami Allahu liman hamidah”. Once standing, say:', 'رَبَّنَا وَلَكَ الْحَمْدُ', 'Rabbanā wa lakal-ḥamd', 'Our Lord, to You belongs all praise.'],
+  ['rise', 'Rise', 'Rise and say “Sami Allahu liman hamidah”. Once standing, say:', 'رَبَّنَا وَلَكَ الْحَمْدُ', 'Rabbanā wa lakal-ḥamd', 'Our Lord, to You belongs all praise.'],
   ['sujud', 'Prostrate (sujud)', 'Say “Allahu akbar” and prostrate: forehead and nose, both palms, both knees and the toes on the ground. Say three times:', 'سُبْحَانَ رَبِّيَ الْأَعْلَى', 'Subḥāna rabbiyal-aʿlā', 'Glory be to my Lord, the Most High.'],
   ['sit', 'Sit between the two prostrations', 'Say “Allahu akbar” and sit up briefly. Say:', 'رَبِّ اغْفِرْ لِي', 'Rabbi-ghfir lī', 'My Lord, forgive me.'],
   ['sujud', 'Second prostration', 'Say “Allahu akbar” and prostrate again, the same way. That completes one unit (rak‘ah).'],
   ['stand', 'Next unit', 'Stand up with “Allahu akbar” and repeat from the recitation for the second unit.'],
-  ['sit', 'Sit for the testimony (tashahhud)', 'After the second unit, sit and recite:', 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'At-taḥiyyātu lillāhi waṣ-ṣalawātu waṭ-ṭayyibāt, as-salāmu ʿalayka ayyuhan-nabiyyu wa raḥmatullāhi wa barakātuh, as-salāmu ʿalaynā wa ʿalā ʿibādillāhiṣ-ṣāliḥīn, ash-hadu an lā ilāha illallāh, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh', 'Greetings, prayers and good words are for Allah. Peace be upon you, O Prophet, and the mercy of Allah and His blessings. Peace be upon us and upon the righteous servants of Allah. I bear witness that there is no god but Allah, and I bear witness that Muhammad is His servant and His messenger.'],
-  ['sit', 'In the last sitting', 'In the final sitting, add the prayer upon the Prophet:', 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ', 'Allāhumma ṣalli ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā ṣallayta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd. Allāhumma bārik ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā bārakta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd', 'O Allah, send prayers upon Muhammad and the family of Muhammad, as You sent prayers upon Ibrahim and the family of Ibrahim. You are Praiseworthy, Glorious. O Allah, bless Muhammad and the family of Muhammad, as You blessed Ibrahim and the family of Ibrahim. You are Praiseworthy, Glorious.'],
+  ['tashahhud', 'Sit for the testimony (tashahhud)', 'After the second unit, sit and recite:', 'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَى عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ، وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', 'At-taḥiyyātu lillāhi waṣ-ṣalawātu waṭ-ṭayyibāt, as-salāmu ʿalayka ayyuhan-nabiyyu wa raḥmatullāhi wa barakātuh, as-salāmu ʿalaynā wa ʿalā ʿibādillāhiṣ-ṣāliḥīn, ash-hadu an lā ilāha illallāh, wa ash-hadu anna Muḥammadan ʿabduhū wa rasūluh', 'Greetings, prayers and good words are for Allah. Peace be upon you, O Prophet, and the mercy of Allah and His blessings. Peace be upon us and upon the righteous servants of Allah. I bear witness that there is no god but Allah, and I bear witness that Muhammad is His servant and His messenger.'],
+  ['tashahhud', 'In the last sitting', 'In the final sitting, add the prayer upon the Prophet:', 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ', 'Allāhumma ṣalli ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā ṣallayta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd. Allāhumma bārik ʿalā Muḥammadin wa ʿalā āli Muḥammad, kamā bārakta ʿalā Ibrāhīma wa ʿalā āli Ibrāhīm, innaka ḥamīdun majīd', 'O Allah, send prayers upon Muhammad and the family of Muhammad, as You sent prayers upon Ibrahim and the family of Ibrahim. You are Praiseworthy, Glorious. O Allah, bless Muhammad and the family of Muhammad, as You blessed Ibrahim and the family of Ibrahim. You are Praiseworthy, Glorious.'],
   ['salam', 'Close with salam', 'Turn the head to the right and say the greeting, then to the left. The prayer is complete.', 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ', 'As-salāmu ʿalaykum wa raḥmatullāh', 'Peace and the mercy of Allah be upon you.']
 ];
 
@@ -108,7 +88,7 @@ export function renderSteps(root, which, mode) {
     root.innerHTML = `<header class="sub"><a href="#/learn" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t(which === 'wudu' ? 'Ablution (wudu)' : 'The prayer (salat)')}</b><span class="mono">${t('Step {a} of {b}', { a: i + 1, b: list.length })}</span></header>
       <div class="stepbar" aria-hidden="true">${list.map((_, j) => `<i class="${j <= i ? 'on' : ''}"></i>`).join('')}</div>
       <section class="step">
-        <div class="figw" role="img" aria-label="${esc(t(title))}">${POSE[p] || ico[p]}</div>
+        <div class="figw" role="img" aria-label="${esc(t(title))}">${illustration(p, title)}</div>
         <h2>${t(title)}</h2><p>${t(body)}</p>
         ${ar ? `<div class="say"><p class="ar" lang="ar" dir="rtl">${ar}</p>${lang() !== 'ar' ? `<p class="tlit">${esc(S.phon ? phon(tl) : tl)}</p><button class="linkbtn small" id="sph" aria-pressed="${!!S.phon}">${t(S.phon ? 'Show the precise transliteration' : 'Show a simple phonetic reading')}</button>` : ''}${mean && lang() !== 'ar' ? `<p class="mean">${esc(t(mean))}</p>` : ''}</div>` : ''}
       </section>

@@ -1,8 +1,8 @@
 // safa. service worker: the app shell and every text file you open stay on the device.
-const V = 'safa-v9';
+const V = 'safa-v10';
 // Loaded after the first screen is shown, so Today appears first on a slow connection.
 const WARM = ['data/duas.json', 'data/quran/18.json', 'data/quran/36.json', 'data/quran/67.json', 'data/fr/18.json'];
-const SHELL = ['./', 'app.css', 'manifest.webmanifest', 'js/app.js', 'js/store.js', 'js/prayer.js', 'js/ui.js', 'js/i18n.js', 'js/player.js', 'js/a11y.js', 'js/sync.js', 'js/tajweed.js',
+const SHELL = ['illustrations/arms.webp','illustrations/ears.webp','illustrations/face.webp','illustrations/feet.webp','illustrations/hands.webp','illustrations/head.webp','illustrations/intention.webp','illustrations/mouth.webp','illustrations/nose.webp','illustrations/recite.webp','illustrations/rise.webp','illustrations/ruku.webp','illustrations/salam.webp','illustrations/sit.webp','illustrations/stand.webp','illustrations/sujud.webp','illustrations/takbir.webp','illustrations/tashahhud.webp','illustrations/testimony.webp', './', 'app.css', 'manifest.webmanifest', 'js/app.js', 'js/store.js', 'js/prayer.js', 'js/ui.js', 'js/i18n.js', 'js/player.js', 'js/a11y.js', 'js/sync.js', 'js/tajweed.js',
   'js/views/onboarding.js', 'js/views/today.js', 'js/views/quran.js', 'js/views/duas.js', 'js/views/track.js', 'js/views/calendar.js', 'js/views/learn.js', 'js/views/plan.js', 'js/views/ask.js', 'vendor/adhan.js',
   'data/meta.json', 'data/cities.json', 'data/quran/1.json', 'data/fr/1.json',
   'icons/icon-192.png', 'icons/icon-512.png', 'icons/maskable-192.png', 'icons/maskable-512.png', 'icons/apple-touch-icon.png',
