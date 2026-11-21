@@ -62,3 +62,61 @@ test('Expanded paths preserve previously completed lessons and resume at the ext
     assert.equal(resumeLearning(path, { current:2, completed:[0,1,2], total:path.steps.length, at:50 }).current, 2);
   }
 });
+
+test('Each learning step has substantial reading, practice and Thai content', async () => {
+  const { PATHS } = await import('../../day-08-safa/app/js/views/learning-paths.js');
+  const { LESSON_READING, LEGACY_PRACTICE } = await import('../../day-08-safa/app/js/views/lesson-reading.js');
+  const { TH } = await import('../../day-08-safa/app/js/i18n-th.js');
+  let count = 0;
+  for (const path of PATHS) {
+    assert.equal(LESSON_READING[path.id].length, path.steps.length, path.id);
+    for (const [i, step] of path.steps.entries()) {
+      count++;
+      const reading = LESSON_READING[path.id][i];
+      assert.ok(reading.every(paragraph => paragraph.length >= 125), step.title[1]);
+      assert.match(TH[reading[1]], /[\u0e00-\u0e7f]/, step.title[1]);
+      assert.ok(step.practice || LEGACY_PRACTICE[path.id]?.[i], step.title[1]);
+    }
+  }
+  assert.equal(count, 46);
+});
+
+test('Thai localization covers the reference library and preserves placeholders', async () => {
+  const { missing } = await import('../../day-08-safa/app/js/i18n.js');
+  const { fr, ar, th } = missing();
+  for (const key of new Set([...Object.keys(fr), ...Object.keys(ar)])) assert.ok(th[key], key);
+  const markers = text => (text.match(/\{\w+\}|<\/?[a-z]+\s*\/?>/g) || []).sort();
+  for (const [source, translation] of Object.entries(th)) {
+    assert.ok(translation.trim());
+    assert.deepEqual(markers(translation), markers(source), source);
+  }
+  const dataRoot = new URL('../../day-08-safa/app/data/', import.meta.url);
+  const read = path => JSON.parse(readFileSync(new URL(path, dataRoot), 'utf8'));
+  const { facts, categories, moments, faq } = read('journey.json');
+  const fields = [
+    ...facts.flatMap(x => [x.title, x.body]),
+    ...categories.map(x => x.title),
+    ...moments.flatMap(x => [x.title, x.intro]),
+    ...faq.flatMap(x => [x.question, x.answer]),
+  ];
+  for (const { en } of fields.filter(Boolean)) if (en) assert.match(th[en], /[\u0e00-\u0e7f]/, en);
+  for (const chapter of read('duas.json')) {
+    assert.ok(th[chapter.t], chapter.t);
+    for (const dua of chapter.d) if (dua.en) assert.ok(th[dua.en], dua.en);
+  }
+});
+
+test('The published Thai Quran aligns with all 6,236 existing verse references', () => {
+  const dataRoot = new URL('../../day-08-safa/app/data/', import.meta.url);
+  const read = path => JSON.parse(readFileSync(new URL(path, dataRoot), 'utf8'));
+  const index = read('thai-quran/index.json');
+  const groups = Object.fromEntries([...new Set(Object.values(index))].map(id => [id, read(`thai-quran/${id}.json`)]));
+  const verses = read('meta.json').s.map((chapter, i) => {
+    const id = i + 1;
+    const lines = groups[index[id]][id];
+    assert.equal(lines.length, chapter[3], id);
+    assert.ok(lines.every(line => /[\u0e00-\u0e7f]/.test(line)), id);
+    return lines.length;
+  });
+  assert.equal(verses.reduce((a,b) => a+b), 6236);
+});

@@ -29,3 +29,9 @@ Recitation player: one timeline per surah from 0:00, lock-screen controls (Media
 ## Unfinished
 
 Not a native build. No widgets. No notifications while closed. Audio and offline audio untested on real devices. About half of the dua references are matched automatically and all need scholarly review.
+
+### Version thaïe
+
+L’interface, les guides, les parcours, la FAQ et les significations des douas sont disponibles dans la langue « ภาษาไทย ». Les textes propres à Safa sont en cours de relecture humaine. Les liens de signalement dans Apprendre permettent d’indiquer la page et le passage à corriger.
+
+Le Coran utilise la traduction thaïe du King Fahad Quran Complex, référencée par [Tanzil](https://tanzil.net/trans/). Les textes de la copie [Quran API](https://github.com/fawazahmed0/quran-api/blob/93e6f64925ae76273520d636fcaaf061129f2316/editions/tha-kingfahadquranc.min.json) sont servis sans modification, par référence de sourate et d’ayah. Le commentaire distinct [Al-Mukhtasar (thaï), v1.0.0](https://quranenc.com/th/browse/thai_mokhtasar), du Tafsir Center for Quranic Studies, est fourni en ligne par QuranEnc. Les gloses mot à mot restent indisponibles en thaï.

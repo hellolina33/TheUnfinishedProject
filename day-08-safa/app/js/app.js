@@ -1,6 +1,6 @@
 import { S, save, dayKey, getDay } from './store.js';
 import { $, icon, toast, closeSheet } from './ui.js';
-import { t, applyLang } from './i18n.js';
+import { t, applyLang, uiLanguage } from './i18n.js';
 import * as onboarding from './views/onboarding.js';
 import { render as renderToday, renderQibla, renderFlight } from './views/today.js';
 import { renderList as quranList, renderReader } from './views/quran.js';
@@ -172,7 +172,7 @@ function drawMini() {
 mini.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'mpp') PL.toggle(); if (b.id === 'mst') PL.stop(); });
 PL.onChange(drawMini);
 // Links from the landing can carry ?lang=ar (or fr, en) for a first visit.
-{ const q = new URLSearchParams(location.search).get('lang'); if (!S.onboarded && ['fr', 'en', 'ar'].includes(q)) { S.lang = q; save(); applyLang(); drawTabs(); } }
+{ const url = new URL(location.href); const q = url.searchParams.get('lang'); if (uiLanguage(q)) { S.lang = q; save(); url.searchParams.delete('lang'); history.replaceState(history.state, '', url); applyLang(); drawTabs(); } }
 window.addEventListener('hashchange', route);
 // Ctrl+K (or Cmd+K) opens the search from any screen.
 document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (location.hash !== '#/ask') location.hash = '#/ask'; else document.querySelector('#aq')?.focus(); } });

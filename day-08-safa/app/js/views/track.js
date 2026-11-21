@@ -4,7 +4,8 @@ import { $, $$, esc, icon, pad, toast, download, cityField, LOGO, countryName, r
 import { setLocation, locateOnce } from './onboarding.js';
 import { RECITERS } from './quran.js';
 import * as PL from '../player.js';
-import { t, L, lang, applyLang } from '../i18n.js';
+import { thaiQuranIndex } from '../thai-quran.js';
+import { t, L, lang, applyLang, LANGUAGES } from '../i18n.js';
 import * as SY from '../sync.js';
 import { applyUi } from '../a11y.js';
 
@@ -113,7 +114,7 @@ export async function renderSettings(root, sec) {
     root.innerHTML = `<header class="sub"><a href="#/settings" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${secName}</b><span class="ib"></span></header>
       <section class="form">
 <div class="sgrp" data-sec="lang">
-        <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع' }[lang()]) + ')'], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}" ${k === 'ar' ? 'lang="ar" dir="rtl"' : ''}>${l}</button>`).join('')}</div>
+        <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع', th: 'ไทย' }[lang()]) + ')'], ...LANGUAGES].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}" ${k === 'auto' ? '' : `lang="${k}"`}>${l}</button>`).join('')}</div>
 </div><div class="sgrp" data-sec="times">
         <h3 id="st2">${t('Place')}</h3>
         <p class="muted small">${S.loc ? t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) }) : t('Choose a city first.')}</p>
@@ -208,7 +209,7 @@ export async function renderSettings(root, sec) {
       try { const f = new File([txt], name, { type: 'application/octet-stream' }); if (navigator.canShare && navigator.canShare({ files: [f] })) { await navigator.share({ files: [f], title: 'safa.' }); return; } } catch (err) { /* fall back to download */ }
       download(name, txt, 'application/octet-stream'); toast(t('Sync file created. Open it on your other device.')); return;
     }
-    if (b.dataset.lang) { S.lang = b.dataset.lang; if (S.q.tr !== 'none') S.q.tr = 'auto'; save(); applyLang(); window.dispatchEvent(new Event('safa:lang')); return; }
+    if (b.dataset.lang) { S.lang = b.dataset.lang; save(); applyLang(); window.dispatchEvent(new Event('safa:lang')); return; }
     if (b.dataset.off) { const p = b.dataset.off; S.offsets[p] = Math.max(-30, Math.min(30, (S.offsets[p] || 0) + +b.dataset.d)); save(); const y = window.scrollY; await draw(); window.scrollTo(0, y); return; }
     if (b.id === 'sgeo') { b.textContent = t('Locating…'); try { await locateOnce(); toast(t('Location set · {c}', { c: S.loc.name })); } catch (err) { toast(t('Location unavailable.')); } draw(); return; }
     if (b.id === 'sexp') {
@@ -227,7 +228,7 @@ export async function renderSettings(root, sec) {
     if (b.id === 'srst') { if (Date.now() - armed < 4000) { resetState(); try { await caches.delete('safa-audio'); } catch (err) { /* ignore */ } location.hash = '#/today'; location.reload(); } else { armed = Date.now(); b.textContent = t('Tap again to erase everything. Export a backup first if you want to keep it.'); } return; }
     if (b.id === 'sall') {
       b.disabled = true; let ok = 0;
-      try { for (let s = 1; s <= 114; s++) { await Promise.all([fetch(`data/quran/${s}.json`), fetch(`data/tafsir/${s}.json`), fetch(`data/${lang() === 'fr' ? 'fr' : 'pk'}/${s}.json`)]); ok++; b.textContent = t('Saving… {n} / 114', { n: ok }); } await fetch(lang() === 'fr' ? 'data/search_fr.json' : 'data/search.json'); b.textContent = t('Whole Quran saved for offline ✓'); }
+      try { for (let s = 1; s <= 114; s++) { await Promise.all([fetch(`data/quran/${s}.json`), fetch(`data/tafsir/${s}.json`), fetch(`data/${lang() === 'fr' ? 'fr' : 'pk'}/${s}.json`)]); ok++; b.textContent = t('Saving… {n} / 114', { n: ok }); } if (lang() === 'th') await thaiQuranIndex(); else await fetch(lang() === 'fr' ? 'data/search_fr.json' : 'data/search.json'); b.textContent = t('Whole Quran saved for offline ✓'); }
       catch (err) { b.disabled = false; b.textContent = t('Stopped at {n} / 114. Tap to retry.', { n: ok }); }
       return;
     }
@@ -303,7 +304,7 @@ export function renderAbout(root) {
         <li>${t(`<b>Duas:</b> Hisnul Muslim by Sa'id bin Ali bin Wahf al-Qahtani, text and audio from hisnmuslim.com.`)}</li>
         <li>${t(`<b>Cities:</b> city-timezones (MIT).`)}</li>
       </ul>
-      <p><a href="../${lang() === 'fr' ? 'confidentialite' : 'privacy'}/" target="_blank" rel="noopener">${t('What safa. keeps, and what it never keeps')}</a></p>
+      <p><a href="../${lang() === 'fr' ? 'confidentialite' : lang() === 'th' ? 'th/privacy' : 'privacy'}/" target="_blank" rel="noopener">${t('What safa. keeps, and what it never keeps')}</a></p>
       <p class="muted small">${t('Open the sources:')} ${LINKS.map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener">${n}</a>`).join(' · ')}</p>
       <p class="mono">${t('Version 1.1 · made by Salah, as part of The Unfinished 30. safa. stays online after the challenge.')}</p>
     </section>`;

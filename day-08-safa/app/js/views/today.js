@@ -1,7 +1,8 @@
 import { S, save, dayKey, addDays, getDay, P5, data } from '../store.js';
 import { timesFor, ORDER, NAMES, AR, fmtTime, hijri, gregorian, weekday, qiblaBearing, methodAngles, flightPrayers, localToUtc, distanceKm, METHODS } from '../prayer.js';
 import { $, esc, icon, pad, cityField, toast, sheet, closeSheet, download } from '../ui.js';
-import { t, L, lang } from '../i18n.js';
+import { thaiSurah } from '../thai-quran.js';
+import { t, L, lang, LB } from '../i18n.js';
 import { upcoming } from './calendar.js';
 import { hifzDue } from './plan.js';
 
@@ -92,7 +93,7 @@ async function ayahOfDay(el) {
   const k = dayKey(), n = (+k.replace(/-/g, '')) % AYAT.length, [s, v] = AYAT[n];
   try {
     const meta = await data('meta.json'), src = await data('quran/' + s + '.json');
-    let tr = src.v[v - 1].t; if (lang() === 'fr') { const f = await data('fr/' + s + '.json'); tr = f[v - 1]; }
+    let tr = src.v[v - 1].t; if (lang() === 'fr') { const f = await data('fr/' + s + '.json'); tr = f[v - 1]; } else if (lang() === 'th') { tr = (await thaiSurah(s).catch(() => []))[v - 1] || ''; }
     const nm = lang() === 'ar' ? meta.s[s - 1][2] : meta.s[s - 1][0];
     el.innerHTML = `<span class="mono">${t('A verse for today')}</span><p class="ar" lang="ar" dir="rtl">${src.v[v - 1].a.join(' ')}</p>${lang() !== 'ar' ? `<p>« ${esc(tr)} »</p>` : ''}<a class="mono" href="#/quran/${s}/${v}">${esc(String(nm))} ${s}:${v} · ${t('Read in context')} ›</a>`;
     el.hidden = false;
@@ -203,7 +204,7 @@ export function render(root) {
 export function renderQibla(root) {
   const q = qiblaBearing(S.loc.lat, S.loc.lng);
   let heading = null, aligned = false, voice = false, lastSay = ['', 0];
-  const say = txt => { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = lang() === 'ar' ? 'ar' : lang() === 'fr' ? 'fr-FR' : 'en-GB'; speechSynthesis.speak(u); } catch (e) { /* unsupported */ } };
+  const say = txt => { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = LB(); speechSynthesis.speak(u); } catch (e) { /* unsupported */ } };
   const hasSensor = typeof DeviceOrientationEvent !== 'undefined' && (('ontouchstart' in window) || navigator.maxTouchPoints > 0);
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Qibla')}</b><span class="ib"></span></header>
     <section class="qibla">
