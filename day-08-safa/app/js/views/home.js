@@ -42,47 +42,51 @@ export function inMinutes(ms) {
   if (m < 60) return t('in {m} min', { m });
   return t('in {h} h {m}', { h: Math.floor(m / 60), m: String(m % 60).padStart(2, '0') });
 }
-// The illustration follows the time of day: morning light, then dusk for Maghrib and Isha.
-function cover(k) {
-  if (k === 'maghrib' || k === 'isha') return ['prayer', 'dusk'];
-  if (k === 'asr') return ['prayer', ''];
-  return ['morning', ''];
-}
+const feature = (href, title, graphic, cover, detail = '') => `
+  <a class="home-feature home-feature--${cover}" href="#/${href}">
+    <img src="illustrations/covers/${cover}.webp" alt="" width="384" height="384" decoding="async">
+    <span class="feature-body"><span class="feature-icon">${graphic}</span><strong>${esc(title)}</strong>${detail ? `<small>${esc(detail)}</small>` : ''}</span>
+    <span class="feature-arrow">${icon.chev}</span>
+  </a>`;
 
 function resumeCard() {
   const c = [];
   const q = S.q.last;
-  if (q?.s) c.push({ at: q.at || 1, html: link(`quran/${q.s}/${q.v || 1}`, copy('Continuer ma lecture', 'Continue reading', 'متابعة القراءة'), icon.quran,
+  if (q?.s) c.push({ at: q.at || 1, html: feature(`quran/${q.s}/${q.v || 1}`, copy('Continuer ma lecture', 'Continue reading', 'متابعة القراءة'), icon.quran, 'quran',
     `${q.n || ''}${q.n ? ' · ' : ''}${copy('verset', 'verse', 'آية')} ${q.v || 1} (\u2066${q.s}:${q.v || 1}\u2069)`) });
   const j = S.journeyRecent;
-  if (j?.id && !SENSITIVE.includes(j.id) && !(S.journeyDone || {})[j.id]) c.push({ at: j.at || 0, html: link(`journey/${j.id}`, copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري'), icon.pathway, j.title?.[lang()] || '') });
+  if (j?.id && !SENSITIVE.includes(j.id) && !(S.journeyDone || {})[j.id]) c.push({ at: j.at || 0, html: feature(`journey/${j.id}`, copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري'), icon.pathway, 'learn', j.title?.[lang()] || '') });
   const g = S.guideRecent;
-  if (g?.href) c.push({ at: g.at || 0, html: link(g.href, copy('Reprendre le guide', 'Resume the guide', 'متابعة الدليل'), icon.prayerMat, g.title?.[lang()] || '') });
+  if (g?.href) c.push({ at: g.at || 0, guide: true, html: feature(g.href, copy('Reprendre le guide', 'Resume the guide', 'متابعة الدليل'), icon.prayerMat, 'prayer', g.title?.[lang()] || '') });
   c.sort((a, b) => b.at - a.at);
-  return c[0]?.html || '';
+  return c[0];
 }
 
+const homeCleanup = new WeakMap();
+
 export function renderHome(root) {
+  homeCleanup.get(root)?.();
   const today = dayKey();
   if (S.homeDay !== today) { S.homeDay = today; S.visits = (S.visits || 0) + 1; save(); }
   const early = (S.visits || 0) <= 5;
-  const learn = link('journey/prayer', copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة'), icon.prayerMat, copy('Gestes et paroles, rakʿa par rakʿa', 'Postures and words, unit by unit', 'الهيئات والأذكار ركعة ركعة'));
+  const learn = feature('journey/prayer', copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة'), icon.prayerMat, 'prayer', copy('Gestes et paroles, rakʿa par rakʿa', 'Postures and words, unit by unit', 'الهيئات والأذكار ركعة ركعة'));
   const resume = resumeCard();
-  const quick = early ? [learn, resume || link('quran/1', t('Read Al-Fatiha'), icon.quran)] : [resume || learn, resume ? learn : link('quran/1', t('Read Al-Fatiha'), icon.quran)];
+  const read = feature('quran/1', t('Read Al-Fatiha'), icon.quran, 'quran');
+  const quick = !resume ? [learn, read] : resume.guide ? [resume.html, read] : early ? [learn, resume.html] : [resume.html, learn];
   const np = S.loc ? nextPrayer() : null;
-  const [img, tone] = cover(np?.k);
+  const tone = np && ['maghrib','isha'].includes(np.k) ? 'dusk' : '';
   const pinned = pins();
   const T = TOOLS();
   const hero = np
     ? `<a class="home-hero ${tone}" href="#/today" id="home-hero">
         <div><p>${copy('Prochaine prière', 'Next prayer', 'الصلاة القادمة')} · ${esc(S.loc.name)}</p>
-          <h2>${NAMES[np.k]}${np.tomorrow ? ` <span class="tmw">${copy('demain', 'tomorrow', 'غدًا')}</span>` : ''} · <span class="mono">${fmtTime(np.at)}</span></h2>
+          <h2>${NAMES[np.k]}${np.tomorrow ? ` <span class="tmw">${copy('demain', 'tomorrow', 'غدًا')}</span>` : ''}<bdi class="hero-time">${fmtTime(np.at)}</bdi></h2>
           <p class="hero-in" id="hero-in">${inMinutes(np.at)}</p></div>
-        <img src="illustrations/covers/${img}.webp" alt="" width="140" height="165">
+        <img src="illustrations/covers/arch.webp" alt="" width="960" height="640" fetchpriority="high">
         <span class="hero-chev">${icon.chev}</span></a>`
     : `<a class="home-hero" href="#/today" id="home-hero"><div><p>${copy('Horaires de prière', 'Prayer times', 'مواقيت الصلاة')}</p>
         <h2>${copy('Choisis une ville', 'Choose a city', 'اختر مدينة')}</h2><p>${copy('pour afficher tes horaires', 'to see your times', 'لعرض المواقيت')}</p></div>
-        <img src="illustrations/covers/morning.webp" alt="" width="140" height="165"><span class="hero-chev">${icon.chev}</span></a>`;
+        <img src="illustrations/covers/arch.webp" alt="" width="960" height="640" fetchpriority="high"><span class="hero-chev">${icon.chev}</span></a>`;
   root.innerHTML = `
     <header class="home-head"><h1>safa<span>.</span></h1>
       <label class="home-language">${icon.globe}<span class="visually-hidden">${copy('Langue', 'Language', 'اللغة')}</span>
@@ -137,7 +141,14 @@ export function renderHome(root) {
   }
   const off = () => { if (root.querySelector('#home-hero')) renderHome(root); };
   window.addEventListener('online', off); window.addEventListener('offline', off);
-  return () => { clearInterval(timer); io?.disconnect(); root.onclick = null; window.removeEventListener('online', off); window.removeEventListener('offline', off); };
+  homeCleanup.set(root, () => {
+    clearInterval(timer);
+    io?.disconnect();
+    root.onclick = null;
+    window.removeEventListener('online', off);
+    window.removeEventListener('offline', off);
+  });
+  return () => { homeCleanup.get(root)?.(); homeCleanup.delete(root); };
 }
 
 export function renderPlus(root, section) {
