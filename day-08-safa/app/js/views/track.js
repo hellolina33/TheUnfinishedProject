@@ -69,19 +69,20 @@ export function renderTrack(root) {
   return () => { root.onclick = null; root.onchange = null; };
 }
 
-export function renderSettings(root) {
+export async function renderSettings(root) {
   let meta = null;
   const draw = async () => {
     if (!meta) { try { meta = await data('meta.json'); } catch (e) { /* offline */ } }
     let est = ''; try { const e = await navigator.storage.estimate(); est = t('{n} MB used on this device', { n: (e.usage / 1048576).toLocaleString(L(), { maximumFractionDigits: 1 }) }); } catch (e) { /* not supported */ }
     const dl = Object.keys(S.q.dl || {});
-    root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
+    if (!location.hash.startsWith('#/settings')) return;
+    root.innerHTML = `<header class="sub"><a href="#/plus" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
       <nav class="chips wrapc stoc" aria-label="${t('Sections')}"><button class="chip" data-go="st1">${t('Language')}</button><button class="chip" data-go="st2">${t('Place')}</button><button class="chip" data-go="st3">${t('Prayer times')}</button><button class="chip" data-go="st4">${t('Offline')}</button><button class="chip" data-go="st5">${t('Display &amp; accessibility')}</button><button class="chip" data-go="st6">${t('Friday')}</button><button class="chip" data-go="st7">${t('Sync between devices')}</button><button class="chip" data-go="st8">${t('Backup')}</button></nav>
       <section class="form">
         <h3 id="st1">${t('Language')}</h3>
         <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع' }[lang()]) + ')'], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
         <h3 id="st2">${t('Place')}</h3>
-        <p class="muted small">${t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) })}</p>
+        <p class="muted small">${S.loc ? t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) }) : t('Choose a city first.')}</p>
         <div id="scity"></div><button class="btn line sm" id="sgeo">${t('Use my location once')}</button>
         <h3 id="st3">${t('Prayer times')}</h3>
         <label class="lbl" for="smeth">${t('Calculation method')}</label>
@@ -89,16 +90,16 @@ export function renderSettings(root) {
         <label class="lbl" for="smad">${t('Asr')}</label>
         <select id="smad" class="inp"><option value="shafi" ${S.madhab === 'shafi' ? 'selected' : ''}>${t("Standard · Shafi'i, Maliki, Hanbali")}</option><option value="hanafi" ${S.madhab === 'hanafi' ? 'selected' : ''}>${t('Hanafi')}</option></select>
         <p class="muted small">${t('Hanafi: Asr starts later. Not sure? Keep Standard, or ask your mosque.')}</p>
-        <label class="lbl">${t('Match your mosque · minutes')}</label>
+        ${S.loc ? `<label class="lbl">${t('Match your mosque · minutes')}</label>
         <div class="offs">${P5.map(p => `<div class="off"><span>${NAMES[p]}</span><button data-off="${p}" data-d="-1" aria-label="${t('{p} minus one minute', { p: NAMES[p] })}">−</button><b class="mono">${S.offsets[p] > 0 ? '+' : ''}${S.offsets[p]}</b><button data-off="${p}" data-d="1" aria-label="${t('{p} plus one minute', { p: NAMES[p] })}">+</button><span class="mono muted">${fmtTime(timesFor(dayKey())[p])}</span></div>`).join('')}</div>
         <details class="mosq"><summary class="linkbtn small">${t('Copy your mosque’s times instead')}</summary>
           <p class="muted small">${t('Type today’s times from your mosque. safa. keeps the difference and applies it every day.')}</p>
           <div class="grid2">${P5.map(p => `<label class="lbl" for="mq-${p}">${NAMES[p]}</label><input id="mq-${p}" data-mq="${p}" class="inp" type="time" value="${new Intl.DateTimeFormat('en-GB', { timeZone: S.loc.tz, hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).format(new Date(timesFor(dayKey())[p] - (S.offsets[p] || 0) * 60000))}">`).join('')}</div>
-          <button class="btn line sm" id="smq">${t('Use these times')}</button></details>
+          <button class="btn line sm" id="smq">${t('Use these times')}</button></details>` : ''}
         <label class="lbl" for="shij">${t('Hijri date adjustment')}</label>
         <select id="shij" class="inp">${[-2, -1, 0, 1, 2].map(n => `<option value="${n}" ${S.hijriAdj === n ? 'selected' : ''}>${t(Math.abs(n) === 1 ? '{n} day' : '{n} days', { n: (n > 0 ? '+' : '') + n })}</option>`).join('')}</select>
         <label class="tog"><span>${t('24-hour clock')}</span><input type="checkbox" id="s24" ${S.h24 ? 'checked' : ''}></label>
-        <button class="btn line sm" id="sics">${t('Add 30 days of prayer times to my calendar')}</button>
+        ${S.loc ? `<button class="btn line sm" id="sics">${t('Add 30 days of prayer times to my calendar')}</button>` : ''}
         <h3 id="st4">${t('Offline')}</h3>
         <p class="muted small">${esc(est)}</p>
         <button class="btn line sm" id="sall">${t('Save the whole Quran text for offline')} · ≈ 25 MB</button>
@@ -141,7 +142,7 @@ export function renderSettings(root) {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.theme) { S.ui.theme = b.dataset.theme; save(); applyUi(); draw(); return; }
     if (b.dataset.scale) { S.ui.scale = +b.dataset.scale; save(); applyUi(); draw(); return; }
-    if (b.id === 'sfics') { download('safa-friday-al-kahf.ics', ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-friday-${Date.now()}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc.tz}:${(() => { const d = new Date(); d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7)); return d.toISOString().slice(0, 10).replace(/-/g, ''); })()}T090000`, 'DURATION:PT10M', 'RRULE:FREQ=WEEKLY;BYDAY=FR', 'SUMMARY:' + t('Friday · Al-Kahf'), 'DESCRIPTION:' + t('Read Al-Kahf. Send blessings on the Prophet.'), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + t('Friday · Al-Kahf'), 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar'); return; }
+    if (b.id === 'sfics') { download('safa-friday-al-kahf.ics', ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-friday-${Date.now()}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc?.tz || Intl.DateTimeFormat().resolvedOptions().timeZone}:${(() => { const d = new Date(); d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7)); return d.toISOString().slice(0, 10).replace(/-/g, ''); })()}T090000`, 'DURATION:PT10M', 'RRULE:FREQ=WEEKLY;BYDAY=FR', 'SUMMARY:' + t('Friday · Al-Kahf'), 'DESCRIPTION:' + t('Read Al-Kahf. Send blessings on the Prophet.'), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + t('Friday · Al-Kahf'), 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar'); return; }
     if (b.id === 'ssync') {
       const pass = $('#spass', root).value; if (pass.length < 8) { toast(t('Choose a passphrase of 8 characters or more.')); $('#spass', root).focus(); return; }
       b.disabled = true; const txt = await SY.seal(pass), name = `safa-sync-${dayKey()}.safa`; b.disabled = false;
@@ -204,7 +205,7 @@ export function renderSettings(root) {
     }
     if (['smeth', 'smad', 'shij', 's24', 'simp'].includes(id)) { save(); draw(); }
   };
-  draw(); data('cities.json').catch(() => {});
+  await draw(); data('cities.json').catch(() => {});
   return () => { root.onclick = null; root.onchange = null; };
 }
 
