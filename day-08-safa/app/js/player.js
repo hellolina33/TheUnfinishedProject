@@ -1,7 +1,7 @@
 // Recitation player. One <audio> element, one verse file at a time (everyayah),
 // but the user only ever sees one surah timeline that starts at 0:00.
 import { S, save, data, dayKey, getDay } from './store.js';
-import { t } from './i18n.js';
+import { t, lang } from './i18n.js';
 import { toast } from './ui.js';
 
 // Only reciters with word-level timings (quran-align, CC BY 4.0).
@@ -49,7 +49,25 @@ export function playVerse(v, offsetMs = 0) {
   if (v >= 1) { S.q.last = { s: P.s, v, n: P.name }; const d = getDay(dayKey(), true); if (!d.r) d.r = 1; save(); }
   meta(); emit();
 }
-export function playFrom(v) { P.mode = 'off'; playVerse(v === 1 && hasBasmala(P.s) ? 0 : v); }
+/* Play modes, like a classic Quran app.
+   S.q.pm: 'stop' (stop at the end of the surah or group), 'next' (surah after surah), 'repeat' (repeat the surah or group).
+   S.q.grp: 0 = verse after verse, otherwise play this many verses from where you start (a group). */
+export const GROUPS = [0, 1, 2, 3, 5, 10, 15, 20, 30, 50];
+const pm = () => S.q.pm || 'next', grp = () => S.q.grp || 0;
+function setGroup(v) { const a = Math.max(1, v); P.gA = a; P.gB = grp() ? Math.min(P.n, a + grp() - 1) : 0; }
+export function playFrom(v) { P.mode = 'off'; setGroup(v); playVerse(v === 1 && hasBasmala(P.s) ? 0 : v); }
+export function setMode(m, g) { if (m) S.q.pm = m; if (g != null) S.q.grp = g; save(); if (P.v != null && P.mode === 'off') setGroup(P.v || 1); emit(); }
+// Move to another surah: loads its timings, then plays it from the start if asked.
+export async function gotoSurah(s2, play) {
+  if (s2 < 1 || s2 > 114) return false;
+  let m; try { m = await data('meta.json'); } catch (e) { return false; }
+  const row = m.s[s2 - 1], nm = lang() === 'ar' ? row[2] : row[0];
+  if (P.v != null) { audio.pause(); P.v = null; }
+  await loadSurah(s2, nm, row[3]);
+  P.auto = true;
+  if (play) playFrom(1); else emit();
+  return true;
+}
 export function loopVerse(v) { if (P.sleep === 'end') P.sleep = 0; P.mode = 'verse'; playVerse(v); }
 export function loopRange(a, b) { if (P.sleep === 'end') P.sleep = 0; P.mode = 'range'; P.a = a; P.b = b; playVerse(a); }
 export function toggle() { if (P.v == null) return playFrom(1); if (audio.paused) audio.play().catch(() => {}); else audio.pause(); }
@@ -80,14 +98,21 @@ audio.addEventListener('loadedmetadata', () => {
   if (P.seekTo) { try { audio.currentTime = P.seekTo; } catch (e) { /* ignore */ } P.seekTo = 0; }
   meta(); emit();
 });
+export const __ended = () => audio.dispatchEvent(new Event('ended')); // for automated checks
 audio.addEventListener('ended', () => {
   if (P.word) { P.word = false; emit(); return; }
   if (P.v == null) return;
   P.ends = (P.ends || 0) + 1;
   if (P.mode === 'verse') return playVerse(P.v);
   if (P.mode === 'range') return playVerse(P.v < P.b ? P.v + 1 : P.a);
+  // A group of verses ends: stop, or start the group again.
+  if (P.gB && P.v >= P.gB && P.sleep !== 'end') { if (pm() === 'repeat') return playVerse(P.gA === 1 && hasBasmala(P.s) ? 0 : P.gA); P.v = null; emit(); position(); return; }
   if (P.v < P.n) return playVerse(P.v + 1);
-  P.v = null; if (P.sleep === 'end') P.sleep = 0; emit(); position();
+  // End of the surah.
+  if (P.sleep === 'end') { P.sleep = 0; P.v = null; emit(); position(); return; }
+  if (pm() === 'repeat') { setGroup(1); return playVerse(hasBasmala(P.s) ? 0 : 1); }
+  if (pm() === 'next' && P.s < 114) { gotoSurah(P.s + 1, true); return; }
+  P.v = null; emit(); position();
 });
 audio.addEventListener('error', () => {
   if (!audio.getAttribute('src')) return;
