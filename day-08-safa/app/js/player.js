@@ -3,6 +3,8 @@
 import { S, save, data, dayKey, getDay } from './store.js';
 import { t, lang } from './i18n.js';
 import { toast } from './ui.js';
+import { hasBasmala } from './basmala.js';
+export { hasBasmala };
 
 // Only reciters with word-level timings (quran-align, CC BY 4.0).
 export const RECITERS = {
@@ -20,7 +22,6 @@ const audio = new Audio(); audio.preload = 'auto';
 export const P = { sleep: 0, s: null, v: null, n: 0, name: '', mode: 'off', a: 0, b: 0, word: false, durs: null, real: {}, tim: null, listeners: new Set(), seekTo: 0 };
 const emit = () => P.listeners.forEach(f => { try { f(); } catch (e) { /* view gone */ } });
 export const onChange = f => { P.listeners.add(f); return () => P.listeners.delete(f); };
-export const hasBasmala = s => s !== 1 && s !== 9;
 
 export async function loadSurah(s, name, n) {
   if (P.s === s && P.durs && P.rk === S.q.reciter) return;

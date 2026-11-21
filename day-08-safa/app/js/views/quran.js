@@ -1,3 +1,4 @@
+import { BASMALA_TRANSLITERATION, basmalaWord, basmalaWordIndex } from '../basmala.js';
 import { S, save, data, dayKey, getDay } from '../store.js';
 import { weekday } from '../prayer.js';
 import { $, $$, esc, icon, arNum, sheet, closeSheet, toast, reportUrl, download } from '../ui.js';
@@ -51,7 +52,6 @@ export async function tafsirText(k, s, v) {
 }
 const defaultTafsirs = () => ({ fr: ['fr-mukhtasar'], ar: ['ar-muyassar'], en: ['en-mukhtasar'], th: ['th-mukhtasar'] }[lang()]);
 const SAJDA = new Set(['7:206', '13:15', '16:50', '17:109', '19:58', '22:18', '22:77', '25:60', '27:26', '32:15', '38:24', '41:38', '53:62', '84:21', '96:19']);
-const BISM = 'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ';
 
 /* ---------- Shared: verse text, context, compare, notes ---------- */
 export async function verseText(s, v) {
@@ -169,7 +169,12 @@ export async function renderReader(root, sN, vN, extra) {
   const startV = Math.min(n, Math.max(1, +vN || 1)); let opened = startV;
   if (!S.q.dl) S.q.dl = {};
   await PL.loadSurah(s, name, n);
-  const fat = s !== 1 && s !== 9 ? (await data('quran/1.json')).v[0] : null;
+  const opening = s === 1 ? V[0] : PL.hasBasmala(s) ? (await data('quran/1.json').catch(() => null))?.v[0] : null;
+  const hasPrelude = PL.hasBasmala(s) && !!opening;
+  const uiLanguage = lang();
+  const thaiOpening = uiLanguage === 'th' && opening
+    ? (s === 1 ? wth[0] : (await thaiWordStudy(1, [opening]).catch(() => []))[0])
+    : null;
   const gloss = (x, i, j) => {
     if (lang() === 'ar') return '';
     if (lang() === 'th') return wth[i]?.[j] || '';
@@ -179,19 +184,32 @@ export async function renderReader(root, sN, vN, extra) {
   const translationAt = i => pk ? pk[i] : trKey() === 'thai' ? '' : V[i].t;
   const translationLanguage = { thai: 'th', maash: 'fr', hamidullah: 'fr', itani: 'en', pickthall: 'en', muyassar: 'ar' }[trKey()] || lang();
   const cls = () => `reader ${S.q.book && !S.q.wbw && !S.q.flow ? 'book' : ''} tfs${S.q.tfs ?? 1} ${S.q.wbw ? 'wbw' : ''} ${S.q.flow && !S.q.wbw ? 'flow' : ''} ${S.q.tl ? 'tl' : ''} ${trKey() === 'none' ? 'notr' : ''} h${S.q.hide} fs${S.q.fs}`;
-  const words = (arr, x, i) => { const tj = S.q.tj !== false ? tajweed(arr) : arr; return arr.map((w, j) => `<button class="w" data-w="${j}" aria-label="${esc(x && x.w ? x.w[j][0] : w)}"><span class="wa">${tj[j]}</span>${x && x.w ? `<span class="g"><i>${esc(x.w[j][0])}</i>${gloss(x, i, j) ? `<em>${esc(gloss(x, i, j))}</em>` : ''}</span>` : ''}</button>`).join(' '); };
+  const wordDetails = (x, v, j) => {
+    const fromBasmala = (v === 0 || (s === 1 && v === 1) || (s === 27 && v === 30))
+      ? basmalaWordIndex(x.a, opening?.a, j) : -1;
+    return fromBasmala !== -1
+      ? basmalaWord(fromBasmala, uiLanguage, thaiOpening)
+      : { roman: x.w?.[j]?.[0], meaning: gloss(x, v - 1, j) };
+  };
+  const words = (x, v) => {
+    const styled = S.q.tj !== false ? tajweed(x.a) : x.a;
+    return x.a.map((word, j) => {
+      const { roman, meaning } = wordDetails(x, v, j);
+      return `<button class="w" data-w="${j}" aria-label="${esc(roman || word)}"><span class="wa">${styled[j]}</span>${roman ? `<span class="g"><i>${esc(roman)}</i>${meaning ? `<em lang="${uiLanguage}">${esc(meaning)}</em>` : ''}</span>` : ''}</button>`;
+    }).join(' ');
+  };
   const verse = (x, i) => {
     const v = i + 1, fav = S.q.favs.includes(s + ':' + v);
     return `<article class="vs" id="v${v}" data-v="${v}"><div class="vhd"><span class="mono" aria-label="${t('Verse {v}', { v })}">${t('Verse {v}', { v })} · ${s}:${v}</span>${fav ? `<span class="favd">${icon.star}</span>` : ''}${(S.q.pins || []).includes(s + ':' + v) ? `<span class="pind" title="${t('Pinned')}">⌖</span>` : ''}${(S.q.marks || []).some(m => m && m.s === s && m.v === v) ? `<span class="markd">${icon.bookmark}</span>` : ''}<button class="ib vmenu" data-menu="${v}" aria-label="${t('Verse {v} options', { v })}">${icon.more}</button></div>
-      <p class="ar" lang="ar" dir="rtl">${words(x.a, x, i)} <button class="vend" data-menu="${v}" aria-label="${t('Verse {v} options', { v })}">۝${arNum(v)}</button></p>
+      <p class="ar" lang="ar" dir="rtl">${words(x, v)} <button class="vend" data-menu="${v}" aria-label="${t('Verse {v} options', { v })}">۝${arNum(v)}</button></p>
       ${SAJDA.has(s + ':' + v) ? `<p class="sajda">۩ ${t('Verse of prostration')}</p>` : ''}
-      <p class="tlit">${esc(x.l)}</p><p class="tr" data-n="${v}" lang="${translationLanguage}" ${trKey() === 'muyassar' ? 'dir="rtl"' : ''}>${esc(translationAt(i))}</p>
+      <p class="tlit${s === 1 && v === 1 ? ' basmala-translit' : ''}" dir="ltr">${esc(s === 1 && v === 1 ? BASMALA_TRANSLITERATION : x.l)}</p><p class="tr" data-n="${v}" lang="${translationLanguage}" ${trKey() === 'muyassar' ? 'dir="rtl"' : ''}>${esc(translationAt(i))}</p>
       ${S.q.notes && S.q.notes[s + ':' + v] ? `<div class="vnote"><span class="mono">${t('My note')}</span><p>${esc(S.q.notes[s + ':' + v].text)}</p><button class="linkbtn small" data-note="${v}">${t('Edit')}</button></div>` : ''}
       <div class="vact"><button class="chip ctx" data-ctx="${v}">${icon.book}${t('Context')}</button><button class="chip" data-note="${v}">${icon.guide}${t('Note')}</button></div></article>`;
   };
   root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)} <span class="arn" lang="ar">${m[2]}</span></b><span class="mono">${esc(meaning(meta, s))} · ${t('{n} verses', { n })}</span></div>
       <button class="ib reader-options" id="rset" aria-label="${t('Reading options')}" title="${t('Reading options')}">${icon.sliders}</button></header>
-    <div class="${cls()}" id="rd">${S.q.tj !== false ? (S.q.tjSeen ? `<button class="linkbtn small tjlink" id="tjleg">${t('Tajweed colours: what they mean')}</button>` : `<button class="tjleg" id="tjleg" aria-label="${t('Tajweed colours: what they mean')}">${RULES.map(r => `<span class="tj-${r}">${t(TJN[r])}</span>`).join('')}</button>`) : ''}<div id="hidebar"></div><div id="pinbar"></div>${lang() === 'th' && wth.some(Boolean) ? `<p class="muted small pad">${thaiStudyNote()}</p>` : ''}${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · <button class="linkbtn small" id="trcred">${esc(trName())} ⓘ</button></p>` : ''}${trKey() === 'thai' && !pk ? `<p class="muted pad" role="status">${t('Thai translation source could not load. The Arabic text is still available.')}</p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${(S.q.tj !== false ? tajweed(fat.a) : fat.a).map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
+    <div class="${cls()}" id="rd">${S.q.tj !== false ? (S.q.tjSeen ? `<button class="linkbtn small tjlink" id="tjleg">${t('Tajweed colours: what they mean')}</button>` : `<button class="tjleg" id="tjleg" aria-label="${t('Tajweed colours: what they mean')}">${RULES.map(r => `<span class="tj-${r}">${t(TJN[r])}</span>`).join('')}</button>`) : ''}<div id="hidebar"></div><div id="pinbar"></div>${uiLanguage === 'th' && (wth.some(Boolean) || thaiOpening) ? `<p class="muted small pad">${thaiStudyNote()}</p>` : ''}${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · <button class="linkbtn small" id="trcred">${esc(trName())} ⓘ</button></p>` : ''}${trKey() === 'thai' && !pk ? `<p class="muted pad" role="status">${t('Thai translation source could not load. The Arabic text is still available.')}</p>` : ''}${hasPrelude ? `<div class="bism-study" data-v="0"><p class="bism ar" id="v0" lang="ar" dir="rtl" aria-label="${esc(t('Basmala'))}">${words(opening, 0)}</p><p class="tlit basmala-translit" dir="ltr">${BASMALA_TRANSLITERATION}</p></div>` : ''}${V.map(verse).join('')}
       <p class="endsur" dir="auto">${t('End of the surah. May Allah make it light for you and accept it.')}</p>
       <nav class="rnav">${s > 1 ? `<a class="btn line sm" href="#/quran/${s - 1}">‹ ${esc(surahName(meta, s - 1))}</a>` : '<span></span>'}${s < 114 ? `<a class="btn line sm" href="#/quran/${s + 1}">${esc(surahName(meta, s + 1))} ›</a>` : ''}</nav></div>
     <div class="player ${S.q.pfull ? 'full' : ''}" id="pl">
@@ -353,7 +371,7 @@ export async function renderReader(root, sN, vN, extra) {
     const saved = await PL.countSaved(allList);
     const el = sheet(`<h3>${t('Reader')}</h3><div class="sbody">
         <h4 class="shd">${t('Text')}</h4>
-        <label class="tog"><span>${t('Word by word')}<small>${lang() === 'th' ? t('Arabic and transliteration. Thai word meanings in four study surahs.') : t('Arabic, transliteration and meaning under each word')}${lang() === 'fr' ? ' · ' + t('French meanings by Dr Usama Nonnenmacher') : ''}</small></span><input type="checkbox" id="swbw" ${S.q.wbw ? 'checked' : ''}></label>
+        <label class="tog"><span>${t('Word by word')}<small>${lang() === 'th' ? t('Thai word meanings for the opening Bismillah and four study surahs.') : t('Arabic, transliteration and meaning under each word')}${lang() === 'fr' ? ' · ' + t('French meanings by Dr Usama Nonnenmacher') : ''}</small></span><input type="checkbox" id="swbw" ${S.q.wbw ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Mushaf flow')}<small>${t('Continuous Arabic, no translation')}</small></span><input type="checkbox" id="sflow" ${S.q.flow ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Read like a book')}<small>${t('The translation as continuous text, without verse breaks')}</small></span><input type="checkbox" id="sbook" ${S.q.book ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Verse transliteration')}</span><input type="checkbox" id="stl" ${S.q.tl ? 'checked' : ''}></label>
@@ -425,14 +443,27 @@ export async function renderReader(root, sN, vN, extra) {
     const mb = e.target.closest('[data-menu]'); if (mb) { menu(+mb.dataset.menu); return; }
     const cb = e.target.closest('[data-ctx]'); if (cb) { setLast(+cb.dataset.ctx); tafsir(+cb.dataset.ctx); return; }
     const w = e.target.closest('button.w'); if (!w) return;
-    const v = +w.closest('.vs').dataset.v, j = +w.dataset.w, x = V[v - 1];
+    const v = +w.closest('[data-v]').dataset.v, j = +w.dataset.w;
+    const x = v === 0 ? opening : V[v - 1];
+    const { roman, meaning } = wordDetails(x, v, j);
     if (S.q.hide && !w.classList.contains('rev') && getComputedStyle(w.querySelector('.wa')).filter !== 'none') { w.classList.add('rev'); return; }
     $$('.w.on', rd).forEach(y => y.classList.remove('on')); w.classList.add('on');
-    setLast(v);
-    // The word panel opens silently; listening is its own explicit button.
-    const wp = sheet(`<div class="wpanel"><p class="ar wbig" lang="ar" dir="rtl">${x.a[j]}</p>${x.w ? `<p class="mono">${esc(x.w[j][0])}</p>${gloss(x, v - 1, j) ? `<p>${esc(gloss(x, v - 1, j))}</p>${lang() === 'th' ? `<p class="small muted">${thaiStudyNote()}</p>` : ''}` : lang() === 'th' ? `<p class="small muted">${t('No Thai word-by-word gloss is available for this verse.')}</p>` : ''}` : ''}<p class="muted small">${esc(name)} · ${s}:${v} · ${t('word {n}', { n: j + 1 })}</p>
-      <div class="row2"><button class="btn" id="wlisten">${icon.play} ${t('Listen to this word')}</button><button class="btn line" id="wfrom">${t('Play the verse')}</button></div></div>`, { dark: document.body.classList.contains('dark'), label: t('Word'), opener: w });
-    wp.onclick = ev => { if (ev.target.closest('#wlisten')) { if (!PL.playWord(s, v, j + 1)) toast(t('Pause the recitation first.')); } if (ev.target.closest('#wfrom')) { closeSheet(); PL.P.mode = 'off'; PL.playVerse(v); } };
+    if (v > 0) setLast(v);
+    // The prelude uses the same recording as verse 1:1 and has no verse number here.
+    const position = v === 0 ? t('Basmala') : `${esc(name)} · ${s}:${v}`;
+    const wp = sheet(`<div class="wpanel"><p class="ar wbig" lang="ar" dir="rtl">${x.a[j]}</p>
+      ${roman ? `<p class="mono" dir="ltr">${esc(roman)}</p>` : ''}
+      ${meaning ? `<p>${esc(meaning)}</p>${uiLanguage === 'th' ? `<p class="small muted">${thaiStudyNote()}</p>` : ''}` : uiLanguage === 'th' ? `<p class="small muted">${t('No Thai word-by-word gloss is available for this verse.')}</p>` : ''}
+      <p class="muted small">${position} · ${t('word {n}', { n: j + 1 })}</p>
+      <div class="row2"><button class="btn" id="wlisten">${icon.play} ${t('Listen to this word')}</button><button class="btn line" id="wfrom">${t(v === 0 ? 'Listen to the Basmala' : 'Play the verse')}</button></div></div>`, { dark: document.body.classList.contains('dark'), label: t('Word'), opener: w });
+    wp.onclick = ev => {
+      if (ev.target.closest('#wlisten') && !PL.playWord(v === 0 ? 1 : s, v || 1, j + 1)) toast(t('Pause the recitation first.'));
+      if (ev.target.closest('#wfrom')) {
+        closeSheet();
+        if (v === 0) PL.playFrom(1);
+        else { PL.P.mode = 'off'; PL.playVerse(v); }
+      }
+    };
   };
   let lp; rd.addEventListener('pointerdown', e => { const vs = e.target.closest('.vs'); if (!vs) return; lp = setTimeout(() => { lp = null; menu(+vs.dataset.v); }, 550); });
   const cancel = () => { if (lp) clearTimeout(lp); }; rd.addEventListener('pointerup', cancel); rd.addEventListener('pointermove', cancel); rd.addEventListener('pointercancel', cancel);

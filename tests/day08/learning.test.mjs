@@ -153,3 +153,24 @@ test('Thai word study aligns all 87 glosses with the exact Arabic words', async 
   assert.deepEqual(alignThaiGlosses([], [{ a: first.arabic }]), [null]);
   assert.ok(shell.includes("'data/thai-quran/word-study.json'"));
 });
+
+test('Basmala word study keeps the 112 preludes and the two numbered occurrences distinct', async () => {
+  const { hasBasmala, basmalaWordIndex, basmalaWord, BASMALA_TRANSLITERATION } = await import('../../day-08-safa/app/js/basmala.js');
+  const read = path => JSON.parse(readFileSync(new URL('data/' + path, app), 'utf8'));
+  const preludeChapters = Array.from({ length: 114 }, (_, i) => i + 1).filter(hasBasmala);
+  assert.equal(preludeChapters.length, 112);
+  assert.ok(!hasBasmala(1));
+  assert.ok(!hasBasmala(9));
+  assert.ok(hasBasmala(27));
+  const opening = read('quran/1.json').v[0].a;
+  const letter = read('quran/27.json').v[29].a;
+  const thai = read('thai-quran/word-study.json')[1][0].thai;
+  assert.equal(opening.length, 4);
+  assert.deepEqual(opening.map((_, j) => basmalaWordIndex(opening, opening, j)), [0, 1, 2, 3]);
+  assert.deepEqual(letter.map((_, j) => basmalaWordIndex(letter, opening, j)), [-1, -1, -1, -1, 0, 1, 2, 3]);
+  assert.equal(basmalaWordIndex([...opening].reverse(), opening, 0), -1);
+  assert.equal(basmalaWord(0, 'th', thai).meaning, thai[0]);
+  assert.equal(basmalaWord(1, 'fr').meaning, 'd’Allah');
+  assert.match(BASMALA_TRANSLITERATION, /^Bismillāhi/);
+  assert.ok(shell.includes("'js/basmala.js'"));
+});
