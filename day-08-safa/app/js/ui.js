@@ -10,6 +10,10 @@ export const arNum = n => String(n).replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d
 
 const I = (p, w = 1.5) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
 export const icon = {
+  sprev: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5h2.2v14H3zM13 6v12L6 12zM21 6v12l-7-6z"/></svg>',
+  snext: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.8 5H21v14h-2.2zM3 6v12l7-6zM11 6v12l7-6z"/></svg>',
+  vprev: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 5h2v14H5zM19 6v12l-10-6z"/></svg>',
+  vnext: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17 5h2v14h-2zM5 6v12l10-6z"/></svg>',
   today: I('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
   quran: I('<path d="M4 5.5c3-1 6-1 8 1 2-2 5-2 8-1v13c-3-1-6-1-8 1-2-2-5-2-8-1z"/><path d="M12 6.5v13"/>'),
   duas: I('<path d="M7 20v-5.5c0-2 1-3 2-3V5.5c0-1.2 2-1.2 2 0V11M17 20v-5.5c0-2-1-3-2-3V5.5c0-1.2-2-1.2-2 0V11"/>'),

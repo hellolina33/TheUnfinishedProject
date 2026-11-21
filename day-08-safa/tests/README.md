@@ -13,3 +13,4 @@ python3 e2e_wave5.py           # guided prayer and memorisation, first week, wel
 ```
 
 Each script prints `{"errors": []}` when nothing broke. Screenshots go to `tests/shots/` (ignored by git).
+python3 e2e_player.py          # fixed player, play modes, groups, next/previous surah, auto-advance, tajweed colours

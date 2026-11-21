@@ -393,7 +393,7 @@ details>summary.mono{display:inline-flex;align-items:center;min-height:40px;bord
 .tdesc{font-size:13px;color:var(--mut);margin:4px 0 8px}.tfs .lng{font-style:normal;color:var(--ember)}
 .tfx.clamp{max-height:9.6em;overflow:hidden;-webkit-mask-image:linear-gradient(#000 60%,transparent);mask-image:linear-gradient(#000 60%,transparent)}
 @media (prefers-reduced-motion:no-preference){#view.vin{animation:vin .22s ease-out both}.onb{animation:vin .28s ease-out both}}
-@keyframes vin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes vin{from{opacity:0}to{opacity:1}}
 .citys{margin-top:10px;align-items:center}.citys .mono{margin-right:4px}
 .cityr [aria-selected=true]{background:var(--soft)}
 .stoc{margin:6px 0 4px}
@@ -415,3 +415,19 @@ button.grade{cursor:pointer;min-height:28px}.dgrp{font:500 12px var(--mono);lett
 .onb-promise{background:color-mix(in srgb,var(--ember) 10%,transparent);border:1px solid color-mix(in srgb,var(--ember) 35%,transparent);border-radius:12px;padding:10px 12px;font-weight:500}
 .adl li{display:flex;justify-content:space-between;align-items:center}.mosq,.howto{margin:8px 0}.howto ol{padding-left:20px;line-height:1.6}.mosq .grid2{align-items:center}
 .qblk{border-left:3px solid var(--ember);padding-left:12px;margin:6px 0}.tfs{border-left:3px dotted var(--mut);padding-left:12px;margin-top:14px}.legend2{color:var(--mut);margin:4px 0 0}
+
+/* wave 6: player */
+.reader{padding-bottom:236px}
+.player .pctl{justify-content:center;gap:18px}.player .pctl .ib{width:44px;height:44px}.player .pctl .ib svg{width:26px;height:26px}.player .pctl .ib:disabled{opacity:.3}
+.player .pinfo{margin:0;text-align:center;color:#b9b7b1;min-height:16px;font-size:12px}.player .pinfo .plabel{color:#f1efea}
+.player .pchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.player .pchips::-webkit-scrollbar{display:none}.player .pchips .chip{flex:none;white-space:nowrap}
+.acts.radio button{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%}
+.rdo{width:22px;height:22px;border-radius:50%;border:2px solid currentColor;opacity:.5;flex:none;position:relative}
+[aria-checked=true] .rdo{opacity:1;border-color:var(--ember)}[aria-checked=true] .rdo::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--ember)}
+/* tajweed */
+:root{--tq:#2f8a1a;--ti:#2f62c0;--td:#a64cbd;--tk:#b01818;--tg:#c86a12}
+body.dark,html.night{--tq:#6cc24f;--ti:#6f9cf0;--td:#d38ae6;--tk:#f0716b;--tg:#f0a24e}
+.tj-qalqala{color:var(--tq)}.tj-iqlab{color:var(--ti)}.tj-idgham{color:var(--td)}.tj-ikhfa{color:var(--tk)}.tj-ghunna{color:var(--tg)}
+.tjleg{display:flex;justify-content:space-between;gap:8px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:4px 0 10px;font:600 12px/1 var(--sans);letter-spacing:.04em;text-transform:uppercase;cursor:pointer;overflow-x:auto}
+.tjleg span{white-space:nowrap}
+.player .chip{color:#f1efea;border-color:#454542;background:transparent}.player .chip[aria-pressed=true]{background:#f1efea;color:#151514}
