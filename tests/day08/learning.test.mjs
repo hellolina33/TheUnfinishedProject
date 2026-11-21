@@ -174,3 +174,16 @@ test('Basmala word study keeps the 112 preludes and the two numbered occurrences
   assert.match(BASMALA_TRANSLITERATION, /^Bismillāhi/);
   assert.ok(shell.includes("'js/basmala.js'"));
 });
+
+test('Hizb partitions provide 60 ordered verse links, two per juz', () => {
+  const meta = JSON.parse(readFileSync(new URL('data/meta.json', app), 'utf8'));
+  assert.equal(meta.hizb.length, 60);
+  assert.deepEqual(meta.hizb.filter((_, index) => index % 2 === 0), meta.juz);
+  assert.deepEqual(meta.hizb[1], [2, 75]);
+  assert.deepEqual(meta.hizb[59], [87, 1]);
+  const keys = meta.hizb.map(([s, v]) => {
+    assert.ok(s >= 1 && s <= meta.s.length && v >= 1 && v <= meta.s[s - 1][3]);
+    return s * 1000 + v;
+  });
+  assert.ok(keys.every((key, index) => index === 0 || key > keys[index - 1]));
+});

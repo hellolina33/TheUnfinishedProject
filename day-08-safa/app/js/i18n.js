@@ -79,7 +79,7 @@ const FR = {
   'Estimate only. Straight great-circle route, constant speed, sea-level horizon: at cruising altitude sunset comes a few minutes later. Uses your method ({m}).': "Estimation. Route en ligne droite sur le globe, vitesse constante, horizon au niveau de la mer : en altitude, le coucher arrive quelques minutes plus tard. Utilise ta méthode ({m}).",
 
   // quran list
-  'Surah, 2:255, or a word': 'Sourate, 2:255 ou un mot', 'Search the Quran': 'Chercher dans le Coran', 'Surahs': 'Sourates', 'Juz': 'Juz', 'Favourites': 'Favoris',
+  'Surah, 2:255, or a word': 'Sourate, 2:255 ou un mot', 'Search the Quran': 'Chercher dans le Coran', 'Surahs': 'Sourates', 'Juz': 'Juz', 'Hizb': 'Hizb', 'Hizb {n}': 'Hizb {n}', 'Each hizb is half a juz.': 'Chaque hizb correspond à la moitié d’un juz.', 'Favourites': 'Favoris',
   '{n} verses': '{n} versets', 'Meccan': 'Mecquoise', 'Medinan': 'Médinoise', 'Go to verse': 'Aller au verset', 'Searching…': 'Recherche…',
   'Verses · {n}': 'Versets · {n}', 'Nothing found. Try a surah name, a verse like 2:255, or a word.': 'Rien trouvé. Essaie un nom de sourate, un verset comme 2:255 ou un mot.',
   'Starts at {s}': 'Commence à {s}', 'No favourites yet. Open a verse menu and tap Favourite.': "Pas encore de favoris. Ouvre le menu d'un verset et touche Favori.",
@@ -649,6 +649,9 @@ const AR = {
   "Isha begins.": "يدخل وقت العشاء.",
   "Surahs": "السور",
   "Juz": "الأجزاء",
+  "Hizb": "الأحزاب",
+  "Hizb {n}": "الحزب {n}",
+  "Each hizb is half a juz.": "كل حزب هو نصف جزء.",
   "Meccan": "مكية",
   "Medinan": "مدنية",
   "{n} vv": "{n} آية",
