@@ -29,7 +29,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
   outline-offset: 3px;
 }
 @media (hover: hover) {
-  .home-row:hover, .tabbar a:hover { background: color-mix(in srgb, var(--fg) 6%, var(--paper)); }
+  .tabbar a:hover { background: color-mix(in srgb, var(--fg) 6%, var(--paper)); }
 }
 #view:has(.player) { padding-bottom: calc(var(--tab) + var(--sab) + 170px); }
 .player { bottom: calc(var(--tab) + var(--sab)); padding-block-end: 10px; }
@@ -39,13 +39,26 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 .home-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-block: 8px 18px; }
 .home-head h1, .home-plus h1 { font-size: clamp(2rem, 9vw, 3rem); margin: 0; }
 .home-head h1 span { color: var(--ember); }
-.home-language .inp { width: auto; padding-inline: 12px; max-inline-size: 100%; }
+.home-language { display: inline-grid; position: relative; color: var(--mut); }
+.home-language > svg { position: absolute; width: 18px; height: 18px; inset-block-start: 15px; pointer-events: none; }
+.home-language > svg:first-child { inset-inline-start: 11px; }
+.home-language > svg:last-child { inset-inline-end: 9px; }
+.home-language select.inp {
+  width: auto;
+  max-inline-size: 100%;
+  padding-inline: 36px 32px;
+  background: var(--card);
+  color: var(--fg);
+  font-size: .875rem;
+}
+html.night .home-language select { color-scheme: dark; }
 .home-hero {
   display: grid;
   grid-template-columns: minmax(0, 1.7fr) minmax(74px, 1fr);
   background: #e9dcc6;
   color: #28271f;
   overflow: hidden;
+  border: 1px solid #cbc0aa;
   border-radius: 20px;
   align-items: stretch;
 }
@@ -54,6 +67,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 .home-hero p { font-size: .83rem; margin: 0; }
 .home-hero .btn { background: #292b25; color: #fff; font-size: .84rem; padding: 10px 12px; min-block-size: 48px; width: fit-content; text-align: center; }
 .home-hero img { object-fit: cover; width: 100%; height: 100%; }
+html.night .home-hero { background: #2c241b; color: #f1e6d4; border-color: var(--line); }
+html.night .home-hero p { color: #d6c6af; }
+html.night .home-hero .btn { background: #eee1cc; color: #29251e; }
+html.night .home-hero img { filter: brightness(.68); }
 .home-quick { display: grid; gap: 8px; margin-block-start: 14px; }
 .home-group { margin-block: 24px; }
 .home-group h2 { margin: 0 0 8px; font-size: 1.25rem; }
@@ -81,9 +98,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
   overflow: hidden;
 }
 .home-symbol svg { inline-size: 22px; block-size: 22px; }
-.home-symbol:has(img) { inline-size: 48px; block-size: 48px; }
-.home-plus .home-row { background: var(--card); }
-.home-plus .home-row:hover { background: color-mix(in srgb, var(--fg) 5%, var(--card)); }
+.home-row { background: var(--card); }
+@media (hover: hover) {
+  .home-row:hover { background: color-mix(in srgb, var(--fg) 5%, var(--card)); }
+}
 .icon-action {
   display: inline-flex;
   flex: none;
@@ -108,7 +126,6 @@ button:focus-visible, a:focus-visible, summary:focus-visible, select:focus-visib
 [dir=rtl] .home-row > svg:last-child { transform: scaleX(-1); }
 .home-row strong, .home-row small { display: block; overflow-wrap: anywhere; }
 .home-row small, .home-offline { color: var(--mut); font-size: .84rem; }
-.home-thumb { width: 100%; height: 100%; object-fit: cover; }
 .home-offline { line-height: 1.5; }
 
 /* Illustrations, references and prayer summary */
