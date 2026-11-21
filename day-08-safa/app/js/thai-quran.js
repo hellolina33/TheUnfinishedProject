@@ -1,5 +1,7 @@
 import { data } from './store.js';
 
+export const normalizeThaiDigits = text => text.replace(/[๐-๙]/g, digit => String(digit.charCodeAt(0) - '๐'.charCodeAt(0)));
+
 export const THAI_QURAN_LABEL = 'King Fahd Complex (Thai translation)';
 // The source and import commit are recorded in the Safa README.
 export async function thaiSurah(surah) {

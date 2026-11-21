@@ -3,7 +3,7 @@ import { weekday } from '../prayer.js';
 import { $, $$, esc, icon, arNum, sheet, closeSheet, toast, reportUrl, download } from '../ui.js';
 import { t, lang, L } from '../i18n.js';
 import * as PL from '../player.js';
-import { thaiSurah, thaiQuranIndex, THAI_QURAN_LABEL } from '../thai-quran.js';
+import { thaiSurah, thaiQuranIndex, THAI_QURAN_LABEL, normalizeThaiDigits } from '../thai-quran.js';
 import { tajweed, RULES } from '../tajweed.js';
 export { RECITERS } from '../player.js';
 // Popular names people search for.
@@ -110,12 +110,13 @@ export async function renderList(root, section) {
   const draw = async () => {
     const q = listState.q.trim();
     if (q) {
-      const ref = q.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/), ql = q.toLowerCase().replace(/[^a-z0-9 \u0621-\u064A\u0e00-\u0e7f]/g, '');
+      const numberQuery = normalizeThaiDigits(q);
+      const ref = numberQuery.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/), ql = q.toLowerCase().replace(/[^a-z0-9 \u0621-\u064A\u0e00-\u0e7f]/g, '');
       let html = '';
       const nick = NICK.find(([re]) => re.test(q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')));
       if (nick) html += `<a class="card row" href="#/quran/${nick[1]}${nick[2] ? '/' + nick[2] : ''}"><span><span class="mono">${t('Go to verse')}</span><b>${esc(nick[3])} · ${nick[1]}${nick[2] ? ':' + nick[2] : ''}</b></span>${icon.chev}</a>`;
       if (ref && +ref[1] >= 1 && +ref[1] <= 114 && +ref[2] >= 1 && +ref[2] <= meta.s[+ref[1] - 1][3]) html += `<a class="card row" href="#/quran/${+ref[1]}/${+ref[2]}"><span><span class="mono">${t('Go to verse')}</span><b>${esc(meta.s[+ref[1] - 1][0])} · ${+ref[1]}:${+ref[2]}</b></span>${icon.chev}</a>`;
-      const hits = meta.s.map((m, i) => i + 1).filter(n => String(n) === q || (ql.length > 1 && ((sq => sq.includes(ql.replace(/ /g, '').replace(/h$/, '')))(meta.s[n - 1][0].toLowerCase().replace(/[^a-z0-9]/g, '')) || meta.s[n - 1][2].replace(/[\u064B-\u0652\u0670]/g, '').includes(ql) || meaning(meta, n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(ql))));
+      const hits = meta.s.map((m, i) => i + 1).filter(n => String(n) === numberQuery || (ql.length > 1 && ((sq => sq.includes(ql.replace(/ /g, '').replace(/h$/, '')))(meta.s[n - 1][0].toLowerCase().replace(/[^a-z0-9]/g, '')) || meta.s[n - 1][2].replace(/[\u064B-\u0652\u0670]/g, '').includes(ql) || meaning(meta, n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(ql))));
       html += hits.map(row).join('');
       out.innerHTML = html || `<p class="muted pad">${t('Searching…')}</p>`;
       if (q.length >= 3 && !ref) {

@@ -3,7 +3,7 @@
 import { S, save, data } from '../store.js';
 import { $, esc, icon } from '../ui.js';
 import { t, lang, localField } from '../i18n.js';
-import { thaiSurah, thaiQuranIndex, THAI_QURAN_LABEL } from '../thai-quran.js';
+import { thaiSurah, thaiQuranIndex, THAI_QURAN_LABEL, normalizeThaiDigits } from '../thai-quran.js';
 import { duaTitle, duaMeaning } from './duas.js';
 import { surahName, contextSheet } from './quran.js';
 
@@ -57,7 +57,7 @@ export async function renderAsk(root) {
     // Exact places first: a reference like 2:255, a surah name, a prayer, a guide.
     const top = [];
     const metaX = await data('meta.json');
-    const refm = q.match(/^\s*(\d{1,3})\s*[:.,]\s*(\d{1,3})\s*$/);
+    const refm = normalizeThaiDigits(q).match(/^\s*(\d{1,3})\s*[:.,]\s*(\d{1,3})\s*$/);
     if (refm) { const s = +refm[1], v = +refm[2]; if (s >= 1 && s <= 114 && v >= 1 && v <= metaX.s[s - 1][3]) {
       let tr = ''; try { if (lang() === 'fr') tr = (await data('fr/' + s + '.json'))[v - 1]; else if (lang() === 'th') tr = (await thaiSurah(s))[v - 1]; else if (lang() === 'en') tr = (await data('quran/' + s + '.json')).v[v - 1].t; } catch (e) { /* offline */ }
       top.push(`<button class="chip fav-ctx" data-ctxv="${s}:${v}">${t('Read in context')}</button>`); top.push(`<a class="quote exact" href="#/quran/${s}/${v}"><span class="mono">${t('Quran')} · ${esc(surahName(metaX, s))} <bdi>${s}:${v}</bdi></span>${tr ? `<p>« ${esc(tr)} »</p>` : ''}</a>`); } }
