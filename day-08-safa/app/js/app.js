@@ -160,6 +160,8 @@ PL.onChange(drawMini);
 // Links from the landing can carry ?lang=ar (or fr, en) for a first visit.
 { const q = new URLSearchParams(location.search).get('lang'); if (!S.onboarded && ['fr', 'en', 'ar'].includes(q)) { S.lang = q; save(); applyLang(); drawTabs(); } }
 window.addEventListener('hashchange', route);
+// Ctrl+K (or Cmd+K) opens the search from any screen.
+document.addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); if (location.hash !== '#/ask') location.hash = '#/ask'; else document.querySelector('#aq')?.focus(); } });
 route();
 
 // Recompute Today when the app comes back to the foreground (new day, new prayer).

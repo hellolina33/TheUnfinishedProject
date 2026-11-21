@@ -3,6 +3,7 @@ import { S, save, data } from '../store.js';
 import { esc, icon, sheet, closeSheet, toast, reportUrl } from '../ui.js';
 import { t, lang, applyLang } from '../i18n.js';
 import { SALAT } from './learn.js';
+import { contextSheet, compareSheet } from './quran.js';
 const L = (fr,en,ar) => ({fr,en,ar})[lang()];
 const pick = o => o?.[lang()] || '';
 const titles = () => ({home:L('Au fil de la vie','Through life','في مراحل الحياة'),facts:L('100 repères sur l’islam','100 reference points on Islam','مئة معلومة عن الإسلام'),faq:L('Questions, simplement','Questions, simply','أسئلة ببساطة'),prayer:L('Comprendre chaque rakʿa','Understand every rakah','افهم كل ركعة')});
@@ -148,7 +149,7 @@ export async function renderJourney(root,page,arg){root.innerHTML=`<p class="pad
 export async function renderFavorites(root,filter='all'){
   root.innerHTML=`<p class="pad" role="status">${t('Loading…')}</p>`;
   const [D,meta,duas]=await Promise.all([data('journey.json'),data('meta.json').catch(()=>null),data('duas.json').catch(()=>[])]);
-  const verses=(S.q.favs||[]).map(k=>{const [s,v]=k.split(':').map(Number);const m=meta&&meta.s[s-1];return {type:'quran',href:`#/quran/${s}/${v}`,title:`${m?(lang()==='ar'?m[2]:m[0]):''} · ${s}:${v}`};});
+  const verses=(S.q.favs||[]).map(k=>{const [s,v]=k.split(':').map(Number);const m=meta&&meta.s[s-1];return {type:'quran',ctx:`${s}:${v}`,href:`#/quran/${s}/${v}`,title:`${m?(lang()==='ar'?m[2]:m[0]):''} · ${s}:${v}`};});
   const dset=new Set(S.d.favs||[]);const dl=[];for(const c of duas)c.d.forEach((x,i)=>{if(dset.has(x.id))dl.push({type:'dua',href:`#/duas/${c.id}/${i+1}`,title:(lang()==='fr'&&c.tf)||(lang()==='ar'&&c.ta)||c.t,sub:(x.ar||'').slice(0,60)});});
   const gl=(S.journeySaved||[]).map(id=>D.facts[id-1]).filter(Boolean).map(f=>({type:'guide',href:`#/journey/facts/${f.id}`,title:pick(f.title),sub:L('Repère','Essential','معلومة')+' '+f.id}));
   const all=[...verses,...dl,...gl];
@@ -156,8 +157,9 @@ export async function renderFavorites(root,filter='all'){
   const draw=()=>{const list=filter==='all'?all:all.filter(x=>x.type===filter);
     root.innerHTML=`<header class="sub"><a href="#/plus" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${L('Mes favoris','My favourites','مفضلتي')}</b><span class="ib"></span></header>
     <div class="chips pad" role="group" aria-label="${L('Filtrer','Filter','تصفية')}">${F.map(([k,n,c])=>`<button class="chip" data-ff="${k}" aria-pressed="${filter===k}">${n} · ${c}</button>`).join('')}</div>
-    <div class="home-quick fav-list">${list.map(x=>`<a class="home-row" href="${x.href}"><span class="home-symbol" aria-hidden="true">${x.type==='quran'?icon.quran:x.type==='dua'?icon.duas:icon.bookmark}</span><span><strong>${esc(x.title)}</strong>${x.sub?`<small ${x.type==='dua'?'lang="ar" dir="rtl"':''}>${esc(x.sub)}</small>`:''}</span>${icon.chev}</a>`).join('')||`<p class="muted pad">${L('Rien ici pour l’instant. Touche l’étoile d’un verset ou d’une doua, ou « Mettre de côté » sur un repère.','Nothing here yet. Tap the star on a verse or dua, or “Save for later” on an essential.','لا شيء هنا بعد. اضغط النجمة على آية أو دعاء، أو «احفظ لوقت لاحق» على معلومة.')}</p>`}</div>`;};
+    ${(S.q.pins||[]).length?`<div class="card row pinbar"><span>${t((S.q.pins||[]).length===1?'1 pinned verse':'{n} pinned verses',{n:(S.q.pins||[]).length})}</span><button class="btn line sm" data-cmp>${t('Compare')}</button></div>`:''}
+    <div class="home-quick fav-list">${list.map(x=>`<div class="pin-wrap"><a class="home-row" href="${x.href}"><span class="home-symbol" aria-hidden="true">${x.type==='quran'?icon.quran:x.type==='dua'?icon.duas:icon.bookmark}</span><span><strong>${esc(x.title)}</strong>${x.sub?`<small ${x.type==='dua'?'lang="ar" dir="rtl"':''}>${esc(x.sub)}</small>`:''}</span>${icon.chev}</a>${x.ctx?`<button class="chip fav-ctx" data-ctx="${x.ctx}">${t('Context')}</button>`:''}</div>`).join('')||`<p class="muted pad">${L('Rien ici pour l’instant. Touche l’étoile d’un verset ou d’une doua, ou « Mettre de côté » sur un repère.','Nothing here yet. Tap the star on a verse or dua, or “Save for later” on an essential.','لا شيء هنا بعد. اضغط النجمة على آية أو دعاء، أو «احفظ لوقت لاحق» على معلومة.')}</p>`}</div>`;};
   draw();
-  root.onclick=e=>{const b=e.target.closest('[data-ff]');if(!b)return;filter=b.dataset.ff;draw();root.querySelector(`[data-ff="${filter}"]`).focus();};
+  root.onclick=e=>{const c=e.target.closest('[data-ctx]');if(c){const [s,v]=c.dataset.ctx.split(':').map(Number);contextSheet(s,v);return;}if(e.target.closest('[data-cmp]')){compareSheet();return;}const b=e.target.closest('[data-ff]');if(!b)return;filter=b.dataset.ff;draw();root.querySelector(`[data-ff="${filter}"]`).focus();};
   return ()=>{root.onclick=null;};
 }

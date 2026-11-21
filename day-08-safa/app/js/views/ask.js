@@ -3,7 +3,7 @@
 import { S, save, data } from '../store.js';
 import { $, esc, icon } from '../ui.js';
 import { t, lang } from '../i18n.js';
-import { surahName } from './quran.js';
+import { surahName, contextSheet } from './quran.js';
 
 const STOP = new Set(('a an the of to in on for and or is are was be it this that what how why when who do does did can i my me we you your with from about there their them his her allah god ' +
   'le la les un une des de du d l et ou est sont a au aux en pour par sur que qui quoi comment pourquoi quand je j me mon ma mes tu te ton ta tes il elle on nous vous ils elles ce cet cette ces dans avec se sa son ses y ne pas plus dieu allah ' +
@@ -39,6 +39,7 @@ export async function renderAsk(root) {
     <div id="ao"></div>`;
   drawRecent();
   root.onclick = e => {
+    const cx = e.target.closest('[data-ctxv]'); if (cx) { const [s, v] = cx.dataset.ctxv.split(':').map(Number); contextSheet(s, v); return; }
     if (e.target.id === 'aclear') { S.recentQ = []; save(); drawRecent(); $('#aq', root).focus(); return; }
     const b = e.target.closest('[data-ex]'); if (!b) return; $('#aq', root).value = b.dataset.ex; run(true);
   };
@@ -56,7 +57,7 @@ export async function renderAsk(root) {
     const refm = q.match(/^\s*(\d{1,3})\s*[:.,]\s*(\d{1,3})\s*$/);
     if (refm) { const s = +refm[1], v = +refm[2]; if (s >= 1 && s <= 114 && v >= 1 && v <= metaX.s[s - 1][3]) {
       let tr = ''; try { if (lang() === 'fr') tr = (await data('fr/' + s + '.json'))[v - 1]; else if (lang() === 'en') tr = (await data('quran/' + s + '.json')).v[v - 1].t; } catch (e) { /* offline */ }
-      top.push(`<a class="quote exact" href="#/quran/${s}/${v}"><span class="mono">${t('Quran')} · ${esc(surahName(metaX, s))} <bdi>${s}:${v}</bdi></span>${tr ? `<p>« ${esc(tr)} »</p>` : ''}</a>`); } }
+      top.push(`<button class="chip fav-ctx" data-ctxv="${s}:${v}">${t('Read in context')}</button>`); top.push(`<a class="quote exact" href="#/quran/${s}/${v}"><span class="mono">${t('Quran')} · ${esc(surahName(metaX, s))} <bdi>${s}:${v}</bdi></span>${tr ? `<p>« ${esc(tr)} »</p>` : ''}</a>`); } }
     const words = fold(q).split(/[^a-z0-9]+/).filter(Boolean);
     const sNum = words.map(w => ALIAS[w.replace(/^(al|an|as|ash|at|ad|ar|az)/, '')] || ALIAS[w]).find(Boolean) || (() => { const b = bare(q); if (b.length < 3) return 0; const i = metaX.s.findIndex(m => bare(m[0]) === b || bare(m[1]) === b); return i + 1; })();
     if (sNum && !refm) top.push(`<a class="card row" href="#/quran/${sNum}"><span><span class="mono">${t('Quran')} · ${t('Surah')} ${sNum}</span><b>${esc(surahName(metaX, sNum))}</b></span>${icon.chev}</a>`);
@@ -87,6 +88,6 @@ export async function renderAsk(root) {
       + `<p class="muted small pad">${t('Results are matched on words, not understood by an AI. Read each passage in its context before drawing any conclusion.')}</p>`;
   };
   $('#af', root).onsubmit = e => { e.preventDefault(); run(true); $('#aq', root).blur(); };
-  let tm, tc; $('#aq', root).oninput = () => { clearTimeout(tm); clearTimeout(tc); tm = setTimeout(() => { if ($('#aq', root)) run(false); }, 400); tc = setTimeout(() => { const el = $('#aq', root); if (!el) return; const v = el.value.trim(); if (v.length >= 3) { remember(v); drawRecent(); } }, 2500); };
-  if (last) run(); else $('#aq', root).focus();
+  let tm, tc; $('#aq', root).oninput = () => { clearTimeout(tm); clearTimeout(tc); const v0 = $('#aq', root).value.trim(); tm = setTimeout(() => { if ($('#aq', root)) run(false); }, /^\d{1,3}\s*[:.,]\s*\d{1,3}$/.test(v0) ? 0 : 400); tc = setTimeout(() => { const el = $('#aq', root); if (!el) return; const v = el.value.trim(); if (v.length >= 3) { remember(v); drawRecent(); } }, 2500); };
+  if (last) run(); $('#aq', root).focus({ preventScroll: true });
 }
