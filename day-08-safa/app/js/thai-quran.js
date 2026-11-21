@@ -25,3 +25,21 @@ export function thaiQuranIndex() {
   })().catch(error => { searchIndex = null; throw error; });
   return searchIndex;
 }
+
+
+// Match the exact Arabic tokens before offering a gloss. If the reader text or
+// its tokenisation changes, a gloss must never move to a different word.
+export function alignThaiGlosses(study, verses) {
+  return verses.map(({ a }, index) => {
+    const row = study[index];
+    if (!row || row.arabic.length !== a.length || row.thai.length !== a.length ||
+        a.some((word, j) => word !== row.arabic[j])) return null;
+    return row.thai;
+  });
+}
+
+export async function thaiWordStudy(surah, verses) {
+  if (![1, 112, 113, 114].includes(surah)) return [];
+  const chapters = await data('thai-quran/word-study.json');
+  return alignThaiGlosses(chapters[surah] || [], verses);
+}
