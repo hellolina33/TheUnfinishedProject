@@ -403,3 +403,15 @@ details>summary.mono{display:inline-flex;align-items:center;min-height:40px;bord
 .arc-p{fill:var(--mut);opacity:.7}
 .qacc{color:var(--ember);font-size:14px;text-align:center;margin:4px 0}#qvoice{margin:6px auto;display:block}
 button.grade{cursor:pointer;min-height:28px}.dgrp{font:500 12px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--mut);margin:20px 2px 4px}.dx{flex-wrap:wrap}
+/* wave 5 */
+.tools2 a span{display:flex;flex-direction:column;gap:2px}.tools2 small{font-size:12px;color:var(--mut);font-weight:400;line-height:1.3}
+.aa{min-width:44px;height:40px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 16px/1 var(--sans);cursor:pointer}
+.pvr{margin:0;text-align:center;color:#b9b7b1;min-height:14px}
+.coach{position:sticky;top:calc(var(--sat) + 58px);z-index:5;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin:6px 0 14px;box-shadow:0 6px 20px rgba(0,0,0,.08)}
+.coach .ch{display:flex;justify-content:space-between;align-items:center;gap:8px}.coach .btn{margin-top:8px}
+.csteps{display:flex;gap:6px;list-style:none;padding:0;margin:10px 0 4px;font-size:13px}.csteps li{flex:1;padding:6px 8px;border-radius:8px;background:var(--soft);color:var(--mut)}.csteps li.on{background:var(--fg);color:var(--bg)}.csteps li.ok{color:var(--fg)}.csteps li.ok::before{content:'✓ '}
+.reader .vend{font-size:1.15em}
+.welcome.back .quote{font-size:16px;line-height:1.5;margin:6px 0}.week ol{list-style:none;padding:0;margin:8px 0 0;display:grid;gap:6px}.week li{display:flex;align-items:center;gap:10px}.week li a{color:var(--fg);text-decoration:none;display:flex;flex-direction:column;font-size:15px}.week li.ok a{color:var(--mut)}.guide{margin:14px 0}.gtrack{height:4px;background:var(--soft);border-radius:4px;overflow:hidden;margin-bottom:10px}.gtrack i{display:block;height:100%;width:0;background:var(--ember);transition:width .25s linear}
+.onb-promise{background:color-mix(in srgb,var(--ember) 10%,transparent);border:1px solid color-mix(in srgb,var(--ember) 35%,transparent);border-radius:12px;padding:10px 12px;font-weight:500}
+.adl li{display:flex;justify-content:space-between;align-items:center}.mosq,.howto{margin:8px 0}.howto ol{padding-left:20px;line-height:1.6}.mosq .grid2{align-items:center}
+.qblk{border-left:3px solid var(--ember);padding-left:12px;margin:6px 0}.tfs{border-left:3px dotted var(--mut);padding-left:12px;margin-top:14px}.legend2{color:var(--mut);margin:4px 0 0}

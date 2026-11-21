@@ -12,6 +12,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:description" content="The silent spiritual instrument. No ads. No data collection. No guilt.">
 <meta name="theme-color" content="#080808">
+<link rel="alternate" hreflang="ar" href="ar/">
 <link rel="alternate" hreflang="fr" href="fr/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23080808'/%3E%3Cmask id='m'%3E%3Crect width='100' height='100' fill='white'/%3E%3Ccircle cx='58' cy='42' r='25' fill='black'/%3E%3C/mask%3E%3Ccircle cx='46' cy='52' r='28' fill='white' mask='url(%23m)'/%3E%3Ccircle cx='72' cy='30' r='7' fill='%23E85D2A'/%3E%3C/svg%3E">
 <style>@font-face{font-family:'Inter Tight';font-weight:300;font-display:swap;src:url(app/fonts/inter-tight-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:400;font-display:swap;src:url(app/fonts/inter-tight-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:500;font-display:swap;src:url(app/fonts/inter-tight-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:600;font-display:swap;src:url(app/fonts/inter-tight-latin-600-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:700;font-display:swap;src:url(app/fonts/inter-tight-latin-600-normal.woff2) format('woff2')}@font-face{font-family:'Inter Tight';font-weight:400;font-display:swap;src:url(app/fonts/inter-tight-latin-ext-400-normal.woff2) format('woff2');unicode-range:U+0100-02FF,U+1E00-1EFF}@font-face{font-family:'Inter Tight';font-weight:500;font-display:swap;src:url(app/fonts/inter-tight-latin-ext-500-normal.woff2) format('woff2');unicode-range:U+0100-02FF,U+1E00-1EFF}@font-face{font-family:'Inter Tight';font-weight:600;font-display:swap;src:url(app/fonts/inter-tight-latin-ext-600-normal.woff2) format('woff2');unicode-range:U+0100-02FF,U+1E00-1EFF}@font-face{font-family:'JetBrains Mono';font-weight:300;font-display:swap;src:url(app/fonts/jetbrains-mono-latin-300-normal.woff2) format('woff2')}@font-face{font-family:'JetBrains Mono';font-weight:400;font-display:swap;src:url(app/fonts/jetbrains-mono-latin-400-normal.woff2) format('woff2')}@font-face{font-family:'JetBrains Mono';font-weight:500;font-display:swap;src:url(app/fonts/jetbrains-mono-latin-500-normal.woff2) format('woff2')}@font-face{font-family:'Amiri';font-weight:400;font-display:swap;src:url(app/fonts/amiri-arabic-400-normal.woff2) format('woff2')}@font-face{font-family:'Amiri';font-weight:700;font-display:swap;src:url(app/fonts/amiri-arabic-400-normal.woff2) format('woff2')}.skip{position:absolute;left:-999px;top:8px;background:#080808;color:#fff;padding:10px 14px;border-radius:8px;z-index:99}.skip:focus{left:8px}
@@ -20,6 +21,7 @@
 .who{font-size:14px;color:var(--mute,#6d6c68);margin-top:14px}
 .srcs{columns:2;gap:28px;font-size:14px;line-height:1.6}@media(max-width:700px){.srcs{columns:1}}
 .vidbtn{margin-top:14px;background:none;border:0;padding:8px 0;font:500 15px/1.2 inherit;color:inherit;text-decoration:underline;text-underline-offset:4px;cursor:pointer}.vdlg{border:0;border-radius:18px;padding:16px;max-width:min(420px,94vw);background:#111;color:#eee;text-align:center}.vdlg::backdrop{background:rgba(0,0,0,.7)}.vdlg video{width:100%;height:auto;max-height:76vh;border-radius:10px;background:#000}.vdlg p{font-size:14px;margin:10px 0}.vdlg .btn{color:#eee!important;background:transparent!important;border:1px solid #666!important}
+.langs{display:flex;gap:4px}.langsw[aria-current]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 </style>
 <style>
 :root{
@@ -296,7 +298,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
     <b>safa<i>.</i></b>
   </a>
   <nav class="links" aria-label="Sections"><a href="#onboarding">30 seconds</a><a href="#tabs">Four tabs</a><a href="#flight">Flight</a><a href="coulisses/">Behind the scenes</a></nav>
-  <div class="hdr"><a class="langsw" href="fr/" hreflang="fr" data-setlang="fr">FR</a><a class="btn sm" href="app/">Open safa.</a></div>
+  <div class="hdr"><nav class="langs" aria-label="Language"><a class="langsw" href="fr/" hreflang="fr" lang="fr" data-setlang="fr">FR</a><a class="langsw" href="./" hreflang="en" lang="en" data-setlang="en" aria-current="page">EN</a><a class="langsw" href="ar/" hreflang="ar" lang="ar" data-setlang="ar">عربي</a></nav><a class="btn sm" href="app/">Open safa.</a></div>
 </div></header>
 
 <main id="top">
@@ -684,7 +686,7 @@ function runFlight(){
 ['from','to','dep','dh','dm','fasr','fmeth'].forEach(id=>$('#'+id).addEventListener('input',runFlight));
 runFlight();
 </script>
-<script>(function(){try{var k='safa-site-lang',c=localStorage.getItem(k);document.querySelectorAll('[data-setlang]').forEach(function(a){a.addEventListener('click',function(){localStorage.setItem(k,a.dataset.setlang)})});if(!c&&/^fr\b/i.test(navigator.language||''))location.replace('fr/'+location.hash)}catch(e){}})();</script>
+<script>(function(){try{var k='safa-site-lang',c=localStorage.getItem(k);document.querySelectorAll('[data-setlang]').forEach(function(a){a.addEventListener('click',function(){localStorage.setItem(k,a.dataset.setlang)})});if(!c&&/^fr\b/i.test(navigator.language||''))location.replace('fr/'+location.hash);else if(!c&&/^ar\b/i.test(navigator.language||''))location.replace('ar/'+location.hash)}catch(e){}})();</script>
 <dialog id="vdlg" class="vdlg" aria-label="safa. · 45 s"><video src="media/safa-45s.mp4" poster="media/safa-45s.jpg" controls muted playsinline preload="none" width="360" height="640"></video><p>In French. The words are on screen, so it works without sound.</p><form method="dialog"><button class="btn line" onclick="this.closest('dialog').querySelector('video').pause()">Close</button></form></dialog>
 </body>
 </html>

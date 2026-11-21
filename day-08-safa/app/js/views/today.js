@@ -56,6 +56,11 @@ function tools() {
     <a href="#/flight">${icon.plane}<span>${t('Travel')}</span></a></nav>`;
 }
 function welcome() {
+  if (S.backDay === dayKey() && S.backHidden !== S.backDay) return `<section class="card welcome back"><button class="ib x" data-hide="back" aria-label="${t('Hide')}">${icon.stop}</button>
+    <b>${t('Welcome back. However long it has been, the door is open.')}</b>
+    <p class="quote">${t('“Allah loves those who turn back to Him.” (Quran 2:222)')}</p>
+    <p class="muted small">${t('No catching up today. Just the next prayer. The rest, gently, when you want.')}</p>
+    <div class="row2"><a class="btn sm" href="#/learn">${t('Refresh the basics')}</a><a class="btn sm line" href="#/duas/129">${t('A dua for forgiveness')}</a></div></section>`;
   if (S.hideWelcome) return '';
   const first = !S.since || S.since >= dayKey();
   const lvl = S.level;
@@ -96,6 +101,7 @@ async function ayahOfDay(el) {
 
 export function render(root) {
   let timer;
+  { const today = dayKey(); if (S.lastSeen && S.lastSeen < today) { const gap = (Date.parse(today) - Date.parse(S.lastSeen)) / 86400000; if (gap >= 10) S.backDay = today; } if (S.lastSeen !== today) { S.lastSeen = today; save(); } }
   const draw = () => {
     const np = nextPrayer(), now = Date.now(), day = getDay(np.key, true), T = np.today;
     const sr = T.sunrise, ss = T.maghrib; let f = sr && ss ? (now - sr) / (ss - sr) : .5; const up = f >= 0 && f <= 1; f = Math.min(1, Math.max(0, f));
@@ -146,7 +152,7 @@ export function render(root) {
   root.onclick = async e => {
     if (e.target.id === 'tshare') { const T = timesFor(dayKey()); const txt = `${S.loc.name} · ${gregorian(Date.now())}\n` + ORDER.map(k => `${NAMES[k]} ${fmtTime(T[k])}`).join('\n') + `\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
     const ph = e.target.closest('[data-ph]'); if (ph) { S.pauseHinted = true; save(); if (ph.dataset.ph === '0') draw(); return; }
-    const hb = e.target.closest('[data-hide]'); if (hb) { if (hb.dataset.hide === 'welcome') S.hideWelcome = true; else S.hideInstall = true; save(); draw(); return; }
+    const hb = e.target.closest('[data-hide]'); if (hb) { if (hb.dataset.hide === 'back') S.backHidden = S.backDay; else if (hb.dataset.hide === 'welcome') S.hideWelcome = true; else S.hideInstall = true; save(); draw(); return; }
     if (e.target.closest('[data-install]') && window.__bip) { try { window.__bip.prompt(); await window.__bip.userChoice; } catch (err) { /* ignore */ } window.__bip = null; draw(); return; }
     const b = e.target.closest('[data-mark]'); if (!b) return;
     const d = getDay(dayKey(), true), i = +b.dataset.mark; d.p[i] = d.p[i] ? 0 : 1; save(); draw();

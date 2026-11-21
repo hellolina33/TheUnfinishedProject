@@ -58,6 +58,46 @@
   ],
   "redirects": [
     {
+      "source": "/safa",
+      "destination": "/day-08-safa/fr/",
+      "permanent": false
+    },
+    {
+      "source": "/safa/",
+      "destination": "/day-08-safa/fr/",
+      "permanent": false
+    },
+    {
+      "source": "/safa/en",
+      "destination": "/day-08-safa/",
+      "permanent": false
+    },
+    {
+      "source": "/safa/en/",
+      "destination": "/day-08-safa/",
+      "permanent": false
+    },
+    {
+      "source": "/safa/ar",
+      "destination": "/day-08-safa/ar/",
+      "permanent": false
+    },
+    {
+      "source": "/safa/ar/",
+      "destination": "/day-08-safa/ar/",
+      "permanent": false
+    },
+    {
+      "source": "/safa/app",
+      "destination": "/day-08-safa/app/",
+      "permanent": false
+    },
+    {
+      "source": "/safa/app/",
+      "destination": "/day-08-safa/app/",
+      "permanent": false
+    },
+    {
       "source": "/day-04-productivity-library/tools/:id/",
       "has": [
         {
