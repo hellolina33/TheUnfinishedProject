@@ -7,7 +7,7 @@ export const copy = (fr, en, ar) => ({ fr, en, ar })[lang()];
 
 const link = (href, title, graphic, detail = '') => `
   <a class="home-row" href="#/${href}">
-    ${graphic}<span><strong>${esc(title)}</strong>${detail ? `<small>${esc(detail)}</small>` : ''}</span>
+    <span class="home-symbol" aria-hidden="true">${graphic}</span><span><strong>${esc(title)}</strong>${detail ? `<small>${esc(detail)}</small>` : ''}</span>
     ${icon.chev}
   </a>`;
 
@@ -58,9 +58,9 @@ export function renderHome(root) {
     ${group(copy('Apprendre et pratiquer', 'Learn and practise', 'تعلم ومارس'),
       link(journey ? `journey/${journey.id}` : 'journey', journey ? copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري') : t('Through life'), cover('learn'), journey?.title?.[lang()]) +
       link('learn/wudu', t('Ablution (wudu)'), cover('wudu')) +
-      link('journey/faq', copy('Questions fréquentes', 'Frequently asked questions', 'الأسئلة الشائعة'), icon.learn))}
+      link('journey/faq', copy('Questions fréquentes', 'Frequently asked questions', 'الأسئلة الشائعة'), icon.help))}
     ${group(t('Tools'), link('duas', t('Duas'), icon.duas) + link('qibla', t('Qibla'), icon.compass) +
-      (favorites ? link('plus/favorites', copy('Mes favoris', 'My favourites', 'مفضلتي'), icon.quran) : ''))}
+      (favorites ? link('plus/favorites', copy('Mes favoris', 'My favourites', 'مفضلتي'), icon.bookmark) : ''))}
     <p class="home-offline">${copy('Les guides et les textes essentiels sont disponibles hors ligne après leur mise en cache. L’audio se télécharge séparément.', 'Guides and essential texts are available offline after caching. Audio is downloaded separately.', 'تتاح الأدلة والنصوص الأساسية دون اتصال بعد حفظها. ينزل الصوت بشكل مستقل.')}</p>`;
   root.querySelector('#home-language').onchange = event => {
     S.lang = event.target.value;
@@ -73,14 +73,14 @@ export function renderHome(root) {
 export function renderPlus(root, section) {
   root.innerHTML = `<section class="home-plus"><h1>${copy('Plus', 'More', 'المزيد')}</h1>
     ${group(t('Tools'), link('duas', t('Duas'), icon.duas) + link('qibla', t('Qibla'), icon.compass) +
-      link('calendar', t('Calendar'), icon.cal) + link('flight', t('Travel'), cover('travel')) +
+      link('calendar', t('Calendar'), icon.cal) + link('flight', t('Travel'), icon.bag) +
       link('track', t('Track'), icon.track) +
-      link('journey/ramadan', copy('Ramadan', 'Ramadan', 'رمضان'), '<img class="home-thumb" src="illustrations/life/ramadan.webp" alt="" width="64" height="64">') +
+      link('journey/ramadan', copy('Ramadan', 'Ramadan', 'رمضان'), icon.moon) +
       link('ask', t('Find'), icon.search))}
-    ${group(t('Settings'), link('settings', t('Settings'), icon.gear || icon.today) +
+    ${group(copy('Préférences', 'Preferences', 'التفضيلات'), link('settings', t('Settings'), icon.gear, copy('Langue, affichage, audio et sauvegarde', 'Language, display, audio and backup', 'اللغة والعرض والصوت والنسخ الاحتياطي')) +
       link('setup', copy('Configurer les horaires', 'Set prayer times', 'ضبط المواقيت'), icon.today) +
-      link('welcome', copy('Revoir le guide de démarrage', 'Review the getting-started guide', 'مراجعة دليل البدء'), icon.learn) +
-      link('about', t('About'), icon.learn))}
+      link('welcome', copy('Revoir le guide de démarrage', 'Review the getting-started guide', 'مراجعة دليل البدء'), icon.guide) +
+      link('about', t('About'), icon.info))}
     <section id="favorites" class="home-group"><h2>${copy('Mes favoris', 'My favourites', 'مفضلتي')}</h2>
       ${link('quran/favorites', copy('Favoris du Coran', 'Quran favourites', 'مفضلة القرآن'), icon.quran)}
       ${link('duas/favorites', copy('Douas favorites', 'Favourite duas', 'الأدعية المفضلة'), icon.duas)}

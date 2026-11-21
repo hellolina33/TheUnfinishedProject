@@ -18,15 +18,13 @@ import { applyUi } from './a11y.js';
 
 const view = $('#view'), tabbar = $('#tabbar');
 const SHORT = { today: 'today', quran: 'quran', qibla: 'qibla' };
-const homeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5v10H3zM9 20.5v-7h6v7"/></svg>';
-const moreIcon = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
 const drawTabs = () => {
   const tabs = [
-    ['home', copy('Accueil', 'Home', 'الرئيسية'), homeIcon],
+    ['home', copy('Accueil', 'Home', 'الرئيسية'), icon.home],
     ['today', copy('Prier', 'Pray', 'الصلاة'), icon.today],
     ['quran', t('Quran'), icon.quran],
     ['journey', copy('Apprendre', 'Learn', 'التعلم'), icon.learn],
-    ['plus', copy('Plus', 'More', 'المزيد'), moreIcon],
+    ['plus', copy('Plus', 'More', 'المزيد'), icon.more],
   ];
   tabbar.innerHTML = tabs.map(([key, label, graphic]) => `<a href="#/${key}" data-tab="${key}">${graphic}<span>${label}</span></a>`).join('');
   tabbar.setAttribute('aria-label', t('Main'));
