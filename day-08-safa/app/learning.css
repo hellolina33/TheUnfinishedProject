@@ -213,3 +213,15 @@ html.big .learning-grid { grid-template-columns: 1fr; }
 @media (hover:hover) {
   :is(.learning-card,.faq-topic):hover { border-color: var(--mut); }
 }
+
+
+.learning-filters { margin-block: 4px; }
+.learning-result-count { margin-block: 4px 12px; }
+.learning-practice {
+  margin-block: 12px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--bg);
+}
+.learning-practice h3 { font-size: 1rem; font-weight: 600; }
+.journey .learning-practice p { margin: 3px 0 0; line-height: 1.45; }
