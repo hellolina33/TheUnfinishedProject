@@ -122,9 +122,9 @@ export async function renderReader(root, sN, vN, extra) {
       <div class="vact"><button class="chip ctx" data-ctx="${v}">${icon.book}${t('Context')}</button></div></article>`;
   };
   root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)} <span class="arn" lang="ar">${m[2]}</span></b><span class="mono">${esc(meaning(meta, s))} · ${t('{n} verses', { n })}</span></div>
-      <button class="icon-action reader-options" id="rset">${icon.sliders}<span>${t('Reading options')}</span></button></header>
+      <button class="ib reader-options" id="rset" aria-label="${t('Reading options')}" title="${t('Reading options')}">${icon.sliders}</button></header>
     <div class="${cls()}" id="rd">${S.q.tj !== false ? (S.q.tjSeen ? `<button class="linkbtn small tjlink" id="tjleg">${t('Tajweed colours: what they mean')}</button>` : `<button class="tjleg" id="tjleg" aria-label="${t('Tajweed colours: what they mean')}">${RULES.map(r => `<span class="tj-${r}">${t(TJN[r])}</span>`).join('')}</button>`) : ''}<div id="hidebar"></div>${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · <button class="linkbtn small" id="trcred">${esc(trName())} ⓘ</button></p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${(S.q.tj !== false ? tajweed(fat.a) : fat.a).map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
-      <p class="endsur">${t('End of the surah. May Allah make it light for you and accept it.')}</p>
+      <p class="endsur" dir="auto">${t('End of the surah. May Allah make it light for you and accept it.')}</p>
       <nav class="rnav">${s > 1 ? `<a class="btn line sm" href="#/quran/${s - 1}">‹ ${esc(surahName(meta, s - 1))}</a>` : '<span></span>'}${s < 114 ? `<a class="btn line sm" href="#/quran/${s + 1}">${esc(surahName(meta, s + 1))} ›</a>` : ''}</nav></div>
     <div class="player ${S.q.pfull ? 'full' : ''}" id="pl">
       <div class="prow pseekrow"><span class="mono ptime" id="pt0">0:00</span><input type="range" id="pseek" min="0" max="1000" value="0" step="1" aria-label="${t('Position in the surah')}"><span class="mono ptime" id="pt1">${PL.fmt(PL.totalMs())}</span></div>
@@ -172,7 +172,11 @@ export async function renderReader(root, sN, vN, extra) {
   };
   const off = PL.onChange(() => { if (PL.P.auto && PL.P.s !== s) { PL.P.auto = false; location.hash = '#/quran/' + PL.P.s; return; } drawPlayer(); });
   drawPlayer();
-  const refresh = () => { rd.className = cls(); $$('.w.rev', rd).forEach(w => w.classList.remove('rev')); drawPlayer(); };
+  const refresh = () => {
+    const anchor = $$('.vs', rd).find(el => el.getBoundingClientRect().bottom > 150);
+    rd.className = cls(); $$('.w.rev', rd).forEach(w => w.classList.remove('rev')); drawPlayer();
+    if (anchor) requestAnimationFrame(() => { anchor.scrollIntoView({ block: 'start' }); window.scrollBy(0, -70); });
+  };
 
   seekEl.addEventListener('input', () => { dragging = true; $('#pt0', pl).textContent = PL.fmt(seekEl.value / 1000 * PL.totalMs()); });
   seekEl.addEventListener('change', () => { dragging = false; PL.seek(seekEl.value / 1000 * PL.totalMs()); });
@@ -354,7 +358,7 @@ export async function renderReader(root, sN, vN, extra) {
   window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('touchmove', onUser, { passive: true }); window.addEventListener('wheel', onUser, { passive: true });
   if (vN || !S.q.last || S.q.last.s !== s) setLast(startV);
   if (s === 18 && weekday(Date.now()) === 'Friday') { getDay(dayKey(), true).k = 1; save(); }
-  if (startV > 1) requestAnimationFrame(() => { const el = $('#v' + startV, rd); if (el) { el.scrollIntoView({ block: 'start' }); window.scrollBy(0, -70); } }); else window.scrollTo(0, 0);
+  if (startV > 1) { const go = () => { const el = $('#v' + startV, rd); if (el && location.hash.startsWith('#/quran/' + s + '/')) { el.scrollIntoView({ block: 'start' }); window.scrollBy(0, -70); } }; requestAnimationFrame(go); (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(go, 60)); } else window.scrollTo(0, 0);
   // Memorisation sessions open the reader with a loop: #/quran/s/v/loop-a-b
   const lm = (extra || '').match(/^loop-(\d+)-(\d+)$/); if (lm) { PL.loopRange(+lm[1], +lm[2]); }
   // Guided memorisation: listen ×3, read ×3, recite from memory, verse by verse. #/quran/s/a/coach-a-b

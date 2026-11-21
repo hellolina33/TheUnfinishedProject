@@ -87,7 +87,7 @@ export async function renderSettings(root, sec) {
     root.innerHTML = `<header class="sub"><a href="#/settings" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${secName}</b><span class="ib"></span></header>
       <section class="form">
 <div class="sgrp" data-sec="lang">
-        <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع' }[lang()]) + ')'], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
+        <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع' }[lang()]) + ')'], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}" ${k === 'ar' ? 'lang="ar" dir="rtl"' : ''}>${l}</button>`).join('')}</div>
 </div><div class="sgrp" data-sec="times">
         <h3 id="st2">${t('Place')}</h3>
         <p class="muted small">${S.loc ? t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) }) : t('Choose a city first.')}</p>

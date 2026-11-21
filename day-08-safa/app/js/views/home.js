@@ -87,7 +87,7 @@ export function renderHome(root) {
     <header class="home-head"><h1>safa<span>.</span></h1>
       <label class="home-language">${icon.globe}<span class="visually-hidden">${copy('Langue', 'Language', 'اللغة')}</span>
       <select id="home-language" class="inp">${[['fr','Français'],['en','English'],['ar','العربية']].map(([id, label]) =>
-        `<option value="${id}" ${lang() === id ? 'selected' : ''}>${label}</option>`).join('')}</select>${icon.down}</label>
+        `<option value="${id}" ${lang() === id ? 'selected' : ''} ${id === 'ar' ? 'lang="ar"' : ''}>${label}</option>`).join('')}</select>${icon.down}</label>
     </header>
     ${np ? `<a class="home-sticky" id="home-sticky" href="#/today" aria-hidden="true" tabindex="-1"><b>${NAMES[np.k]}</b><span class="mono">${fmtTime(np.at)}</span><span id="sticky-in">${inMinutes(np.at)}</span></a>` : ''}
     ${hero}
