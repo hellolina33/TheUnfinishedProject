@@ -69,6 +69,13 @@ export function renderLearnHub(root) {
   root.querySelectorAll('a.card.row').forEach((a, n) => { const k = ['wudu', 'salat', 'fatiha', 'lessons'][n]; if (S.learnDone && S.learnDone[k]) a.querySelector('.mono').insertAdjacentHTML('beforeend', ` · ✓ ${t('done')}`); });
 }
 
+// Simple phonetic reading: no special letters, spelt the way a French or English reader would say it.
+export function phon(tl) {
+  let x = String(tl).normalize('NFC');
+  x = x.replace(/[ʿʾ‘’']/g, "'").replace(/ḥ/g, 'h').replace(/Ḥ/g, 'H').replace(/ṣ/g, 's').replace(/ḍ/g, 'd').replace(/ṭ/g, 't').replace(/ẓ/g, 'z').replace(/ā/g, 'â').replace(/ī/g, 'î').replace(/ū/g, 'û').replace(/Ā/g, 'Â');
+  if (lang() === 'fr') x = x.replace(/sh/gi, m => m[0] === 'S' ? 'Ch' : 'ch').replace(/û/g, 'oû').replace(/u/g, 'ou').replace(/U/g, 'Ou').replace(/j/g, 'dj').replace(/J/g, 'Dj');
+  return x.replace(/\s+/g, ' ');
+}
 export function renderSteps(root, which) {
   const list = which === 'wudu' ? WUDU : SALAT; S.learnPos = S.learnPos || {}; let i = Math.min(list.length - 1, S.learnPos[which] || 0);
   const draw = () => {
@@ -78,7 +85,7 @@ export function renderSteps(root, which) {
       <section class="step">
         <div class="figw" role="img" aria-label="${esc(t(title))}">${POSE[p] || ico[p]}</div>
         <h2>${t(title)}</h2><p>${t(body)}</p>
-        ${ar ? `<div class="say"><p class="ar" lang="ar" dir="rtl">${ar}</p>${lang() !== 'ar' ? `<p class="tlit">${esc(tl)}</p>` : ''}${mean && lang() !== 'ar' ? `<p class="mean">${esc(t(mean))}</p>` : ''}</div>` : ''}
+        ${ar ? `<div class="say"><p class="ar" lang="ar" dir="rtl">${ar}</p>${lang() !== 'ar' ? `<p class="tlit">${esc(S.phon ? phon(tl) : tl)}</p><button class="linkbtn small" id="sph" aria-pressed="${!!S.phon}">${t(S.phon ? 'Show the precise transliteration' : 'Show a simple phonetic reading')}</button>` : ''}${mean && lang() !== 'ar' ? `<p class="mean">${esc(t(mean))}</p>` : ''}</div>` : ''}
       </section>
       <nav class="rnav"><button class="btn line" id="sp" ${i === 0 ? 'disabled' : ''}>${t('Previous')}</button>${i < list.length - 1 ? `<button class="btn" id="sn">${t('Next')}</button>` : `<button class="btn" id="sfin">${t('Done')}</button>`}</nav>`;
   };
@@ -90,7 +97,7 @@ export function renderSteps(root, which) {
       <a class="btn big" href="${next[0]}">${t(next[1])}</a><a class="btn line big" href="#/learn" style="margin-top:10px">${t('Back to First steps')}</a>`;
     window.scrollTo(0, 0);
   };
-  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; S.learnPos[which] = i; save(); draw(); window.scrollTo(0, 0); };
+  root.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'sph') { S.phon = !S.phon; save(); draw(); return; } if (b.id === 'sfin') { fin(); return; } if (b.id === 'sn') i++; if (b.id === 'sp') i--; S.learnPos[which] = i; save(); draw(); window.scrollTo(0, 0); };
   draw();
   return () => { root.onclick = null; };
 }

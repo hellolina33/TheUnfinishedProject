@@ -65,16 +65,30 @@ export function download(name, text, type = 'application/json') {
 }
 
 // City search field. onPick receives [name, country, iso2, lat, lng, tz].
-export function cityField(root, { placeholder = 'Search a city', onPick, value = '' }) {
-  root.innerHTML = `<div class="cityf"><input type="search" class="inp" placeholder="${esc(placeholder)}" value="${esc(value)}" autocomplete="off" autocapitalize="words" aria-label="${esc(placeholder)}"><div class="cityr" role="listbox"></div></div>`;
-  const inp = $('input', root), res = $('.cityr', root); let list = [];
+let cfN = 0;
+export function cityField(root, { placeholder = 'Search a city', onPick, value = '', suggest = false }) {
+  const id = 'cityr' + (++cfN);
+  root.innerHTML = `<div class="cityf"><input type="search" class="inp" placeholder="${esc(placeholder)}" value="${esc(value)}" autocomplete="off" autocapitalize="words" aria-label="${esc(placeholder)}" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="${id}"><div class="cityr" role="listbox" id="${id}" aria-label="${esc(t('Cities'))}"></div>${suggest ? '<div class="chips wrapc citys" hidden></div>' : ''}</div>`;
+  const inp = $('input', root), res = $('.cityr', root), sug = $('.citys', root); let list = [], act = -1;
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '', reg = tz.split('/')[0];
+  const setAct = i => { act = i; $$('[role=option]', res).forEach((b, k) => b.setAttribute('aria-selected', k === i)); const b = $('#' + id + '-' + i, res); if (b) { inp.setAttribute('aria-activedescendant', b.id); b.scrollIntoView({ block: 'nearest' }); } else inp.removeAttribute('aria-activedescendant'); };
+  const pick = c => { inp.value = c[0]; res.innerHTML = ''; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); if (sug) sug.hidden = true; onPick(c); };
+  if (sug && tz) data('cities.json').then(cities => { const near = cities.filter(c => c[5] === tz).slice(0, 3); if (!near.length) return; sug.innerHTML = `<span class="mono">${t('Near you?')}</span>` + near.map((c, i) => `<button type="button" class="chip" data-s="${i}">${esc(c[0])}</button>`).join(''); sug.hidden = false; sug.onclick = e => { const b = e.target.closest('[data-s]'); if (b) pick(near[+b.dataset.s]); }; }).catch(() => {});
   inp.addEventListener('input', async () => {
     const cities = await data('cities.json');
     list = searchCities(cities, inp.value);
-    { const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '', reg = tz.split('/')[0]; list = list.map((c, i) => [c, i]).sort((a, b) => ((b[0][5] === tz) * 2 + (String(b[0][5]).split('/')[0] === reg)) - ((a[0][5] === tz) * 2 + (String(a[0][5]).split('/')[0] === reg)) || a[1] - b[1]).map(x => x[0]); }
-    res.innerHTML = list.map((c, i) => `<button type="button" role="option" data-i="${i}"><b>${esc(c[0])}</b><span>${esc(countryName(c[2], c[1]))}</span></button>`).join('') || (inp.value.trim().length >= 2 ? `<p class="mono pad">${t('No city found. Try a bigger city nearby.')}</p>` : '');
+    list = list.map((c, i) => [c, i]).sort((a, b) => ((b[0][5] === tz) * 2 + (String(b[0][5]).split('/')[0] === reg)) - ((a[0][5] === tz) * 2 + (String(a[0][5]).split('/')[0] === reg)) || a[1] - b[1]).map(x => x[0]);
+    res.innerHTML = list.map((c, i) => `<button type="button" role="option" id="${id}-${i}" aria-selected="false" data-i="${i}"><b>${esc(c[0])}</b><span>${esc(countryName(c[2], c[1]))}</span></button>`).join('') || (inp.value.trim().length >= 2 ? `<p class="mono pad" role="status">${t('No city found. Try a bigger city nearby.')}</p>` : '');
+    inp.setAttribute('aria-expanded', list.length ? 'true' : 'false'); act = -1; inp.removeAttribute('aria-activedescendant');
   });
-  res.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; const c = list[+b.dataset.i]; inp.value = c[0]; res.innerHTML = ''; onPick(c); });
+  inp.addEventListener('keydown', e => {
+    if (!list.length) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); setAct(Math.min(list.length - 1, act + 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); setAct(Math.max(0, act - 1)); }
+    else if (e.key === 'Enter' && act >= 0) { e.preventDefault(); pick(list[act]); }
+    else if (e.key === 'Escape') { res.innerHTML = ''; list = []; inp.setAttribute('aria-expanded', 'false'); }
+  });
+  res.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; pick(list[+b.dataset.i]); });
   return inp;
 }
 

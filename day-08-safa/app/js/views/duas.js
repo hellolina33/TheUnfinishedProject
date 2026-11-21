@@ -37,6 +37,9 @@ export async function renderList(root) {
     } else {
       const sug = h < 15 ? [[27, 'Morning', 'Words of remembrance'], [1, 'On waking', 'When you wake up']] : [[27, 'Evening', 'Words of remembrance'], [28, 'Tonight', 'Before sleeping']];
       head = `<p class="mono pad">${t('For this moment of the day')}</p><div class="grid2">${sug.map(([id, k, tt]) => `<a class="card tile col" href="#/duas/${id}"><span class="mono">${t(k)}</span><b>${t(tt)}</b></a>`).join('')}</div>${mine}<p class="mono pad">${t('All chapters · {n}', { n: D.length })}</p>`;
+      const seen = new Set(), groups = MOMENTS.map(g => [g, D.filter(c => c.g[0] === g)]).concat([['Other', D.filter(c => !MOMENTS.includes(c.g[0]))]]);
+      out.innerHTML = head + groups.filter(([, l]) => l.length).map(([g, l]) => `<h3 class="dgrp">${esc(t(g))}</h3>` + l.filter(c => !seen.has(c.id) && seen.add(c.id)).map(row).join('')).join('');
+      return;
     }
     out.innerHTML = head + list.map(row).join('');
   };
@@ -46,18 +49,19 @@ export async function renderList(root) {
   return () => { root.onclick = null; };
 }
 
+const MOMENTS = ['Morning & evening', 'Mosque & prayer', 'After prayer', 'Sleep', 'Food & home', 'Travel', 'Anxiety', 'Illness & grief', 'Forgiveness', 'Gratitude', 'Decision'];
 export async function renderChapter(root, id) {
   const D = await data('duas.json'), c = D.find(x => x.id === +id);
   if (!c) { location.hash = '#/duas'; return; }
   const counts = {};
   root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b class="clip">${esc(title(c))}</b><button class="chip" id="dtl" aria-pressed="${S.d.tl}">${t('Transliteration')}</button></header>
     <div class="dlist ${S.d.tl ? '' : 'notl'}" id="dd">${c.d.map((x, i) => `<article class="dua" data-i="${i}">
-      <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen to this dua')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button><button class="ib" data-mine="${i}" aria-label="${t('Add to my duas')}" title="${t('Add to my duas')}">${icon.plus}</button></span></div>
+      <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen to this dua')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button></span></div>
       <p class="ar" lang="ar" dir="rtl">${esc(String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'))}</p>
       ${!ar() && ((fr() && x.tf) || x.tl) ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
       ${ar() ? '' : `<span class="mono senslbl">${t('Meaning')}</span><p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
-      <div class="df"><span class="dsrc"><span class="badge mono">${esc(x.ref || t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${gradeBadge(x)}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
-      <div class="dx"><button class="linkbtn small" data-share="${i}">${t('Share')}</button><a class="linkbtn small" href="${reportUrl('Dua ' + c.id + '.' + (i + 1))}" target="_blank" rel="noopener">${t('Report an error')}</a></div>
+      <div class="df"><span class="dsrc"><span class="badge mono">${x.ref ? esc(t('Reported by {r}', { r: x.ref })) : esc(t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${gradeBadge(x)}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
+      <div class="dx"><button class="linkbtn small" data-mine="${i}">+ ${t('Add to My duas')}</button><button class="linkbtn small" data-share="${i}">${t('Share')}</button><button class="linkbtn small" data-img="${i}">${t('Share as image')}</button><a class="linkbtn small" href="${reportUrl('Dua ' + c.id + '.' + (i + 1))}" target="_blank" rel="noopener">${t('Report an error')}</a></div>
     </article>`).join('')}
     <p class="endsur">${t('May Allah accept your duas.')}</p>
     ${D.findIndex(z => z.id === c.id) < D.length - 1 ? `<a class="btn line sm" href="#/duas/${D[D.findIndex(z => z.id === c.id) + 1].id}">${t('Next chapter')}: ${esc(title(D[D.findIndex(z => z.id === c.id) + 1]))} ›</a>` : ''}
@@ -65,6 +69,8 @@ export async function renderChapter(root, id) {
   const dd = $('#dd', root);
   $('#dtl', root).onclick = e => { S.d.tl = !S.d.tl; save(); dd.classList.toggle('notl', !S.d.tl); e.target.setAttribute('aria-pressed', S.d.tl); };
   dd.onclick = async e => {
+    const gb = e.target.closest('[data-grade]'); if (gb) { const g = GRADES[gb.dataset.grade]; toast(g ? t(g[1]) + (gb.dataset.grade.startsWith('sahih') ? ' · ' + t('Sahih means authentic.') : '') : t('No source matched yet. Check it with a person of knowledge.')); return; }
+    const im = e.target.closest('[data-img]'); if (im) { shareImage(c.d[+im.dataset.img], title(c)); return; }
     const sh = e.target.closest('[data-share]');
     if (sh) { const x = c.d[+sh.dataset.share], txt = `${x.ar}\n\n${(fr() && x.fr) || x.en}\n— ${x.ref || 'Hisnul Muslim'}\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
     const cb = e.target.closest('[data-count]');
@@ -89,8 +95,8 @@ export async function renderChapter(root, id) {
 export const GRADES = { sahih2: ['Sahih', 'In Sahih al-Bukhari or Sahih Muslim'], sahih_alb: ['Sahih', 'Graded sahih by Al-Albani'], hasan: ['Hasan', 'Graded hasan'], quran: ['Quran', 'Verse of the Quran'], ref: ['Source cited', 'Collection cited; grade not shown here'] };
 function gradeBadge(x) {
   const g = GRADES[x.gr];
-  if (!g) return `<span class="grade none" title="${esc(t('No source matched yet. Check it with a person of knowledge.'))}">${t('Source being reviewed')}</span>`;
-  return `<span class="grade ${x.gr}" title="${esc(t(g[1]))}">${t(g[0])}</span>`;
+  if (!g) return `<button class="grade none" data-grade="none" aria-label="${esc(t('No source matched yet. Check it with a person of knowledge.'))}">${t('Source being reviewed')}</button>`;
+  return `<button class="grade ${x.gr}" data-grade="${x.gr}" aria-label="${esc(t(g[1]))}">${t(g[0])}${x.gr.startsWith('sahih') ? ' · ' + t('authentic') : ''}</button>`;
 }
 
 /* ---------- My duas ---------- */
@@ -129,4 +135,28 @@ export function renderMyDuas(root, id) {
   };
   if (id) edit(); else list();
   return () => { root.onclick = null; };
+}
+
+/* A clean square image: Arabic, meaning, source. Shared as a file when the phone allows it. */
+async function shareImage(x, ttl) {
+  try {
+    await document.fonts.ready;
+    const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    const g = cv.getContext('2d'); g.fillStyle = '#ecebe7'; g.fillRect(0, 0, W, H);
+    const wrap = (txt, font, max, dir) => { g.font = font; g.direction = dir; const words = String(txt).split(/\s+/), lines = []; let cur = ''; for (const w of words) { const n = cur ? cur + ' ' + w : w; if (g.measureText(n).width > max && cur) { lines.push(cur); cur = w; } else cur = n; } if (cur) lines.push(cur); return lines; };
+    const ar = String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'), mean = (fr() && x.fr) || x.en;
+    let arSize = 58, arL; do { arL = wrap(ar, `${arSize}px 'Amiri Quran','Amiri','Geeza Pro',serif`, W - 160, 'rtl'); arSize -= 4; } while (arL.length * arSize * 1.9 > 560 && arSize > 30);
+    let mSize = 34, mL; do { mL = wrap(mean, `400 ${mSize}px 'Inter Tight',system-ui,sans-serif`, W - 160, 'ltr'); mSize -= 2; } while (mL.length * mSize * 1.45 > 420 && mSize > 20);
+    g.fillStyle = '#e85d2a'; g.font = "500 26px 'JetBrains Mono',monospace"; g.direction = 'ltr'; g.textAlign = 'left'; g.fillText(String(ttl).toUpperCase().slice(0, 48), 80, 110);
+    g.fillStyle = '#111110'; g.textAlign = 'right'; g.direction = 'rtl'; g.font = `${arSize + 4}px 'Amiri Quran','Amiri','Geeza Pro',serif`;
+    const tot = arL.length * (arSize + 4) * 1.9 + 20 + mL.length * (mSize + 2) * 1.45;
+    let y = Math.max(230, Math.round((H - tot) / 2)); arL.forEach(l => { g.fillText(l, W - 80, y); y += (arSize + 4) * 1.9; });
+    g.direction = 'ltr'; g.textAlign = 'left'; g.font = `400 ${mSize + 2}px 'Inter Tight',system-ui,sans-serif`; g.fillStyle = '#2a2a28'; y += 20;
+    mL.forEach(l => { g.fillText(l, 80, y); y += (mSize + 2) * 1.45; });
+    g.fillStyle = '#5c5b57'; g.font = "400 24px 'JetBrains Mono',monospace"; g.fillText((x.ref ? t('Reported by {r}', { r: x.ref }) : 'Hisnul Muslim').slice(0, 60), 80, H - 120);
+    g.fillStyle = '#111110'; g.font = "600 40px 'Inter Tight',system-ui,sans-serif"; g.fillText('safa.', 80, H - 64);
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png')), file = new File([blob], 'safa-dua.png', { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text: 'safa.' });
+    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'safa-dua.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast(t('Image saved')); }
+  } catch (e) { if (e && e.name !== 'AbortError') toast(t('Could not create the image here.')); }
 }

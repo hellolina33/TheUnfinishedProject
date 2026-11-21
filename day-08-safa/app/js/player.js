@@ -17,7 +17,7 @@ const wordUrl = (s, v, w) => `https://audio.qurancdn.com/wbw/${pad(s)}_${pad(v)}
 
 const audio = new Audio(); audio.preload = 'auto';
 // P.v = 0 means the basmala prelude (verse 1:1 of the same reciter) before surahs other than 1 and 9.
-export const P = { s: null, v: null, n: 0, name: '', mode: 'off', a: 0, b: 0, word: false, durs: null, real: {}, tim: null, listeners: new Set(), seekTo: 0 };
+export const P = { sleep: 0, s: null, v: null, n: 0, name: '', mode: 'off', a: 0, b: 0, word: false, durs: null, real: {}, tim: null, listeners: new Set(), seekTo: 0 };
 const emit = () => P.listeners.forEach(f => { try { f(); } catch (e) { /* view gone */ } });
 export const onChange = f => { P.listeners.add(f); return () => P.listeners.delete(f); };
 export const hasBasmala = s => s !== 1 && s !== 9;
@@ -50,9 +50,12 @@ export function playVerse(v, offsetMs = 0) {
   meta(); emit();
 }
 export function playFrom(v) { P.mode = 'off'; playVerse(v === 1 && hasBasmala(P.s) ? 0 : v); }
-export function loopVerse(v) { P.mode = 'verse'; playVerse(v); }
-export function loopRange(a, b) { P.mode = 'range'; P.a = a; P.b = b; playVerse(a); }
+export function loopVerse(v) { if (P.sleep === 'end') P.sleep = 0; P.mode = 'verse'; playVerse(v); }
+export function loopRange(a, b) { if (P.sleep === 'end') P.sleep = 0; P.mode = 'range'; P.a = a; P.b = b; playVerse(a); }
 export function toggle() { if (P.v == null) return playFrom(1); if (audio.paused) audio.play().catch(() => {}); else audio.pause(); }
+/* Sleep timer: minutes from now, or 'end' to stop at the end of the surah (loops end too). */
+export function setSleep(x) { P.sleep = x === 'end' ? 'end' : x ? Date.now() + x * 60000 : 0; if (x === 'end' && P.mode !== 'off') P.mode = 'off'; emit(); }
+export const sleepLeft = () => P.sleep === 'end' ? 'end' : P.sleep ? Math.max(0, P.sleep - Date.now()) : 0;
 export function stop() { audio.pause(); audio.removeAttribute('src'); P.v = null; P.mode = 'off'; P.word = false; emit(); }
 export function seek(ms) {
   if (!P.durs) return;
@@ -64,6 +67,7 @@ export function seek(ms) {
 }
 export function next() { if (P.v != null && P.v < P.n) playVerse(P.v + 1); }
 export function prev() { if (P.v == null) return; if (audio.currentTime > 2 || P.v <= 1) audio.currentTime = 0; else playVerse(P.v - 1); }
+export function setReciter(r) { S.q.reciter = r; save(); }
 export function setSpeed(x) { S.q.speed = x; audio.playbackRate = x; save(); emit(); }
 export function playWord(s, v, w) {
   if (isPlaying()) return false;
@@ -82,7 +86,7 @@ audio.addEventListener('ended', () => {
   if (P.mode === 'verse') return playVerse(P.v);
   if (P.mode === 'range') return playVerse(P.v < P.b ? P.v + 1 : P.a);
   if (P.v < P.n) return playVerse(P.v + 1);
-  P.v = null; emit(); position();
+  P.v = null; if (P.sleep === 'end') P.sleep = 0; emit(); position();
 });
 audio.addEventListener('error', () => {
   if (!audio.getAttribute('src')) return;
@@ -90,7 +94,7 @@ audio.addEventListener('error', () => {
   P.word = false; if (P.v != null) stop();
 });
 ['play', 'pause'].forEach(e => audio.addEventListener(e, () => { emit(); position(); }));
-audio.addEventListener('timeupdate', position);
+audio.addEventListener('timeupdate', () => { position(); if (typeof P.sleep === 'number' && P.sleep && Date.now() >= P.sleep) { P.sleep = 0; audio.pause(); toast(t('Sleep timer: recitation stopped.')); emit(); } });
 
 /* Lock screen / notification controls show the surah, not the verse file. */
 function meta() {

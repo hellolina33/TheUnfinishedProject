@@ -55,7 +55,7 @@ export function render(root, done) {
     </section>`;
     const picked = () => { $('#picked', root).hidden = false; $('#meth', root).value = S.method; $('#done', root).disabled = false; $('#hint', root).hidden = true; $('#pk', root).textContent = `${S.loc.name} · ${countryName(S.loc.iso2, S.loc.country)}`; try { const T = timesFor(dayKey()), now = Date.now(), k = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].find(x => T[x] > now); $('#npv', root).textContent = k ? t('Next prayer: {p} at {t}', { p: NAMES[k], t: fmtTime(T[k]) }) : ''; } catch (e) { /* ignore */ } };
     root.addEventListener('click', e => { const b = e.target.closest('[data-lvl]'); if (!b) return; S.level = S.level === b.dataset.lvl ? null : b.dataset.lvl; save(); root.querySelectorAll('[data-lvl]').forEach(x => x.setAttribute('aria-pressed', x.dataset.lvl === S.level)); });
-    const inp = cityField($('#city', root), { placeholder: t('Type your city'), onPick: c => { setLocation(c); picked(); } });
+    const inp = cityField($('#city', root), { suggest: true, placeholder: t('Type your city'), onPick: c => { setLocation(c); picked(); } });
     $('#geo', root).onclick = async e => {
       e.target.textContent = t('Locating…'); const slow = setTimeout(() => { $('#hint', root).textContent = t('Taking a while? You can also type your city below.'); }, 5000);
       try { await locateOnce(); clearTimeout(slow); inp.value = S.loc.name; picked(); e.target.textContent = t('Location set · {c}', { c: S.loc.name }); e.target.classList.add('ok'); }

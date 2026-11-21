@@ -1,6 +1,6 @@
 import { S, save, replaceState, resetState, dayKey, addDays, getDay, P5, data } from '../store.js';
 import { METHODS, NAMES, timesFor, fmtTime } from '../prayer.js';
-import { $, $$, esc, icon, pad, toast, download, cityField, LOGO, countryName, reportUrl } from '../ui.js';
+import { $, $$, esc, icon, pad, toast, download, cityField, LOGO, countryName, reportUrl, sheet, closeSheet } from '../ui.js';
 import { setLocation, locateOnce } from './onboarding.js';
 import { RECITERS } from './quran.js';
 import { t, L, lang, applyLang } from '../i18n.js';
@@ -19,7 +19,7 @@ export function renderTrack(root) {
     const cell = (k, d, j) => k < since ? '<td></td>' : `<td><button class="pd ${d.pz ? 'pz' : d.p[j] ? 'on' : ''}" data-k="${k}" data-j="${j}" ${d.pz || k > today ? 'disabled' : ''} aria-pressed="${!!d.p[j]}" aria-label="${NAMES[P5[j]]}, ${lbl(k)}${d.pz ? t(', paused') : ''}"></button></td>`;
     const cell2 = (k, d, f, name) => k < since ? '<td></td>' : `<td><button class="pd sq ${d[f] ? 'on' : ''}" data-k="${k}" data-f="${f}" ${k > today ? 'disabled' : ''} aria-pressed="${!!d[f]}" aria-label="${name}, ${lbl(k)}"></button></td>`;
     root.innerHTML = `<header class="vh"><div><h1>${t('Track')}</h1></div><a class="ib" href="#/settings" aria-label="${t('Settings')}">${icon.gear}</a></header>
-      <div class="pause ${S.pauseOn ? 'on' : ''}"><div><b>${t('Pause mode')}</b><small>${t('Periods, illness, hard days. Tracking freezes. Nothing is counted against you.')}</small></div><button class="sw" role="switch" id="pz" aria-checked="${S.pauseOn}" aria-label="${t('Pause mode')}"></button></div>
+      <div class="pause ${S.pauseOn ? 'on' : ''}"><div><b>${t('Pause mode')}</b><small>${t('Periods, illness, hard days. Tracking freezes. Nothing is counted against you.')}${S.pauseOn && S.pauseUntil ? ' ' + t('Until {d}.', { d: S.pauseUntil.split('-').reverse().slice(0, 2).join('/') }) : ''}</small></div><button class="sw" role="switch" id="pz" aria-checked="${S.pauseOn}" aria-label="${t('Pause mode')}"></button></div>
       <div class="wkh"><button class="ib" id="wprev" aria-label="${t('Previous week')}">${icon.back}</button><span class="mono">${range.format(new Date(keys[0] + 'T12:00:00Z'))} – ${range.format(new Date(keys[6] + 'T12:00:00Z'))}</span><button class="ib flip" id="wnext" ${weekOff >= 0 ? 'disabled' : ''} aria-label="${t('Next week')}">${icon.back}</button></div>
       <table class="wk"><thead><tr><th class="l"></th>${keys.map(k => `<th class="${k === today ? 'td' : ''}">${lbl(k).replace('.', '').slice(0, 3)}</th>`).join('')}</tr></thead>
         <tbody>${P5.map((p, j) => `<tr><th class="l">${NAMES[p]}</th>${keys.map((k, i) => cell(k, days[i], j)).join('')}</tr>`).join('')}
@@ -27,6 +27,7 @@ export function renderTrack(root) {
         <tr><th class="l">${t('Adhkar')}</th>${keys.map((k, i) => cell2(k, days[i], 'a', t('Adhkar'))).join('')}</tr></tbody></table>
       <p class="sumline">${!active.length && days.some(d => d.pz) ? t('This week is paused.') : shown ? t(shown === 1 ? 'You prayed on <b>1</b> day this week' : 'You prayed on <b>{a}</b> days this week', { a: shown }) + (read ? t(read === 1 ? ' and opened the Quran on <b>1</b>' : ' and opened the Quran on <b>{n}</b>', { n: read }) : '') + '.' : read ? t('You opened the Quran on <b>{n}</b> days this week.', { n: read }) : t('Each day is a fresh start. Tick a prayer when you want to.')} ${days.some(d => d.pz) ? t('Paused days are left out.') : ''}</p>
       <p class="muted small legend">${t('Circles: the five prayers. Squares: Quran opened, adhkar read.')}</p>
+      <details class="daytxt"><summary class="linkbtn small">${t('Read the week as text')}</summary><ul>${keys.map((k, i) => { if (k < since || k > today) return ''; const d = days[i], n = d.p.filter(Boolean).length, bits = []; if (d.pz) bits.push(t('paused')); else { if (n) bits.push(t(n === 1 ? '1 prayer ticked' : '{n} prayers ticked', { n })); if (d.r) bits.push(t('Quran opened')); if (d.a) bits.push(t('adhkar read')); } return `<li><b>${esc(new Intl.DateTimeFormat(L(), { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(k + 'T12:00:00Z')))}</b> · ${bits.length ? bits.join(' · ') : t('nothing logged')}</li>`; }).join('')}</ul></details>
       <section class="card stack">
         <label class="tog"><span>${t('Evening check-in')}<small>${t('One gentle reminder a day. Nothing else.')}</small></span><input type="checkbox" id="ron" ${S.rem.on ? 'checked' : ''}></label>
         <div class="row2"><label class="lbl" for="rt">${t('Time')}</label><input type="time" id="rt" class="inp" value="${S.rem.t}"></div>
@@ -39,7 +40,12 @@ export function renderTrack(root) {
   };
   root.onclick = async e => {
     const b = e.target.closest('button'); if (!b) return;
-    if (b.id === 'pz') { S.pauseOn = !S.pauseOn; const d = getDay(dayKey(), true); d.pz = S.pauseOn ? 1 : 0; save(); draw(); return; }
+    if (b.id === 'pz') {
+      if (S.pauseOn) { S.pauseOn = false; S.pauseUntil = null; const d = getDay(dayKey(), true); d.pz = 0; save(); draw(); return; }
+      const el = sheet(`<h3>${t('Pause mode')}</h3><p class="muted small">${t('Tracking freezes. Nothing is counted against you. Prayer times stay visible.')}</p><div class="acts">${[[0, t('Until I turn it off')], [3, t('For 3 days')], [7, t('For 7 days')], [10, t('For 10 days')]].map(([n, l]) => `<button data-pd="${n}">${l}</button>`).join('')}</div>`, { label: t('Pause mode') });
+      el.onclick = e2 => { const x = e2.target.closest('[data-pd]'); if (!x) return; const n = +x.dataset.pd; S.pauseOn = true; S.pauseUntil = n ? addDays(dayKey(), n - 1) : null; getDay(dayKey(), true).pz = 1; save(); closeSheet(); draw(); toast(n ? t('Paused until {d}. Take care of yourself.', { d: S.pauseUntil.split('-').reverse().slice(0, 2).join('/') }) : t('Paused. Take care of yourself.')); };
+      return;
+    }
     if (b.id === 'wprev') { weekOff--; draw(); return; }
     if (b.id === 'wnext') { weekOff = Math.min(0, weekOff + 1); draw(); return; }
     if (b.id === 'rics') {
@@ -67,13 +73,14 @@ export function renderSettings(root) {
     let est = ''; try { const e = await navigator.storage.estimate(); est = t('{n} MB used on this device', { n: (e.usage / 1048576).toLocaleString(L(), { maximumFractionDigits: 1 }) }); } catch (e) { /* not supported */ }
     const dl = Object.keys(S.q.dl || {});
     root.innerHTML = `<header class="sub"><a href="#/track" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Settings')}</b><span class="ib"></span></header>
+      <nav class="chips wrapc stoc" aria-label="${t('Sections')}"><button class="chip" data-go="st1">${t('Language')}</button><button class="chip" data-go="st2">${t('Place')}</button><button class="chip" data-go="st3">${t('Prayer times')}</button><button class="chip" data-go="st4">${t('Offline')}</button><button class="chip" data-go="st5">${t('Display &amp; accessibility')}</button><button class="chip" data-go="st6">${t('Friday')}</button><button class="chip" data-go="st7">${t('Sync between devices')}</button><button class="chip" data-go="st8">${t('Backup')}</button></nav>
       <section class="form">
-        <h3>${t('Language')}</h3>
+        <h3 id="st1">${t('Language')}</h3>
         <div class="seg lang">${[['auto', t('Automatic') + ' (' + ({ fr: 'FR', en: 'EN', ar: 'ع' }[lang()]) + ')'], ['en', 'English'], ['fr', 'Français'], ['ar', 'العربية']].map(([k, l]) => `<button data-lang="${k}" aria-pressed="${(S.lang || 'auto') === k}">${l}</button>`).join('')}</div>
-        <h3>${t('Place')}</h3>
+        <h3 id="st2">${t('Place')}</h3>
         <p class="muted small">${t('Now: <b>{c}</b>, {p}. Stored on this device only.', { c: esc(S.loc.name), p: esc(countryName(S.loc.iso2, S.loc.country)) })}</p>
         <div id="scity"></div><button class="btn line sm" id="sgeo">${t('Use my location once')}</button>
-        <h3>${t('Prayer times')}</h3>
+        <h3 id="st3">${t('Prayer times')}</h3>
         <label class="lbl" for="smeth">${t('Calculation method')}</label>
         <select id="smeth" class="inp">${Object.entries(METHODS).map(([k, m]) => `<option value="${k}" ${S.method === k ? 'selected' : ''}>${esc(m.n)} · ${esc(m.d)}</option>`).join('')}</select>
         <label class="lbl" for="smad">${t('Asr')}</label>
@@ -85,26 +92,26 @@ export function renderSettings(root) {
         <select id="shij" class="inp">${[-2, -1, 0, 1, 2].map(n => `<option value="${n}" ${S.hijriAdj === n ? 'selected' : ''}>${t(Math.abs(n) === 1 ? '{n} day' : '{n} days', { n: (n > 0 ? '+' : '') + n })}</option>`).join('')}</select>
         <label class="tog"><span>${t('24-hour clock')}</span><input type="checkbox" id="s24" ${S.h24 ? 'checked' : ''}></label>
         <button class="btn line sm" id="sics">${t('Add 30 days of prayer times to my calendar')}</button>
-        <h3>${t('Offline')}</h3>
+        <h3 id="st4">${t('Offline')}</h3>
         <p class="muted small">${esc(est)}</p>
         <button class="btn line sm" id="sall">${t('Save the whole Quran text for offline')} · ≈ 25 MB</button>
         <p class="muted small">${t('Saved audio: {x}', { x: dl.length ? dl.map(k => { const [r, s] = k.split('|'); return t('surah {s} · {r}', { s, r: esc(RECITERS[r] || r) }); }).join(', ') : t('none') })}</p>
         ${dl.length ? `<button class="btn line sm" id="sclr">${t('Delete saved audio')}</button>` : ''}
-        <h3>${t('Display &amp; accessibility')}</h3>
+        <h3 id="st5">${t('Display &amp; accessibility')}</h3>
         <label class="lbl">${t('Theme')}</label><div class="seg lang">${[['auto', t('Automatic')], ['light', t('Light')], ['dark', t('Dark')]].map(([k, l]) => `<button data-theme="${k}" aria-pressed="${S.ui.theme === k}">${l}</button>`).join('')}</div>
         <label class="lbl">${t('Text size')}</label><div class="seg lang">${[[0.9, 'A−'], [1, 'A'], [1.15, 'A+'], [1.3, 'A++']].map(([k, l]) => `<button data-scale="${k}" aria-pressed="${S.ui.scale === k}" aria-label="${t('Text size')} ${Math.round(k * 100)}%">${l}</button>`).join('')}</div>
         <p class="preview">${t('Preview: the words you read here change size.')}</p>
         <label class="tog"><span>${t('High contrast')}</span><input type="checkbox" id="shc" ${S.ui.hc ? 'checked' : ''}></label>
         <label class="tog"><span>${t('Reduce motion')}</span><input type="checkbox" id="srm" ${S.ui.motion ? 'checked' : ''}></label>
-        <h3>${t('Friday')}</h3>
+        <h3 id="st6">${t('Friday')}</h3>
         <label class="tog"><span>${t('Al-Kahf reminder')}<small>${t('A card on Friday until you open Al-Kahf.')}</small></span><input type="checkbox" id="sfri" ${S.fri.on ? 'checked' : ''}></label>
         <button class="btn line sm" id="sfics">${t('Add a weekly Friday reminder to my calendar')}</button>
-        <h3>${t('Sync between devices')}</h3>
+        <h3 id="st7">${t('Sync between devices')}</h3>
         <p class="muted small">${t('No account and no server. Create an encrypted file protected by a passphrase, send it to your other device any way you like, and merge it there. Nobody can read it without the passphrase, not even us.')}</p>
         <p class="muted small warn">${t('Write your passphrase down somewhere safe. If you forget it, nobody can open the file, not even safa.')}</p>
         <input id="spass" class="inp" type="password" minlength="8" autocomplete="new-password" placeholder="${t('Passphrase (8 characters or more)')}" aria-label="${t('Passphrase')}">
         <div class="grid2"><button class="btn line sm" id="ssync">${t('Create sync file')}</button><label class="btn line sm">${t('Merge a sync file')}<input type="file" id="smerge" accept=".safa,application/json" hidden></label></div>
-        <h3>${t('Backup')}</h3>
+        <h3 id="st8">${t('Backup')}</h3>
         <p class="muted small">${t('No account, so no cloud. Keep a file and restore it on any device.')} ${/iphone|ipad/i.test(navigator.userAgent) ? t('On iPhone, Safari can clear the data of a web app you have not opened for weeks: export a backup from time to time.') : ''}</p>
         <p class="muted small">${t('The backup is encrypted with the passphrase above. Without it, nobody can read the file, not even you.')}</p>
         <div class="grid2"><button class="btn line sm" id="sexp">${t('Export backup')}</button><label class="btn line sm">${t('Import backup')}<input type="file" id="simp" accept=".safa,application/json,.json" hidden></label></div>
@@ -115,6 +122,7 @@ export function renderSettings(root) {
   };
   let armed = 0;
   root.onclick = async e => {
+    const go = e.target.closest('[data-go]'); if (go) { const h = document.getElementById(go.dataset.go); if (h) { h.scrollIntoView({ block: 'start' }); window.scrollBy(0, -64); } return; }
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.theme) { S.ui.theme = b.dataset.theme; save(); applyUi(); draw(); return; }
     if (b.dataset.scale) { S.ui.scale = +b.dataset.scale; save(); applyUi(); draw(); return; }

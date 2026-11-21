@@ -25,6 +25,28 @@ function extras() {
 }
 
 
+function arcDots(T, sr, ss) {
+  if (!sr || !ss) return '';
+  return ['fajr', 'dhuhr', 'asr', 'maghrib'].map(k => {
+    const f = Math.min(1, Math.max(0, (T[k] - sr) / (ss - sr))), a = Math.PI * (1 - f);
+    return `<circle cx="${(150 + 120 * Math.cos(a)).toFixed(1)}" cy="${(132 - 120 * Math.sin(a)).toFixed(1)}" r="3" class="arc-p"><title>${NAMES[k]} ${fmtTime(T[k])}</title></circle>`;
+  }).join('');
+}
+// A prayer whose time has fully passed and is not ticked: a soft line, no red, no count.
+function missed(day, T, now, np) {
+  if (day.pz) return '';
+  const P = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'], gone = P.filter((k, i) => !day.p[i] && P[i + 1] && T[P[i + 1]] < now && k !== np.cur);
+  if (!gone.length) return '';
+  return `<p class="gentle">${t('A prayer went by without a tick? You can still tick it, or make it up later, gently.')} <a href="#/qada">${t('Make-up prayers')}</a></p>`;
+}
+// After 3 empty days in a row (not paused), offer the pause once.
+function pauseHint() {
+  if (S.pauseOn || S.pauseHinted) return '';
+  const ks = [1, 2, 3].map(n => dayKey(Date.now() - n * 86400000));
+  if (!S.since || ks.some(k => k < S.since)) return '';
+  if (ks.some(k => { const d = S.days[k]; return d && (d.pz || d.p.some(Boolean) || d.r); })) return '';
+  return `<section class="card gentlec"><p>${t('A few quiet days. That happens. If life is heavy right now, pause mode freezes the tracking. Nothing is counted against you.')}</p><div class="row2"><a class="btn sm line" href="#/track" data-ph="1">${t('See pause mode')}</a><button class="linkbtn small" data-ph="0">${t('No thanks')}</button></div></section>`;
+}
 function khatmDaysLeft() { try { const st = new Date(S.khatm.start + 'T12:00:00Z'), end = st.getTime() + S.khatm.days * 86400000; return Math.max(1, Math.ceil((end - Date.now()) / 86400000)); } catch (e) { return 1; } }
 function tools() {
   return `<nav class="tools" aria-label="${t('Tools')}">
@@ -88,7 +110,7 @@ export function render(root) {
       ${welcome()}
       ${day.pz ? `<a class="banner" href="#/track"><span class="dot"></span> ${t('Pause mode is on. Nothing to log today.')}</a>` : ''}
       <section class="next">
-        <svg class="arc" viewBox="0 0 300 150" aria-hidden="true"><path d="M30 132A120 120 0 01270 132" class="arc-l"/><path d="M12 132H288" class="arc-h"/><circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="7" class="arc-s ${up ? '' : 'night'}"/></svg>
+        <svg class="arc" viewBox="0 0 300 150" aria-hidden="true"><path d="M30 132A120 120 0 01270 132" class="arc-l"/><path d="M12 132H288" class="arc-h"/>${arcDots(T, sr, ss)}<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="7" class="arc-s ${up ? '' : 'night'}"><title>${t('Now')}</title></circle></svg>
         <span class="nextp">${t(np.t > T.isha && np.k === 'fajr' ? '{p} tomorrow at {t}' : '{p} at {t}', { p: NAMES[np.k], t: fmtTime(np.t) })}</span>
         <div class="count words" id="cd" aria-live="off"></div>
         ${!day.pz && np.cur ? `<button class="btn sm line" data-mark="${P5.indexOf(np.cur)}">${day.p[P5.indexOf(np.cur)] ? icon.check + t('{p} prayed', { p: NAMES[np.cur] }) : t('{p} prayed?', { p: NAMES[np.cur] })}</button>` : ''}
@@ -101,6 +123,8 @@ export function render(root) {
           <span class="tm mono">${fmtTime(T[k])}</span>
           ${i >= 0 ? `<button class="chk ${day.p[i] ? 'on' : ''}" data-mark="${i}" ${day.pz ? 'disabled hidden' : ''} role="checkbox" aria-checked="${!!day.p[i]}" aria-label="${t('{p} prayed?', { p: NAMES[k] })}">${day.p[i] ? icon.check : ''}</button>` : `<span class="sunr mono">${t('sunrise')}</span>`}</li>`;
       }).join('')}</ul>
+      ${missed(day, T, now, np)}
+      ${pauseHint()}
       ${tools()}
       <a class="card row" href="#/quran/${last ? last.s + '/' + last.v : '1'}"><span><span class="mono">${t(last ? 'Resume reading' : 'Start reading')}</span><b>${last ? esc(last.n) + ' · ' + last.s + ':' + last.v : 'Al-Fatihah · 1:1'}</b></span>${icon.chev}</a>
       ${suggest}
@@ -121,6 +145,7 @@ export function render(root) {
   };
   root.onclick = async e => {
     if (e.target.id === 'tshare') { const T = timesFor(dayKey()); const txt = `${S.loc.name} · ${gregorian(Date.now())}\n` + ORDER.map(k => `${NAMES[k]} ${fmtTime(T[k])}`).join('\n') + `\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
+    const ph = e.target.closest('[data-ph]'); if (ph) { S.pauseHinted = true; save(); if (ph.dataset.ph === '0') draw(); return; }
     const hb = e.target.closest('[data-hide]'); if (hb) { if (hb.dataset.hide === 'welcome') S.hideWelcome = true; else S.hideInstall = true; save(); draw(); return; }
     if (e.target.closest('[data-install]') && window.__bip) { try { window.__bip.prompt(); await window.__bip.userChoice; } catch (err) { /* ignore */ } window.__bip = null; draw(); return; }
     const b = e.target.closest('[data-mark]'); if (!b) return;
@@ -135,15 +160,17 @@ export function render(root) {
 /* ---------- Qibla compass ---------- */
 export function renderQibla(root) {
   const q = qiblaBearing(S.loc.lat, S.loc.lng);
-  let heading = null, aligned = false;
+  let heading = null, aligned = false, voice = false, lastSay = ['', 0];
+  const say = txt => { try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = lang() === 'ar' ? 'ar' : lang() === 'fr' ? 'fr-FR' : 'en-GB'; speechSynthesis.speak(u); } catch (e) { /* unsupported */ } };
   const hasSensor = typeof DeviceOrientationEvent !== 'undefined' && (('ontouchstart' in window) || navigator.maxTouchPoints > 0);
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Qibla')}</b><span class="ib"></span></header>
     <section class="qibla">
       <p class="qhint">${t('Hold the phone flat, like a plate. Turn slowly until the orange dot reaches the top mark.')}</p>
       <div class="dial" id="dial"><div class="ring" id="ring"><span class="n">N</span><span class="e">E</span><span class="s">S</span><span class="w">W</span>
         <div class="needle" style="transform:rotate(${q}deg)"><i></i></div></div><div class="hub"></div><div class="top"></div></div>
-      <p class="qmsg" id="qmsg" aria-live="polite"></p>
+      <p class="qmsg" id="qmsg" aria-live="polite"></p><p class="qacc" id="qacc" hidden>${t('Low accuracy. Move the phone in a figure 8 a few times, away from metal.')}</p>
       ${hasSensor ? `<button class="btn" id="qgo">${t('Turn on compass')}</button><p class="muted small">${t('Your phone will ask to use its orientation sensor. It stays on the phone.')}</p>` : `<p class="muted">${t('This device has no compass. Face {d}° from north using any compass, or open safa. on your phone.', { d: q.toLocaleString(L(), { maximumFractionDigits: 0 }) })}</p>`}
+      ${'speechSynthesis' in window ? `<button class="chip" id="qvoice" aria-pressed="false">${t('Voice guidance')}</button>` : ''}
       <p class="muted small center">${t('Makkah · {d} km from you', { d: Math.round(distanceKm([S.loc.lat, S.loc.lng], [21.4225, 39.8262])).toLocaleString(L()) })}</p>
       <p class="muted small center">${t('Keep away from magnets, phone cases with magnets and car dashboards: they can mislead the compass.')}</p>
       <p class="mono qdeg2">${t('{d}° from north · {c}', { d: q.toLocaleString(L(), { maximumFractionDigits: 1 }), c: esc(S.loc.name) })}</p>
@@ -154,12 +181,14 @@ export function renderQibla(root) {
     if (typeof e.webkitCompassHeading === 'number') h = e.webkitCompassHeading;
     else if (e.absolute && e.alpha != null) h = 360 - e.alpha;
     if (h == null) return;
+    if (typeof e.webkitCompassAccuracy === 'number') $('#qacc', root).hidden = !(e.webkitCompassAccuracy < 0 || e.webkitCompassAccuracy > 25);
     heading = h; ring.style.transform = `rotate(${-h}deg)`;
     const diff = Math.abs(((q - h + 540) % 360) - 180), ok = diff < 4;
     $('#dial', root).classList.toggle('ok', ok);
     msg.textContent = ok ? t('You are facing the Qibla.') : t(((q - h + 360) % 360) < 180 ? 'Turn right · {d}° to go' : 'Turn left · {d}° to go', { d: diff.toFixed(0) });
     if (ok && !aligned && navigator.vibrate) navigator.vibrate(25);
     aligned = ok;
+    if (voice) { const st = ok ? 'ok' : ((q - h + 360) % 360) < 180 ? 'r' : 'l', now = Date.now(); if (st !== lastSay[0] && now - lastSay[1] > 2500) { lastSay = [st, now]; say(t(st === 'ok' ? 'You are facing the Qibla.' : st === 'r' ? 'Turn right' : 'Turn left')); } }
   };
   const start = async () => {
     try {
@@ -172,7 +201,8 @@ export function renderQibla(root) {
     } catch (e) { msg.textContent = t('Compass access was not granted. Face {d}° from north using any compass.', { d: q.toFixed(0) }); }
   };
   if ($('#qgo', root)) $('#qgo', root).onclick = start;
-  return () => { window.removeEventListener('deviceorientationabsolute', on, true); window.removeEventListener('deviceorientation', on, true); };
+  if ($('#qvoice', root)) $('#qvoice', root).onclick = e => { voice = !voice; e.currentTarget.setAttribute('aria-pressed', voice); lastSay = ['', 0]; if (voice) { say(t('Voice guidance on.')); if (heading == null && $('#qgo', root) && !$('#qgo', root).hidden) start(); } else speechSynthesis.cancel(); };
+  return () => { try { speechSynthesis.cancel(); } catch (e) { /* ignore */ } window.removeEventListener('deviceorientationabsolute', on, true); window.removeEventListener('deviceorientation', on, true); };
 }
 
 /* ---------- Flight & travel ---------- */
