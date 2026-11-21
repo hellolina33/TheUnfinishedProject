@@ -241,3 +241,6 @@ html.rm :is(.home-hero,.home-feature,.home-row):active { transform: none; }
   .home-feature .feature-body { grid-template-columns: minmax(0, 1fr); }
   .feature-body small { grid-column: 1; }
 }
+@media (min-width: 1024px) {
+  .tabbar { max-width: 640px; }
+}
