@@ -8,7 +8,23 @@ import { t, L, lang, applyLang } from '../i18n.js';
 import * as SY from '../sync.js';
 import { applyUi } from '../a11y.js';
 
-let weekOff = 0;
+let weekOff = 0, monthOff = 0;
+// A calm month: no streak, no score. A dot when a prayer was ticked, a square when the Quran was read (app or paper).
+function monthView() {
+  const today = dayKey(), base = new Date(today + 'T12:00:00Z'); base.setUTCDate(1); base.setUTCMonth(base.getUTCMonth() + monthOff);
+  const y = base.getUTCFullYear(), m = base.getUTCMonth(), first = (base.getUTCDay() + 6) % 7, nd = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const wd = Array.from({ length: 7 }, (_, i) => new Intl.DateTimeFormat(L(), { weekday: 'narrow', timeZone: 'UTC' }).format(new Date(Date.UTC(2024, 0, 1 + i))));
+  const cells = [];
+  for (let i = 0; i < first; i++) cells.push('<span></span>');
+  for (let d = 1; d <= nd; d++) {
+    const k = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`, x = S.days[k] || null, n = x ? x.p.filter(Boolean).length : 0;
+    cells.push(`<button class="mday ${k === today ? 'td' : ''} ${x && x.pz ? 'pz' : ''}" data-mday="${k}" ${k > today ? 'disabled' : ''} aria-label="${new Intl.DateTimeFormat(L(), { day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(k + 'T12:00:00Z'))}${n ? ', ' + t('{n} prayers ticked', { n }) : ''}${x && x.r ? ', ' + t('Quran read') : ''}"><span>${d}</span><i>${n ? '<b class="mp"></b>' : ''}${x && x.r ? `<b class="mq ${x.paper ? 'paper' : ''}"></b>` : ''}</i></button>`);
+  }
+  return `<section class="month"><div class="wkh"><button class="ib" id="mprev" aria-label="${t('Previous month')}">${icon.back}</button><span class="mono">${new Intl.DateTimeFormat(L(), { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(base)}</span><button class="ib flip" id="mnext" aria-label="${t('Next month')}" ${monthOff >= 0 ? 'disabled' : ''}>${icon.back}</button></div>
+    <div class="mgrid">${wd.map(w => `<span class="mwd">${w}</span>`).join('')}${cells.join('')}</div>
+    <p class="muted small legend">${t('Dot: a prayer ticked. Square: Quran read. Outlined square: on a paper Quran.')}</p>
+    <button class="btn line sm" id="paper">${getDay(today, false).paper ? icon.check + ' ' + t('Read on a paper Quran today') : t('I read a paper Quran today')}</button></section>`;
+}
 export function renderTrack(root) {
   const draw = () => {
     const today = dayKey(), end = addDays(today, weekOff * 7), keys = Array.from({ length: 7 }, (_, i) => addDays(end, i - 6));
@@ -29,6 +45,7 @@ export function renderTrack(root) {
       <p class="sumline">${!active.length && days.some(d => d.pz) ? t('This week is paused.') : shown ? t(shown === 1 ? 'You prayed on <b>1</b> day this week' : 'You prayed on <b>{a}</b> days this week', { a: shown }) + (read ? t(read === 1 ? ' and opened the Quran on <b>1</b>' : ' and opened the Quran on <b>{n}</b>', { n: read }) : '') + '.' : read ? t('You opened the Quran on <b>{n}</b> days this week.', { n: read }) : t('Each day is a fresh start. Tick a prayer when you want to.')} ${days.some(d => d.pz) ? t('Paused days are left out.') : ''}</p>
       <p class="muted small legend">${t('Circles: the five prayers. Squares: Quran opened, adhkar read.')}</p>
       <details class="daytxt"><summary class="linkbtn small">${t('Read the week as text')}</summary><ul>${keys.map((k, i) => { if (k < since || k > today) return ''; const d = days[i], n = d.p.filter(Boolean).length, bits = []; if (d.pz) bits.push(t('paused')); else { if (n) bits.push(t(n === 1 ? '1 prayer ticked' : '{n} prayers ticked', { n })); if (d.r) bits.push(t('Quran opened')); if (d.a) bits.push(t('adhkar read')); } return `<li><b>${esc(new Intl.DateTimeFormat(L(), { weekday: 'long', day: 'numeric', timeZone: 'UTC' }).format(new Date(k + 'T12:00:00Z')))}</b> · ${bits.length ? bits.join(' · ') : t('nothing logged')}</li>`; }).join('')}</ul></details>
+      ${monthView()}
       <a class="card row" href="#/settings/reminders"><span><span class="mono">${t('Reminders')}</span><b>${t('Evening check-in')}</b><span class="muted small">${S.rem.on ? t('On at {t}', { t: S.rem.t }) : t('Off')}</span></span>${icon.chev}</a>
       <a class="srow" href="#/qada"><span class="st"><b>${t('Make-up prayers')}</b><span class="muted small">${t('Missed prayers and fasts, at your pace')}</span></span>${icon.chev}</a>
       <a class="srow" href="#/about"><span class="st"><b>${t('About &amp; support')}</b><span class="muted small">${t('Sources, promise, Sadaqah Jariyah')}</span></span>${icon.chev}</a>`;
@@ -43,6 +60,15 @@ export function renderTrack(root) {
     }
     if (b.id === 'wprev') { weekOff--; draw(); return; }
     if (b.id === 'wnext') { weekOff = Math.min(0, weekOff + 1); draw(); return; }
+    if (b.id === 'mprev') { monthOff--; draw(); return; }
+    if (b.id === 'mnext') { monthOff = Math.min(0, monthOff + 1); draw(); return; }
+    if (b.id === 'paper') { const d = getDay(dayKey(), true); d.paper = d.paper ? 0 : 1; if (d.paper) d.r = 1; save(); draw(); toast(d.paper ? t('Noted: Quran read today.') : t('Removed')); return; }
+    if (b.dataset.mday) {
+      const k = b.dataset.mday, d = getDay(k, false);
+      const el = sheet(`<h3>${new Intl.DateTimeFormat(L(), { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(new Date(k + 'T12:00:00Z'))}</h3><p class="muted small">${d.p.filter(Boolean).length ? t('{n} prayers ticked', { n: d.p.filter(Boolean).length }) : t('No prayer ticked')}</p><div class="acts"><button data-md="r">${d.r ? icon.check : ''}${t('Quran read this day')}</button><button data-md="paper">${d.paper ? icon.check : ''}${t('On a paper Quran')}</button></div>`, { label: k });
+      el.onclick = e2 => { const x = e2.target.closest('[data-md]'); if (!x) return; const dd = getDay(k, true); if (x.dataset.md === 'r') { dd.r = dd.r ? 0 : 1; if (!dd.r) dd.paper = 0; } else { dd.paper = dd.paper ? 0 : 1; if (dd.paper) dd.r = 1; } save(); closeSheet(); draw(); };
+      return;
+    }
     if (b.id === 'rics') {
       const [h, m] = S.rem.t.split(':'), k = dayKey().replace(/-/g, '');
       download('safa-evening-check-in.ics', ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//safa.//EN', 'BEGIN:VEVENT', `UID:safa-evening-${Date.now()}@safa`, `DTSTAMP:${new Date().toISOString().replace(/[-:]|\.\d+/g, '')}`, `DTSTART;TZID=${S.loc.tz}:${k}T${h}${m}00`, 'DURATION:PT5M', 'RRULE:FREQ=DAILY', 'SUMMARY:' + t('safa. · evening check-in'), 'DESCRIPTION:' + t('Evening adhkar. A few verses. Tick today.'), 'BEGIN:VALARM', 'ACTION:DISPLAY', 'DESCRIPTION:' + t('safa. · evening check-in'), 'TRIGGER:PT0M', 'END:VALARM', 'END:VEVENT', 'END:VCALENDAR'].join('\r\n'), 'text/calendar');
@@ -118,7 +144,7 @@ export async function renderSettings(root, sec) {
         <p class="muted small">${t('With your current reciter: {r}.', { r: esc(RECITERS[S.q.reciter] || '') })}</p>
         ${dl.length ? `<button class="btn line sm" id="sclr">${t('Delete saved audio')}</button>` : ''}
 </div><div class="sgrp" data-sec="display">
-        <label class="lbl">${t('Theme')}</label><div class="seg lang">${[['auto', t('Automatic')], ['light', t('Light')], ['dark', t('Dark')]].map(([k, l]) => `<button data-theme="${k}" aria-pressed="${S.ui.theme === k}">${l}</button>`).join('')}</div>
+        <label class="lbl">${t('Theme')}</label><div class="seg lang">${[['auto', t('Automatic')], ['light', t('Light')], ['sepia', t('Sepia')], ['dark', t('Dark')]].map(([k, l]) => `<button data-theme="${k}" aria-pressed="${S.ui.theme === k}">${l}</button>`).join('')}</div>
         <label class="lbl">${t('Text size')}</label><div class="seg lang">${[[0.9, 'A−'], [1, 'A'], [1.15, 'A+'], [1.3, 'A++']].map(([k, l]) => `<button data-scale="${k}" aria-pressed="${S.ui.scale === k}" aria-label="${t('Text size')} ${Math.round(k * 100)}%">${l}</button>`).join('')}</div>
         <div class="preview2"><p>${t('Preview: the words you read here change size.')}</p><p class="ar" lang="ar" dir="rtl">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</p></div>
         <label class="lbl">${t('Arabic size in the Quran reader')}</label><div class="seg">${[0, 1, 2, 3].map(i => `<button data-qfs="${i}" aria-pressed="${S.q.fs === i}" style="font-size:${14 + i * 4}px">ع</button>`).join('')}</div>
