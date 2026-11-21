@@ -129,3 +129,27 @@ test('The Quran list can get the weekday before any city is configured', async (
   assert.ok(gregorian(Date.now()));
   assert.match(fmtTime(Date.now()), /\d{2}:\d{2}/);
 });
+
+test('Thai word study aligns all 87 glosses with the exact Arabic words', async () => {
+  const { alignThaiGlosses } = await import('../../day-08-safa/app/js/thai-quran.js');
+  const read = path => JSON.parse(readFileSync(new URL('data/' + path, app), 'utf8'));
+  const study = read('thai-quran/word-study.json');
+  const chapters = Object.entries(study);
+  assert.deepEqual(chapters.map(([s]) => Number(s)), [1, 112, 113, 114]);
+  let total = 0;
+  for (const [s, rows] of chapters) {
+    const { v } = read(`quran/${s}.json`);
+    assert.equal(rows.length, v.length);
+    const aligned = alignThaiGlosses(rows, v);
+    for (const glosses of aligned) {
+      assert.ok(glosses);
+      assert.ok(glosses.every(value => /[\u0e00-\u0e7f]/.test(value)));
+      total += glosses.length;
+    }
+  }
+  assert.equal(total, 87);
+  const first = study[1][0];
+  assert.deepEqual(alignThaiGlosses([first], [{ a: [...first.arabic].reverse() }]), [null]);
+  assert.deepEqual(alignThaiGlosses([], [{ a: first.arabic }]), [null]);
+  assert.ok(shell.includes("'data/thai-quran/word-study.json'"));
+});
