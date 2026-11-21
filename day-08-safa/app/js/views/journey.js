@@ -1,12 +1,13 @@
 // An introductory Sunni learning companion. Every reading links to its references.
 import { S, save, data } from '../store.js';
 import { esc, icon, sheet, closeSheet, toast, reportUrl } from '../ui.js';
-import { t, lang, applyLang } from '../i18n.js';
+import { t, lang, applyLang, LANGUAGES, local as L, localField as pick } from '../i18n.js';
 import { SALAT } from './learn.js';
 import { contextSheet, compareSheet } from './quran.js';
 import { PATHS, FAQ_TOPICS, PATH_THEMES, resumeLearning } from './learning-paths.js';
-const L = (fr,en,ar) => ({fr,en,ar})[lang()];
-const pick = o => o?.[lang()] || '';
+import { thaiSurah } from '../thai-quran.js';
+import { duaTitle } from './duas.js';
+import { LESSON_READING, LEGACY_PRACTICE } from './lesson-reading.js';
 const titles = () => ({home:L('Au fil de la vie','Through life','في مراحل الحياة'),facts:L('100 repères sur l’islam','100 reference points on Islam','مئة معلومة عن الإسلام'),faq:L('Questions, simplement','Questions, simply','أسئلة ببساطة'),prayer:L('Comprendre chaque rakʿa','Understand every rakah','افهم كل ركعة')});
 const nav = () => {
   const section = location.hash.split('/')[2] || '';
@@ -17,9 +18,10 @@ const nav = () => {
     ['faq',L('FAQ','FAQ','الأسئلة الشائعة')],
   ].map(([route,title])=>`<a href="#/journey${route?'/'+route:''}" ${section===route||(!route&&section==='path')?'aria-current="page"':''}>${title}</a>`).join('')}</nav>`;
 };
-const languagePicker = () => `<div class="j-langs" aria-label="${L('Langue','Language','اللغة')}">${[['fr','FR'],['en','EN'],['ar','العربية']].map(([l,n])=>`<button class="chip" data-jlang="${l}" aria-pressed="${lang()===l}" ${l==='ar'?'lang="ar" dir="rtl"':''}>${n}</button>`).join('')}</div>`;
+const languagePicker = () => `<div class="j-langs" aria-label="${L('Langue','Language','اللغة')}">${LANGUAGES.map(([l,n])=>`<button class="chip" data-jlang="${l}" aria-pressed="${lang()===l}" lang="${l}">${l === 'fr' || l === 'en' ? l.toUpperCase() : n}</button>`).join('')}</div>`;
 const header = (title, parent = "journey") => `<header class="sub"><a href="#/${parent}" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${esc(title)}</b><a class="j-brand" href="#/home" aria-label="${L('Accueil','Home','الرئيسية')}">safa<span>.</span></a></header>${nav()}${languagePicker()}`;
-const note = () => `<details class="j-note"><summary>${L('Comment lire ce guide','How to read this guide','كيف تقرأ هذا الدليل')}</summary><p>${L('Une synthèse d’introduction sunnite, avec des divergences entre écoles signalées. Les illustrations montrent des repères généraux, pas tous les détails d’une école. Ce contenu n’a pas été validé par un conseil religieux et ne remplace pas un avis adapté à une situation personnelle.','An introductory Sunni synthesis with school differences flagged. Illustrations show general reference points, not every detail of a school. This content has not been validated by a religious board and does not replace guidance for a personal situation.','ملخص سني للمبتدئ مع بيان اختلاف المذاهب. والرسوم توضح المعالم العامة لا جميع تفاصيل المذهب. لم تراجعه هيئة شرعية، ولا يغني عن سؤال مناسب للحالة الشخصية.')}</p><p>${L('Les mentions « obligatoire » s’appliquent sous les conditions et dispenses précisées. « Repère » explique ; « recommandé » ajoute ; « selon l’école » signale une divergence. Aucune jauge ne mesure la foi.','“Obligatory” applies subject to conditions and exemptions. “Reference” explains; “recommended” adds; “by school” flags differences. No gauge measures faith.','تراعى الشروط والرخص في وصف الواجب. والمعلومة للتوضيح والمستحب للزيادة ووصف اختلاف المذهب للتنبيه. ولا يوجد مقياس للإيمان.')}</p></details>`;
+const thaiReviewNote = () => lang() === 'th' ? `<p class="j-review muted small">${t('Thai content is being reviewed. Report a translation problem with the page or reference.')} <a href="${reportUrl('Thai translation · ' + location.hash)}" target="_blank" rel="noopener noreferrer">${t('Report a translation problem')}</a></p>` : '';
+const note = () => `${thaiReviewNote()}<details class="j-note"><summary>${L('Comment lire ce guide','How to read this guide','كيف تقرأ هذا الدليل')}</summary><p>${L('Une synthèse d’introduction sunnite, avec des divergences entre écoles signalées. Les illustrations montrent des repères généraux, pas tous les détails d’une école. Ce contenu n’a pas été validé par un conseil religieux et ne remplace pas un avis adapté à une situation personnelle.','An introductory Sunni synthesis with school differences flagged. Illustrations show general reference points, not every detail of a school. This content has not been validated by a religious board and does not replace guidance for a personal situation.','ملخص سني للمبتدئ مع بيان اختلاف المذاهب. والرسوم توضح المعالم العامة لا جميع تفاصيل المذهب. لم تراجعه هيئة شرعية، ولا يغني عن سؤال مناسب للحالة الشخصية.')}</p><p>${L('Les mentions « obligatoire » s’appliquent sous les conditions et dispenses précisées. « Repère » explique ; « recommandé » ajoute ; « selon l’école » signale une divergence. Aucune jauge ne mesure la foi.','“Obligatory” applies subject to conditions and exemptions. “Reference” explains; “recommended” adds; “by school” flags differences. No gauge measures faith.','تراعى الشروط والرخص في وصف الواجب. والمعلومة للتوضيح والمستحب للزيادة ووصف اختلاف المذهب للتنبيه. ولا يوجد مقياس للإيمان.')}</p></details>`;
 const norm = s => s.normalize('NFD').replace(/[\u0300-\u036f\u064b-\u065f]/g,'').toLowerCase()
   .replace(/rak[ʿ‘’3’'ʻ]?(?:at|ah|a)s?/g, 'raka').replace(/\b(?:salah|salat|prayers?|prieres?)\b/g, 'salat');
 const sourceLinks = (D,ids) => {
@@ -41,14 +43,14 @@ const momentGroups = [
   [['illness','return','separation','bereavement','end-of-life'],['Je traverse une épreuve','Going through a hard time','أمر بمحنة']],
 ];
 const firstSentence = x => { const m = String(x).match(/^.+?[.!?؟](\s|$)/); return m ? m[0].trim() : String(x); };
-const words = text => L(...text);
+const words = text => lang() === 'th' && text[3] ? text[3] : L(...text);
 const photo = (image, extra = '') => `<img src="illustrations/${image}.webp" alt="" width="483" height="272" decoding="async" ${extra}>`;
 const learningState = path => resumeLearning(path, S.learningPaths?.[path.id]);
-const progressSummary = (done,total) => L(`${done} sur ${total} terminées`,`${done} of ${total} completed`,`اكتملت ${done} من ${total}`);
+const progressSummary = (done,total) => lang() === 'th' ? `เรียนจบแล้ว ${done} จาก ${total} บท` : L(`${done} sur ${total} terminées`,`${done} of ${total} completed`,`اكتملت ${done} من ${total}`);
 const pathProgress = path => {
   const {completed} = learningState(path);
   return completed.length ? `<p class="learning-progress-label">${completed.length===path.steps.length?L('Parcours terminé','Path completed','اكتمل المسار'):progressSummary(completed.length,path.steps.length)}</p>` :
-    `<p class="learning-progress-label">${L(`${path.steps.length} étapes`,`${path.steps.length} steps`,`${path.steps.length} خطوات`)}</p>`;
+    `<p class="learning-progress-label">${lang() === 'th' ? `${path.steps.length} บทเรียน` : L(`${path.steps.length} étapes`,`${path.steps.length} steps`,`${path.steps.length} خطوات`)}</p>`;
 };
 const pathCard = path => `
   <a class="learning-card" href="#/journey/path/${path.id}">
@@ -87,7 +89,7 @@ function home(root,D) {
   const applyTheme=()=>{
     const visible=PATHS.filter(path=>selectedTheme==='all'||selectedTheme===path.theme);
     root.querySelector('#learning-grid').innerHTML=visible.map(pathCard).join('');
-    root.querySelector('#learning-result-count').textContent=L(`${visible.length} parcours`,`${visible.length} learning paths`,`${visible.length} مسارات`);
+    root.querySelector('#learning-result-count').textContent=lang() === 'th' ? `${visible.length} หลักสูตร` : L(`${visible.length} parcours`,`${visible.length} learning paths`,`${visible.length} مسارات`);
     root.querySelectorAll('[data-learning-theme]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.learningTheme===selectedTheme)));
   };
   root.querySelectorAll('[data-learning-theme]').forEach(button=>button.onclick=()=>{selectedTheme=button.dataset.learningTheme;applyTheme();});
@@ -109,6 +111,8 @@ function pathPage(root,D,path) {
   };
   const draw=()=>{
     const step=path.steps[current], fact=D.facts.find(item=>item.id===step.fact);
+    const reading = LESSON_READING[path.id][current];
+    const practice = step.practice || LEGACY_PRACTICE[path.id]?.[current];
     const finished=state.completed.includes(current);
     const last=current===path.steps.length-1;
     const allComplete=state.completed.length===path.steps.length;
@@ -126,9 +130,10 @@ function pathPage(root,D,path) {
       <section class="learning-step-panel">
         <p class="learning-step-kicker">${L('Étape','Step','الخطوة')} ${current+1} / ${path.steps.length}</p>
         <h2 tabindex="-1" id="learning-step">${words(step.title)}</h2>
-        <p>${esc(pick(fact.body))}</p>
+        <section class="learning-reading"><h3>${L('Comprendre','Understand the lesson','الفهم')}</h3><p>${esc(words(reading))}</p></section>
+        <div class="learning-takeaway"><h3>${L('À retenir','Key takeaway','الخلاصة')}</h3><p>${esc(pick(fact.body))}</p></div>
         ${sourceLinks(D,fact.sources)}
-        ${step.practice?`<div class="learning-practice"><h3>${L('À essayer','Try this','جرّب هذا')}</h3><p>${words(step.practice)}</p></div>`:''}
+        ${practice?`<div class="learning-practice"><h3>${L('À essayer','Try this','جرّب هذا')}</h3><p>${words(practice)}</p></div>`:''}
         <a class="learning-resource" href="#/${step.to}">${icon.book}<strong>${L('Ouvrir le support de cette étape','Open this step’s material','افتح مادة هذه الخطوة')}</strong>${icon.chev}</a>
         ${step.check?`<details class="learning-check"><summary>${L('Se tester','Check your understanding','اختبر فهمك')}</summary>
           <p><strong>${words(step.check.prompt)}</strong></p>
@@ -222,7 +227,7 @@ function faqPage(root,D,entry) {
     if(cat==='top'&&!query)list.sort((a,b)=>TOP_FAQ.indexOf(a.id)-TOP_FAQ.indexOf(b.id));
     root.querySelector('#j-faq-title').textContent=query?L('Résultats','Results','نتائج البحث'):activeTopic?words(activeTopic.title):
       root.querySelector(`.faq-modes [data-faq-filter="${cat}"]`).textContent;
-    root.querySelector('#j-faq-count').textContent=L(`${list.length} réponse${list.length===1?'':'s'}`,`${list.length} answer${list.length===1?'':'s'}`,`${list.length} إجابة`);
+    root.querySelector('#j-faq-count').textContent=lang() === 'th' ? `${list.length} คำตอบ` : L(`${list.length} réponse${list.length===1?'':'s'}`,`${list.length} answer${list.length===1?'':'s'}`,`${list.length} إجابة`);
     root.querySelector('#j-faq-results').innerHTML=list.map(f=>faqItem(D,f,f.id===focus)).join('')||
       `<div class="faq-empty"><p>${L('Aucun résultat pour cette recherche.','No results for this search.','لا نتائج لهذا البحث.')}</p><button class="btn line sm" id="faq-reset">${L('Voir toutes les questions','Show all questions','عرض جميع الأسئلة')}</button></div>`;
     root.querySelector('#faq-reset')?.addEventListener('click',()=>setCat('all'));
@@ -243,7 +248,7 @@ const pname=p=>L(...p.name);
 const voiceBadge=high=>`<span class="j-voice ${high?'loud':''}">${high?L('À voix haute','Aloud','جهرا'):L('À voix basse','Quiet','سرا')}</span>`;
 const pose=(key)=>`illustrations/${S.journeyFigure==='woman'?'women/':''}${key}.webp`;
 function say(row){return `<div class="j-say"><p class="ar" lang="ar" dir="rtl">${esc(row[3])}</p>${lang()!=='ar'?`<p class="tlit" dir="ltr">${esc(row[4])}</p><p class="small muted">${esc(t(row[5]))}</p>`:''}</div>`;}
-function fatihaCard(D){return `<details class="j-fatiha"><summary>${L('Le texte d’Al-Fatiha, verset par verset','Al-Fatihah, verse by verse','نص الفاتحة آية آية')}</summary><ol>${D.fatiha.v.map((v,i)=>`<li><p class="ar" lang="ar" dir="rtl">${esc(v.a.join(' '))}</p>${lang()!=='ar'?`<p class="tlit" dir="ltr">${esc(v.l)}</p><p class="small muted">${esc(lang()==='fr'?D.fatihaFr[i]:v.t)}</p>`:''}</li>`).join('')}</ol><p class="small muted">${L('La numérotation et le statut de la basmala ont des variantes d’école ; ce texte suit le lecteur de Safa. « Amin » n’est pas un verset du Coran.','Verse numbering and the status of the basmalah vary by school; this text follows Safa’s reader. “Amin” is not a Quran verse.','تختلف المذاهب في عد البسملة وحكمها، ويتبع النص قارئ صفا. وآمين ليست آية من القرآن.')}</p></details>`;}
+function fatihaCard(D){return `<details class="j-fatiha"><summary>${L('Le texte d’Al-Fatiha, verset par verset','Al-Fatihah, verse by verse','نص الفاتحة آية آية')}</summary><ol>${D.fatiha.v.map((v,i)=>`<li><p class="ar" lang="ar" dir="rtl">${esc(v.a.join(' '))}</p>${lang()!=='ar'?`<p class="tlit" dir="ltr">${esc(v.l)}</p><p class="small muted">${esc(lang()==='fr'?D.fatihaFr[i]:lang()==='th'?D.fatihaTh?.[i] || '':v.t)}</p>`:''}</li>`).join('')}</ol><p class="small muted">${L('La numérotation et le statut de la basmala ont des variantes d’école ; ce texte suit le lecteur de Safa. « Amin » n’est pas un verset du Coran.','Verse numbering and the status of the basmalah vary by school; this text follows Safa’s reader. “Amin” is not a Quran verse.','تختلف المذاهب في عد البسملة وحكمها، ويتبع النص قارئ صفا. وآمين ليست آية من القرآن.')}</p></details>`;}
 let stepNo=0;
 function cycleStep(key,title,body,phrase=''){return `<div class="j-cycle-step"><button class="j-zoom" data-zoom="${key}" aria-label="${L('Agrandir l’illustration','Enlarge the illustration','تكبير الرسم')}: ${esc(title)}"><img src="${pose(key)}" alt="" loading="lazy" data-pose="${key}" width="483" height="363"></button><div><span class="j-step">${L('Étape','Step','خطوة')} ${++stepNo}</span><h3>${title}</h3><p>${body}</p>${phrase}</div></div>`;}
 function prayerPage(root,D,selected='fajr',role='solo'){
@@ -307,7 +312,7 @@ function rakah(D,p,n,role,additional,only){stepNo=0;const final=n===p.n,high=p.l
  ${final?cycleStep('salam',L('Terminer par le salam','End with salam','اختم بالسلام'),L('La forme courante est le salut à droite puis à gauche. Le nombre requis et certains détails diffèrent selon l’école.','The common form greets right then left. The required number and some details differ by school.','الصفة الشائعة السلام يمينا ثم يسارا، ويختلف القدر الواجب وبعض التفاصيل حسب المذهب.'),say(SALAT[11])):n!==2?`<p class="j-callout">${L('Se relever avec Allahu akbar. Il n’y a pas d’assise de tashahhud à la fin de cette unité.','Rise with Allahu akbar. There is no tashahhud sitting at the end of this unit.','قم مكبرا، ولا تشهد في ختام هذه الركعة.')}</p>`:''}
  <div class="j-actions">${n>1?`<button class="btn line sm" data-unit="${n-1}">${t('Previous')}</button>`:''}${n<p.n?`<button class="btn sm" data-unit="${n+1}">${t('Next')}</button>`:''}</div>
  ${sourceLinks(D,['b757','b776','b831','m402'])}</div></details>`;}
-export async function renderJourney(root,page,arg){root.innerHTML=`<p class="pad" role="status">${t('Loading…')}</p>`;const D=await data('journey.json');if(page==='prayer'){[D.fatiha,D.fatihaFr]=await Promise.all([data('quran/1.json'),data('fr/1.json')]);}root.classList.add('journey');if(page==='facts')library(root,D,arg);else if(page==='faq')faqPage(root,D,arg);else if(page==='prayer')prayerPage(root,D,arg);else if(page==='path'){const path=PATHS.find(item=>item.id===arg);if(path)pathPage(root,D,path);else home(root,D);}else {const m=D.moments.find(x=>x.id===page);if(m)momentPage(root,D,m);else home(root,D);}
+export async function renderJourney(root,page,arg){root.innerHTML=`<p class="pad" role="status">${t('Loading…')}</p>`;const D=await data('journey.json');if(page==='prayer'){[D.fatiha,D.fatihaFr]=await Promise.all([data('quran/1.json'),data('fr/1.json')]);if(lang()==='th')D.fatihaTh=await thaiSurah(1).catch(()=>null);}root.classList.add('journey');if(page==='facts')library(root,D,arg);else if(page==='faq')faqPage(root,D,arg);else if(page==='prayer')prayerPage(root,D,arg);else if(page==='path'){const path=PATHS.find(item=>item.id===arg);if(path)pathPage(root,D,path);else home(root,D);}else {const m=D.moments.find(x=>x.id===page);if(m)momentPage(root,D,m);else home(root,D);}
  root.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.jlang){S.lang=b.dataset.jlang;save();applyLang();window.dispatchEvent(new Event('safa:lang'));}else if(b.hasAttribute('data-read')){const id=Number(b.dataset.read);S.journeyRead=S.journeyRead||{};S.journeyRead[id]=!S.journeyRead[id];save();b.setAttribute('aria-pressed',!!S.journeyRead[id]);b.textContent=(S.journeyRead[id]?'✓ ':'')+(S.journeyRead[id]?L('Lu','Read','تمت القراءة'):L('Marquer comme lu','Mark as read','وضع علامة القراءة'));
    // A life moment whose readings are all marked read is complete: Home stops suggesting it.
    S.journeyDone=S.journeyDone||{};for(const m of D.moments){S.journeyDone[m.id]=m.phases.flat().every(i=>S.journeyRead[i])?1:0;}save();}
@@ -321,7 +326,7 @@ export async function renderFavorites(root,filter='all'){
   root.innerHTML=`<p class="pad" role="status">${t('Loading…')}</p>`;
   const [D,meta,duas]=await Promise.all([data('journey.json'),data('meta.json').catch(()=>null),data('duas.json').catch(()=>[])]);
   const verses=(S.q.favs||[]).map(k=>{const [s,v]=k.split(':').map(Number);const m=meta&&meta.s[s-1];return {type:'quran',ctx:`${s}:${v}`,href:`#/quran/${s}/${v}`,title:`${m?(lang()==='ar'?m[2]:m[0]):''} · ${s}:${v}`};});
-  const dset=new Set(S.d.favs||[]);const dl=[];for(const c of duas)c.d.forEach((x,i)=>{if(dset.has(x.id))dl.push({type:'dua',href:`#/duas/${c.id}/${i+1}`,title:(lang()==='fr'&&c.tf)||(lang()==='ar'&&c.ta)||c.t,sub:(x.ar||'').slice(0,60)});});
+  const dset=new Set(S.d.favs||[]);const dl=[];for(const c of duas)c.d.forEach((x,i)=>{if(dset.has(x.id))dl.push({type:'dua',href:`#/duas/${c.id}/${i+1}`,title:duaTitle(c),sub:(x.ar||'').slice(0,60)});});
   const gl=(S.journeySaved||[]).map(id=>D.facts[id-1]).filter(Boolean).map(f=>({type:'guide',href:`#/journey/facts/${f.id}`,title:pick(f.title),sub:L('Repère','Essential','معلومة')+' '+f.id}));
   const all=[...verses,...dl,...gl];
   const F=[['all',L('Tout','All','الكل'),all.length],['quran',L('Versets','Verses','آيات'),verses.length],['dua',L('Douas','Duas','أدعية'),dl.length],['guide',L('Guides','Guides','أدلة'),gl.length]];

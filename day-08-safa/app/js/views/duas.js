@@ -4,7 +4,9 @@ import { $, $$, esc, icon, toast, download } from '../ui.js';
 import { t, lang } from '../i18n.js';
 const fr = () => lang() === 'fr';
 const ar = () => lang() === 'ar';
-const title = c => (fr() && c.tf) || (ar() && c.ta) || c.t;
+export const duaTitle = c => (fr() && c.tf) || (ar() && c.ta) || (lang() === 'th' ? t(c.t) : c.t);
+export const duaMeaning = x => (fr() && x.fr) || (lang() === 'th' ? t(x.en) : x.en);
+const title = duaTitle;
 const fold = x => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
 const CARE = { 'Anxiety': 'Take a breath. Allah does not burden a soul beyond what it can bear (Quran 2:286). Here are words the Prophet, peace be upon him, used in hard moments.', 'Illness & grief': 'May Allah ease what you carry. These duas are for you and for those you love.', 'Forgiveness': 'The door of forgiveness stays open (Quran 39:53). Start with one of these.' };
@@ -33,7 +35,7 @@ export async function renderList(root, section) {
     else if (st.feel) { list = D.filter(c => c.g.includes(st.feel)); if (CARE[st.feel]) head = `<p class="care pad">${t(CARE[st.feel])}</p>`; }
     else if (q) {
       const tag = SYN[q] || Object.keys(SYN).filter(k => k.startsWith(q) && q.length > 2).map(k => SYN[k])[0];
-      list = D.filter(c => (tag && c.g.includes(tag)) || fold(title(c)).includes(q) || (q.length > 3 && c.d.some(x => fold((fr() && x.fr) || x.en).includes(q))));
+      list = D.filter(c => (tag && c.g.includes(tag)) || fold(title(c)).includes(q) || (q.length > 3 && c.d.some(x => fold(duaMeaning(x)).includes(q))));
       if (!list.length) { out.innerHTML = `<p class="muted pad">${t('Nothing found. Try “sleep”, “travel” or “anxious”.')}</p>`; return; }
     } else {
       const sug = h < 15 ? [[27, 'Morning', 'Words of remembrance'], [1, 'On waking', 'When you wake up']] : [[27, 'Evening', 'Words of remembrance'], [28, 'Tonight', 'Before sleeping']];
@@ -61,7 +63,7 @@ export async function renderChapter(root, id, one) {
       <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen to this dua')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button></span></div>
       <p class="ar" lang="ar" dir="rtl">${esc(String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'))}</p>
       ${!ar() && ((fr() && x.tf) || x.tl) ? `<p class="tlit">${esc((fr() && x.tf) || x.tl)}</p>` : ''}
-      ${ar() ? '' : `<span class="mono senslbl">${t('Meaning')}</span><p class="en" lang="${fr() && x.fr ? 'fr' : 'en'}">${esc((fr() && x.fr) || x.en)}</p>${fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
+      ${ar() ? '' : `<span class="mono senslbl">${t('Meaning')}</span><p class="en" lang="${lang() === 'th' ? 'th' : fr() && x.fr ? 'fr' : 'en'}">${esc(duaMeaning(x))}</p>${lang() === 'th' ? `<p class="small muted">${t('This dua translation is being reviewed.')}</p>` : fr() && !x.fr ? `<p class="mono">${t('English only')}</p>` : ''}`}
       <div class="df"><span class="dsrc"><span class="badge mono">${x.ref ? esc(t('Reported by {r}', { r: x.ref })) : esc(t('Hisnul Muslim · ch. {n}', { n: c.id }))}</span>${gradeBadge(x)}</span>${x.n > 1 ? `<button class="counter mono" data-count="${i}" aria-label="${t('Count repetitions')}">0 / ${x.n}</button>` : ''}</div>
       <div class="dx"><button class="linkbtn small" data-mine="${i}">+ ${t('Add to My duas')}</button><button class="linkbtn small" data-share="${i}">${t('Share')}</button><button class="linkbtn small" data-img="${i}">${t('Share as image')}</button><a class="linkbtn small" href="${reportUrl('Dua ' + c.id + '.' + (i + 1))}" target="_blank" rel="noopener">${t('Report an error')}</a></div>
     </article>`).join('')}
@@ -76,11 +78,11 @@ export async function renderChapter(root, id, one) {
     const gb = e.target.closest('[data-grade]'); if (gb) { const g = GRADES[gb.dataset.grade]; toast(g ? t(g[1]) + (gb.dataset.grade.startsWith('sahih') ? ' · ' + t('Sahih means authentic.') : '') : t('No source matched yet. Check it with a person of knowledge.')); return; }
     const im = e.target.closest('[data-img]'); if (im) { shareImage(c.d[+im.dataset.img], title(c)); return; }
     const sh = e.target.closest('[data-share]');
-    if (sh) { const x = c.d[+sh.dataset.share], txt = `${x.ar}\n\n${(fr() && x.fr) || x.en}\n— ${x.ref || 'Hisnul Muslim'}\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
+    if (sh) { const x = c.d[+sh.dataset.share], txt = `${x.ar}\n\n${duaMeaning(x)}\n— ${x.ref || 'Hisnul Muslim'}\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
     const cb = e.target.closest('[data-count]');
     if (cb) { const i = +cb.dataset.count, n = c.d[i].n; counts[i] = (counts[i] || 0) >= n ? 0 : (counts[i] || 0) + 1; cb.textContent = `${counts[i]} / ${n}`; cb.classList.toggle('done', counts[i] >= n); if (counts[i] >= n && navigator.vibrate) navigator.vibrate(30); return; }
     const mb = e.target.closest('[data-mine]');
-    if (mb) { const x = c.d[+mb.dataset.mine]; S.myDuas.push({ id: Date.now().toString(36), title: title(c), ar: x.ar, text: (fr() && x.fr) || x.en, ref: x.ref || '', time: '' }); save(); toast(t('Added to my duas')); return; }
+    if (mb) { const x = c.d[+mb.dataset.mine]; S.myDuas.push({ id: Date.now().toString(36), title: title(c), ar: x.ar, text: duaMeaning(x), ref: x.ref || '', time: '' }); save(); toast(t('Added to my duas')); return; }
     const fb = e.target.closest('[data-fav]');
     if (fb) { const k = +fb.dataset.fav, on = S.d.favs.includes(k); S.d.favs = on ? S.d.favs.filter(x => x !== k) : [...S.d.favs, k]; save(); fb.classList.toggle('on', !on); fb.setAttribute('aria-pressed', !on); return; }
     const pb = e.target.closest('[data-play]');
@@ -148,7 +150,7 @@ async function shareImage(x, ttl) {
     const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const g = cv.getContext('2d'); g.fillStyle = '#ecebe7'; g.fillRect(0, 0, W, H);
     const wrap = (txt, font, max, dir) => { g.font = font; g.direction = dir; const words = String(txt).split(/\s+/), lines = []; let cur = ''; for (const w of words) { const n = cur ? cur + ' ' + w : w; if (g.measureText(n).width > max && cur) { lines.push(cur); cur = w; } else cur = n; } if (cur) lines.push(cur); return lines; };
-    const ar = String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'), mean = (fr() && x.fr) || x.en;
+    const ar = String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'), mean = duaMeaning(x);
     let arSize = 58, arL; do { arL = wrap(ar, `${arSize}px 'Amiri Quran','Amiri','Geeza Pro',serif`, W - 160, 'rtl'); arSize -= 4; } while (arL.length * arSize * 1.9 > 560 && arSize > 30);
     let mSize = 34, mL; do { mL = wrap(mean, `400 ${mSize}px 'Inter Tight',system-ui,sans-serif`, W - 160, 'ltr'); mSize -= 2; } while (mL.length * mSize * 1.45 > 420 && mSize > 20);
     g.fillStyle = '#e85d2a'; g.font = "500 26px 'JetBrains Mono',monospace"; g.direction = 'ltr'; g.textAlign = 'left'; g.fillText(String(ttl).toUpperCase().slice(0, 48), 80, 110);

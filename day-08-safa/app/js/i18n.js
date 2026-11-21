@@ -1,21 +1,27 @@
 // English is the key. French is looked up; anything missing falls back to English.
 import { S } from './store.js';
+import { TH } from './i18n-th.js';
+
+export const LANGUAGES = [['fr', 'Français'], ['en', 'English'], ['ar', 'العربية'], ['th', 'ภาษาไทย']];
+export const uiLanguage = code => LANGUAGES.some(([id]) => id === code);
 
 export const lang = () => {
-  if (S.lang === 'fr' || S.lang === 'en' || S.lang === 'ar') return S.lang;
+  if (uiLanguage(S.lang)) return S.lang;
   const n = (navigator.language || '').toLowerCase();
-  return n.startsWith('fr') ? 'fr' : n.startsWith('ar') ? 'ar' : 'en';
+  return n.startsWith('fr') ? 'fr' : n.startsWith('ar') ? 'ar' : n.startsWith('th') ? 'th' : 'en';
 };
-export const L = () => ({ fr: 'fr-FR', ar: 'ar-u-nu-latn', en: 'en-GB' }[lang()]);
-export const LB = () => ({ fr: 'fr-FR', ar: 'ar', en: 'en-GB' }[lang()]);
+export const L = () => ({ fr: 'fr-FR', ar: 'ar-u-nu-latn', en: 'en-GB', th: 'th-TH-u-ca-gregory-nu-latn' }[lang()]);
+export const LB = () => ({ fr: 'fr-FR', ar: 'ar', en: 'en-GB', th: 'th-TH' }[lang()]);
 export function t(k, v) {
   const l = lang();
-  let s = (l === 'fr' && FR[k]) || (l === 'ar' && AR[k]) || k;
+  let s = (l === 'fr' && FR[k]) || (l === 'ar' && AR[k]) || (l === 'th' && Object.hasOwn(TH,k) && TH[k]) || k;
   if (v) s = s.replace(/\{(\w+)\}/g, (m, x) => (v[x] != null ? v[x] : m));
   return s;
 }
 export function applyLang() { const l = lang(); document.documentElement.lang = l; document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr'; document.title = 'safa.'; }
-export const missing = () => ({ fr: FR, ar: AR });
+export const missing = () => ({ fr: FR, ar: AR, th: TH });
+export const local = (fr, en, ar) => ({ fr, en, ar })[lang()] ?? t(en);
+export const localField = o => o?.[lang()] ?? (o?.en ? (lang() === 'th' ? t(o.en) : o.en) : '');
 
 const FR = {
 "Through life":"Au fil de la vie",

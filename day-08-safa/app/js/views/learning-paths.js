@@ -93,7 +93,7 @@ export const PATHS = [
       { fact: 46, to: 'journey/return', title: ['Après une interruption','After a break','بعد انقطاع'] },
       { fact: 34, to: 'journey/prayer', title: ['Revoir la récitation','Review the recitation','مراجعة القراءة'] },
       { fact: 50, to: 'journey/facts/50', title: ['Reprendre à son rythme','Return at your own pace','العودة على مهل'] },
-      lesson(45,['Une prière oubliée ou dormie','A prayer missed through forgetfulness or sleep','صلاة فاتت بنسيان أو نوم'],
+      lesson(45,['Une prière manquée par oubli ou sommeil','A prayer missed through forgetfulness or sleep','صلاة فاتت بنسيان أو نوم'],
         ['Lis la réponse sur les oublis et repère ce qui s’applique à cette situation précise.','Read the answer about forgetfulness and identify what applies to this specific situation.','اقرأ جواب النسيان وحدّد ما ينطبق على هذه الحالة.'],'journey/faq/26'),
       lesson(99,['Savoir à qui demander','Know whom to ask','معرفة من تسأل'],
         ['Si un point reste flou, note une question précise à poser à une personne qualifiée.','If something remains unclear, write down one precise question for a qualified person.','إذا بقي أمر غير واضح، دوّن سؤالًا محددًا لطرحه على شخص مؤهّل.'],'journey/faq/32'),

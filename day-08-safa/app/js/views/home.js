@@ -1,9 +1,9 @@
 import { S, save, dayKey, addDays, P5 } from '../store.js';
 import { esc, icon } from '../ui.js';
-import { lang, t, applyLang } from '../i18n.js';
+import { lang, t, applyLang, LANGUAGES, local, localField } from '../i18n.js';
 import { timesFor, NAMES, fmtTime } from '../prayer.js';
 
-export const copy = (fr, en, ar) => ({ fr, en, ar })[lang()];
+export const copy = local;
 
 const link = (href, title, graphic, detail = '', extra = '') => `
   <a class="home-row" href="#/${href}">
@@ -55,9 +55,9 @@ function resumeCard() {
   if (q?.s) c.push({ at: q.at || 1, html: feature(`quran/${q.s}/${q.v || 1}`, copy('Continuer ma lecture', 'Continue reading', 'متابعة القراءة'), icon.quran, 'quran',
     `${q.n || ''}${q.n ? ' · ' : ''}${copy('verset', 'verse', 'آية')} ${q.v || 1} (\u2066${q.s}:${q.v || 1}\u2069)`) });
   const j = S.journeyRecent;
-  if (j?.id && !SENSITIVE.includes(j.id) && !(S.journeyDone || {})[j.id]) c.push({ at: j.at || 0, html: feature(`journey/${j.id}`, copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري'), icon.pathway, 'learn', j.title?.[lang()] || '') });
+  if (j?.id && !SENSITIVE.includes(j.id) && !(S.journeyDone || {})[j.id]) c.push({ at: j.at || 0, html: feature(`journey/${j.id}`, copy('Reprendre mon parcours', 'Resume my journey', 'متابعة مساري'), icon.pathway, 'learn', localField(j.title) || '') });
   const g = S.guideRecent;
-  if (g?.href) c.push({ at: g.at || 0, guide: true, html: feature(g.href, copy('Reprendre le guide', 'Resume the guide', 'متابعة الدليل'), icon.prayerMat, 'prayer', g.title?.[lang()] || '') });
+  if (g?.href) c.push({ at: g.at || 0, guide: true, html: feature(g.href, copy('Reprendre le guide', 'Resume the guide', 'متابعة الدليل'), icon.prayerMat, 'prayer', localField(g.title) || '') });
   c.sort((a, b) => b.at - a.at);
   return c[0];
 }
@@ -90,8 +90,8 @@ export function renderHome(root) {
   root.innerHTML = `
     <header class="home-head"><h1>safa<span>.</span></h1>
       <label class="home-language">${icon.globe}<span class="visually-hidden">${copy('Langue', 'Language', 'اللغة')}</span>
-      <select id="home-language" class="inp">${[['fr','Français'],['en','English'],['ar','العربية']].map(([id, label]) =>
-        `<option value="${id}" ${lang() === id ? 'selected' : ''} ${id === 'ar' ? 'lang="ar"' : ''}>${label}</option>`).join('')}</select>${icon.down}</label>
+      <select id="home-language" class="inp">${LANGUAGES.map(([id, label]) =>
+        `<option value="${id}" ${lang() === id ? 'selected' : ''} lang="${id}">${label}</option>`).join('')}</select>${icon.down}</label>
     </header>
     ${np ? `<a class="home-sticky" id="home-sticky" href="#/today" aria-hidden="true" tabindex="-1"><b>${NAMES[np.k]}</b><span class="mono">${fmtTime(np.at)}</span><span id="sticky-in">${inMinutes(np.at)}</span></a>` : ''}
     ${hero}

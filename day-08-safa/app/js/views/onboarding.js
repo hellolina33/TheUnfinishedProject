@@ -2,7 +2,7 @@ import { S, save, data, dayKey } from '../store.js';
 import { METHODS, methodFor, nearestCity, timesFor, NAMES, fmtTime } from '../prayer.js';
 import { $, esc, LOGO, cityField, toast, icon, countryName } from '../ui.js';
 import { copy } from './home.js';
-import { t, lang, applyLang } from '../i18n.js';
+import { t, lang, applyLang, LANGUAGES } from '../i18n.js';
 
 export function setLocation(c, coords) {
   S.loc = { name: c[0], country: c[1], iso2: c[2], lat: coords ? coords.lat : c[3], lng: coords ? coords.lng : c[4], tz: coords ? (Intl.DateTimeFormat().resolvedOptions().timeZone || c[5]) : c[5] };
@@ -25,7 +25,7 @@ export function render(root, done, { startAtCity = false } = {}) {
   let active = true;
   const step1 = () => {
     root.innerHTML = `<section class="onb">
-      <div class="onb-top"><div class="onb-logo">${LOGO}</div><h1>safa<i>.</i></h1><div class="langsw" role="group" aria-label="${copy('Langue', 'Language', 'اللغة')}"><span class="mono">${copy('Langue', 'Language', 'اللغة')}</span><button class="chip" data-l="en" aria-pressed="${lang() === 'en'}">EN</button><button class="chip" data-l="fr" aria-pressed="${lang() === 'fr'}">FR</button><button class="chip" data-l="ar" aria-pressed="${lang() === 'ar'}" lang="ar">عربي</button></div></div>
+      <div class="onb-top"><div class="onb-logo">${LOGO}</div><h1>safa<i>.</i></h1><div class="langsw" role="group" aria-label="${copy('Langue', 'Language', 'اللغة')}"><span class="mono">${copy('Langue', 'Language', 'اللغة')}</span>${LANGUAGES.map(([id,label]) => `<button type="button" class="chip" data-l="${id}" aria-pressed="${lang() === id}" lang="${id}">${id === 'fr' || id === 'en' ? id.toUpperCase() : label}</button>`).join('')}</div></div>
       <div><span class="mono">${t('Step 1 of 2')}</span><p class="onb-tag">${t('Clear time.<br>Clear soul<i>.</i>')}</p>
       <ul class="onb-feat"><li>${icon.today}<span>${t('Prayer times for your city')}</span></li><li>${icon.quran}<span>${t('The Quran word by word, with the context of each verse')}</span></li><li>${icon.duas}<span>${t('Authentic duas for every moment')}</span></li></ul>
       <p class="onb-promise">${icon.lock}<span>${t('No ads. No account. Everything stays on your phone. Works offline.')}</span></p>

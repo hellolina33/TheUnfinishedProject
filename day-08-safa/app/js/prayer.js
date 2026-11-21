@@ -55,15 +55,15 @@ export function methodAngles() {
 }
 export const qiblaBearing = (lat, lng) => adhan.Qibla(new adhan.Coordinates(lat, lng));
 
-export function fmtTime(ms, tz = S.loc && S.loc.tz) {
+export function fmtTime(ms, tz = S.loc?.tz) {
   if (ms == null) return '--:--';
   return new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', hourCycle: S.h24 ? 'h23' : 'h12' }).format(new Date(ms)).replace(/\s?(am|pm)/i, (m, a) => ' ' + a.toUpperCase());
 }
-export function hijri(ms, tz = S.loc && S.loc.tz) {
+export function hijri(ms, tz = S.loc?.tz) {
   try { return new Intl.DateTimeFormat(LB(), { calendar: 'islamic-umalqura', numberingSystem: 'latn', timeZone: tz, day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(ms + (S.hijriAdj || 0) * 86400000)).replace(/\s?(AH|ère de l’Hégire|ère de l'Hégire|AH)$/i, ' AH'); } catch (e) { return ''; }
 }
-export const gregorian = (ms, tz = S.loc && S.loc.tz) => new Intl.DateTimeFormat(L(), { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(ms));
-export const weekday = (ms, tz = S.loc && S.loc.tz) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'long' }).format(new Date(ms));
+export const gregorian = (ms, tz = S.loc?.tz) => new Intl.DateTimeFormat(L(), { timeZone: tz, weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(ms));
+export const weekday = (ms, tz = S.loc?.tz) => new Intl.DateTimeFormat('en-GB', { timeZone: tz, weekday: 'long' }).format(new Date(ms));
 
 /* ---------- Flight scan: sun position along a great-circle route ---------- */
 const RAD = Math.PI / 180, DEG = 180 / Math.PI;

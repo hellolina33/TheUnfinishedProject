@@ -1,7 +1,8 @@
 // Beginner path (wudu, salat) and daily Quranic Arabic micro-lessons.
 import { S, save, data, dayKey, addDays } from '../store.js';
 import { $, $$, esc, icon, toast } from '../ui.js';
-import { t, lang } from '../i18n.js';
+import { thaiSurah } from '../thai-quran.js';
+import { t, lang, LB } from '../i18n.js';
 
 // Local illustrations are shared across languages; the enclosing label is translated.
 const illustration = (key, title) => `<img class="learn-illustration" src="illustrations/${S.journeyFigure === 'woman' && ['stand','takbir','recite','ruku','rise','sujud','sit','tashahhud','salam'].includes(key) ? 'women/' : ''}${key}.webp" alt="" aria-hidden="true" width="484" height="363" decoding="async" fetchpriority="high">`;
@@ -81,7 +82,7 @@ export function renderSteps(root, which, mode) {
   const list = which === 'wudu' ? WUDU : SALAT; S.learnPos = S.learnPos || {}; let i = Math.min(list.length - 1, S.learnPos[which] || 0);
   let guided = which === 'salat' && mode === 'guided', gT = 0, gEnd = 0, gPaused = false, gLeft = 0, voice = !!S.guideVoice;
   if (guided) { i = 0; wakeOn(); }
-  const say = () => { if (!voice || !('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); const [, ti, bo] = list[i]; const u = new SpeechSynthesisUtterance(t(ti) + '. ' + t(bo)); u.lang = lang() === 'fr' ? 'fr-FR' : lang() === 'ar' ? 'ar' : 'en-GB'; u.rate = .95; speechSynthesis.speak(u); } catch (e) { /* unsupported */ } };
+  const say = () => { if (!voice || !('speechSynthesis' in window)) return; try { speechSynthesis.cancel(); const [, ti, bo] = list[i]; const u = new SpeechSynthesisUtterance(t(ti) + '. ' + t(bo)); u.lang = LB(); u.rate = .95; speechSynthesis.speak(u); } catch (e) { /* unsupported */ } };
   const startStep = () => { clearInterval(gT); if (!guided) return; gEnd = Date.now() + GDUR[i] * 1000; gPaused = false; say();
     gT = setInterval(() => { if (gPaused) return; const left = Math.max(0, gEnd - Date.now()), el = $('#gleft', root); if (el) { el.textContent = Math.ceil(left / 1000) + ' s'; const b = $('#gbar', root); if (b) b.style.width = (100 - left / (GDUR[i] * 10)) + '%'; }
       if (!left) { if (i < list.length - 1) { i++; draw(); startStep(); } else { clearInterval(gT); fin(); } } }, 250); };
@@ -123,7 +124,7 @@ const bare = w => w.normalize('NFKD').replace(/[ً-ٰٟۖ-ۭ]/g, '').replace(/[�
 const clean = s => String(s || '').replace(/[,.;:!?«»“”]+$/g, '').trim();
 export async function renderLessons(root) {
   const V = await data('vocab.json'), L = S.lessons, today = dayKey();
-  const meaningOf = w => clean(lang() === 'fr' ? (w.fr || w.en) : w.en);
+  const meaningOf = w => clean(lang() === 'fr' ? (w.fr || w.en) : lang() === 'th' ? t(w.en) : w.en);
   const total = 77429; // words in the Quran
   const known = () => Object.entries(L.w).filter(([, x]) => x.b >= 2).reduce((a, [i]) => a + V[i].n, 0);
   const due = () => Object.entries(L.w).filter(([, x]) => x.d <= today).map(([i]) => +i);
@@ -135,7 +136,7 @@ export async function renderLessons(root) {
     // Prefer an example from the surah you read last, when the word appears there.
     if (S.q.last) { try { const sur = await data(`quran/${S.q.last.s}.json`), b = bare(w.a); for (let k = 0; k < sur.v.length; k++) { const idx = sur.v[k].a.findIndex(x => bare(x) === b); if (idx >= 0) { s = S.q.last.s; v = k + 1; j = idx; break; } } } catch (e) { /* offline */ } }
     const sur = await data(`quran/${s}.json`).catch(() => null);
-    let tr = null; try { tr = lang() === 'fr' ? (await data(`fr/${s}.json`))[v - 1] : lang() === 'en' && sur ? sur.v[v - 1].t : null; } catch (e) { /* offline */ }
+    let tr = null; try { tr = lang() === 'fr' ? (await data(`fr/${s}.json`))[v - 1] : lang() === 'th' ? (await thaiSurah(s))[v - 1] : lang() === 'en' && sur ? sur.v[v - 1].t : null; } catch (e) { /* offline */ }
     return (exCache[i] = { s, v, j, words: sur ? sur.v[v - 1].a : null, tr });
   };
   const home = () => {

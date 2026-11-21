@@ -3,25 +3,27 @@ import { weekday } from '../prayer.js';
 import { $, $$, esc, icon, arNum, sheet, closeSheet, toast, reportUrl, download } from '../ui.js';
 import { t, lang, L } from '../i18n.js';
 import * as PL from '../player.js';
+import { thaiSurah, thaiQuranIndex, THAI_QURAN_LABEL, normalizeThaiDigits } from '../thai-quran.js';
 import { tajweed, RULES } from '../tajweed.js';
 export { RECITERS } from '../player.js';
 // Popular names people search for.
-const NICK = [[/kurs/, 2, 255, 'Ayat al-Kursi'], [/^ya ?s(ee|i)n/, 36, 0, 'Ya-Sin'], [/mulk/, 67, 0, 'Al-Mulk'], [/kahf/, 18, 0, 'Al-Kahf'], [/rahman/, 55, 0, 'Ar-Rahman'], [/waqi/, 56, 0, "Al-Waqi'ah"], [/ikhlas/, 112, 0, 'Al-Ikhlas'], [/falaq/, 113, 0, 'Al-Falaq'], [/^(an ?)?nas$/, 114, 0, 'An-Nas'], [/amana ?r/, 2, 285, 'Amana ar-Rasul'], [/fatiha/, 1, 0, 'Al-Fatihah'], [/sajda/, 32, 0, 'As-Sajdah'], [/maryam/, 19, 0, 'Maryam'], [/yusuf|joseph/, 12, 0, 'Yusuf']];
+const NICK = [[/ฟาติ[หฮะ]+/, 1, 0, 'Al-Fatihah'], [/บะเกาะเราะฮ์/, 2, 0, 'Al-Baqarah'], [/กะฮ์ฟ/, 18, 0, 'Al-Kahf'], [/ยาซีน/, 36, 0, 'Ya-Sin'], [/อิคลาศ/, 112, 0, 'Al-Ikhlas'], [/kurs/, 2, 255, 'Ayat al-Kursi'], [/^ya ?s(ee|i)n/, 36, 0, 'Ya-Sin'], [/mulk/, 67, 0, 'Al-Mulk'], [/kahf/, 18, 0, 'Al-Kahf'], [/rahman/, 55, 0, 'Ar-Rahman'], [/waqi/, 56, 0, "Al-Waqi'ah"], [/ikhlas/, 112, 0, 'Al-Ikhlas'], [/falaq/, 113, 0, 'Al-Falaq'], [/^(an ?)?nas$/, 114, 0, 'An-Nas'], [/amana ?r/, 2, 285, 'Amana ar-Rasul'], [/fatiha/, 1, 0, 'Al-Fatihah'], [/sajda/, 32, 0, 'As-Sajdah'], [/maryam/, 19, 0, 'Maryam'], [/yusuf|joseph/, 12, 0, 'Yusuf']];
 
 const TRANS = {
   maash: ['Rashid Maash (clear French)', 'fr'], hamidullah: ['Hamidullah (classic French)', 'frh'],
   itani: ['Talal Itani (clear English)', null], pickthall: ['Pickthall (classic English)', 'pk'],
-  muyassar: ['Al-Muyassar (Arabic explanation)', 'taf:ar-muyassar'], none: ['No translation', null]
+  thai: [THAI_QURAN_LABEL, null], muyassar: ['Al-Muyassar (Arabic explanation)', 'taf:ar-muyassar'], none: ['No translation', null]
 };
 const trName = () => { const x = TRANS[trKey()]; return x ? t(x[0]) : ''; };
-export const trKey = () => S.q.tr === 'auto' ? ({ fr: 'maash', ar: 'none', en: 'itani' }[lang()]) : S.q.tr;
-export const meaning = (meta, n) => lang() === 'fr' && meta.fr ? meta.fr[n - 1] : lang() === 'ar' ? meta.s[n - 1][0] : meta.s[n - 1][1];
+export const trKey = () => S.q.tr === 'auto' ? ({ fr: 'maash', ar: 'none', en: 'itani', th: 'thai' }[lang()]) : S.q.tr;
+export const meaning = (meta, n) => lang() === 'fr' && meta.fr ? meta.fr[n - 1] : lang() === 'ar' ? meta.s[n - 1][0] : lang() === 'th' ? t(meta.s[n - 1][1]) : meta.s[n - 1][1];
 export const surahName = (meta, n) => lang() === 'ar' ? meta.s[n - 1][2] : meta.s[n - 1][0];
 // Tafsir sources: key -> [label, file prefix, language]
 export const TAFSIRS = {
   'fr-mukhtasar': ['Al-Mukhtasar (French)', 'taf/fr-mukhtasar', 'fr'], 'en-mukhtasar': ['Al-Mukhtasar (English)', 'tafsir', 'en'],
   'en-ibnkathir': ['Ibn Kathir (English, abridged)', 'taf/en-ibnkathir', 'en'], 'en-jalalayn': ['Al-Jalalayn (English)', 'taf/en-jalalayn', 'en'],
   'ar-muyassar': ['Al-Muyassar (Arabic)', 'taf/ar-muyassar', 'ar'], 'ar-mukhtasar': ['Al-Mukhtasar (Arabic)', 'taf/ar-mukhtasar', 'ar'],
+  'th-mukhtasar': ['Al-Mukhtasar (Thai)', 'quranenc', 'th'],
   'ar-saadi': ['As-Saadi (Arabic)', 'taf/ar-saadi', 'ar'], 'asbab': ['Circumstances of revelation · Al-Wahidi', 'tafsir', 'en']
 };
 // Tajweed colour names and a one-line meaning.
@@ -32,15 +34,22 @@ const TDESC = {
   'fr-mukhtasar': 'Short, modern explanation by the Tafsir Center for Quranic Studies.', 'en-mukhtasar': 'Short, modern explanation by the Tafsir Center for Quranic Studies.', 'ar-mukhtasar': 'Short, modern explanation by the Tafsir Center for Quranic Studies.',
   'en-ibnkathir': 'Classic 14th-century tafsir. Explains verses with other verses and hadith.', 'en-jalalayn': 'Concise 15th-century tafsir by Al-Mahalli and As-Suyuti.',
   'ar-muyassar': 'Simple Arabic explanation from the King Fahd Complex.', 'ar-saadi': '20th-century tafsir by As-Saadi, clear and focused on lessons.',
+  'th-mukhtasar': 'Short, modern explanation by the Tafsir Center for Quranic Studies.',
   'asbab': 'What was happening when the verse came down, by Al-Wahidi (11th century).'
 };
 export async function tafsirText(k, s, v) {
   const src = TAFSIRS[k]; if (!src) return '';
+  if (src[1] === 'quranenc') {
+    const response = await fetch(`https://quranenc.com/api/v1/translation/aya/thai_mokhtasar/${s}/${v}`, { referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(7000) });
+    if (!response.ok) throw new Error('Thai tafsir unavailable');
+    const { result } = await response.json();
+    return [result?.translation, result?.footnotes].filter(Boolean).join('\n');
+  }
   const d = await data(`${src[1]}/${s}.json`);
   if (src[1] === 'tafsir') return (k === 'asbab' ? d.a : d.m)[v] || '';
   const i = d.m[v]; return i == null ? '' : d.t[i];
 }
-const defaultTafsirs = () => ({ fr: ['fr-mukhtasar'], ar: ['ar-muyassar'], en: ['en-mukhtasar'] }[lang()]);
+const defaultTafsirs = () => ({ fr: ['fr-mukhtasar'], ar: ['ar-muyassar'], en: ['en-mukhtasar'], th: ['th-mukhtasar'] }[lang()]);
 const SAJDA = new Set(['7:206', '13:15', '16:50', '17:109', '19:58', '22:18', '22:77', '25:60', '27:26', '32:15', '38:24', '41:38', '53:62', '84:21', '96:19']);
 const BISM = 'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ';
 
@@ -48,7 +57,7 @@ const BISM = 'بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّح�
 export async function verseText(s, v) {
   const src = await data(`quran/${s}.json`); const x = src.v[v - 1]; let tr = x.t;
   const tf = TRANS[trKey()];
-  try { if (tf && tf[1] && !tf[1].startsWith('taf:')) tr = (await data(`${tf[1]}/${s}.json`))[v - 1]; else if (trKey() === 'none') tr = ''; } catch (e) { /* keep English */ }
+  try { if (trKey() === 'thai') tr = (await thaiSurah(s))[v - 1]; else if (tf && tf[1] && !tf[1].startsWith('taf:')) tr = (await data(`${tf[1]}/${s}.json`))[v - 1]; else if (trKey() === 'none') tr = ''; } catch (e) { if (trKey() === 'thai') tr = ''; }
   return { a: x.a.join(' '), tr, n: src.v.length };
 }
 const vblock = (meta, s, v, x, on) => `<div class="cblk ${on ? 'on' : ''}"><span class="mono"><bdi>${s}:${v}</bdi>${on ? '' : ''}</span><p class="ar" lang="ar" dir="rtl">${x.a}</p>${x.tr && lang() !== 'ar' ? `<p class="trq">${esc(x.tr)}</p>` : ''}</div>`;
@@ -101,17 +110,18 @@ export async function renderList(root, section) {
   const draw = async () => {
     const q = listState.q.trim();
     if (q) {
-      const ref = q.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/), ql = q.toLowerCase().replace(/[^a-z0-9 \u0621-\u064A]/g, '');
+      const numberQuery = normalizeThaiDigits(q);
+      const ref = numberQuery.match(/^(\d{1,3})\s*[:.\s]\s*(\d{1,3})$/), ql = q.toLowerCase().replace(/[^a-z0-9 \u0621-\u064A\u0e00-\u0e7f]/g, '');
       let html = '';
       const nick = NICK.find(([re]) => re.test(q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')));
       if (nick) html += `<a class="card row" href="#/quran/${nick[1]}${nick[2] ? '/' + nick[2] : ''}"><span><span class="mono">${t('Go to verse')}</span><b>${esc(nick[3])} · ${nick[1]}${nick[2] ? ':' + nick[2] : ''}</b></span>${icon.chev}</a>`;
       if (ref && +ref[1] >= 1 && +ref[1] <= 114 && +ref[2] >= 1 && +ref[2] <= meta.s[+ref[1] - 1][3]) html += `<a class="card row" href="#/quran/${+ref[1]}/${+ref[2]}"><span><span class="mono">${t('Go to verse')}</span><b>${esc(meta.s[+ref[1] - 1][0])} · ${+ref[1]}:${+ref[2]}</b></span>${icon.chev}</a>`;
-      const hits = meta.s.map((m, i) => i + 1).filter(n => String(n) === q || (ql.length > 1 && ((sq => sq.includes(ql.replace(/ /g, '').replace(/h$/, '')))(meta.s[n - 1][0].toLowerCase().replace(/[^a-z0-9]/g, '')) || meta.s[n - 1][2].replace(/[\u064B-\u0652\u0670]/g, '').includes(ql) || meaning(meta, n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(ql))));
+      const hits = meta.s.map((m, i) => i + 1).filter(n => String(n) === numberQuery || (ql.length > 1 && ((sq => sq.includes(ql.replace(/ /g, '').replace(/h$/, '')))(meta.s[n - 1][0].toLowerCase().replace(/[^a-z0-9]/g, '')) || meta.s[n - 1][2].replace(/[\u064B-\u0652\u0670]/g, '').includes(ql) || meaning(meta, n).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(ql))));
       html += hits.map(row).join('');
       out.innerHTML = html || `<p class="muted pad">${t('Searching…')}</p>`;
       if (q.length >= 3 && !ref) {
         try {
-          const all = await data({ fr: 'search_fr.json', ar: 'search_ar.json', en: 'search.json' }[lang()]); if (listState.q.trim() !== q) return;
+          const all = lang() === 'th' ? await thaiQuranIndex() : await data({ fr: 'search_fr.json', ar: 'search_ar.json', en: 'search.json' }[lang()]); if (listState.q.trim() !== q) return;
           const fold = x => x.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f\u064B-\u0652\u0670]/g, '').replace(/[’]/g, "'").replace(/[أإآٱ]/g, 'ا'), needle = fold(q), res = [];
           for (let i = 0; i < all.length && res.length < 40; i++) if (fold(all[i]).includes(needle)) res.push(i);
           const rx = new RegExp('(' + q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'ig');
@@ -121,7 +131,7 @@ export async function renderList(root, section) {
       out.innerHTML = html || `<p class="muted pad">${t('Nothing found. Try a surah name, a verse like 2:255, or a word.')}</p>`;
       return;
     }
-    if (listState.tab === 'juz') { out.innerHTML = meta.juz.map((j, i) => `<a class="srow" href="#/quran/${j[0]}/${j[1]}"><span class="num mono">${i + 1}</span><span class="st"><b>Juz ${i + 1}</b><span class="muted small">${t('Starts at {s}', { s: esc(meta.s[j[0] - 1][0]) + ' ' + j[0] + ':' + j[1] })}</span></span>${icon.chev}</a>`).join(''); return; }
+    if (listState.tab === 'juz') { out.innerHTML = meta.juz.map((j, i) => `<a class="srow" href="#/quran/${j[0]}/${j[1]}"><span class="num mono">${i + 1}</span><span class="st"><b>${t('Juz {n}', { n: i + 1 })}</b><span class="muted small">${t('Starts at {s}', { s: esc(meta.s[j[0] - 1][0]) + ' ' + j[0] + ':' + j[1] })}</span></span>${icon.chev}</a>`).join(''); return; }
     if (listState.tab === 'favs') { out.innerHTML = S.q.favs.length ? S.q.favs.map(k => { const [s, v] = k.split(':').map(Number); return `<a class="srow" href="#/quran/${s}/${v}"><span class="num mono">${icon.star}</span><span class="st"><b>${esc(meta.s[s - 1][0])} ${s}:${v}</b></span>${icon.chev}</a>`; }).join('') : `<p class="muted pad">${t('No favourites yet. Open a verse menu and tap Favourite.')}</p>`; return; }
     if (listState.tab === 'notes') {
       const ns = Object.entries(S.q.notes || {}).sort((a, b) => b[1].at - a[1].at);
@@ -149,7 +159,8 @@ export async function renderReader(root, sN, vN, extra) {
   try {
     meta = await data('meta.json'); sur = await data(`quran/${s}.json`);
     const tf = TRANS[trKey()];
-    if (tf && tf[1] && tf[1].startsWith('taf:')) { const d = await data(`taf/${tf[1].slice(4)}/${s}.json`); pk = sur.v.map((_, i) => d.m[i + 1] != null ? d.t[d.m[i + 1]] : ''); }
+    if (trKey() === 'thai') pk = await thaiSurah(s).catch(() => null);
+    else if (tf && tf[1] && tf[1].startsWith('taf:')) { const d = await data(`taf/${tf[1].slice(4)}/${s}.json`); pk = sur.v.map((_, i) => d.m[i + 1] != null ? d.t[d.m[i + 1]] : ''); }
     else if (tf && tf[1]) pk = await data(`${tf[1]}/${s}.json`);
     if (lang() === 'fr') wfr = await data(`wfr/${s}.json`).catch(() => null);
   } catch (e) { root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Quran')}</b><span class="ib"></span></header><p class="muted pad">${t('This surah is not saved on this device yet. Connect once and it will stay available offline.')}</p>`; return; }
@@ -158,7 +169,9 @@ export async function renderReader(root, sN, vN, extra) {
   if (!S.q.dl) S.q.dl = {};
   await PL.loadSurah(s, name, n);
   const fat = s !== 1 && s !== 9 ? (await data('quran/1.json')).v[0] : null;
-  const gloss = (x, i, j) => { if (lang() === 'ar') return ''; if (wfr && wfr[i]) return wfr[i][j]; return x.w ? x.w[j][1] : ''; };
+  const gloss = (x, i, j) => { if (lang() === 'ar') return ''; if (wfr && wfr[i]) return wfr[i][j]; return x.w ? (lang() === 'th' ? '' : x.w[j][1]) : ''; };
+  const translationAt = i => pk ? pk[i] : trKey() === 'thai' ? '' : V[i].t;
+  const translationLanguage = { thai: 'th', maash: 'fr', hamidullah: 'fr', itani: 'en', pickthall: 'en', muyassar: 'ar' }[trKey()] || lang();
   const cls = () => `reader ${S.q.book && !S.q.wbw && !S.q.flow ? 'book' : ''} tfs${S.q.tfs ?? 1} ${S.q.wbw ? 'wbw' : ''} ${S.q.flow && !S.q.wbw ? 'flow' : ''} ${S.q.tl ? 'tl' : ''} ${trKey() === 'none' ? 'notr' : ''} h${S.q.hide} fs${S.q.fs}`;
   const words = (arr, x, i) => { const tj = S.q.tj !== false ? tajweed(arr) : arr; return arr.map((w, j) => `<button class="w" data-w="${j}" aria-label="${esc(x && x.w ? x.w[j][0] : w)}"><span class="wa">${tj[j]}</span>${x && x.w ? `<span class="g"><i>${esc(x.w[j][0])}</i>${gloss(x, i, j) ? `<em>${esc(gloss(x, i, j))}</em>` : ''}</span>` : ''}</button>`).join(' '); };
   const verse = (x, i) => {
@@ -166,13 +179,13 @@ export async function renderReader(root, sN, vN, extra) {
     return `<article class="vs" id="v${v}" data-v="${v}"><div class="vhd"><span class="mono" aria-label="${t('Verse {v}', { v })}">${t('Verse {v}', { v })} · ${s}:${v}</span>${fav ? `<span class="favd">${icon.star}</span>` : ''}${(S.q.pins || []).includes(s + ':' + v) ? `<span class="pind" title="${t('Pinned')}">⌖</span>` : ''}${(S.q.marks || []).some(m => m && m.s === s && m.v === v) ? `<span class="markd">${icon.bookmark}</span>` : ''}<button class="ib vmenu" data-menu="${v}" aria-label="${t('Verse {v} options', { v })}">${icon.more}</button></div>
       <p class="ar" lang="ar" dir="rtl">${words(x.a, x, i)} <button class="vend" data-menu="${v}" aria-label="${t('Verse {v} options', { v })}">۝${arNum(v)}</button></p>
       ${SAJDA.has(s + ':' + v) ? `<p class="sajda">۩ ${t('Verse of prostration')}</p>` : ''}
-      <p class="tlit">${esc(x.l)}</p><p class="tr" data-n="${v}" lang="${trKey() === 'muyassar' ? 'ar' : lang()}" ${trKey() === 'muyassar' ? 'dir="rtl"' : ''}>${esc(pk ? pk[i] : x.t)}</p>
+      <p class="tlit">${esc(x.l)}</p><p class="tr" data-n="${v}" lang="${translationLanguage}" ${trKey() === 'muyassar' ? 'dir="rtl"' : ''}>${esc(translationAt(i))}</p>
       ${S.q.notes && S.q.notes[s + ':' + v] ? `<div class="vnote"><span class="mono">${t('My note')}</span><p>${esc(S.q.notes[s + ':' + v].text)}</p><button class="linkbtn small" data-note="${v}">${t('Edit')}</button></div>` : ''}
       <div class="vact"><button class="chip ctx" data-ctx="${v}">${icon.book}${t('Context')}</button><button class="chip" data-note="${v}">${icon.guide}${t('Note')}</button></div></article>`;
   };
   root.innerHTML = `<header class="sub rbar"><a href="#/quran" class="ib" aria-label="${t('Back to list')}">${icon.back}</a><div class="rt"><b>${esc(name)} <span class="arn" lang="ar">${m[2]}</span></b><span class="mono">${esc(meaning(meta, s))} · ${t('{n} verses', { n })}</span></div>
       <button class="ib reader-options" id="rset" aria-label="${t('Reading options')}" title="${t('Reading options')}">${icon.sliders}</button></header>
-    <div class="${cls()}" id="rd">${S.q.tj !== false ? (S.q.tjSeen ? `<button class="linkbtn small tjlink" id="tjleg">${t('Tajweed colours: what they mean')}</button>` : `<button class="tjleg" id="tjleg" aria-label="${t('Tajweed colours: what they mean')}">${RULES.map(r => `<span class="tj-${r}">${t(TJN[r])}</span>`).join('')}</button>`) : ''}<div id="hidebar"></div><div id="pinbar"></div>${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · <button class="linkbtn small" id="trcred">${esc(trName())} ⓘ</button></p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${(S.q.tj !== false ? tajweed(fat.a) : fat.a).map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
+    <div class="${cls()}" id="rd">${S.q.tj !== false ? (S.q.tjSeen ? `<button class="linkbtn small tjlink" id="tjleg">${t('Tajweed colours: what they mean')}</button>` : `<button class="tjleg" id="tjleg" aria-label="${t('Tajweed colours: what they mean')}">${RULES.map(r => `<span class="tj-${r}">${t(TJN[r])}</span>`).join('')}</button>`) : ''}<div id="hidebar"></div><div id="pinbar"></div>${!vN && S.q.last && S.q.last.s === s && S.q.last.v > 1 ? `<a class="resume" href="#/quran/${s}/${S.q.last.v}">${t('You stopped at verse {v}', { v: S.q.last.v })} · <b>${t('Go there')}</b></a>` : ''}${trKey() !== 'none' && lang() !== 'ar' ? `<p class="trsrc mono">${t('Translation of the meaning')} · <button class="linkbtn small" id="trcred">${esc(trName())} ⓘ</button></p>` : ''}${trKey() === 'thai' && !pk ? `<p class="muted pad" role="status">${t('Thai translation source could not load. The Arabic text is still available.')}</p>` : ''}${fat ? `<p class="bism ar" id="v0" lang="ar" dir="rtl">${(S.q.tj !== false ? tajweed(fat.a) : fat.a).map((w, j) => `<span class="w" data-w="${j}"><span class="wa">${w}</span></span>`).join(' ')}</p>` : ''}${V.map(verse).join('')}
       <p class="endsur" dir="auto">${t('End of the surah. May Allah make it light for you and accept it.')}</p>
       <nav class="rnav">${s > 1 ? `<a class="btn line sm" href="#/quran/${s - 1}">‹ ${esc(surahName(meta, s - 1))}</a>` : '<span></span>'}${s < 114 ? `<a class="btn line sm" href="#/quran/${s + 1}">${esc(surahName(meta, s + 1))} ›</a>` : ''}</nav></div>
     <div class="player ${S.q.pfull ? 'full' : ''}" id="pl">
@@ -238,7 +251,7 @@ export async function renderReader(root, sN, vN, extra) {
     const draw = async () => {
       const box = $('#tf', el); box.innerHTML = `<p class="ar" lang="ar" dir="rtl">${V[v - 1].a.join(' ')}</p><p class="muted">${t('Loading…')}</p>`;
       const parts = await Promise.all(sel.map(async k => { try { return [k, await tafsirText(k, s, v)]; } catch (e) { return [k, null]; } }));
-      box.innerHTML = `<div class="qblk"><span class="mono">${t('Quran')} · ${s}:${v}</span><p class="ar" lang="ar" dir="rtl">${V[v - 1].a.join(' ')}</p>${lang() !== 'ar' ? `<p class="trq">« ${esc(pk ? pk[v - 1] : V[v - 1].t)} »</p>` : ''}</div><p class="legend2 small">${t('Solid line: the Quran. Dotted line: explanation by scholars.')}</p>` + parts.map(([k, x]) => `<section class="tfs"><span class="mono">${esc(t(TAFSIRS[k][0]))}${TAFSIRS[k][2] !== lang() ? ` · <em class="lng">${t({ en: 'in English', ar: 'in Arabic', fr: 'in French' }[TAFSIRS[k][2]])}</em>` : ''}</span>${TDESC[k] ? `<p class="tdesc">${t(TDESC[k])}</p>` : ''}${x == null ? `<p class="muted">${t('Not saved on this device yet. Connect once to keep it offline.')}</p>` : x ? `<div class="tfx ${x.length > 420 ? 'clamp' : ''}"><p lang="${TAFSIRS[k][2]}" ${TAFSIRS[k][2] === 'ar' ? 'dir="rtl"' : ''}>${esc(x).replace(/\n+/g, '</p><p>')}</p></div>${x.length > 420 ? `<button class="linkbtn small" data-more>${t('Read more')}</button>` : ''}` : `<p class="muted">${t('No text from this source for this verse.')}</p>`}</section>`).join('');
+      box.innerHTML = `<div class="qblk"><span class="mono">${t('Quran')} · ${s}:${v}</span><p class="ar" lang="ar" dir="rtl">${V[v - 1].a.join(' ')}</p>${lang() !== 'ar' ? `<p class="trq">« ${esc(translationAt(v - 1))} »</p>` : ''}</div><p class="legend2 small">${t('Solid line: the Quran. Dotted line: explanation by scholars.')}</p>` + parts.map(([k, x]) => `<section class="tfs"><span class="mono">${esc(t(TAFSIRS[k][0]))}${TAFSIRS[k][2] !== lang() ? ` · <em class="lng">${t({ en: 'in English', ar: 'in Arabic', fr: 'in French', th: 'in Thai' }[TAFSIRS[k][2]])}</em>` : ''}</span>${TDESC[k] ? `<p class="tdesc">${t(TDESC[k])}</p>` : ''}${k === 'th-mukhtasar' ? `<p class="small"><a href="https://quranenc.com/th/browse/thai_mokhtasar/${s}" target="_blank" rel="noopener noreferrer">QuranEnc · Al-Mukhtasar · v1.0.0</a></p>` : ''}${x == null ? `<p class="muted">${t('Not saved on this device yet. Connect once to keep it offline.')}</p>` : x ? `<div class="tfx ${x.length > 420 ? 'clamp' : ''}"><p lang="${TAFSIRS[k][2]}" ${TAFSIRS[k][2] === 'ar' ? 'dir="rtl"' : ''}>${esc(x).replace(/\n+/g, '</p><p>')}</p></div>${x.length > 420 ? `<button class="linkbtn small" data-more>${t('Read more')}</button>` : ''}` : `<p class="muted">${t('No text from this source for this verse.')}</p>`}</section>`).join('');
     };
     el.onclick = e => {
       const nv = e.target.closest('[data-nextv]'); if (nv) { closeSheet(); setLast(+nv.dataset.nextv); tafsir(+nv.dataset.nextv); return; }
@@ -400,7 +413,7 @@ export async function renderReader(root, sN, vN, extra) {
     const nb = e.target.closest('[data-note]'); if (nb) { noteSheet(+nb.dataset.note); return; }
     if (e.target.id === 'cmpgo') { compareSheet(); return; }
     if (e.target.id === 'unhide') { S.q.hide = 0; save(); refresh(); return; }
-    if (e.target.id === 'trcred') { sheet(`<h3>${t('Translation')}</h3><div class="sbody"><p><b>${esc(trName())}</b></p><p class="muted small">${t('A translation conveys the meaning; it is not the Quran itself. The Arabic text is the Uthmani script (King Fahd Complex, Hafs).')}</p><p class="muted small">${t('Change the translation in Reading options, under Text.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Translation'), opener: e.target }); return; }
+    if (e.target.id === 'trcred') { sheet(`<h3>${t('Translation')}</h3><div class="sbody"><p><b>${esc(trName())}</b></p><p class="muted small">${t('A translation conveys the meaning; it is not the Quran itself. The Arabic text is the Uthmani script (King Fahd Complex, Hafs).')}</p>${trKey() === 'thai' ? `<p class="muted small"><a href="https://tanzil.net/trans/" rel="noopener noreferrer" target="_blank">Tanzil · ${esc(t(THAI_QURAN_LABEL))}</a></p>` : ''}<p class="muted small">${t('Change the translation in Reading options, under Text.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Translation'), opener: e.target }); return; }
     if (e.target.closest('#tjleg') && !S.q.tjSeen) { S.q.tjSeen = true; save(); }
     if (e.target.closest('#tjleg')) { sheet(`<h3>${t('Tajweed colours')}</h3><div class="sbody">${RULES.map(r => `<p><b class="tj-${r}">${t(TJN[r])}</b> · ${t(TJD[r])}</p>`).join('')}<p class="muted small">${t('Colours are computed from the Uthmani script, not checked by a teacher. Learn tajweed with a teacher. Report any mistake.')}</p><p class="muted small">${t('Turn the colours off in Aa.')}</p></div>`, { dark: document.body.classList.contains('dark'), label: t('Tajweed colours') }); return; }
     const mb = e.target.closest('[data-menu]'); if (mb) { menu(+mb.dataset.menu); return; }
@@ -411,7 +424,7 @@ export async function renderReader(root, sN, vN, extra) {
     $$('.w.on', rd).forEach(y => y.classList.remove('on')); w.classList.add('on');
     setLast(v);
     // The word panel opens silently; listening is its own explicit button.
-    const wp = sheet(`<div class="wpanel"><p class="ar wbig" lang="ar" dir="rtl">${x.a[j]}</p>${x.w ? `<p class="mono">${esc(x.w[j][0])}</p>${gloss(x, v - 1, j) ? `<p>${esc(gloss(x, v - 1, j))}</p>` : ''}` : ''}<p class="muted small">${esc(name)} · ${s}:${v} · ${t('word {n}', { n: j + 1 })}</p>
+    const wp = sheet(`<div class="wpanel"><p class="ar wbig" lang="ar" dir="rtl">${x.a[j]}</p>${x.w ? `<p class="mono">${esc(x.w[j][0])}</p>${gloss(x, v - 1, j) ? `<p>${esc(gloss(x, v - 1, j))}</p>` : lang() === 'th' ? `<p class="small muted">${t('No Thai word-by-word gloss is available for this verse.')}</p>` : ''}` : ''}<p class="muted small">${esc(name)} · ${s}:${v} · ${t('word {n}', { n: j + 1 })}</p>
       <div class="row2"><button class="btn" id="wlisten">${icon.play} ${t('Listen to this word')}</button><button class="btn line" id="wfrom">${t('Play the verse')}</button></div></div>`, { dark: document.body.classList.contains('dark'), label: t('Word'), opener: w });
     wp.onclick = ev => { if (ev.target.closest('#wlisten')) { if (!PL.playWord(s, v, j + 1)) toast(t('Pause the recitation first.')); } if (ev.target.closest('#wfrom')) { closeSheet(); PL.P.mode = 'off'; PL.playVerse(v); } };
   };
