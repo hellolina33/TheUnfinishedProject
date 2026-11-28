@@ -172,11 +172,51 @@ def _filename(title, ext):
 
 
 
+
+def _diag():
+    import json as _j, urllib.request
+    out = {}
+    try:
+        y = yt_dlp.YoutubeDL({"quiet": True, "skip_download": True, "cachedir": False, "playlistend": 4, "ignoreerrors": True})
+        i = y.extract_info("https://www.tiktok.com/@scout2015", download=False)
+        es = [e for e in (i.get("entries") or []) if e][:4]
+        out["tt_user"] = {"keys": sorted(i.keys())[:40], "n": len(es), "channel": {k: i.get(k) for k in ("title", "uploader", "channel", "channel_follower_count", "thumbnails")}}
+        if es:
+            e = es[0]
+            out["tt_entry"] = {k: e.get(k) for k in ("id", "title", "view_count", "like_count", "comment_count", "repost_count", "duration", "timestamp", "thumbnail", "webpage_url", "uploader", "channel_follower_count", "track", "tags")}
+            out["tt_entry_formats"] = len(e.get("formats") or [])
+    except Exception as ex:  # noqa: BLE001
+        out["tt_user"] = "fail " + str(ex)[:300]
+    try:
+        r = urllib.request.urlopen(urllib.request.Request("https://www.tiktok.com/@scout2015", headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/131 Safari/537.36"}), timeout=10)
+        b = r.read().decode("utf8", "ignore")
+        m = re.search(r'<script id="__UNIVERSAL_DATA_FOR_REHYDRATION__"[^>]*>(.*?)</script>', b)
+        if m:
+            d = _j.loads(m.group(1))
+            ui = d.get("__DEFAULT_SCOPE__", {}).get("webapp.user-detail", {}).get("userInfo", {})
+            out["tt_page"] = {"user": {k: ui.get("user", {}).get(k) for k in ("nickname", "uniqueId", "signature", "avatarMedium", "verified")}, "stats": ui.get("stats")}
+        else:
+            out["tt_page"] = "no data len %d" % len(b)
+    except Exception as ex:  # noqa: BLE001
+        out["tt_page"] = "fail " + str(ex)[:200]
+    for u in ("https://twitter.com/starwars/status/665052190608723968", "https://x.com/BTNBrentYarina/status/705235433198714880"):
+        try:
+            i = yt_dlp.YoutubeDL({"quiet": True, "skip_download": True, "cachedir": False}).extract_info(u, download=False)
+            if i.get("entries"):
+                i = [e for e in i["entries"] if e][0]
+            fm = [f for f in i.get("formats", []) if f.get("protocol") in ("https", "http")]
+            out["x:" + u[-6:]] = "ok plain=%d heights=%s views=%s likes=%s" % (len(fm), sorted({f.get("height") for f in fm if f.get("height")}), i.get("view_count"), i.get("like_count"))
+        except Exception as ex:  # noqa: BLE001
+            out["x:" + u[-6:]] = "fail " + str(ex)[:200]
+    return out
+
 @app.route("/api/snack", methods=["GET"])
 @app.route("/api/snack/", methods=["GET"])
 def snack():
     global _global_files
     _today()
+    if os.environ.get("VERCEL_ENV") == "preview" and request.args.get("diag"):
+        return Response(__import__("json").dumps(_diag(), default=str), mimetype="application/json")
     if os.environ.get("VERCEL_ENV") == "preview" and request.args.get("selftest"):
         mb = min(int(request.args.get("selftest") or 1), 40)
         def zeros():
