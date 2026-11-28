@@ -7,3 +7,4 @@ test-results/
 playwright-report/
 public/
 day-08-safa/tests/shots/
+__pycache__/
