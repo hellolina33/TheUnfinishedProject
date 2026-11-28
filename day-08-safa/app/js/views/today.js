@@ -1,4 +1,5 @@
 import { S, save, dayKey, addDays, getDay, P5, data } from '../store.js';
+import { installFlow } from '../install.js';
 import { timesFor, ORDER, NAMES, AR, fmtTime, hijri, gregorian, weekday, qiblaBearing, methodAngles, flightPrayers, localToUtc, distanceKm, METHODS } from '../prayer.js';
 import { $, esc, icon, pad, cityField, toast, sheet, closeSheet, download } from '../ui.js';
 import { thaiSurah } from '../thai-quran.js';
@@ -92,13 +93,12 @@ function installCard() {
   const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
   if (standalone || S.hideInstall || !S.since || S.since >= dayKey()) return '';
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && /safari/i.test(navigator.userAgent) && !/crios|fxios/i.test(navigator.userAgent);
-  if (!ios && !window.__bip) return '';
+  
   return `<section class="card welcome"><button class="ib x" data-hide="install" aria-label="${t('Hide')}">${icon.stop}</button>
     <b>${t('Keep safa. on your home screen')}</b>
     <p class="muted small">${ios ? t('In Safari, tap Share, then “Add to Home Screen”. It opens like an app, offline, with no store.') : t('Open your browser menu, then “Install app” or “Add to Home screen”. It opens like an app, offline, with no store.')}</p>
-    ${window.__bip ? `<button class="btn sm" data-install="1">${t('Install')}</button>` : ''}<button class="linkbtn small" data-hide="install">${t('Do not show again')}</button></section>`;
+    <button class="btn sm" data-install="1">${t('Install')}</button><button class="linkbtn small" data-hide="install">${t('Do not show again')}</button></section>`;
 }
-window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); window.__bip = e; });
 
 // A gentle, sourced verse for the day. Hope and mercy only.
 const AYAT = [[94, 5], [2, 286], [65, 3], [13, 28], [39, 53], [2, 152], [3, 139], [93, 3], [12, 87], [2, 186], [20, 46], [29, 69], [40, 60], [94, 6], [65, 2], [8, 46], [2, 153], [11, 115], [28, 24], [3, 173], [7, 56], [6, 54], [42, 30], [9, 51], [57, 4], [50, 16], [2, 45], [64, 11], [16, 128], [15, 56]];
@@ -216,7 +216,7 @@ export function render(root) {
     if (e.target.id === 'tresume') { S.pauseOn = false; S.pauseUntil = null; const d0 = getDay(dayKey(), true); d0.pz = 0; save(); draw(); toast(t('Tracking resumed.')); return; }
     const ph = e.target.closest('[data-ph]'); if (ph) { S.pauseHinted = true; save(); if (ph.dataset.ph === '0') draw(); return; }
     const hb = e.target.closest('[data-hide]'); if (hb) { if (hb.dataset.hide === 'back') S.backHidden = S.backDay; else if (hb.dataset.hide === 'welcome') S.hideWelcome = true; else S.hideInstall = true; save(); draw(); return; }
-    if (e.target.closest('[data-install]') && window.__bip) { try { window.__bip.prompt(); await window.__bip.userChoice; } catch (err) { /* ignore */ } window.__bip = null; draw(); return; }
+    if (e.target.closest('[data-install]')) { await installFlow(e.target.closest('[data-install]')); draw(); return; }
     const b = e.target.closest('[data-mark]'); if (!b) return;
     const d = getDay(dayKey(), true), i = +b.dataset.mark; d.p[i] = d.p[i] ? 0 : 1; save(); draw();
     toast(d.p[i] ? t('May Allah accept it.') : t('Unticked.'));

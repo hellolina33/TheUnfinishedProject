@@ -5,6 +5,7 @@ import { timesFor, NAMES, fmtTime, weekday } from '../prayer.js';
 import { isRamadan } from './calendar.js';
 import { hifzDue } from './plan.js';
 import { verseText } from './quran.js';
+import { installButton, installFlow, onInstallChange, isStandalone } from '../install.js';
 
 // One verse for everyone, changing every day.
 const DAILY = [[2, 255], [2, 286], [13, 28], [94, 5], [2, 152], [2, 186], [65, 3], [39, 53], [3, 139], [2, 45], [40, 60], [29, 69], [7, 56], [17, 24], [25, 74], [14, 7], [49, 13], [20, 114], [93, 5], [21, 87], [3, 173], [9, 51], [8, 46], [11, 88], [18, 10], [55, 13], [59, 22], [112, 1], [99, 7], [3, 8]];
@@ -110,7 +111,7 @@ export function renderHome(root) {
         <img src="illustrations/covers/arch.webp" alt="" width="960" height="640" fetchpriority="high"><span class="hero-chev">${icon.chev}</span></a>`;
   root.innerHTML = `
     <header class="home-head"><h1>safa<span>.</span></h1>
-      <a class="ib home-lang" href="#/settings/lang" aria-label="${copy('Langue', 'Language', 'اللغة')}">${icon.globe}</a>
+      <div class="home-headr">${installButton('home-inst')}<a class="ib home-lang" href="#/settings/lang" aria-label="${copy('Langue', 'Language', 'اللغة')}">${icon.globe}</a></div>
     </header>
     ${np ? `<a class="home-sticky" id="home-sticky" href="#/today" aria-hidden="true" tabindex="-1"><b>${NAMES[np.k]}</b><span class="mono">${fmtTime(np.at)}</span><span id="sticky-in">${inMinutes(np.at)}</span></a>` : ''}
     ${hero}
@@ -129,7 +130,9 @@ export function renderHome(root) {
     </section>`;
   verseText(...verseOfDay()).then(x => { const el = root.querySelector('#votd'); if (!el) return; el.querySelector('.ar').textContent = x.a; el.querySelector('.votd-tr').textContent = x.tr || ''; }).catch(() => root.querySelector('#votd')?.remove());
   let lastUnpin = null;
+  const offInst = onInstallChange(() => { const b = root.querySelector('[data-installapp]'); if (b && isStandalone()) b.remove(); });
   root.onclick = e => {
+    const ib = e.target.closest('[data-installapp]'); if (ib) { e.preventDefault(); installFlow(ib); return; }
     const x = e.target.closest('[data-unpin]');
     if (x) {
       e.preventDefault();
@@ -158,6 +161,7 @@ export function renderHome(root) {
   const off = () => { if (root.querySelector('#home-hero')) renderHome(root); };
   window.addEventListener('online', off); window.addEventListener('offline', off);
   homeCleanup.set(root, () => {
+    offInst();
     clearInterval(timer);
     io?.disconnect();
     root.onclick = null;
@@ -172,13 +176,15 @@ export function renderPlus(root, section) {
   const tool = k => `<div class="pin-wrap">${link(T[k][0], T[k][1], T[k][2])}<button class="ib pin-t" data-pin="${k}" aria-pressed="${pinned.includes(k)}" aria-label="${esc(copy('Épingler {x} sur l’accueil', 'Pin {x} to Home', 'تثبيت {x} في الرئيسية').replace('{x}', T[k][1]))}">${icon.star}</button></div>`;
   root.innerHTML = `<section class="home-plus"><h1>${copy('Menu', 'Menu', 'القائمة')}</h1>
     ${group(copy('Préférences', 'Preferences', 'التفضيلات'), link('settings', t('Settings'), icon.gear, copy('Langue, affichage, horaires, rappels, hors-ligne, données', 'Language, display, times, reminders, offline, data', 'اللغة والعرض والمواقيت والتذكير ودون اتصال والبيانات')) +
-      link('setup', copy('Changer de ville', 'Change city', 'تغيير المدينة'), icon.today, S.loc ? S.loc.name : ''))}
+      link('setup', copy('Changer de ville', 'Change city', 'تغيير المدينة'), icon.today, S.loc ? S.loc.name : '') +
+      (isStandalone() ? '' : `<button class="home-row" data-installapp><span class="home-symbol" aria-hidden="true">${icon.install}</span><span><strong>${t('Install safa. on your phone')}</strong><small>${t('On the home screen, like an app. Android and iPhone.')}</small></span>${icon.chev}</button>`))}
     ${group(t('Tools'), Object.keys(T).map(tool).join(''), `<p class="muted small" id="pin-msg" role="status">${copy('Touche l’étoile pour épingler deux outils sur l’accueil.', 'Tap the star to pin two tools to Home.', 'اضغط النجمة لتثبيت أداتين في الرئيسية.')}</p>`)}
     <section id="favorites" class="home-group"><h2>${copy('Mes favoris', 'My favourites', 'مفضلتي')}</h2>
       ${link('favorites', copy('Tous mes favoris', 'All my favourites', 'كل مفضلتي'), icon.bookmark, copy('Versets, douas et guides mis de côté', 'Verses, duas and saved guides', 'آيات وأدعية وأدلة محفوظة'))}
     </section>
     ${group(copy('Aide', 'Help', 'مساعدة'), link('welcome', copy('Revoir le guide de démarrage', 'Review the getting-started guide', 'مراجعة دليل البدء'), icon.guide) + link('journey/sources', t('Our sources and method'), icon.info) + `<button class="home-row sharea" id="shareapp"><span class="home-symbol" aria-hidden="true">${icon.share}</span><span><strong>${t('Share safa.')}</strong><small>${t('A ready-made message for WhatsApp')}</small></span>${icon.chev}</button>` + link('about', t('About'), icon.info))}</section>`;
   root.onclick = e => {
+    const ib = e.target.closest('[data-installapp]'); if (ib) { installFlow(ib); return; }
     if (e.target.closest('#shareapp')) { const url = location.origin + location.pathname.replace(/app\/.*$/, ''); const txt = t('I use safa. for prayer times, the Quran with its meaning and duas. Free, no account, no ads, works offline: {u}', { u: url }); (async () => { try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Message copied')); } } catch (err) { /* cancelled */ } })(); return; }
     const b = e.target.closest('[data-pin]'); if (!b) return;
     e.preventDefault();

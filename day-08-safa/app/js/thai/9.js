@@ -1,0 +1,28 @@
+// Thai strings for the install button. Needs native review.
+export default {
+ "safa. is on your home screen.": "safa. อยู่บนหน้าจอหลักของคุณแล้ว",
+ "safa. is already installed.": "ติดตั้ง safa. แล้ว",
+ "Install safa. on your phone": "ติดตั้ง safa. บนโทรศัพท์ของคุณ",
+ "Free, no store, no account. It opens like an app, full screen and offline.": "ฟรี ไม่ต้องผ่านสโตร์ ไม่ต้องมีบัญชี เปิดได้เหมือนแอป เต็มจอ และใช้ออฟไลน์ได้",
+ "Got it": "เข้าใจแล้ว",
+ "On the home screen, like an app. Android and iPhone.": "บนหน้าจอหลัก เหมือนแอป ใช้ได้ทั้ง Android และ iPhone",
+ "Tap the Share button {i} at the bottom of Safari.": "แตะปุ่มแชร์ {i} ที่ด้านล่างของ Safari",
+ "Scroll down and tap “Add to Home Screen”.": "เลื่อนลงแล้วแตะ “เพิ่มไปยังหน้าจอโฮม”",
+ "Tap “Add”. safa. appears with your apps.": "แตะ “เพิ่ม” แล้ว safa. จะอยู่รวมกับแอปของคุณ",
+ "Tap the Share button {i} next to the address bar.": "แตะปุ่มแชร์ {i} ข้างแถบที่อยู่",
+ "Tap “Add to Home Screen”.": "แตะ “เพิ่มไปยังหน้าจอโฮม”",
+ "Tap “Add”. If you do not see it, open this page in Safari.": "แตะ “เพิ่ม” ถ้าไม่เห็น ให้เปิดหน้านี้ใน Safari",
+ "This page is open inside another app.": "หน้านี้เปิดอยู่ในแอปอื่น",
+ "Tap the menu, then “Open in browser” (Safari or Chrome).": "แตะเมนู แล้วเลือก “เปิดในเบราว์เซอร์” (Safari หรือ Chrome)",
+ "Then tap Install safa. again.": "จากนั้นแตะติดตั้ง safa. อีกครั้ง",
+ "Tap the menu ☰ at the bottom.": "แตะเมนู ☰ ที่ด้านล่าง",
+ "Tap “Add page to”, then “Home screen”.": "แตะ “เพิ่มหน้าไปที่” แล้วเลือก “หน้าจอหลัก”",
+ "Confirm. safa. appears with your apps.": "ยืนยัน แล้ว safa. จะอยู่รวมกับแอปของคุณ",
+ "Tap the menu {i} at the top right.": "แตะเมนู {i} ที่มุมขวาบน",
+ "Tap “Install” or “Add to Home screen”.": "แตะ “ติดตั้ง” หรือ “เพิ่มลงในหน้าจอหลัก”",
+ "Tap the menu {i} at the top right of Chrome.": "แตะเมนู {i} ที่มุมขวาบนของ Chrome",
+ "Tap “Install app” or “Add to Home screen”.": "แตะ “ติดตั้งแอป” หรือ “เพิ่มลงในหน้าจอหลัก”",
+ "Click the install icon at the right of the address bar.": "คลิกไอคอนติดตั้งทางขวาของแถบที่อยู่",
+ "Or open the browser menu, then “Install safa.”.": "หรือเปิดเมนูเบราว์เซอร์ แล้วเลือก “ติดตั้ง safa.”",
+ "On a phone, open this page and tap Install safa.": "บนโทรศัพท์ ให้เปิดหน้านี้แล้วแตะติดตั้ง safa."
+};
