@@ -202,7 +202,7 @@ footer details p{margin:6px 0 0;opacity:.85;line-height:1.45}
 <footer>
   <details id="unfinished">
     <summary data-i18n="unf">What is still unfinished</summary>
-    <p data-i18n="unfText">The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. On X, the machine sees the account's last ~100 posts, and X does not share view counts there, so X clips are ranked by likes. Private accounts and slideshows are skipped. The zip is built in your browser, so keep a bag under 25 clips. Daily limits are best effort.</p>
+    <p data-i18n="unfText">The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. On X, the machine sees the account's last ~100 posts, and X does not share view counts there, so X clips are ranked by likes. Private accounts and slideshows are skipped. The zip is built in your browser, so long videos make heavy bags: take long tutorials one by one. Daily limits are best effort.</p>
   </details>
   <div>
     <a href="/day-08-snack-machine/index.html" download="snack-machine-day-08.html" data-i18n="dl">Download the HTML</a> ·
@@ -222,11 +222,11 @@ const T = {
   howTags:'How the tags work', rights:'Only take what you are allowed to use, and credit the creator every time you show their clip.',
   selAll:'Select shown', clear:'Clear', search:'Search captions',
   unf:'What is still unfinished',
-  unfText:'The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. On X, the machine sees the account\u2019s last ~100 posts, and X does not share view counts there, so X clips are ranked by likes. Private accounts and slideshows are skipped. The zip is built in your browser, so keep a bag under 25 clips. Daily limits are best effort.',
+  unfText:'The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. On X, the machine only sees the ~100 posts X shows publicly for an account (often its most popular, not just the latest), and no view counts, so X clips are ranked by likes. Private accounts and slideshows are skipped. The zip is built in your browser, so long videos make heavy bags: take long tutorials one by one. Daily limits are best effort.',
   dl:'Download the HTML', credit:'Designed and built by', engine:'powered by the open-source yt-dlp',
-  emptyT:'Feed me a TikTok or X link.', emptyP:"Paste a video or a profile. I stock the shelf with the creator's latest videos (60 on TikTok, the video posts among their last ~100 on X), sorted by what performed, with tags you can read at a glance. Pick the good ones, drop them in your bag, take them with their references.",
+  emptyT:'Feed me a TikTok or X link.', emptyP:"Paste a video or a profile. I stock the shelf with the creator's latest videos (60 on TikTok, the video posts among the ~100 posts X shows publicly), sorted by what performed, with tags you can read at a glance. Pick the good ones, drop them in your bag, take them with their references.",
   loadingT:'Stocking the shelves…', loadingP:'Reading the profile and its latest videos. About 5 seconds.',
-  followers:'followers', likes:'likes', videos:'videos', posts:'posts', scanned:(n,m)=>`Read the last ${n} posts: ${m} with a video.`, open:'Open on TikTok ↗', openX:'Open on X ↗',
+  followers:'followers', likes:'likes', videos:'videos', posts:'posts', scanned:(n,m)=>`Read ${n} public posts: ${m} with a video.`, open:'Open on TikTok ↗', openX:'Open on X ↗',
   sorts:{views:'Most viewed',likes:'Most liked',eng:'Best engagement',comments:'Most comments',new:'Newest',old:'Oldest',short:'Shortest'},
   tags:{hit:'🔥 Hit',above:'🚀 Above usual',gem:'💎 Hidden gem',talk:'💬 Talked about',short:'⚡ Under 15 s',new:'🆕 Last 30 days'},
   tagHelp:{hit:'Top 10% of views on this shelf (likes on X).',above:"At least twice the creator's usual (median) views, or likes on X.",gem:'Top 20% engagement but below-usual views: people loved it, the algorithm did not push it.',talk:'Top 10% for comments per view (per like on X).',short:'Shorter than 15 seconds: easy to drop in a slide.',new:'Posted in the last 30 days.'},
@@ -239,7 +239,7 @@ const T = {
    private:'This account is private. The machine only reads public profiles.',
    blocked:'A security guard stopped the snack: the platform asked for a login. Try again later.',
    gone:'Nothing here: the video or profile is gone, private, or has no videos.',
-   too_long:'Too long for the slot (over 20 minutes).', too_big:'Too heavy for the tray.',
+   too_long:'Too long for the slot (over 3 hours).', too_big:'Too heavy for the tray.',
    tired:'The machine needs a nap: daily limit reached. Come back tomorrow.',
    sold_out:'Sold out: no file to take for this one.', jammed:'The machine jammed. Try again in a moment.',
    origin:'Wrong door.', net:'No connection to the machine.', bad_format:'Unknown snack.'}},
@@ -250,11 +250,11 @@ const T = {
   howTags:'Comment marchent les tags', rights:'Ne prends que ce que tu as le droit d’utiliser, et cite le créateur chaque fois que tu montres son extrait.',
   selAll:'Tout sélectionner', clear:'Vider', search:'Chercher dans les légendes',
   unf:'Ce qui n’est pas encore fini',
-  unfText:'La machine lit les 60 dernières vidéos d’un profil, pas tout l’historique. Les stats sont les compteurs publics de TikTok à cet instant. Sur X, la machine voit les ~100 derniers posts du compte, et X n’y donne pas les vues : les extraits X sont classés par likes. Les comptes privés et les diaporamas sont ignorés. Le zip est construit dans ton navigateur : garde un sachet sous 25 extraits. Les limites quotidiennes sont approximatives.',
+  unfText:'La machine lit les 60 dernières vidéos d’un profil, pas tout l’historique. Les stats sont les compteurs publics de TikTok à cet instant. Sur X, la machine ne voit que les ~100 posts que X montre publiquement pour un compte (souvent les plus populaires, pas seulement les derniers), sans les vues : les extraits X sont classés par likes. Les comptes privés et les diaporamas sont ignorés. Le zip est construit dans ton navigateur : les longues vidéos font des sachets lourds, prends les longs tutos un par un. Les limites quotidiennes sont approximatives.',
   dl:'Télécharger le HTML', credit:'Conçu et codé par', engine:'propulsé par yt-dlp, open source',
-  emptyT:'Donne-moi un lien TikTok ou X.', emptyP:'Colle une vidéo ou un profil. Je remplis la vitrine avec les dernières vidéos du créateur (60 sur TikTok, les posts vidéo parmi ses ~100 derniers sur X), triées par performance, avec des tags lisibles en un coup d’œil. Choisis les bonnes, mets-les dans ton sachet, et repars avec leurs références.',
+  emptyT:'Donne-moi un lien TikTok ou X.', emptyP:'Colle une vidéo ou un profil. Je remplis la vitrine avec les dernières vidéos du créateur (60 sur TikTok, les posts vidéo parmi les ~100 posts que X montre publiquement), triées par performance, avec des tags lisibles en un coup d’œil. Choisis les bonnes, mets-les dans ton sachet, et repars avec leurs références.',
   loadingT:'Je remplis la vitrine…', loadingP:'Lecture du profil et de ses dernières vidéos. Environ 5 secondes.',
-  followers:'abonnés', likes:'likes', videos:'vidéos', posts:'posts', scanned:(n,m)=>`J’ai lu les ${n} derniers posts : ${m} avec une vidéo.`, open:'Ouvrir sur TikTok ↗', openX:'Ouvrir sur X ↗',
+  followers:'abonnés', likes:'likes', videos:'vidéos', posts:'posts', scanned:(n,m)=>`${n} posts publics lus : ${m} avec une vidéo.`, open:'Ouvrir sur TikTok ↗', openX:'Ouvrir sur X ↗',
   sorts:{views:'Les plus vues',likes:'Les plus likées',eng:'Meilleur engagement',comments:'Les plus commentées',new:'Plus récentes',old:'Plus anciennes',short:'Plus courtes'},
   tags:{hit:'🔥 Carton',above:'🚀 Au-dessus',gem:'💎 Pépite',talk:'💬 Fait parler',short:'⚡ Moins de 15 s',new:'🆕 30 derniers jours'},
   tagHelp:{hit:'Top 10 % des vues de la vitrine (likes sur X).',above:'Au moins deux fois les vues habituelles (médiane) du créateur, ou les likes sur X.',gem:'Top 20 % d’engagement mais des vues sous la normale : le public a aimé, l’algorithme ne l’a pas poussée.',talk:'Top 10 % des commentaires par vue (par like sur X).',short:'Moins de 15 secondes : facile à glisser dans une slide.',new:'Publiée ces 30 derniers jours.'},
@@ -267,7 +267,7 @@ const T = {
    private:'Ce compte est privé. La machine ne lit que les profils publics.',
    blocked:'Un vigile a bloqué le snack : la plateforme demande une connexion. Réessaie plus tard.',
    gone:'Rien ici : la vidéo ou le profil a disparu, est privé, ou n’a pas de vidéos.',
-   too_long:'Trop long pour la fente (plus de 20 minutes).', too_big:'Trop lourd pour le bac.',
+   too_long:'Trop long pour la fente (plus de 3 heures).', too_big:'Trop lourd pour le bac.',
    tired:'La machine fait la sieste : limite du jour atteinte. Reviens demain.',
    sold_out:'Rupture : pas de fichier pour celui-ci.', jammed:'La machine s’est coincée. Réessaie dans un instant.',
    origin:'Mauvaise porte.', net:'Pas de connexion avec la machine.', bad_format:'Snack inconnu.'}}
@@ -317,7 +317,7 @@ function applyLang(){
 }
 document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{ lang=b.dataset.lang; try{localStorage.setItem('snack-lang',lang)}catch{} applyLang(); }));
 
-function hasViews(){ return !state.data || state.data.videos.some(v=>v.views!=null); }
+function hasViews(){ if (!state.data) return true; const vs = state.data.videos; return vs.filter(v=>v.views!=null).length * 2 > vs.length; }
 function fillSort(){
   const skip = hasViews() ? [] : ['views','eng'];
   if (skip.includes(state.sort)) state.sort = 'likes';

@@ -22,8 +22,8 @@ import yt_dlp
 app = Flask(__name__)
 
 ALLOWED = ("tiktok.com", "x.com", "twitter.com")
-MAX_SECONDS = 20 * 60
-MAX_BYTES = 300 * 1024 * 1024
+MAX_SECONDS = 3 * 60 * 60
+MAX_BYTES = 500 * 1024 * 1024
 MAX_VIDEOS = 90
 MENU_PER_IP_DAY = 80
 FILES_PER_IP_DAY = 120
@@ -369,8 +369,9 @@ def _pick(options, preset):
     if preset == "light" and vids:
         return vids[-1]
     if preset == "best" and vids:
-        # H.264 first: it plays in PowerPoint, Keynote and Google Slides
-        return next((o for o in vids if o.get("h264")), vids[0])
+        # H.264 first (plays in PowerPoint, Keynote, Google Slides), and small enough for the tray
+        fits = [o for o in vids if not o.get("size") or o["size"] <= MAX_BYTES] or vids[-1:]
+        return next((o for o in fits if o.get("h264")), fits[0])
     return next((o for o in options if o["id"] == preset), None)
 
 
