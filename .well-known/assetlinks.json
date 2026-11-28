@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "app.safa.unfinished",
+    "sha256_cert_fingerprints": ["C8:40:C4:4E:7A:AA:D1:EB:D5:B9:D4:3E:9C:AC:FC:C5:59:64:D1:CC:D1:77:A3:30:6B:79:68:AB:14:D7:9A:1B"]
+  }
+}]

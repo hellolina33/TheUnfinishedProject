@@ -487,6 +487,7 @@ for (const entry of fs.readdirSync(".")) {
   if (
     /^day-\d+-/.test(entry) ||
     entry === "images" ||
+    entry === ".well-known" ||
     [
       "index.html",
       "favicon.ico",
