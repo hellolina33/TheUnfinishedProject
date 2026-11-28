@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">safa.</string>
+  <string name="launch_url">https://the-unfinished-30.vercel.app/day-08-safa/app/</string>
+  <string name="asset_statements" translatable="false">[{\"relation\": [\"delegate_permission/common.handle_all_urls\"], \"target\": {\"namespace\": \"web\", \"site\": \"https://the-unfinished-30.vercel.app\"}}]</string>
+</resources>

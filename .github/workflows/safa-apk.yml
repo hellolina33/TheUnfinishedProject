@@ -1,0 +1,34 @@
+name: safa APK (unsigned)
+# Builds the safa. Android wrapper (Trusted Web Activity). Signing happens offline, with a key that never enters this repo.
+on:
+  push:
+    branches: [safa-apk-src]
+    paths: ['day-08-safa/android/**', '.github/workflows/safa-apk.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: '8.9' }
+      - run: gradle --no-daemon -p day-08-safa/android assembleRelease
+      - name: Align and collect
+        run: |
+          BT=$ANDROID_HOME/build-tools/$(ls $ANDROID_HOME/build-tools | sort -V | tail -1)
+          mkdir -p /tmp/out
+          $BT/zipalign -p -f 4 day-08-safa/android/app/build/outputs/apk/release/app-release-unsigned.apk /tmp/out/safa-unsigned-aligned.apk
+          cp $BT/lib/apksigner.jar /tmp/out/
+          echo "$BT" > /tmp/out/BUILD_TOOLS.txt
+      - name: Publish to safa-apk-out
+        run: |
+          cd /tmp/out
+          git init -q -b safa-apk-out
+          git config user.name "github-actions" && git config user.email "actions@github.com"
+          git add -A && git commit -qm "unsigned build ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" safa-apk-out
