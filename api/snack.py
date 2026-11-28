@@ -177,8 +177,11 @@ def _diag():
     import json as _j, urllib.request
     out = {}
     try:
-        y = yt_dlp.YoutubeDL({"quiet": True, "skip_download": True, "cachedir": False, "playlistend": 4, "ignoreerrors": True})
+        t0 = time.time()
+        y = yt_dlp.YoutubeDL({"quiet": True, "skip_download": True, "cachedir": False, "playlistend": 60, "ignoreerrors": True})
         i = y.extract_info("https://www.tiktok.com/@scout2015", download=False)
+        out["tt_60_seconds"] = round(time.time() - t0, 1)
+        out["tt_60_count"] = len([e for e in (i.get("entries") or []) if e])
         es = [e for e in (i.get("entries") or []) if e][:4]
         out["tt_user"] = {"keys": sorted(i.keys())[:40], "n": len(es), "channel": {k: i.get(k) for k in ("title", "uploader", "channel", "channel_follower_count", "thumbnails")}}
         if es:
@@ -199,7 +202,7 @@ def _diag():
             out["tt_page"] = "no data len %d" % len(b)
     except Exception as ex:  # noqa: BLE001
         out["tt_page"] = "fail " + str(ex)[:200]
-    for u in ("https://twitter.com/starwars/status/665052190608723968", "https://x.com/BTNBrentYarina/status/705235433198714880"):
+    for u in ("https://x.com/SpaceX/status/2077785645645209727", "https://x.com/historyinmemes/status/1790637656616943991", "https://twitter.com/JessicaDobsonWX/status/1731121063248175384"):
         try:
             i = yt_dlp.YoutubeDL({"quiet": True, "skip_download": True, "cachedir": False}).extract_info(u, download=False)
             if i.get("entries"):
