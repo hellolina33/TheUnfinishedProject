@@ -281,11 +281,51 @@ def _pick(options, preset):
 
 # ---------- route ----------
 
+
+def _diag():
+    out = {}
+    h = request.args.get("h") or "rileybrown"
+    for name, url in (("synd", f"https://syndication.twitter.com/srv/timeline-profile/screen-name/{h}"),
+                      ("synd2", f"https://syndication.twitter.com/srv/timeline-profile/screen-name/{h}?showReplies=false"),
+                      ("xpage", f"https://x.com/{h}/media")):
+        try:
+            r = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "en"}), timeout=12)
+            b = r.read().decode("utf8", "ignore")
+            m = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', b, re.S)
+            info = {"status": r.status, "len": len(b)}
+            if m:
+                d = json.loads(m.group(1))
+                ents = (((d.get("props") or {}).get("pageProps") or {}).get("timeline") or {}).get("entries") or []
+                vids = 0
+                for e in ents:
+                    tw = ((e.get("content") or {}).get("tweet")) or {}
+                    md = (tw.get("extended_entities") or tw.get("entities") or {}).get("media") or []
+                    if any(x.get("type") in ("video", "animated_gif") for x in md):
+                        vids += 1
+                info.update(entries=len(ents), videos=vids, keys=list((d.get("props") or {}).get("pageProps", {}).keys())[:10])
+                if ents:
+                    tw = ents[0].get("content", {}).get("tweet", {})
+                    info["sample"] = {k: tw.get(k) for k in ("id_str", "created_at", "full_text", "favorite_count", "retweet_count", "reply_count", "views")}
+                    info["sample_keys"] = sorted(tw.keys())[:60]
+            info["head"] = b[:200]
+            out[name] = info
+        except Exception as ex:  # noqa: BLE001
+            out[name] = "fail " + str(ex)[:200]
+    try:
+        y = _ydl(noplaylist=False, extract_flat="in_playlist", playlistend=20, ignoreerrors=True)
+        i = y.extract_info(f"https://x.com/{h}/media", download=False) or {}
+        out["ytdlp_media"] = len([e for e in (i.get("entries") or []) if e])
+    except Exception as ex:  # noqa: BLE001
+        out["ytdlp_media"] = "fail " + str(ex)[:200]
+    return out
+
 @app.route("/api/snack", methods=["GET"])
 @app.route("/api/snack/", methods=["GET"])
 def snack():
     global _global_files
     _today()
+    if os.environ.get("VERCEL_ENV") == "preview" and request.args.get("diag"):
+        return _ok(_diag())
     origin = request.headers.get("origin")
     if origin and origin not in ("https://" + request.host, "http://localhost:3000", "null"):
         return _err("origin", 403)
