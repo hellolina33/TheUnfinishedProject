@@ -7,6 +7,7 @@ The file is re-extracted on download so the media URL is always fresh and
 fetched from the same machine that resolved it (YouTube binds URLs to an IP).
 """
 import hashlib
+import random
 import os
 import re
 import time
@@ -60,7 +61,19 @@ def _clean_link(u):
     return None, None
 
 
-def _ydl(site=""):
+BLOCKED_SITES = ("youtube.com", "youtu.be", "instagram.com")
+
+
+def _proxies():
+    """SNACK_PROXY: one proxy URL, or several separated by commas/new lines
+    (e.g. the 10 free Webshare proxies). http://user:pass@host:port"""
+    raw = os.environ.get("SNACK_PROXY", "")
+    items = [p.strip() for p in re.split(r"[,\s]+", raw) if p.strip()]
+    random.shuffle(items)
+    return items
+
+
+def _ydl(site="", proxy=None):
     opts = {
         "quiet": True,
         "no_warnings": True,
@@ -70,9 +83,7 @@ def _ydl(site=""):
         "cachedir": False,
         "extractor_args": {"youtube": {"player_client": ["default", "tv_simply", "web_safari"]}},
     }
-    # Optional residential proxy for the platforms that block cloud IPs.
-    proxy = os.environ.get("SNACK_PROXY")
-    if proxy and site in ("youtube.com", "youtu.be", "instagram.com"):
+    if proxy:
         opts["proxy"] = proxy
     return yt_dlp.YoutubeDL(opts)
 
@@ -160,6 +171,7 @@ def _filename(title, ext):
     return f"{t}.{ext}"
 
 
+
 @app.route("/api/snack", methods=["GET"])
 @app.route("/api/snack/", methods=["GET"])
 def snack():
@@ -190,12 +202,22 @@ def snack():
         if _files.get(ip, 0) >= FILES_PER_IP_DAY or _global_files >= FILES_GLOBAL_DAY:
             return _err(429, "tired", 429)
 
-    ydl = _ydl(site)
-    try:
-        info = ydl.extract_info(link, download=False)
-    except Exception as e:  # noqa: BLE001
-        print("[snack] extract failed", site, str(e)[:300])
-        return _err(502, _friendly(e), 502)
+    # Platforms that block cloud IPs go through the proxy pool: try up to
+    # 3 proxies, moving on when one is flagged as a bot.
+    routes = (_proxies()[:3] or [None]) if site in BLOCKED_SITES else [None]
+    info, last = None, None
+    for proxy in routes:
+        ydl = _ydl(site, proxy)
+        try:
+            info = ydl.extract_info(link, download=False)
+            break
+        except Exception as e:  # noqa: BLE001
+            last = e
+            print("[snack] extract failed", site, "proxy" if proxy else "direct", str(e)[:200])
+            if _friendly(e) != "blocked":
+                break
+    if info is None:
+        return _err(502, _friendly(last), 502)
     if info.get("_type") == "playlist" or info.get("entries"):
         return _err(400, "playlist", 400)
     if info.get("is_live"):
