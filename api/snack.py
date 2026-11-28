@@ -16,7 +16,7 @@ import unicodedata
 import urllib.request
 from urllib.parse import urlparse
 
-from flask import Flask, Response, jsonify, request, stream_with_context
+from flask import Flask, Response, jsonify, request
 import yt_dlp
 
 app = Flask(__name__)
@@ -28,18 +28,19 @@ MAX_VIDEOS = 90
 MENU_PER_IP_DAY = 80
 FILES_PER_IP_DAY = 120
 FILES_GLOBAL_DAY = 4000
+PLAYS_PER_IP_DAY = 600
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
 
 _day = ""
-_menus, _files, _cache = {}, {}, {}
+_menus, _files, _cache, _plays, _resolved = {}, {}, {}, {}, {}
 _global_files = 0
 
 
 def _today():
-    global _day, _menus, _files, _global_files
+    global _day, _menus, _files, _plays, _global_files
     d = time.strftime("%Y-%m-%d", time.gmtime())
     if d != _day:
-        _day, _menus, _files, _global_files = d, {}, {}, 0
+        _day, _menus, _files, _plays, _global_files = d, {}, {}, {}, 0
 
 
 def _ip():
@@ -375,6 +376,44 @@ def _pick(options, preset):
     return next((o for o in options if o["id"] == preset), None)
 
 
+
+class _Refused(Exception):
+    def __init__(self, key, status):
+        super().__init__(key)
+        self.key, self.status = key, status
+
+
+def _resolve(link, preset):
+    """Find the media URL for a post + preset, with the headers and cookies the CDN wants."""
+    ydl = _ydl()
+    info = ydl.extract_info(link, download=False)
+    if info.get("entries"):
+        info = next((e for e in info["entries"] if e), None) or {}
+    if (info.get("duration") or 0) > MAX_SECONDS:
+        raise _Refused("too_long", 400)
+    chosen = _pick(_options(info), preset)
+    fmt = chosen and next((f for f in (info.get("formats") or [info]) if f.get("format_id") == chosen["id"]), None)
+    if not chosen or not fmt:
+        raise _Refused("sold_out", 404)
+    if chosen.get("size") and chosen["size"] > MAX_BYTES:
+        raise _Refused("too_big", 400)
+    headers = dict(fmt.get("http_headers") or {})
+    try:
+        cookie = ydl.cookiejar.get_cookie_header(fmt["url"])
+    except Exception:  # noqa: BLE001
+        cookie = ""
+    if cookie:
+        headers["Cookie"] = cookie
+    return {"t": time.time(), "url": fmt["url"], "headers": headers, "ext": chosen["ext"], "title": info.get("title")}
+
+
+def _fetch(res, rng=None):
+    headers = dict(res["headers"])
+    if rng:
+        headers["Range"] = rng
+    return urllib.request.urlopen(urllib.request.Request(res["url"], headers=headers), timeout=20)
+
+
 # ---------- route ----------
 
 
@@ -416,34 +455,51 @@ def snack():
 
     if not re.match(r"^[A-Za-z0-9_.+-]+$", preset):
         return _err("bad_format", 400)
-    if _files.get(ip, 0) >= FILES_PER_IP_DAY or _global_files >= FILES_GLOBAL_DAY:
+    play = request.args.get("play") == "1"
+    rng = request.headers.get("Range") if play else None
+    if rng and not re.fullmatch(r"bytes=\d*-\d*", rng):
+        rng = None
+    if play:
+        if _plays.get(ip, 0) >= PLAYS_PER_IP_DAY:
+            return _err("tired", 429)
+    elif _files.get(ip, 0) >= FILES_PER_IP_DAY or _global_files >= FILES_GLOBAL_DAY:
         return _err("tired", 429)
-    ydl = _ydl()
-    try:
-        info = ydl.extract_info(link, download=False)
-    except Exception as e:  # noqa: BLE001
-        print("[snack] extract failed", site, str(e)[:300])
-        return _err(_friendly(e), 502)
-    if info.get("entries"):
-        info = next((e for e in info["entries"] if e), None) or {}
-    if (info.get("duration") or 0) > MAX_SECONDS:
-        return _err("too_long", 400)
-    chosen = _pick(_options(info), preset)
-    fmt = chosen and next((f for f in (info.get("formats") or [info]) if f.get("format_id") == chosen["id"]), None)
-    if not chosen or not fmt:
-        return _err("sold_out", 404)
-    if chosen.get("size") and chosen["size"] > MAX_BYTES:
-        return _err("too_big", 400)
-    try:
-        upstream = ydl.urlopen(yt_dlp.networking.Request(fmt["url"], headers=fmt.get("http_headers") or {}))
-    except Exception as e:  # noqa: BLE001
-        print("[snack] fetch failed", site, str(e)[:300])
-        return _err("jammed", 502)
 
-    _files[ip] = _files.get(ip, 0) + 1
-    _global_files += 1
-    ext = chosen["ext"]
-    length = upstream.headers.get("Content-Length")
+    upstream, res = None, None
+    key = (link, preset)
+    hit = _resolved.get(key)
+    if hit and time.time() - hit["t"] < 240:
+        res = hit
+        try:
+            upstream = _fetch(res, rng)
+        except Exception as e:  # noqa: BLE001
+            print("[snack] cached fetch failed, resolving again", str(e)[:150])
+            upstream, res = None, None
+    if upstream is None:
+        try:
+            res = _resolve(link, preset)
+        except _Refused as r:
+            return _err(r.key, r.status)
+        except Exception as e:  # noqa: BLE001
+            print("[snack] extract failed", site, str(e)[:300])
+            return _err(_friendly(e), 502)
+        try:
+            upstream = _fetch(res, rng)
+        except Exception as e:  # noqa: BLE001
+            print("[snack] fetch failed", site, str(e)[:300])
+            return _err("jammed", 502)
+        _resolved[key] = res
+        if len(_resolved) > 300:
+            _resolved.pop(next(iter(_resolved)))
+
+    if play:
+        if not rng or rng.startswith("bytes=0-"):
+            _plays[ip] = _plays.get(ip, 0) + 1
+    else:
+        _files[ip] = _files.get(ip, 0) + 1
+        _global_files += 1
+    ext = res["ext"]
+    status = getattr(upstream, "status", 200) or 200
 
     def body():
         sent = 0
@@ -459,12 +515,14 @@ def snack():
         finally:
             upstream.close()
 
-    headers = {"Content-Disposition": f'attachment; filename="{_filename(info.get("title"), ext)}"',
+    disp = "inline" if play else "attachment"
+    headers = {"Content-Disposition": f'{disp}; filename="{_filename(res["title"], ext)}"',
                "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff", "X-Snack-Ext": ext,
-               "Access-Control-Expose-Headers": "X-Snack-Ext"}
-    if length:
-        headers["Content-Length"] = length
+               "Access-Control-Expose-Headers": "X-Snack-Ext", "Accept-Ranges": "bytes"}
+    for h in ("Content-Length", "Content-Range"):
+        if upstream.headers.get(h):
+            headers[h] = upstream.headers.get(h)
     if origin == "null":
         headers["Access-Control-Allow-Origin"] = "null"
     mime = {"m4a": "audio/mp4", "mp3": "audio/mpeg"}.get(ext, "video/mp4")
-    return Response(stream_with_context(body()), headers=headers, mimetype=mime)
+    return Response(body(), status=206 if status == 206 else 200, headers=headers, mimetype=mime)
