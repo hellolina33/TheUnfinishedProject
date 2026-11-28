@@ -116,7 +116,7 @@ async function route() {
     // Back online: try again by itself, once.
     if (!navigator.onLine) window.addEventListener('online', () => { if (location.hash === current) route(); }, { once: true });
   }
-  if (my !== token) return;
+  if (my !== token) { if (typeof c === 'function') { try { c(); } catch (e) { /* stale screen */ } } return; }
   cleanup = c;
   if (enteredRoute !== current) {
     entrance?.cancel();
