@@ -585,3 +585,18 @@ html.rm .rskel>div{animation:none}
 .onb-prof{margin:14px 0}.onb-prof .seg button{font-family:var(--sans);font-size:14px}
 .j-col summary{cursor:pointer;padding:10px 0;font-weight:600}
 .sharea{width:100%;text-align:start;background:none;border:0;font:inherit;color:inherit}
+
+/* Install button (home header, menu, sheet) */
+.home-headr{display:flex;align-items:center;gap:8px}
+.inst-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--ink,#080808);color:var(--bg,#ecebe7);font:inherit;font-weight:600;font-size:.95rem;cursor:pointer}
+.inst-btn svg{width:18px;height:18px}
+html.night .inst-btn{background:var(--ember);color:#080808}
+.inst-steps{margin:16px 0;padding-inline-start:1.4em;display:grid;gap:12px;line-height:1.45}
+.inst-steps li::marker{font-weight:700;color:var(--ember)}
+.inst-ic{display:inline-grid;place-items:center;width:28px;height:28px;border:1px solid var(--line);border-radius:8px;vertical-align:middle;margin-inline:2px}
+.inst-ic svg{width:16px;height:16px;color:#0a84ff}
+.inst-k{display:inline-block;min-width:22px;text-align:center;border:1px solid var(--line);border-radius:6px}
+.inst-arrow{text-align:center;font-size:2rem;margin:0;color:var(--ember);animation:instb 1.2s ease-in-out infinite}
+@keyframes instb{50%{transform:translateY(6px)}}
+@media (prefers-reduced-motion:reduce){.inst-arrow{animation:none}}
+.inst-sheet .btn{width:100%}

@@ -6,5 +6,6 @@ import part5 from './thai/5.js';
 import part6 from './thai/6.js';
 import part7 from './thai/7.js';
 import part8 from './thai/8.js';
+import part9 from './thai/9.js';
 
-export const TH = { ...part1, ...part2, ...part3, ...part4, ...part5, ...part6, ...part7, ...part8 };
+export const TH = { ...part1, ...part2, ...part3, ...part4, ...part5, ...part6, ...part7, ...part8, ...part9 };
