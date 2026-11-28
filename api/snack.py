@@ -60,8 +60,8 @@ def _clean_link(u):
     return None, None
 
 
-def _ydl():
-    return yt_dlp.YoutubeDL({
+def _ydl(site=""):
+    opts = {
         "quiet": True,
         "no_warnings": True,
         "noplaylist": True,
@@ -69,7 +69,12 @@ def _ydl():
         "socket_timeout": 15,
         "cachedir": False,
         "extractor_args": {"youtube": {"player_client": ["default", "tv_simply", "web_safari"]}},
-    })
+    }
+    # Optional residential proxy for the platforms that block cloud IPs.
+    proxy = os.environ.get("SNACK_PROXY")
+    if proxy and site in ("youtube.com", "youtu.be", "instagram.com"):
+        opts["proxy"] = proxy
+    return yt_dlp.YoutubeDL(opts)
 
 
 def _plain(fmt):
@@ -132,6 +137,8 @@ def _err(code, key, status):
     r = jsonify({"error": key})
     r.status_code = status
     r.headers["Cache-Control"] = "no-store"
+    if request.headers.get("origin") == "null":
+        r.headers["Access-Control-Allow-Origin"] = "null"
     return r
 
 
@@ -148,7 +155,8 @@ def _friendly(e):
 
 def _filename(title, ext):
     t = unicodedata.normalize("NFKD", title or "snack").encode("ascii", "ignore").decode()
-    t = re.sub(r"[^A-Za-z0-9 _.-]+", "", t).strip()[:70] or "snack"
+    t = re.sub(r"[^A-Za-z0-9 _-]+", "", t)
+    t = re.sub(r"\s+", " ", t).strip()[:70].strip() or "snack"
     return f"{t}.{ext}"
 
 
@@ -157,8 +165,14 @@ def _filename(title, ext):
 def snack():
     global _global_files
     _today()
+    if os.environ.get("VERCEL_ENV") == "preview" and request.args.get("selftest"):
+        mb = min(int(request.args.get("selftest") or 1), 40)
+        def zeros():
+            for _ in range(mb * 4):
+                yield b"\0" * 262144
+        return Response(stream_with_context(zeros()), mimetype="application/octet-stream")
     origin = request.headers.get("origin")
-    if origin and origin not in ("https://" + request.host, "http://localhost:3000"):
+    if origin and origin not in ("https://" + request.host, "http://localhost:3000", "null"):
         return _err(403, "origin", 403)
     link, site = _clean_link(request.args.get("u"))
     if not link:
@@ -176,7 +190,7 @@ def snack():
         if _files.get(ip, 0) >= FILES_PER_IP_DAY or _global_files >= FILES_GLOBAL_DAY:
             return _err(429, "tired", 429)
 
-    ydl = _ydl()
+    ydl = _ydl(site)
     try:
         info = ydl.extract_info(link, download=False)
     except Exception as e:  # noqa: BLE001
@@ -201,6 +215,8 @@ def snack():
             "options": options,
         })
         r.headers["Cache-Control"] = "no-store"
+        if origin == "null":
+            r.headers["Access-Control-Allow-Origin"] = "null"
         return r
 
     chosen = next((o for o in options if o["id"] == fid), None)
