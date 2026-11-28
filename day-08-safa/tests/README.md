@@ -12,6 +12,7 @@ python3 e2e_wave4.py           # reader timer and reciter, tafsir compare, duas 
 python3 e2e_wave5.py           # guided prayer and memorisation, first week, welcome back, mosque times, saved audio, Arabic landing
 python3 e2e_wave7.py           # the 100 improvements: home, prayer times, reader, search, FAQ links, settings sections, make-up reset (PASS/FAIL, exit code)
 python3 e2e_p1.py              # notes, book mode, bookmarks, Ctrl+K and 2:255, context and compare, sepia, month view, desktop panel
+python3 e2e_wave8.py           # hizb quarters, pages, reader position, khatm by hizb, home moment, tasbih, glossary, sources, themes
 ```
 
 Each script prints `{"errors": []}` when nothing broke. Screenshots go to `tests/shots/` (ignored by git).

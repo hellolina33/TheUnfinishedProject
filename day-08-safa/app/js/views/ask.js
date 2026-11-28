@@ -5,7 +5,7 @@ import { $, esc, icon } from '../ui.js';
 import { t, lang, localField } from '../i18n.js';
 import { thaiSurah, thaiQuranIndex, THAI_QURAN_LABEL, normalizeThaiDigits } from '../thai-quran.js';
 import { duaTitle, duaMeaning } from './duas.js';
-import { surahName, contextSheet } from './quran.js';
+import { surahName, contextSheet, verseText } from './quran.js';
 
 const STOP = new Set(('a an the of to in on for and or is are was be it this that what how why when who do does did can i my me we you your with from about there their them his her allah god ' +
   'le la les un une des de du d l et ou est sont a au aux en pour par sur que qui quoi comment pourquoi quand je j me mon ma mes tu te ton ta tes il elle on nous vous ils elles ce cet cette ces dans avec se sa son ses y ne pas plus dieu allah ' +
@@ -56,6 +56,10 @@ export async function renderAsk(root) {
     const pk = localField;
     // Exact places first: a reference like 2:255, a surah name, a prayer, a guide.
     const top = [];
+    // Chosen verses for common themes: search by meaning, not only by word.
+    const TH = { 'patience in hardship': [[2, 153], [2, 155], [3, 200], [39, 10], [94, 5], [16, 127]], 'my parents': [[17, 23], [17, 24], [31, 14], [46, 15], [29, 8]], 'anxiety': [[13, 28], [2, 286], [65, 3], [94, 5], [9, 40]], 'forgiveness': [[39, 53], [66, 8], [4, 110], [25, 70], [2, 222]], 'gratitude': [[14, 7], [2, 152], [31, 12], [16, 18]], 'death of a loved one': [[2, 156], [3, 185], [62, 8], [29, 57]] };
+    const thk = Object.keys(TH).find(k => fold(t(k)) === fold(q) || fold(k) === fold(q));
+    if (thk) { const vs2 = await Promise.all(TH[thk].map(async ([s, v]) => { try { const x = await verseText(s, v); return `<a class="quote" href="#/quran/${s}/${v}"><span class="mono">${t('Quran')} · <bdi>${s}:${v}</bdi></span><p class="ar" lang="ar" dir="rtl">${x.a}</p>${x.tr ? `<p>${esc(x.tr)}</p>` : ''}</a>`; } catch (e) { return ''; } })); top.push(`<p class="mono pad">${t('Chosen verses on this theme')}</p>` + vs2.join('')); }
     const metaX = await data('meta.json');
     const refm = normalizeThaiDigits(q).match(/^\s*(\d{1,3})\s*[:.,]\s*(\d{1,3})\s*$/);
     if (refm) { const s = +refm[1], v = +refm[2]; if (s >= 1 && s <= 114 && v >= 1 && v <= metaX.s[s - 1][3]) {

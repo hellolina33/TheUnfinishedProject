@@ -12,6 +12,7 @@ import { renderLearnHub, renderSteps, renderLessons } from './views/learn.js';
 import { renderKhatm, renderHifz, renderQada } from './views/plan.js';
 import { renderAsk } from './views/ask.js';
 import { copy, renderHome, renderPlus } from './views/home.js';
+import { renderTasbih } from './views/tasbih.js';
 import { renderJourney, renderFavorites } from './views/journey.js';
 import * as PL from './player.js';
 import { applyUi } from './a11y.js';
@@ -46,6 +47,7 @@ const scrollPositions = new Map();
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 async function route() {
   const my = ++token;
+  { const tt = document.getElementById('toast'); if (tt) tt.classList.remove('on'); }
   if (typeof cleanup === 'function') { try { cleanup(); } catch (e) { /* ignore */ } } cleanup = null; closeSheet();
   view.onclick = null; view.onchange = null;
   const current = location.hash;
@@ -63,7 +65,7 @@ async function route() {
   const tab = {
     today: 'today', qibla: 'today', setup: 'today', quran: 'quran', khatm: 'quran', hifz: 'quran',
     journey: 'journey', learn: 'journey', lessons: 'journey', ask: 'journey',
-    plus: 'plus', favorites: 'plus', flight: 'plus', calendar: 'plus', duas: 'plus', mydua: 'plus', track: 'plus',
+    plus: 'plus', favorites: 'plus', tasbih: 'plus', flight: 'plus', calendar: 'plus', duas: 'plus', mydua: 'plus', track: 'plus',
     qada: 'plus', settings: 'plus', about: 'plus',
   }[name] || 'home';
   document.body.className = name === 'qibla' ? 'dark' : '';
@@ -88,6 +90,7 @@ async function route() {
     } else if (name === 'today' && !S.loc) c = renderNoCity(view);
     else if (name === 'plus') c = renderPlus(view, a);
     else if (name === 'favorites') c = await renderFavorites(view, a);
+    else if (name === 'tasbih') c = renderTasbih(view);
     else if (name === 'qibla') c = renderQibla(view);
     else if (name === 'flight') c = renderFlight(view);
     else if (name === 'quran') c = a && a !== 'favorites' && a !== 'hizb' ? await renderReader(view, a, b, c3) : await quranList(view, a);
@@ -199,6 +202,9 @@ if ('serviceWorker' in navigator) {
 }
 if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').then(reg => {
   reg.addEventListener('updatefound', () => { const w = reg.installing; if (!w) return; w.addEventListener('statechange', () => { if (w.state === 'installed' && navigator.serviceWorker.controller) {
+    // Just opened and not touched yet: take the new version silently.
+    if (performance.now() < 8000 && !window.__touched) { location.reload(); return; }
     const b = document.createElement('button'); b.className = 'updbar'; b.setAttribute('role', 'status'); b.textContent = t('A new version of safa. is ready · Reload'); b.onclick = () => location.reload(); document.body.appendChild(b); } }); });
 }).catch(() => {}));
+['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, () => { window.__touched = true; }, { once: true, capture: true }));
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});

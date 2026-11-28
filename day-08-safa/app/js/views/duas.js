@@ -59,6 +59,7 @@ export async function renderChapter(root, id, one) {
   const counts = {};
   const focusI = one ? Math.min(c.d.length, Math.max(1, +one)) - 1 : -1;
   root.innerHTML = `<header class="sub"><a href="#/duas" class="ib" aria-label="${t('Back')}">${icon.back}</a><b class="clip">${esc(title(c))}</b><button class="chip" id="dtl" aria-pressed="${S.d.tl}">${t('Transliteration')}</button></header>
+    ${c.d.length > 1 ? `<div class="row2 pad"><button class="btn line sm" id="done1">${t('One at a time')}</button></div>` : ''}
     <div class="dlist ${S.d.tl ? '' : 'notl'}" id="dd">${c.d.map((x, i) => `<article class="dua" data-i="${i}" ${focusI >= 0 && i !== focusI ? 'hidden' : ''}>
       <div class="dh"><span class="mono">${i + 1} / ${c.d.length}</span><span><button class="ib dplay" data-play="${x.id}" aria-label="${t('Listen to this dua')}">${icon.play}</button><button class="ib dfav ${S.d.favs.includes(x.id) ? 'on' : ''}" data-fav="${x.id}" aria-pressed="${S.d.favs.includes(x.id)}" aria-label="${t('Favourite')}">${icon.star}</button></span></div>
       <p class="ar" lang="ar" dir="rtl">${esc(String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'))}</p>
@@ -73,13 +74,23 @@ export async function renderChapter(root, id, one) {
     <p class="muted small pad">${t("Text from Hisnul Muslim (the Fortress of the Muslim) by Sa'id al-Qahtani, the most widely used collection of duas. Sources marked “being reviewed” are waiting for a check by a person of knowledge.")}</p></div>`;
   const dd = $('#dd', root);
   if ($('#dall', root)) $('#dall', root).onclick = e => { dd.querySelectorAll('article[hidden]').forEach(x => { x.hidden = false; }); e.target.remove(); };
+  // One dua per screen, with its counter; next one when done.
+  let oi = 0;
+  const showOne = () => { const arts = $$('article.dua', dd); arts.forEach((a, i) => { a.hidden = i !== oi; }); $('#onebar', root)?.remove(); root.insertAdjacentHTML('beforeend', `<div class="onebar" id="onebar"><button class="btn line sm" id="oprev" ${oi ? '' : 'disabled'}>‹ ${t('Previous')}</button><span class="mono">${oi + 1} / ${arts.length}</span><button class="btn sm" id="onext">${oi < arts.length - 1 ? t('Next') + ' ›' : t('Finish')}</button></div>`); window.scrollTo(0, 0); };
+  if ($('#done1', root)) $('#done1', root).onclick = () => { dd.classList.add('onemode'); showOne(); };
+  root.addEventListener('click', e => {
+    const cdone = e.target.closest('[data-count]'); if (cdone && dd.classList.contains('onemode') && cdone.classList.contains('done')) setTimeout(() => $('#onext', root)?.click(), 700);
+    if (e.target.id === 'oprev') { oi = Math.max(0, oi - 1); showOne(); }
+    if (e.target.id === 'onext') { const n = $$('article.dua', dd).length; if (oi < n - 1) { oi++; showOne(); } else { $('#onebar', root)?.remove(); dd.classList.remove('onemode'); $$('article.dua', dd).forEach(a => { a.hidden = false; }); toast(t('May Allah accept your duas.')); } }
+  });
   $('#dtl', root).onclick = e => { S.d.tl = !S.d.tl; save(); dd.classList.toggle('notl', !S.d.tl); e.target.setAttribute('aria-pressed', S.d.tl); };
   dd.onclick = async e => {
     const gb = e.target.closest('[data-grade]'); if (gb) { const g = GRADES[gb.dataset.grade]; toast(g ? t(g[1]) + (gb.dataset.grade.startsWith('sahih') ? ' · ' + t('Sahih means authentic.') : '') : t('No source matched yet. Check it with a person of knowledge.')); return; }
     const im = e.target.closest('[data-img]'); if (im) { shareImage(c.d[+im.dataset.img], title(c)); return; }
     const sh = e.target.closest('[data-share]');
-    if (sh) { const x = c.d[+sh.dataset.share], txt = `${x.ar}\n\n${duaMeaning(x)}\n— ${x.ref || 'Hisnul Muslim'}\n\nsafa. · ${location.origin}${location.pathname.replace(/app\/.*$/, '')}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
+    if (sh) { const x = c.d[+sh.dataset.share], txt = `${x.ar}\n\n${duaMeaning(x)}\n— ${x.ref || 'Hisnul Muslim'}\n\nsafa. · ${location.origin}${location.pathname}#/duas/${c.id}/${+sh.dataset.share + 1}`; try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Copied')); } } catch (err) { /* cancelled */ } return; }
     const cb = e.target.closest('[data-count]');
+    if (cb && navigator.vibrate) navigator.vibrate(12);
     if (cb) { const i = +cb.dataset.count, n = c.d[i].n; counts[i] = (counts[i] || 0) >= n ? 0 : (counts[i] || 0) + 1; cb.textContent = `${counts[i]} / ${n}`; cb.classList.toggle('done', counts[i] >= n); if (counts[i] >= n && navigator.vibrate) navigator.vibrate(30); return; }
     const mb = e.target.closest('[data-mine]');
     if (mb) { const x = c.d[+mb.dataset.mine]; S.myDuas.push({ id: Date.now().toString(36), title: title(c), ar: x.ar, text: duaMeaning(x), ref: x.ref || '', time: '' }); save(); toast(t('Added to my duas')); return; }
@@ -144,13 +155,13 @@ export function renderMyDuas(root, id) {
 }
 
 /* A clean square image: Arabic, meaning, source. Shared as a file when the phone allows it. */
-async function shareImage(x, ttl) {
+export async function shareImage(x, ttl) {
   try {
     await document.fonts.ready;
     const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     const g = cv.getContext('2d'); g.fillStyle = '#ecebe7'; g.fillRect(0, 0, W, H);
     const wrap = (txt, font, max, dir) => { g.font = font; g.direction = dir; const words = String(txt).split(/\s+/), lines = []; let cur = ''; for (const w of words) { const n = cur ? cur + ' ' + w : w; if (g.measureText(n).width > max && cur) { lines.push(cur); cur = w; } else cur = n; } if (cur) lines.push(cur); return lines; };
-    const ar = String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'), mean = duaMeaning(x);
+    const ar = String(x.ar).trim().replace(/^\((.*)\)\.?$/s, '$1'), mean = x.meaning ?? duaMeaning(x);
     let arSize = 58, arL; do { arL = wrap(ar, `${arSize}px 'Amiri Quran','Amiri','Geeza Pro',serif`, W - 160, 'rtl'); arSize -= 4; } while (arL.length * arSize * 1.9 > 560 && arSize > 30);
     let mSize = 34, mL; do { mL = wrap(mean, `400 ${mSize}px 'Inter Tight',system-ui,sans-serif`, W - 160, 'ltr'); mSize -= 2; } while (mL.length * mSize * 1.45 > 420 && mSize > 20);
     g.fillStyle = '#e85d2a'; g.font = "500 26px 'JetBrains Mono',monospace"; g.direction = 'ltr'; g.textAlign = 'left'; g.fillText(String(ttl).toUpperCase().slice(0, 48), 80, 110);
@@ -159,10 +170,10 @@ async function shareImage(x, ttl) {
     let y = Math.max(230, Math.round((H - tot) / 2)); arL.forEach(l => { g.fillText(l, W - 80, y); y += (arSize + 4) * 1.9; });
     g.direction = 'ltr'; g.textAlign = 'left'; g.font = `400 ${mSize + 2}px 'Inter Tight',system-ui,sans-serif`; g.fillStyle = '#2a2a28'; y += 20;
     mL.forEach(l => { g.fillText(l, 80, y); y += (mSize + 2) * 1.45; });
-    g.fillStyle = '#5c5b57'; g.font = "400 24px 'JetBrains Mono',monospace"; g.fillText((x.ref ? t('Reported by {r}', { r: x.ref }) : 'Hisnul Muslim').slice(0, 60), 80, H - 120);
+    g.fillStyle = '#5c5b57'; g.font = "400 24px 'JetBrains Mono',monospace"; g.fillText((x.foot || (x.ref ? t('Reported by {r}', { r: x.ref }) : 'Hisnul Muslim')).slice(0, 60), 80, H - 120);
     g.fillStyle = '#111110'; g.font = "600 40px 'Inter Tight',system-ui,sans-serif"; g.fillText('safa.', 80, H - 64);
-    const blob = await new Promise(r => cv.toBlob(r, 'image/png')), file = new File([blob], 'safa-dua.png', { type: 'image/png' });
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png')), file = new File([blob], x.file || 'safa-dua.png', { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [file] })) await navigator.share({ files: [file], text: 'safa.' });
-    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'safa-dua.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast(t('Image saved')); }
+    else { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = x.file || 'safa-dua.png'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast(t('Image saved')); }
   } catch (e) { if (e && e.name !== 'AbortError') toast(t('Could not create the image here.')); }
 }

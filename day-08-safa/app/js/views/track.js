@@ -23,6 +23,7 @@ function monthView() {
   }
   return `<section class="month"><div class="wkh"><button class="ib" id="mprev" aria-label="${t('Previous month')}">${icon.back}</button><span class="mono">${new Intl.DateTimeFormat(L(), { month: 'long', year: 'numeric', timeZone: 'UTC' }).format(base)}</span><button class="ib flip" id="mnext" aria-label="${t('Next month')}" ${monthOff >= 0 ? 'disabled' : ''}>${icon.back}</button></div>
     <div class="mgrid">${wd.map(w => `<span class="mwd">${w}</span>`).join('')}${cells.join('')}</div>
+    <p class="msum">${(() => { let dp = 0, dq = 0; for (let d = 1; d <= nd; d++) { const x = S.days[`${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`]; if (x && x.p.some(Boolean)) dp++; if (x && x.r) dq++; } return dp || dq ? t('This month: {a} days with a prayer ticked, {b} days with the Quran. Every one counts.', { a: dp, b: dq }) : t('A new month. Start whenever you like.'); })()}</p>
     <p class="muted small legend">${t('Dot: a prayer ticked. Square: Quran read. Outlined square: on a paper Quran.')}</p>
     <button class="btn line sm" id="paper">${getDay(today, false).paper ? icon.check + ' ' + t('Read on a paper Quran today') : t('I read a paper Quran today')}</button></section>`;
 }
@@ -36,7 +37,7 @@ export function renderTrack(root) {
     const range = new Intl.DateTimeFormat(L(), { day: 'numeric', month: 'short', timeZone: 'UTC' });
     const cell = (k, d, j) => k < since ? '<td></td>' : `<td><button class="pd ${d.pz ? 'pz' : d.p[j] ? 'on' : ''}" data-k="${k}" data-j="${j}" ${d.pz || k > today ? 'disabled' : ''} aria-pressed="${!!d.p[j]}" aria-label="${NAMES[P5[j]]}, ${lbl(k)}${d.pz ? t(', paused') : ''}"></button></td>`;
     const cell2 = (k, d, f, name) => k < since ? '<td></td>' : `<td><button class="pd sq ${d[f] ? 'on' : ''}" data-k="${k}" data-f="${f}" ${k > today ? 'disabled' : ''} aria-pressed="${!!d[f]}" aria-label="${name}, ${lbl(k)}"></button></td>`;
-    root.innerHTML = `<header class="vh"><div><h1>${t('Track')}</h1></div><a class="icon-action" href="#/settings">${icon.gear}<span>${t('Settings')}</span></a></header>
+    root.innerHTML = `<header class="vh"><div><h1>${t('Track')}</h1></div></header>
       <div class="pause ${S.pauseOn ? 'on' : ''}"><div><b>${t('Pause mode')}</b><small>${t('Periods, illness, hard days. Tracking freezes. Nothing is counted against you.')}${S.pauseOn && S.pauseUntil ? ' ' + t('Until {d}.', { d: S.pauseUntil.split('-').reverse().slice(0, 2).join('/') }) : ''}</small></div><button class="sw" role="switch" id="pz" aria-checked="${S.pauseOn}" aria-label="${t('Pause mode')}"></button></div>
       <div class="wkh"><button class="ib" id="wprev" aria-label="${t('Previous week')}">${icon.back}</button><span class="mono">${range.format(new Date(keys[0] + 'T12:00:00Z'))} – ${range.format(new Date(keys[6] + 'T12:00:00Z'))}</span><button class="ib flip" id="wnext" ${weekOff >= 0 ? 'disabled' : ''} aria-label="${t('Next week')}">${icon.back}</button></div>
       <table class="wk"><thead><tr><th class="l"></th>${keys.map(k => `<th class="${k === today ? 'td' : ''}">${lbl(k).replace('.', '').slice(0, 3)}</th>`).join('')}</tr></thead>
@@ -125,7 +126,8 @@ export async function renderSettings(root, sec) {
         <label class="lbl" for="smad">${t('Asr')}</label>
         <select id="smad" class="inp"><option value="shafi" ${S.madhab === 'shafi' ? 'selected' : ''}>${t("Standard · Shafi'i, Maliki, Hanbali")}</option><option value="hanafi" ${S.madhab === 'hanafi' ? 'selected' : ''}>${t('Hanafi')}</option></select>
         <p class="muted small">${t('Hanafi: Asr starts later. Not sure? Keep Standard, or ask your mosque.')}</p>
-        ${S.loc ? `<details class="adv" ${advOpen ? 'open' : ''}><summary class="linkbtn">${t('Advanced prayer time settings')}</summary><label class="lbl">${t('Match your mosque · minutes')}</label>
+        ${S.loc ? `<details class="adv" ${advOpen ? 'open' : ''}><summary class="linkbtn">${t('Advanced prayer time settings')}</summary><label class="lbl">${t('Iqama at your mosque · minutes after the adhan')}</label><div class="offs iqs">${P5.map(k => `<label><span>${NAMES[k]}</span><input class="inp" type="number" min="0" max="90" inputmode="numeric" data-iq="${k}" value="${(S.iqama || {})[k] || ''}" placeholder="—"></label>`).join('')}</div>
+          <label class="lbl" for="shl">${t('High latitudes')}</label><select id="shl" class="inp">${[['auto', t('Automatic (recommended)')], ['middle', t('Middle of the night')], ['seventh', t('One seventh of the night')], ['angle', t('Twilight angle')]].map(([k, l]) => `<option value="${k}" ${(S.highLat || 'auto') === k ? 'selected' : ''}>${l}</option>`).join('')}</select><p class="muted small">${t('Far north or south, Fajr and Isha can disappear in summer. These rules give a usable time. Ask your mosque which one it follows.')}</p><label class="lbl">${t('Match your mosque · minutes')}</label>
         <div class="offs">${P5.map(p => `<div class="off"><span>${NAMES[p]}</span><button data-off="${p}" data-d="-1" aria-label="${t('{p} minus one minute', { p: NAMES[p] })}">−</button><b class="mono">${S.offsets[p] > 0 ? '+' : ''}${S.offsets[p]}</b><button data-off="${p}" data-d="1" aria-label="${t('{p} plus one minute', { p: NAMES[p] })}">+</button><span class="mono muted">${fmtTime(timesFor(dayKey())[p])}</span></div>`).join('')}</div>
         <details class="mosq"><summary class="linkbtn small">${t('Copy your mosque’s times instead')}</summary>
           <p class="muted small">${t('Type today’s times from your mosque. safa. keeps the difference and applies it every day.')}</p>
@@ -161,6 +163,8 @@ export async function renderSettings(root, sec) {
         <h3 id="st6">${t('Friday')}</h3>
         <label class="tog"><span>${t('Al-Kahf reminder')}<small>${t('A card on Friday until you open Al-Kahf.')}</small></span><input type="checkbox" id="sfri" ${S.fri.on ? 'checked' : ''}></label>
         <button class="btn line sm" id="sfics">${t('Add a weekly Friday reminder to my calendar')}</button>
+        <h3>${t('Voluntary fasts')}</h3>
+        <label class="tog"><span>${t('Note the day before')}<small>${t('Monday, Thursday and the white days (13th–15th of the Hijri month), shown on Today.')}</small></span><input type="checkbox" id="sfast" ${S.fastRem ? 'checked' : ''}></label>
         <h3>${t('Prayer times')}</h3>
         ${S.loc ? `<button class="btn line sm" id="sics">${t('Add 30 days of prayer times to my calendar')}</button>` : `<p class="muted small">${t('Choose a city first.')}</p>`}
 </div><div class="sgrp" data-sec="data">
@@ -255,6 +259,9 @@ export async function renderSettings(root, sec) {
     }
     if (id === 'smeth') S.method = e.target.value;
     if (id === 'smad') S.madhab = e.target.value;
+    if (e.target.dataset.iq) { S.iqama = S.iqama || {}; const v = Math.max(0, Math.min(90, +e.target.value || 0)); if (v) S.iqama[e.target.dataset.iq] = v; else delete S.iqama[e.target.dataset.iq]; save(); return; }
+    if (id === 'shl') { S.highLat = e.target.value; save(); return; }
+    if (id === 'sfast') { S.fastRem = e.target.checked; save(); return; }
     if (id === 'shij') S.hijriAdj = +e.target.value;
     if (id === 's24') S.h24 = e.target.checked;
     if (id === 'shc') { S.ui.hc = e.target.checked; save(); applyUi(); }

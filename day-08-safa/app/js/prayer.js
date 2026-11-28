@@ -36,7 +36,7 @@ function params() {
   const p = (METHODS[S.method] || METHODS.MWL).p();
   p.madhab = S.madhab === 'hanafi' ? adhan.Madhab.Hanafi : adhan.Madhab.Shafi;
   const c = new adhan.Coordinates(S.loc.lat, S.loc.lng);
-  p.highLatitudeRule = adhan.HighLatitudeRule.recommended(c);
+  p.highLatitudeRule = { middle: adhan.HighLatitudeRule.MiddleOfTheNight, seventh: adhan.HighLatitudeRule.SeventhOfTheNight, angle: adhan.HighLatitudeRule.TwilightAngle }[S.highLat] || adhan.HighLatitudeRule.recommended(c);
   p.adjustments = { fajr: S.offsets.fajr || 0, sunrise: 0, dhuhr: S.offsets.dhuhr || 0, asr: S.offsets.asr || 0, maghrib: S.offsets.maghrib || 0, isha: S.offsets.isha || 0 };
   return { p, c };
 }
