@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <!-- Pastel pink/lavender background -->
+  <rect width="1672" height="941" fill="#FFB8DE"/>
+  <circle cx="210" cy="180" r="145" fill="#FFD3EB"/>
+  <circle cx="1490" cy="790" r="190" fill="#FFD3EB"/>
+  <circle cx="1430" cy="170" r="95" fill="#F2C8FF" opacity="0.7"/>
+
+  <!-- Soft clouds behind -->
+  <g fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+    <path d="M160 760 C160 715 200 685 245 695 C265 650 330 640 370 675 C415 660 470 690 475 740 C510 745 530 780 515 810 L175 810 C150 805 148 775 160 760 Z"/>
+    <path d="M1190 745 C1190 705 1225 680 1265 690 C1288 648 1352 642 1388 676 C1430 665 1480 696 1482 742 C1514 750 1528 784 1510 810 L1200 810 C1180 802 1178 765 1190 745 Z"/>
+  </g>
+
+  <!-- Main Open Storybook + Crescent Moon Cradle (tilted slightly) -->
+  <g transform="rotate(-4 650 480)">
+    <!-- Drop shadow -->
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="210" y="170" width="760" height="560" rx="56"/>
+    </g>
+    <!-- Storybook night window card -->
+    <rect x="210" y="170" width="760" height="560" rx="56" fill="#271E4A" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Inner cream frame rim -->
+    <rect x="236" y="196" width="708" height="508" rx="40" fill="#32275E" stroke="#17141F" stroke-width="6"/>
+
+    <!-- Tiny stars inside night window -->
+    <circle cx="320" cy="280" r="8" fill="#FFD84D"/>
+    <circle cx="845" cy="270" r="10" fill="#FFD84D"/>
+    <circle cx="865" cy="590" r="7" fill="#FFF8EA"/>
+    <circle cx="315" cy="610" r="9" fill="#FFB8DE"/>
+    <circle cx="775" cy="340" r="6" fill="#A9D6FF"/>
+
+    <!-- Smiling Crescent Moon -->
+    <g transform="translate(490 450)">
+      <path d="M 65 -165 C -45 -165 -135 -75 -135 35 C -135 145 -45 210 70 190 C 120 180 162 152 185 112 C 110 132 32 95 14 22 C -6 -55 34 -128 105 -158 C 92 -163 79 -165 65 -165 Z" fill="#FFD84D" stroke="#17141F" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+      <!-- Cozy sleepy eye & blush -->
+      <path d="M -52 18 Q -32 36 -12 18" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <ellipse cx="-66" cy="48" rx="18" ry="11" fill="#FF8F6B" opacity="0.65"/>
+      <path d="M -30 58 Q -8 76 14 56" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <!-- Nightcap on top of moon -->
+      <path d="M -20 -150 C 18 -215 110 -205 140 -145 L 55 -125 Z" fill="#A9D6FF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+      <circle cx="145" cy="-140" r="20" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+    </g>
+
+    <!-- Floating Sound Waves from moon -->
+    <path d="M 730 390 Q 775 450 730 510" fill="none" stroke="#FFB8DE" stroke-width="10" stroke-linecap="round"/>
+    <path d="M 775 355 Q 838 450 775 545" fill="none" stroke="#3FD0A0" stroke-width="10" stroke-linecap="round"/>
+    <path d="M 820 325 Q 898 450 820 575" fill="none" stroke="#FFD84D" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <!-- Cozy Vintage Podcast Microphone on right -->
+  <g transform="rotate(7 1255 470)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1150" y="210" width="210" height="320" rx="105"/>
+      <rect x="1175" y="650" width="160" height="52" rx="26"/>
+    </g>
+    <!-- Stand -->
+    <path d="M 1110 400 C 1110 545 1400 545 1400 400" fill="none" stroke="#17141F" stroke-width="16" stroke-linecap="round"/>
+    <line x1="1255" y1="538" x2="1255" y2="650" stroke="#17141F" stroke-width="18" stroke-linecap="round"/>
+    <rect x="1175" y="650" width="160" height="52" rx="26" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Mic capsule -->
+    <rect x="1150" y="210" width="210" height="300" rx="105" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+    <!-- Mic top pastel cap -->
+    <path d="M 1150 345 L 1360 345 L 1360 315 C 1360 257 1313 210 1255 210 C 1197 210 1150 257 1150 315 Z" fill="#D8C6FA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Grille lines -->
+    <line x1="1192" y1="262" x2="1318" y2="262" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <line x1="1182" y1="302" x2="1328" y2="302" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <!-- Cute face on mic body -->
+    <circle cx="1218" cy="408" r="12" fill="#17141F"/>
+    <circle cx="1292" cy="408" r="12" fill="#17141F"/>
+    <path d="M 1235 438 Q 1255 458 1275 438" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <!-- Glowing red/coral ON AIR dot -->
+    <circle cx="1255" cy="480" r="12" fill="#3FD0A0" stroke="#17141F" stroke-width="6"/>
+  </g>
+
+  <!-- Playful 4-point sparkles -->
+  <path d="M1070 96 Q1070 138 1112 138 Q1070 138 1070 180 Q1070 138 1028 138 Q1070 138 1070 96Z" fill="#FFD84D" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M1530 270 Q1530 306 1566 306 Q1530 306 1530 342 Q1530 306 1494 306 Q1530 306 1530 270Z" fill="#FFF8EA" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M1045 810 Q1045 842 1077 842 Q1045 842 1045 874 Q1045 842 1013 842 Q1045 842 1045 810Z" fill="#3FD0A0" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M142 360 Q142 390 172 390 Q142 390 142 420 Q142 390 112 390 Q142 390 142 360Z" fill="#A9D6FF" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+</svg>

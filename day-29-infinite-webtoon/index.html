@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinite Webtoon — Day 29/30 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Comic+Neue:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FFF6FA;
+      --paper: #FFFDF7;
+      --ink: #181624;
+      --ink-muted: #5C5870;
+      --pink: #FF5CA8;
+      --pink-soft: #FFB8DE;
+      --yellow: #FFD84D;
+      --cyan: #29C7AC;
+      --blue: #A9D6FF;
+      --topbar: #0E1638;
+      --border: 2.5px solid #181624;
+      --shadow: 4px 4px 0 #181624;
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      background-image: radial-gradient(#F3D2E4 1.2px, transparent 1.2px);
+      background-size: 20px 20px;
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.45;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar);
+      color: #F4F6FF;
+      font-size: 13px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .challenge-bar a { color: #FFFFFF; text-decoration: none; font-weight: 600; }
+    .challenge-bar a:hover { text-decoration: underline; }
+    .bar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .bar-dot { opacity: 0.45; }
+    .bar-author { opacity: 0.85; font-weight: 400 !important; }
+    .bar-actions { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255,255,255,0.1);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .bar-btn:hover { background: rgba(255,255,255,0.2); }
+    .bar-btn.active { background: var(--pink-soft); color: #181624; border-color: var(--pink-soft); }
+
+    /* Container */
+    .container {
+      max-width: 1260px;
+      margin: 0 auto;
+      padding: 24px 18px 64px;
+    }
+
+    /* Header */
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--yellow);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+      box-shadow: 2px 2px 0 var(--ink);
+    }
+    h1 {
+      font-family: 'Bangers', Impact, sans-serif;
+      font-size: clamp(34px, 5vw, 52px);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .hero-sub {
+      color: var(--ink-muted);
+      font-size: 14px;
+      max-width: 560px;
+      margin-top: 6px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 10px 15px;
+      border-radius: 12px;
+      border: 2px solid var(--ink);
+      background: var(--paper);
+      color: var(--ink);
+      box-shadow: 3px 3px 0 var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+    .btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+    .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+    .btn-pink { background: var(--pink); color: #FFFFFF; }
+    .btn-yellow { background: var(--yellow); color: var(--ink); }
+    .btn-cyan { background: var(--cyan); color: var(--ink); }
+    .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 9px; box-shadow: 2px 2px 0 var(--ink); }
+
+    /* Workspace */
+    .studio {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.85fr);
+      gap: 22px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .studio { grid-template-columns: 1fr; }
+    }
+
+    .stage-card, .editor-card {
+      background: var(--paper);
+      border: var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    /* Stage Top Controls */
+    .stage-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 2px dashed #E2D9E8;
+    }
+    .layout-pills {
+      display: inline-flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .pill-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 2px solid var(--ink);
+      background: #FFFFFF;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .pill-btn.active {
+      background: var(--ink);
+      color: #FFFFFF;
+    }
+    .title-input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .title-input-row input {
+      flex: 1;
+      min-width: 180px;
+      padding: 8px 12px;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      font-family: 'Bangers', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.04em;
+      background: #FFFFFF;
+      color: var(--ink);
+    }
+    .title-input-row input.author-in {
+      flex: 0.55;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    /* Comic Strip Preview Stage */
+    .comic-frame {
+      background: #FFFFFF;
+      border: 2.5px solid var(--ink);
+      border-radius: 14px;
+      padding: 14px;
+      overflow-x: auto;
+    }
+    .comic-header-preview {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+      padding: 0 4px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .comic-header-title {
+      font-family: 'Bangers', Impact, sans-serif;
+      font-size: 26px;
+      letter-spacing: 0.04em;
+    }
+    .comic-header-author {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-muted);
+    }
+
+    .panels-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .panels-grid.layout-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @media (max-width: 560px) {
+      .panels-grid.layout-grid { grid-template-columns: 1fr; }
+    }
+    .panels-grid.layout-vertical {
+      grid-template-columns: 1fr;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+    .panels-grid.layout-horizontal {
+      grid-template-columns: repeat(4, minmax(220px, 1fr));
+    }
+
+    .panel-box {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      border: 3px solid var(--ink);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.14s, box-shadow 0.14s;
+      user-select: none;
+    }
+    .panel-box:hover { transform: scale(1.01); }
+    .panel-box.selected {
+      outline: 4px solid var(--pink);
+      outline-offset: 2px;
+    }
+    .panel-num {
+      position: absolute;
+      top: 7px;
+      left: 7px;
+      z-index: 6;
+      background: var(--ink);
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: 800;
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .panel-canvas-wrap {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .panel-canvas-wrap canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Editor Controls */
+    .panel-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+    .tab-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 8px 6px;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      background: #FFFFFF;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: var(--pink);
+      color: #FFFFFF;
+    }
+
+    .ed-section {
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1.5px dashed #E4DAE9;
+    }
+    .ed-section:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .ed-label {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+      margin-bottom: 7px;
+      display: block;
+    }
+    .ed-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .ed-select, .ed-input, .ed-textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border: 2px solid var(--ink);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      background: #FFFFFF;
+      color: var(--ink);
+    }
+    .ed-textarea {
+      resize: vertical;
+      min-height: 62px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 7px;
+    }
+    .chip {
+      font-family: 'Bangers', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      padding: 3px 9px;
+      border: 1.5px solid var(--ink);
+      border-radius: 8px;
+      background: var(--yellow);
+      cursor: pointer;
+    }
+    .chip.clear-chip {
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      background: #F4EFF6;
+    }
+
+    .upload-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .upload-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 11px;
+      border: 2px dashed var(--ink);
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #FFFFFF;
+    }
+    .upload-label input { display: none; }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(24, 22, 36, 0.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 100;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--paper);
+      border: 3px solid var(--ink);
+      border-radius: 18px;
+      box-shadow: 7px 7px 0 var(--ink);
+      max-width: 520px;
+      width: 100%;
+      padding: 22px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .modal-head h2 {
+      font-family: 'Bangers', sans-serif;
+      font-size: 28px;
+      letter-spacing: 0.04em;
+    }
+    .close-x {
+      border: 2px solid var(--ink);
+      background: #FFFFFF;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .byok-box {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 12px;
+      background: #F6EEF9;
+      border: 1.5px solid #D9C9E4;
+    }
+    .helper-note {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-top: 6px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 120;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Honest Unfinished */
+    .unfinished {
+      margin-top: 28px;
+      background: var(--paper);
+      border: 2px dashed var(--ink);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .unfinished h2 {
+      font-family: 'Bangers', sans-serif;
+      font-size: 24px;
+      letter-spacing: 0.04em;
+      margin-bottom: 6px;
+    }
+    .unfinished ul {
+      padding-left: 20px;
+      font-size: 13.5px;
+      color: var(--ink-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Challenge Top Bar -->
+  <header class="challenge-bar">
+    <div class="bar-left">
+      <a href="/">The Unfinished 30 · Day 29/30</a>
+      <span class="bar-dot">•</span>
+      <a class="bar-author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="bar-actions">
+      <button class="bar-btn active" id="langEn" type="button">EN</button>
+      <button class="bar-btn" id="langFr" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button" data-i18n="downloadHtml">Download HTML</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="badge" data-i18n="badge">4-Panel Comic &amp; Webtoon Studio</div>
+        <h1>Infinite Webtoon</h1>
+        <p class="hero-sub" data-i18n="subtitle">
+          Craft punchy 4-panel comics in seconds — pick layouts, expressive SVG characters, speech bubbles, SFX stickers, or remix a script and export a crisp PNG strip.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-yellow" id="openAiBtn" type="button" data-i18n="btnScript">AI / Remix Script</button>
+        <button class="btn btn-pink" id="exportPngBtn" type="button" data-i18n="btnExport">Export High-Res PNG</button>
+      </div>
+    </section>
+
+    <section class="studio">
+      <!-- Left: Comic Stage -->
+      <div class="stage-card">
+        <div class="stage-bar">
+          <div class="layout-pills" role="group" aria-label="Layout">
+            <button class="pill-btn active" data-layout="grid" type="button" data-i18n="layGrid">2×2 Grid</button>
+            <button class="pill-btn" data-layout="vertical" type="button" data-i18n="layVert">Vertical Webtoon</button>
+            <button class="pill-btn" data-layout="horizontal" type="button" data-i18n="layHoriz">Horizontal Strip</button>
+          </div>
+          <button class="btn btn-sm" id="resetDemoBtn" type="button" data-i18n="btnReset">Reset Demo</button>
+        </div>
+
+        <div class="title-input-row">
+          <input type="text" id="comicTitle" aria-label="Comic Title" />
+          <input type="text" id="comicAuthor" class="author-in" aria-label="Author" />
+        </div>
+
+        <div class="comic-frame">
+          <div class="comic-header-preview">
+            <div class="comic-header-title" id="previewTitle">The 15-Minute Quick Sync</div>
+            <div class="comic-header-author" id="previewAuthor">@salah · Infinite Webtoon</div>
+          </div>
+          <div class="panels-grid layout-grid" id="panelsGrid"></div>
+        </div>
+      </div>
+
+      <!-- Right: Panel Inspector -->
+      <aside class="editor-card">
+        <div class="panel-tabs" id="panelTabs">
+          <button class="tab-btn active" data-idx="0" type="button">Panel 1</button>
+          <button class="tab-btn" data-idx="1" type="button">Panel 2</button>
+          <button class="tab-btn" data-idx="2" type="button">Panel 3</button>
+          <button class="tab-btn" data-idx="3" type="button">Panel 4</button>
+        </div>
+
+        <div class="ed-section">
+          <label class="ed-label" data-i18n="edScene">Scene Background &amp; Pattern</label>
+          <select id="edBg" class="ed-select">
+            <option value="sky">Sky Pastel + Grid</option>
+            <option value="sunset">Warm Peach + Halftone</option>
+            <option value="mint">Mint Fresh + Dots</option>
+            <option value="yellow">Speedlines Yellow</option>
+            <option value="night">Night Mode + Stars</option>
+            <option value="cream">Classic Comic Paper</option>
+          </select>
+          <div class="upload-row" style="margin-top:8px;">
+            <label class="upload-label">
+              <span data-i18n="edUpload">Upload Panel Image</span>
+              <input type="file" id="edImageUpload" accept="image/*" />
+            </label>
+            <button class="btn btn-sm" id="clearImgBtn" type="button" data-i18n="edClearImg">Clear Image</button>
+          </div>
+        </div>
+
+        <div class="ed-section">
+          <label class="ed-label" data-i18n="edChars">Characters &amp; Expressions</label>
+          <div class="ed-row" style="margin-bottom:8px;">
+            <div>
+              <span style="font-size:11px;font-weight:700;color:var(--ink-muted);" data-i18n="edLeftChar">Left Character</span>
+              <select id="edCharL" class="ed-select"></select>
+            </div>
+            <div>
+              <span style="font-size:11px;font-weight:700;color:var(--ink-muted);" data-i18n="edMood">Expression</span>
+              <select id="edMoodL" class="ed-select"></select>
+            </div>
+          </div>
+          <div class="ed-row">
+            <div>
+              <span style="font-size:11px;font-weight:700;color:var(--ink-muted);" data-i18n="edRightChar">Right Character</span>
+              <select id="edCharR" class="ed-select"></select>
+            </div>
+            <div>
+              <span style="font-size:11px;font-weight:700;color:var(--ink-muted);" data-i18n="edMood">Expression</span>
+              <select id="edMoodR" class="ed-select"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="ed-section">
+          <label class="ed-label" data-i18n="edBubble">Speech / Thought Bubble</label>
+          <div class="ed-row" style="margin-bottom:8px;">
+            <select id="edBubbleType" class="ed-select">
+              <option value="speech">Speech Bubble</option>
+              <option value="thought">Thought Bubble</option>
+              <option value="caption">Narrator Caption</option>
+              <option value="none">No Bubble</option>
+            </select>
+            <select id="edBubbleSide" class="ed-select">
+              <option value="left">Tail: Left</option>
+              <option value="right">Tail: Right</option>
+              <option value="center">Center</option>
+            </select>
+          </div>
+          <textarea id="edText" class="ed-textarea" placeholder="Dialogue..."></textarea>
+        </div>
+
+        <div class="ed-section">
+          <label class="ed-label" data-i18n="edSfx">Comic SFX Sticker</label>
+          <input type="text" id="edSfx" class="ed-input" placeholder="e.g. DING!, SHIPPED!" />
+          <div class="chip-row">
+            <button class="chip" data-sfx="DING!" type="button">DING!</button>
+            <button class="chip" data-sfx="WAIT..." type="button">WAIT...</button>
+            <button class="chip" data-sfx="SHIPPED!" type="button">SHIPPED!</button>
+            <button class="chip" data-sfx="47 MIN LATER" type="button">47 MIN LATER</button>
+            <button class="chip" data-sfx="MEOW!!" type="button">MEOW!!</button>
+            <button class="chip clear-chip" data-sfx="" type="button" data-i18n="sfxClear">None</button>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Honest Unfinished Section -->
+    <section class="unfinished">
+      <h2 data-i18n="unfTitle">What's still unfinished</h2>
+      <ul>
+        <li data-i18n="unf1">Characters are fixed-slot vector illustrations — freeform drag-and-drop positioning and custom pose drawing aren’t built yet.</li>
+        <li data-i18n="unf2">Custom uploaded panel images are stored in memory/localStorage (large photos may exceed browser storage quota on reload).</li>
+        <li data-i18n="unf3">BYOK AI script generation calls your chosen provider directly from the browser; some providers may enforce CORS policies depending on browser settings.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- AI / Remix Script Modal -->
+  <div class="modal-backdrop" id="aiModal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <div class="modal-head">
+        <h2 data-i18n="modalTitle">Script Generator</h2>
+        <button class="close-x" id="closeAiBtn" type="button" aria-label="Close">×</button>
+      </div>
+      <label class="ed-label" data-i18n="modalTopicLbl">Comic Topic or Idea</label>
+      <input type="text" id="aiTopic" class="ed-input" placeholder="e.g. Deploying on Friday at 5pm" />
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;">
+        <button class="btn btn-cyan" id="localRemixBtn" type="button" data-i18n="btnLocalRemix">Instant Offline Script</button>
+        <button class="btn btn-pink" id="byokGenerateBtn" type="button" data-i18n="btnByokGen">Generate with BYOK AI</button>
+      </div>
+
+      <div class="byok-box">
+        <label class="ed-label" data-i18n="byokTitle">Optional BYOK AI Key (stored only in localStorage)</label>
+        <div class="ed-row" style="margin-bottom:8px;">
+          <select id="aiProvider" class="ed-select">
+            <option value="openai">OpenAI (gpt-4o-mini)</option>
+            <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+            <option value="anthropic">Anthropic (claude-3-5-haiku)</option>
+          </select>
+          <input type="password" id="aiKey" class="ed-input" placeholder="Paste API key..." />
+        </div>
+        <p class="helper-note" data-i18n="byokNote">
+          Zero backend: your key stays in your browser’s localStorage. Don’t have a key? Use "Instant Offline Script" above!
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'u30_day29_webtoon_v1';
+      const AI_KEY_STORAGE = 'u30_day29_byok_v1';
+
+      const CHAR_OPTIONS = [
+        { id: 'none', en: 'None', fr: 'Aucun' },
+        { id: 'builder', en: 'Builder', fr: 'Builder' },
+        { id: 'manager', en: 'Manager', fr: 'Manager' },
+        { id: 'cat', en: 'Office Cat', fr: 'Chat' },
+        { id: 'coffee', en: 'Coffee Cup', fr: 'Tasse de Café' },
+        { id: 'laptop', en: 'Laptop', fr: 'Ordinateur' }
+      ];
+
+      const MOOD_OPTIONS = [
+        { id: 'happy', en: 'Happy', fr: 'Content' },
+        { id: 'stressed', en: 'Stressed', fr: 'Stressé' },
+        { id: 'deadpan', en: 'Deadpan', fr: 'Blasé' },
+        { id: 'hyped', en: 'Hyped / Cool', fr: 'Hyper Cool' }
+      ];
+
+      const BG_PALETTES = {
+        sky: { bg: '#D8EEFF', accent: '#A9D6FF', pattern: 'grid', dark: false },
+        sunset: { bg: '#FFE2D1', accent: '#FFB894', pattern: 'halftone', dark: false },
+        mint: { bg: '#D8F8EA', accent: '#8CE5C4', pattern: 'dots', dark: false },
+        yellow: { bg: '#FFF1A8', accent: '#FFD84D', pattern: 'speed', dark: false },
+        night: { bg: '#201E38', accent: '#3B3663', pattern: 'stars', dark: true },
+        cream: { bg: '#FFF9EC', accent: '#EFE3CA', pattern: 'none', dark: false }
+      };
+
+      const DEMO_COMICS = {
+        en: {
+          title: 'The 15-Minute Quick Sync',
+          author: '@salah · Infinite Webtoon',
+          layout: 'grid',
+          panels: [
+            {
+              bg: 'sky', charL: 'manager', moodL: 'happy', charR: 'builder', moodR: 'stressed',
+              bubbleType: 'speech', bubbleSide: 'left',
+              text: 'Hey! Just a quick 15-min sync to align?',
+              sfx: 'DING!', customImg: ''
+            },
+            {
+              bg: 'sunset', charL: 'manager', moodL: 'hyped', charR: 'coffee', moodR: 'deadpan',
+              bubbleType: 'speech', bubbleSide: 'left',
+              text: 'Let us circle back on our alignment synergy...',
+              sfx: '47 MIN LATER', customImg: ''
+            },
+            {
+              bg: 'mint', charL: 'cat', moodL: 'hyped', charR: 'builder', moodR: 'stressed',
+              bubbleType: 'thought', bubbleSide: 'right',
+              text: 'Wait... did my cat just push to main?!',
+              sfx: 'MEOW!!', customImg: ''
+            },
+            {
+              bg: 'yellow', charL: 'builder', moodL: 'hyped', charR: 'laptop', moodR: 'happy',
+              bubbleType: 'speech', bubbleSide: 'left',
+              text: 'Tests passed. That meeting could have been an email.',
+              sfx: 'SHIPPED!', customImg: ''
+            }
+          ]
+        },
+        fr: {
+          title: 'Le Point Rapide de 15 Min',
+          author: '@salah · Infinite Webtoon',
+          layout: 'grid',
+          panels: [
+            {
+              bg: 'sky', charL: 'manager', moodL: 'happy', charR: 'builder', moodR: 'stressed',
+              bubbleType: 'speech', bubbleSide: 'left',
+              text: 'Salut ! Un tout petit point de 15 min pour s’aligner ?',
+              sfx: 'DING!', customImg: ''
+            },
+            {
+              bg: 'sunset', charL: 'manager', moodL: 'hyped', charR: 'coffee', moodR: 'deadpan',
+              bubbleType: 'speech', bubbleSide: 'left',
+              text: 'Revenons sur la synergie de notre feuille de route...',
+              sfx: '47 MIN LATER', customImg: ''
+            },
+            {
+              bg: 'mint', charL: 'cat', moodL: 'hyped', charR: 'builder', moodR: 'stressed',
+              bubbleType: 'thought', bubbleSide: 'right',
+              text: 'Attends... mon chat vient de push en prod ?!',
+              sfx: 'MEOW!!', customImg: ''
+            },
+            {
+              bg: 'yellow', charL: 'builder', moodL: 'hyped', charR: 'laptop', moodR: 'happy',
+              bubbleType: 'speech', bubbleSide: 'left',
+              text: 'Tout est vert. Cette réunion aurait dû être un mail.',
+              sfx: 'SHIPPED!', customImg: ''
+            }
+          ]
+        }
+      };
+
+      const LOCAL_SCRIPTS = [
+        {
+          en: {
+            title: 'Friday 5PM Deploy',
+            panels: [
+              { bg: 'sky', charL: 'builder', moodL: 'happy', charR: 'laptop', moodR: 'happy', bubbleType: 'speech', bubbleSide: 'left', text: 'One tiny CSS tweak before the weekend!', sfx: 'CLICK!' },
+              { bg: 'night', charL: 'laptop', moodL: 'stressed', charR: 'coffee', moodR: 'stressed', bubbleType: 'caption', bubbleSide: 'center', text: 'Production alerts begin singing in harmony.', sfx: 'WAIT...' },
+              { bg: 'sunset', charL: 'manager', moodL: 'stressed', charR: 'builder', moodR: 'deadpan', bubbleType: 'speech', bubbleSide: 'left', text: 'Why is the checkout button upside down?', sfx: 'DING!' },
+              { bg: 'mint', charL: 'cat', moodL: 'hyped', charR: 'builder', moodR: 'hyped', bubbleType: 'speech', bubbleSide: 'right', text: 'Fixed it. Never speak of Friday again.', sfx: 'SHIPPED!' }
+            ]
+          },
+          fr: {
+            title: 'Déploiement Vendredi 17h',
+            panels: [
+              { bg: 'sky', charL: 'builder', moodL: 'happy', charR: 'laptop', moodR: 'happy', bubbleType: 'speech', bubbleSide: 'left', text: 'Juste une micro modif CSS avant le week-end !', sfx: 'CLICK!' },
+              { bg: 'night', charL: 'laptop', moodL: 'stressed', charR: 'coffee', moodR: 'stressed', bubbleType: 'caption', bubbleSide: 'center', text: 'Les alertes de prod se mettent à chanter.', sfx: 'WAIT...' },
+              { bg: 'sunset', charL: 'manager', moodL: 'stressed', charR: 'builder', moodR: 'deadpan', bubbleType: 'speech', bubbleSide: 'left', text: 'Pourquoi le bouton payer est à l’envers ?', sfx: 'DING!' },
+              { bg: 'mint', charL: 'cat', moodL: 'hyped', charR: 'builder', moodR: 'hyped', bubbleType: 'speech', bubbleSide: 'right', text: 'Corrigé. On oublie ce vendredi.', sfx: 'SHIPPED!' }
+            ]
+          }
+        },
+        {
+          en: {
+            title: 'Coffee Powered AI',
+            panels: [
+              { bg: 'cream', charL: 'builder', moodL: 'deadpan', charR: 'coffee', moodR: 'happy', bubbleType: 'thought', bubbleSide: 'left', text: 'Brain.exe not found before espresso.', sfx: 'WAIT...' },
+              { bg: 'yellow', charL: 'coffee', moodL: 'hyped', charR: 'builder', moodR: 'hyped', bubbleType: 'speech', bubbleSide: 'right', text: 'I can now see the Matrix in TypeScript!', sfx: 'BOOM!' },
+              { bg: 'mint', charL: 'cat', moodL: 'deadpan', charR: 'laptop', moodR: 'happy', bubbleType: 'speech', bubbleSide: 'left', text: 'You wrote 400 lines for a todo app.', sfx: 'MEOW!!' },
+              { bg: 'sky', charL: 'builder', moodL: 'happy', charR: 'coffee', moodR: 'happy', bubbleType: 'speech', bubbleSide: 'left', text: 'Yes, and it has dark mode. Worth it.', sfx: 'SHIPPED!' }
+            ]
+          },
+          fr: {
+            title: 'Code Propulsé au Café',
+            panels: [
+              { bg: 'cream', charL: 'builder', moodL: 'deadpan', charR: 'coffee', moodR: 'happy', bubbleType: 'thought', bubbleSide: 'left', text: 'Cerveau.exe introuvable avant le café.', sfx: 'WAIT...' },
+              { bg: 'yellow', charL: 'coffee', moodL: 'hyped', charR: 'builder', moodR: 'hyped', bubbleType: 'speech', bubbleSide: 'right', text: 'Je vois désormais la Matrice en TypeScript !', sfx: 'BOOM!' },
+              { bg: 'mint', charL: 'cat', moodL: 'deadpan', charR: 'laptop', moodR: 'happy', bubbleType: 'speech', bubbleSide: 'left', text: 'Tu as écrit 400 lignes pour une to-do list.', sfx: 'MEOW!!' },
+              { bg: 'sky', charL: 'builder', moodL: 'happy', charR: 'coffee', moodR: 'happy', bubbleType: 'speech', bubbleSide: 'left', text: 'Oui, mais avec un mode sombre.', sfx: 'SHIPPED!' }
+            ]
+          }
+        }
+      ];
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          badge: '4-Panel Comic & Webtoon Studio',
+          subtitle: 'Craft punchy 4-panel comics in seconds — pick layouts, expressive characters, speech bubbles, SFX stickers, or remix a script and export a crisp PNG strip.',
+          btnScript: 'AI / Remix Script',
+          btnExport: 'Export High-Res PNG',
+          layGrid: '2×2 Grid',
+          layVert: 'Vertical Webtoon',
+          layHoriz: 'Horizontal Strip',
+          btnReset: 'Reset Demo',
+          edScene: 'Scene Background & Pattern',
+          edUpload: 'Upload Panel Image',
+          edClearImg: 'Clear Image',
+          edChars: 'Characters & Expressions',
+          edLeftChar: 'Left Character',
+          edRightChar: 'Right Character',
+          edMood: 'Expression',
+          edBubble: 'Speech / Thought Bubble',
+          edSfx: 'Comic SFX Sticker',
+          sfxClear: 'None',
+          unfTitle: "What's still unfinished",
+          unf1: 'Characters use clean fixed-slot placement rather than freeform drag-and-drop posing.',
+          unf2: 'Uploaded panel images are stored as Data URLs, so very large photos may hit browser localStorage limits.',
+          unf3: 'BYOK AI script generation calls your chosen provider directly from the browser (subject to provider CORS rules).',
+          modalTitle: 'Script Generator',
+          modalTopicLbl: 'Comic Topic or Idea',
+          btnLocalRemix: 'Instant Offline Script',
+          btnByokGen: 'Generate with BYOK AI',
+          byokTitle: 'Optional BYOK AI Key (stored only in localStorage)',
+          byokNote: 'Zero backend: your key stays in your browser localStorage. No key? Use "Instant Offline Script" above!',
+          toastExport: 'High-res PNG strip downloaded!',
+          toastReset: 'Demo comic restored',
+          toastLocal: 'New 4-panel script generated!',
+          toastNeedKey: 'Paste an API key first, or use Instant Offline Script',
+          toastGenerating: 'Asking AI for 4 punchy panels...',
+          toastAiError: 'AI request failed — try Instant Offline Script or check your key'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          badge: 'Studio BD & Webtoon 4 Cases',
+          subtitle: 'Créez des strips 4 cases en quelques secondes — mise en page, personnages expressifs, bulles, onomatopées SFX, ou générez un script et exportez en PNG haute définition.',
+          btnScript: 'Script IA / Remix',
+          btnExport: 'Exporter PNG HD',
+          layGrid: 'Grille 2×2',
+          layVert: 'Webtoon Vertical',
+          layHoriz: 'Strip Horizontal',
+          btnReset: 'Réinitialiser',
+          edScene: 'Décor & Motif de fond',
+          edUpload: 'Importer une image',
+          edClearImg: 'Retirer image',
+          edChars: 'Personnages & Expressions',
+          edLeftChar: 'Personnage gauche',
+          edRightChar: 'Personnage droit',
+          edMood: 'Expression',
+          edBubble: 'Bulle de dialogue / pensée',
+          edSfx: 'Sticker SFX BD',
+          sfxClear: 'Aucun',
+          unfTitle: 'Ce qui reste inachevé',
+          unf1: 'Les personnages sont placés sur deux emplacements fixes (pas encore de glisser-déposer libre ni de dessin au trait).',
+          unf2: 'Les images importées sont stockées en Data URL ; des photos très lourdes peuvent dépasser le quota localStorage.',
+          unf3: 'La génération IA BYOK appelle directement le fournisseur depuis le navigateur (selon ses règles CORS).',
+          modalTitle: 'Générateur de Script',
+          modalTopicLbl: 'Sujet ou idée de BD',
+          btnLocalRemix: 'Script Hors-Ligne Instantané',
+          btnByokGen: 'Générer avec IA (BYOK)',
+          byokTitle: 'Clé API BYOK optionnelle (stockée uniquement en localStorage)',
+          byokNote: 'Zéro serveur : votre clé reste dans votre navigateur. Pas de clé ? Utilisez « Script Hors-Ligne » !',
+          toastExport: 'Strip PNG haute résolution téléchargé !',
+          toastReset: 'BD de démonstration restaurée',
+          toastLocal: 'Nouveau script 4 cases généré !',
+          toastNeedKey: 'Ajoutez une clé API ou utilisez le Script Hors-Ligne',
+          toastGenerating: 'Génération des 4 cases en cours...',
+          toastAiError: 'Erreur API — vérifiez votre clé ou utilisez le mode hors-ligne'
+        }
+      };
+
+      let lang = 'en';
+      let selectedPanel = 0;
+      let comic = clone(DEMO_COMICS.en);
+      let imageCache = {};
+      let localRemixIdx = 0;
+
+      function clone(o) { return JSON.parse(JSON.stringify(o)); }
+      function t(k) { return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => el.classList.remove('show'), 2600);
+      }
+
+      function saveComic() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(comic)); } catch (e) {}
+      }
+
+      function loadComic() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.panels) && parsed.panels.length === 4) {
+              comic = parsed;
+            }
+          }
+        } catch (e) {}
+      }
+
+      function getCachedImage(src, onLoad) {
+        if (!src) return null;
+        if (imageCache[src] && imageCache[src].complete) return imageCache[src];
+        if (!imageCache[src]) {
+          const img = new Image();
+          img.onload = () => onLoad && onLoad();
+          img.src = src;
+          imageCache[src] = img;
+        }
+        return imageCache[src].complete ? imageCache[src] : null;
+      }
+
+      // ---- Canvas2D Crisp Comic Panel Renderer (used for both live preview & high-res PNG export) ----
+      function drawPanelToCtx(ctx, panel, x, y, w, h, panelIndex) {
+        ctx.save();
+        ctx.translate(x, y);
+
+        // Clip panel rect
+        ctx.beginPath();
+        ctx.rect(0, 0, w, h);
+        ctx.clip();
+
+        const pal = BG_PALETTES[panel.bg] || BG_PALETTES.sky;
+
+        // 1. Background fill or custom image
+        ctx.fillStyle = pal.bg;
+        ctx.fillRect(0, 0, w, h);
+
+        if (panel.customImg) {
+          const img = getCachedImage(panel.customImg, () => renderAllPanels());
+          if (img) {
+            const scale = Math.max(w / img.width, h / img.height);
+            const dw = img.width * scale;
+            const dh = img.height * scale;
+            ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+          }
+        } else {
+          drawPattern(ctx, pal, w, h);
+        }
+
+        // Ground strip
+        ctx.fillStyle = pal.dark ? 'rgba(255,255,255,0.08)' : 'rgba(24,22,36,0.07)';
+        ctx.fillRect(0, h * 0.82, w, h * 0.18);
+        ctx.strokeStyle = '#181624';
+        ctx.lineWidth = Math.max(2, w * 0.005);
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.82);
+        ctx.lineTo(w, h * 0.82);
+        ctx.stroke();
+
+        // 2. Characters
+        const charY = h * 0.67;
+        const charScale = Math.min(w, h) / 360;
+        if (panel.charL && panel.charL !== 'none') {
+          drawCharacter(ctx, panel.charL, panel.moodL || 'happy', w * 0.28, charY, charScale, false);
+        }
+        if (panel.charR && panel.charR !== 'none') {
+          drawCharacter(ctx, panel.charR, panel.moodR || 'happy', w * 0.72, charY, charScale, true);
+        }
+
+        // 3. Speech / Thought / Caption Bubble
+        if (panel.bubbleType !== 'none' && panel.text && panel.text.trim()) {
+          drawBubble(ctx, panel.bubbleType, panel.bubbleSide, panel.text.trim(), w, h);
+        }
+
+        // 4. SFX Sticker
+        if (panel.sfx && panel.sfx.trim()) {
+          drawSfx(ctx, panel.sfx.trim(), w, h, panelIndex);
+        }
+
+        ctx.restore();
+
+        // Outer panel border
+        ctx.save();
+        ctx.strokeStyle = '#181624';
+        ctx.lineWidth = Math.max(3, w * 0.008);
+        ctx.strokeRect(x, y, w, h);
+        ctx.restore();
+      }
+
+      function drawPattern(ctx, pal, w, h) {
+        ctx.save();
+        ctx.strokeStyle = pal.accent;
+        ctx.fillStyle = pal.accent;
+        if (pal.pattern === 'grid') {
+          ctx.lineWidth = Math.max(1.2, w * 0.003);
+          const step = w / 12;
+          for (let gx = step; gx < w; gx += step) {
+            ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+          }
+          for (let gy = step; gy < h; gy += step) {
+            ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+          }
+        } else if (pal.pattern === 'dots' || pal.pattern === 'halftone') {
+          const step = w / 14;
+          const r = pal.pattern === 'halftone' ? w * 0.011 : w * 0.007;
+          for (let gx = step / 2; gx < w; gx += step) {
+            for (let gy = step / 2; gy < h; gy += step) {
+              ctx.beginPath();
+              ctx.arc(gx, gy, r, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+        } else if (pal.pattern === 'speed') {
+          ctx.lineWidth = Math.max(2, w * 0.006);
+          const cx = w * 0.5, cy = h * 0.55;
+          for (let i = 0; i < 18; i++) {
+            const ang = (i / 18) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.moveTo(cx + Math.cos(ang) * w * 0.25, cy + Math.sin(ang) * w * 0.25);
+            ctx.lineTo(cx + Math.cos(ang) * w * 0.85, cy + Math.sin(ang) * w * 0.85);
+            ctx.stroke();
+          }
+        } else if (pal.pattern === 'stars') {
+          ctx.fillStyle = '#FFD84D';
+          const pts = [[0.14,0.18],[0.86,0.22],[0.52,0.14],[0.24,0.44],[0.78,0.42],[0.9,0.65]];
+          pts.forEach(([px, py]) => {
+            ctx.beginPath();
+            ctx.arc(w * px, h * py, w * 0.008, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        }
+        ctx.restore();
+      }
+
+      function drawCharacter(ctx, type, mood, cx, cy, s, flip) {
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.scale(s, s);
+        const ink = '#181624';
+        ctx.strokeStyle = ink;
+        ctx.lineWidth = 4.5;
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+
+        if (type === 'builder' || type === 'manager') {
+          // Body / Hoodie or Suit
+          ctx.fillStyle = type === 'builder' ? '#29C7AC' : '#5B6CFF';
+          roundRect(ctx, -44, 18, 88, 66, 22);
+          ctx.fill(); ctx.stroke();
+
+          if (type === 'manager') {
+            // Tie
+            ctx.fillStyle = '#FF5CA8';
+            ctx.beginPath();
+            ctx.moveTo(-7, 22); ctx.lineTo(7, 22); ctx.lineTo(10, 62); ctx.lineTo(0, 74); ctx.lineTo(-10, 62);
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+          } else {
+            // Hoodie drawstrings
+            ctx.beginPath(); ctx.moveTo(-12, 24); ctx.lineTo(-12, 52); ctx.moveTo(12, 24); ctx.lineTo(12, 48); ctx.stroke();
+          }
+
+          // Head
+          ctx.fillStyle = type === 'builder' ? '#FFE0BD' : '#FFD3B0';
+          ctx.beginPath(); ctx.arc(0, -18, 42, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+          // Hair / Cap
+          if (type === 'builder') {
+            ctx.fillStyle = '#FF5CA8';
+            ctx.beginPath();
+            ctx.arc(0, -28, 43, Math.PI, 0);
+            ctx.closePath(); ctx.fill(); ctx.stroke();
+            // Cap brim
+            ctx.beginPath();
+            ctx.moveTo(flip ? -48 : -20, -28);
+            ctx.lineTo(flip ? 20 : 54, -28);
+            ctx.lineWidth = 6; ctx.stroke(); ctx.lineWidth = 4.5;
+          } else {
+            ctx.fillStyle = '#181624';
+            ctx.beginPath();
+            ctx.arc(0, -30, 40, Math.PI * 1.05, -0.05);
+            ctx.quadraticCurveTo(0, -18, -38, -28);
+            ctx.fill(); ctx.stroke();
+          }
+
+          drawFace(ctx, 0, -14, mood, 1);
+        } else if (type === 'cat') {
+          // Ears
+          ctx.fillStyle = '#FF9F68';
+          ctx.beginPath(); ctx.moveTo(-42, -24); ctx.lineTo(-26, -64); ctx.lineTo(-4, -36); ctx.closePath(); ctx.fill(); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(42, -24); ctx.lineTo(26, -64); ctx.lineTo(4, -36); ctx.closePath(); ctx.fill(); ctx.stroke();
+          // Body + Head blob
+          ctx.beginPath(); ctx.ellipse(0, 12, 52, 50, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          // Whiskers
+          ctx.lineWidth = 3.2;
+          ctx.beginPath();
+          ctx.moveTo(-58, 6); ctx.lineTo(-34, 10);
+          ctx.moveTo(-56, 20); ctx.lineTo(-34, 18);
+          ctx.moveTo(58, 6); ctx.lineTo(34, 10);
+          ctx.moveTo(56, 20); ctx.lineTo(34, 18);
+          ctx.stroke();
+          ctx.lineWidth = 4.5;
+          drawFace(ctx, 0, 4, mood, 0.95);
+        } else if (type === 'coffee') {
+          // Steam
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(-16, -42); ctx.quadraticCurveTo(-24, -60, -12, -74);
+          ctx.moveTo(4, -46); ctx.quadraticCurveTo(-4, -66, 8, -80);
+          ctx.moveTo(22, -40); ctx.quadraticCurveTo(14, -56, 26, -70);
+          ctx.stroke();
+          // Handle
+          ctx.lineWidth = 7;
+          ctx.beginPath();
+          ctx.arc(38, 12, 18, -Math.PI * 0.45, Math.PI * 0.45);
+          ctx.stroke();
+          ctx.lineWidth = 4.5;
+          // Cup
+          ctx.fillStyle = '#FFFFFF';
+          roundRect(ctx, -38, -28, 76, 84, 16);
+          ctx.fill(); ctx.stroke();
+          // Sleeve
+          ctx.fillStyle = '#FFD84D';
+          ctx.fillRect(-36, 2, 72, 26);
+          ctx.strokeRect(-36, 2, 72, 26);
+          drawFace(ctx, 0, 12, mood, 0.8);
+        } else if (type === 'laptop') {
+          // Screen
+          ctx.fillStyle = '#333856';
+          roundRect(ctx, -52, -38, 104, 68, 10);
+          ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#A9D6FF';
+          roundRect(ctx, -43, -29, 86, 50, 6);
+          ctx.fill(); ctx.stroke();
+          // Base
+          ctx.fillStyle = '#E6E9F2';
+          ctx.beginPath();
+          ctx.moveTo(-64, 30); ctx.lineTo(64, 30); ctx.lineTo(54, 48); ctx.lineTo(-54, 48);
+          ctx.closePath(); ctx.fill(); ctx.stroke();
+          drawFace(ctx, 0, -4, mood, 0.85);
+        }
+
+        ctx.restore();
+      }
+
+      function drawFace(ctx, x, y, mood, scale) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.scale(scale, scale);
+        ctx.fillStyle = '#181624';
+        ctx.strokeStyle = '#181624';
+        ctx.lineWidth = 4;
+
+        if (mood === 'hyped') {
+          // Cool sunglasses
+          ctx.fillStyle = '#181624';
+          roundRect(ctx, -28, -12, 23, 15, 4); ctx.fill();
+          roundRect(ctx, 5, -12, 23, 15, 4); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(-5, -6); ctx.lineTo(5, -6); ctx.stroke();
+          // Big grin
+          ctx.beginPath(); ctx.arc(0, 8, 12, 0.1, Math.PI - 0.1); ctx.stroke();
+        } else if (mood === 'stressed') {
+          // Wide eyes + sweat drop
+          ctx.fillStyle = '#FFFFFF';
+          ctx.beginPath(); ctx.arc(-14, -4, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          ctx.beginPath(); ctx.arc(14, -4, 7, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#181624';
+          ctx.beginPath(); ctx.arc(-14, -4, 2.5, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(14, -4, 2.5, 0, Math.PI * 2); ctx.fill();
+          // Wavy mouth
+          ctx.beginPath();
+          ctx.moveTo(-12, 14); ctx.quadraticCurveTo(-6, 8, 0, 14); ctx.quadraticCurveTo(6, 20, 12, 14);
+          ctx.stroke();
+          // Sweat drop
+          ctx.fillStyle = '#6BCBFF';
+          ctx.beginPath();
+          ctx.moveTo(32, -24); ctx.quadraticCurveTo(40, -10, 32, -6); ctx.quadraticCurveTo(24, -10, 32, -24);
+          ctx.fill(); ctx.lineWidth = 2.5; ctx.stroke();
+        } else if (mood === 'deadpan') {
+          // Flat eyes + flat mouth
+          ctx.beginPath();
+          ctx.moveTo(-20, -4); ctx.lineTo(-8, -4);
+          ctx.moveTo(8, -4); ctx.lineTo(20, -4);
+          ctx.moveTo(-10, 13); ctx.lineTo(10, 13);
+          ctx.stroke();
+        } else {
+          // Happy
+          ctx.beginPath(); ctx.arc(-14, -4, 4.5, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(14, -4, 4.5, 0, Math.PI * 2); ctx.fill();
+          ctx.beginPath(); ctx.arc(0, 6, 11, 0.15, Math.PI - 0.15); ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function drawBubble(ctx, type, side, text, w, h) {
+        ctx.save();
+        const fontSize = Math.max(13, Math.round(w * 0.041));
+        ctx.font = '700 ' + fontSize + 'px "Comic Neue", "Plus Jakarta Sans", sans-serif';
+        const maxTextW = w * 0.76;
+        const lines = wrapText(ctx, text, maxTextW).slice(0, 4);
+        const lineH = fontSize * 1.24;
+        const textBlockW = Math.max(...lines.map(l => ctx.measureText(l).width), w * 0.24);
+        const padX = w * 0.045;
+        const padY = h * 0.036;
+        const bw = Math.min(w * 0.86, textBlockW + padX * 2);
+        const bh = lines.length * lineH + padY * 2;
+
+        let bx = (w - bw) / 2;
+        if (side === 'left') bx = Math.max(w * 0.06, w * 0.07);
+        if (side === 'right') bx = Math.min(w - bw - w * 0.06, w * 0.93 - bw);
+        const by = h * 0.06;
+
+        ctx.fillStyle = type === 'caption' ? '#FFD84D' : '#FFFFFF';
+        ctx.strokeStyle = '#181624';
+        ctx.lineWidth = Math.max(2.5, w * 0.007);
+
+        if (type === 'caption') {
+          ctx.fillRect(bx, by, bw, bh);
+          ctx.strokeRect(bx, by, bw, bh);
+        } else {
+          roundRect(ctx, bx, by, bw, bh, type === 'thought' ? 22 : 14);
+          ctx.fill(); ctx.stroke();
+
+          // Tail
+          const tx = side === 'left' ? bx + bw * 0.24 : (side === 'right' ? bx + bw * 0.76 : bx + bw * 0.5);
+          if (type === 'speech') {
+            ctx.beginPath();
+            ctx.moveTo(tx - 8, by + bh - 1);
+            ctx.lineTo(tx + (side === 'right' ? 8 : -8), by + bh + h * 0.075);
+            ctx.lineTo(tx + 10, by + bh - 1);
+            ctx.closePath();
+            ctx.fill();
+            ctx.beginPath();
+            ctx.moveTo(tx - 8, by + bh);
+            ctx.lineTo(tx + (side === 'right' ? 8 : -8), by + bh + h * 0.075);
+            ctx.lineTo(tx + 10, by + bh);
+            ctx.stroke();
+          } else if (type === 'thought') {
+            ctx.beginPath(); ctx.arc(tx, by + bh + 9, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.arc(tx + (side === 'right' ? 5 : -5), by + bh + 20, 4, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          }
+        }
+
+        // Text
+        ctx.fillStyle = '#181624';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        lines.forEach((line, i) => {
+          ctx.fillText(line, bx + bw / 2, by + padY + lineH * (i + 0.5));
+        });
+        ctx.restore();
+      }
+
+      function drawSfx(ctx, sfx, w, h, idx) {
+        ctx.save();
+        const isRight = idx % 2 === 0;
+        const sx = isRight ? w * 0.81 : w * 0.21;
+        const sy = h * 0.84;
+        ctx.translate(sx, sy);
+        ctx.rotate(isRight ? -0.1 : 0.09);
+
+        const fontSize = Math.max(15, Math.round(w * 0.056));
+        ctx.font = '400 ' + fontSize + 'px "Bangers", Impact, sans-serif';
+        const tw = ctx.measureText(sfx).width;
+        const pw = tw + w * 0.07;
+        const ph = fontSize * 1.25;
+
+        ctx.fillStyle = '#FFD84D';
+        ctx.strokeStyle = '#181624';
+        ctx.lineWidth = Math.max(2.5, w * 0.007);
+        roundRect(ctx, -pw / 2, -ph / 2, pw, ph, 10);
+        ctx.fill(); ctx.stroke();
+
+        ctx.fillStyle = '#FF2E88';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(sfx, 0, 2);
+        ctx.restore();
+      }
+
+      function roundRect(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      }
+
+      function wrapText(ctx, text, maxW) {
+        const words = text.split(/\s+/);
+        const lines = [];
+        let cur = '';
+        words.forEach(word => {
+          const test = cur ? cur + ' ' + word : word;
+          if (ctx.measureText(test).width > maxW && cur) {
+            lines.push(cur);
+            cur = word;
+          } else {
+            cur = test;
+          }
+        });
+        if (cur) lines.push(cur);
+        return lines;
+      }
+
+      // ---- DOM Rendering ----
+      function populateSelectOptions() {
+        ['edCharL', 'edCharR'].forEach(id => {
+          const sel = document.getElementById(id);
+          sel.innerHTML = CHAR_OPTIONS.map(o => `<option value="${o.id}">${o[lang]}</option>`).join('');
+        });
+        ['edMoodL', 'edMoodR'].forEach(id => {
+          const sel = document.getElementById(id);
+          sel.innerHTML = MOOD_OPTIONS.map(o => `<option value="${o.id}">${o[lang]}</option>`).join('');
+        });
+      }
+
+      function renderAllPanels() {
+        const grid = document.getElementById('panelsGrid');
+        grid.className = 'panels-grid layout-' + comic.layout;
+
+        if (grid.children.length !== 4) {
+          grid.innerHTML = '';
+          for (let i = 0; i < 4; i++) {
+            const box = document.createElement('div');
+            box.className = 'panel-box';
+            box.dataset.idx = i;
+            box.innerHTML = `<span class="panel-num">${i + 1}</span><div class="panel-canvas-wrap"><canvas width="640" height="480"></canvas></div>`;
+            box.addEventListener('click', () => {
+              selectedPanel = i;
+              syncEditorFromPanel();
+              updateSelectionHighlight();
+            });
+            grid.appendChild(box);
+          }
+        }
+
+        for (let i = 0; i < 4; i++) {
+          const box = grid.children[i];
+          const canvas = box.querySelector('canvas');
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          drawPanelToCtx(ctx, comic.panels[i], 0, 0, canvas.width, canvas.height, i);
+        }
+
+        document.getElementById('previewTitle').textContent = comic.title || 'Untitled Comic';
+        document.getElementById('previewAuthor').textContent = comic.author || '';
+        updateSelectionHighlight();
+      }
+
+      function updateSelectionHighlight() {
+        document.querySelectorAll('.panel-box').forEach((el, i) => {
+          el.classList.toggle('selected', i === selectedPanel);
+        });
+        document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+          btn.classList.toggle('active', i === selectedPanel);
+          btn.textContent = (lang === 'fr' ? 'Case ' : 'Panel ') + (i + 1);
+        });
+      }
+
+      function syncEditorFromPanel() {
+        const p = comic.panels[selectedPanel];
+        document.getElementById('comicTitle').value = comic.title;
+        document.getElementById('comicAuthor').value = comic.author;
+        document.getElementById('edBg').value = p.bg || 'sky';
+        document.getElementById('edCharL').value = p.charL || 'none';
+        document.getElementById('edMoodL').value = p.moodL || 'happy';
+        document.getElementById('edCharR').value = p.charR || 'none';
+        document.getElementById('edMoodR').value = p.moodR || 'happy';
+        document.getElementById('edBubbleType').value = p.bubbleType || 'speech';
+        document.getElementById('edBubbleSide').value = p.bubbleSide || 'left';
+        document.getElementById('edText').value = p.text || '';
+        document.getElementById('edSfx').value = p.sfx || '';
+        document.querySelectorAll('.pill-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.layout === comic.layout);
+        });
+      }
+
+      function exportHighResPng() {
+        const pw = 640, ph = 480, gap = 22, pad = 34, headerH = 74, footerH = 38;
+        let cw, ch, coords;
+        if (comic.layout === 'vertical') {
+          cw = pw + pad * 2;
+          ch = headerH + ph * 4 + gap * 3 + pad + footerH;
+          coords = [0, 1, 2, 3].map(i => [pad, headerH + i * (ph + gap)]);
+        } else if (comic.layout === 'horizontal') {
+          cw = pw * 4 + gap * 3 + pad * 2;
+          ch = headerH + ph + pad + footerH;
+          coords = [0, 1, 2, 3].map(i => [pad + i * (pw + gap), headerH]);
+        } else {
+          cw = pw * 2 + gap + pad * 2;
+          ch = headerH + ph * 2 + gap + pad + footerH;
+          coords = [
+            [pad, headerH],
+            [pad + pw + gap, headerH],
+            [pad, headerH + ph + gap],
+            [pad + pw + gap, headerH + ph + gap]
+          ];
+        }
+
+        const out = document.createElement('canvas');
+        out.width = cw;
+        out.height = ch;
+        const ctx = out.getContext('2d');
+
+        // Paper background
+        ctx.fillStyle = '#FFFDF7';
+        ctx.fillRect(0, 0, cw, ch);
+
+        // Header
+        ctx.fillStyle = '#181624';
+        ctx.font = '400 40px "Bangers", Impact, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(comic.title || 'Infinite Webtoon', pad, 40);
+
+        ctx.fillStyle = '#5C5870';
+        ctx.font = '700 18px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(comic.author || '', cw - pad, 42);
+
+        // Panels
+        for (let i = 0; i < 4; i++) {
+          drawPanelToCtx(ctx, comic.panels[i], coords[i][0], coords[i][1], pw, ph, i);
+        }
+
+        // Footer watermark
+        ctx.fillStyle = '#7D7890';
+        ctx.font = '600 14px "Plus Jakarta Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Made with Infinite Webtoon · Day 29/30 · The Unfinished 30', cw / 2, ch - 18);
+
+        const a = document.createElement('a');
+        a.download = (comic.title || 'infinite-webtoon').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.png';
+        a.href = out.toDataURL('image/png');
+        a.click();
+        showToast(t('toastExport'));
+      }
+
+      async function generateWithByok() {
+        const topic = document.getElementById('aiTopic').value.trim() || 'Remote work meetings';
+        const provider = document.getElementById('aiProvider').value;
+        const key = document.getElementById('aiKey').value.trim();
+        if (!key) {
+          showToast(t('toastNeedKey'));
+          return;
+        }
+        try {
+          localStorage.setItem(AI_KEY_STORAGE, JSON.stringify({ provider, key }));
+        } catch (e) {}
+
+        showToast(t('toastGenerating'));
+        const prompt = `Create a funny 4-panel webtoon comic about "${topic}" in ${lang === 'fr' ? 'French' : 'English'}. Return ONLY valid JSON with shape: {"title":"...","panels":[{"bg":"sky|sunset|mint|yellow|night|cream","charL":"builder|manager|cat|coffee|laptop|none","moodL":"happy|stressed|deadpan|hyped","charR":"builder|manager|cat|coffee|laptop|none","moodR":"happy|stressed|deadpan|hyped","bubbleType":"speech|thought|caption","bubbleSide":"left|right|center","text":"max 12 words","sfx":"SHORT SFX"}]}`;
+
+        try {
+          let rawText = '';
+          if (provider === 'openai') {
+            const res = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+              body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], temperature: 0.9 })
+            });
+            const data = await res.json();
+            rawText = data.choices[0].message.content;
+          } else if (provider === 'gemini') {
+            const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + encodeURIComponent(key), {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            rawText = data.candidates[0].content.parts[0].text;
+          } else {
+            const res = await fetch('https://api.anthropic.com/v1/messages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+              },
+              body: JSON.stringify({ model: 'claude-3-5-haiku-latest', max_tokens: 700, messages: [{ role: 'user', content: prompt }] })
+            });
+            const data = await res.json();
+            rawText = data.content[0].text;
+          }
+
+          const match = rawText.match(/\{[\s\S]*\}/);
+          const parsed = JSON.parse(match ? match[0] : rawText);
+          if (parsed && Array.isArray(parsed.panels) && parsed.panels.length === 4) {
+            comic.title = parsed.title || topic;
+            comic.panels = parsed.panels.map(p => ({ ...p, customImg: '' }));
+            saveComic();
+            syncEditorFromPanel();
+            renderAllPanels();
+            document.getElementById('aiModal').classList.remove('open');
+            showToast(t('toastLocal'));
+          } else {
+            throw new Error('Bad shape');
+          }
+        } catch (err) {
+          showToast(t('toastAiError'));
+        }
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = lang;
+        document.getElementById('langEn').classList.toggle('active', lang === 'en');
+        document.getElementById('langFr').classList.toggle('active', lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.getAttribute('data-i18n');
+          if (I18N[lang][k]) el.textContent = I18N[lang][k];
+        });
+        populateSelectOptions();
+        syncEditorFromPanel();
+        renderAllPanels();
+      }
+
+      function bindEvents() {
+        document.querySelectorAll('.pill-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            comic.layout = btn.dataset.layout;
+            saveComic();
+            syncEditorFromPanel();
+            renderAllPanels();
+          });
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            selectedPanel = Number(btn.dataset.idx);
+            syncEditorFromPanel();
+            updateSelectionHighlight();
+          });
+        });
+
+        document.getElementById('comicTitle').addEventListener('input', e => {
+          comic.title = e.target.value;
+          saveComic();
+          renderAllPanels();
+        });
+        document.getElementById('comicAuthor').addEventListener('input', e => {
+          comic.author = e.target.value;
+          saveComic();
+          renderAllPanels();
+        });
+
+        const panelBindings = [
+          ['edBg', 'bg'], ['edCharL', 'charL'], ['edMoodL', 'moodL'],
+          ['edCharR', 'charR'], ['edMoodR', 'moodR'],
+          ['edBubbleType', 'bubbleType'], ['edBubbleSide', 'bubbleSide'],
+          ['edText', 'text'], ['edSfx', 'sfx']
+        ];
+        panelBindings.forEach(([id, field]) => {
+          const ev = (id === 'edText' || id === 'edSfx') ? 'input' : 'change';
+          document.getElementById(id).addEventListener(ev, e => {
+            comic.panels[selectedPanel][field] = e.target.value;
+            saveComic();
+            renderAllPanels();
+          });
+        });
+
+        document.querySelectorAll('.chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            comic.panels[selectedPanel].sfx = chip.dataset.sfx;
+            document.getElementById('edSfx').value = chip.dataset.sfx;
+            saveComic();
+            renderAllPanels();
+          });
+        });
+
+        document.getElementById('edImageUpload').addEventListener('change', e => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => {
+            comic.panels[selectedPanel].customImg = reader.result;
+            saveComic();
+            renderAllPanels();
+          };
+          reader.readAsDataURL(file);
+          e.target.value = '';
+        });
+
+        document.getElementById('clearImgBtn').addEventListener('click', () => {
+          comic.panels[selectedPanel].customImg = '';
+          saveComic();
+          renderAllPanels();
+        });
+
+        document.getElementById('resetDemoBtn').addEventListener('click', () => {
+          comic = clone(DEMO_COMICS[lang] || DEMO_COMICS.en);
+          saveComic();
+          syncEditorFromPanel();
+          renderAllPanels();
+          showToast(t('toastReset'));
+        });
+
+        document.getElementById('exportPngBtn').addEventListener('click', exportHighResPng);
+
+        // AI / Remix modal
+        const modal = document.getElementById('aiModal');
+        document.getElementById('openAiBtn').addEventListener('click', () => modal.classList.add('open'));
+        document.getElementById('closeAiBtn').addEventListener('click', () => modal.classList.remove('open'));
+        modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+        document.getElementById('localRemixBtn').addEventListener('click', () => {
+          const topic = document.getElementById('aiTopic').value.trim();
+          const tpl = LOCAL_SCRIPTS[localRemixIdx % LOCAL_SCRIPTS.length][lang];
+          localRemixIdx++;
+          comic.title = topic || tpl.title;
+          comic.panels = tpl.panels.map(p => ({ ...clone(p), customImg: '' }));
+          saveComic();
+          syncEditorFromPanel();
+          renderAllPanels();
+          modal.classList.remove('open');
+          showToast(t('toastLocal'));
+        });
+
+        document.getElementById('byokGenerateBtn').addEventListener('click', generateWithByok);
+
+        document.getElementById('langEn').addEventListener('click', () => { lang = 'en'; applyLanguage(); });
+        document.getElementById('langFr').addEventListener('click', () => { lang = 'fr'; applyLanguage(); });
+
+        document.getElementById('downloadHtmlBtn').addEventListener('click', () => {
+          const blob = new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'day-29-infinite-webtoon.html';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      // Restore saved BYOK key if any
+      try {
+        const savedAi = JSON.parse(localStorage.getItem(AI_KEY_STORAGE) || 'null');
+        if (savedAi) {
+          document.getElementById('aiProvider').value = savedAi.provider || 'openai';
+          document.getElementById('aiKey').value = savedAi.key || '';
+        }
+      } catch (e) {}
+
+      loadComic();
+      bindEvents();
+      applyLanguage();
+    })();
+  </script>
+</body>
+</html>

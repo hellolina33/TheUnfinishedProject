@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <!-- Lemon/gold pastel background -->
+  <rect width="1672" height="941" fill="#FFE36E"/>
+  <circle cx="215" cy="185" r="150" fill="#FFF0A8"/>
+  <circle cx="1470" cy="775" r="190" fill="#FFF0A8"/>
+  <circle cx="840" cy="470" r="320" fill="#FFF5C2" opacity="0.55"/>
+
+  <!-- Open Hardcover Book -->
+  <g transform="rotate(-2 760 510)">
+    <!-- Shadow -->
+    <g transform="translate(16 18)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="210" y="250" width="990" height="535" rx="44"/>
+    </g>
+    <!-- Hardcover backing -->
+    <rect x="210" y="250" width="990" height="535" rx="44" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Left Page -->
+    <path d="M250 220 C395 202 585 210 705 268 V742 C585 692 395 688 250 708 Z" fill="#FFF9EE" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Right Page -->
+    <path d="M1160 220 C1015 202 825 210 705 268 V742 C825 692 1015 688 1160 708 Z" fill="#FFFDF7" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Page lines left -->
+    <line x1="322" y1="330" x2="625" y2="338" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+    <line x1="322" y1="386" x2="600" y2="392" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+    <line x1="322" y1="442" x2="615" y2="448" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+    <!-- Highlighted golden passage left -->
+    <rect x="314" y="484" width="315" height="36" rx="14" fill="#FFE36E" stroke="#17141F" stroke-width="5"/>
+    <line x1="322" y1="566" x2="570" y2="570" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+
+    <!-- Page lines right -->
+    <line x1="782" y1="338" x2="1085" y2="330" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+    <line x1="782" y1="392" x2="1055" y2="386" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+    <line x1="782" y1="448" x2="1075" y2="442" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+    <line x1="782" y1="504" x2="1020" y2="498" stroke="#17141F" stroke-width="8" stroke-linecap="round" opacity="0.22"/>
+    <!-- Little serene sun doodle on right page -->
+    <circle cx="945" cy="595" r="34" fill="#A9D6FF" stroke="#17141F" stroke-width="6"/>
+    <path d="M929 593 Q937 584 945 593" fill="none" stroke="#17141F" stroke-width="5" stroke-linecap="round"/>
+    <path d="M949 593 Q957 584 965 593" fill="none" stroke="#17141F" stroke-width="5" stroke-linecap="round"/>
+    <path d="M936 608 Q946 618 956 608" fill="none" stroke="#17141F" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Ribbon bookmark -->
+    <path d="M718 260 H778 V625 L748 590 L718 625 Z" fill="#3FD0A0" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Serene Teacup on Right -->
+  <g transform="rotate(5 1385 560)">
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1265" y="455" width="235" height="225" rx="68"/>
+    </g>
+    <!-- Cup handle -->
+    <path d="M1495 505 C1565 505 1565 615 1495 615" fill="none" stroke="#17141F" stroke-width="14" stroke-linecap="round"/>
+    <path d="M1495 505 C1555 505 1555 615 1495 615" fill="none" stroke="#FFFDF7" stroke-width="6" stroke-linecap="round"/>
+    <!-- Cup body -->
+    <path d="M1265 468 H1500 V580 C1500 652 1448 692 1382 692 C1316 692 1265 652 1265 580 Z" fill="#FFFDF7" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Peaceful closed-eye face on cup -->
+    <path d="M1332 562 Q1348 548 1364 562" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <path d="M1402 562 Q1418 548 1434 562" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <path d="M1364 596 Q1383 614 1402 596" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <ellipse cx="1322" cy="586" rx="14" ry="8" fill="#FFB8DE"/>
+    <ellipse cx="1444" cy="586" rx="14" ry="8" fill="#FFB8DE"/>
+    <!-- Gentle steam -->
+    <path d="M1344 432 Q1326 392 1352 355" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <path d="M1392 422 Q1374 378 1400 338" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <path d="M1438 434 Q1420 396 1444 360" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M210 520 Q210 554 244 554 Q210 554 210 588 Q210 554 176 554 Q210 554 210 520Z" fill="#FFFDF7" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1260 155 Q1260 194 1299 194 Q1260 194 1260 233 Q1260 194 1221 194 Q1260 194 1260 155Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M720 96 Q720 128 752 128 Q720 128 720 160 Q720 128 688 128 Q720 128 720 96Z" fill="#3FD0A0" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

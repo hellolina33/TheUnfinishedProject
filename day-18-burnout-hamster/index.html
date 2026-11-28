@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Burnout: Le Hamster sous Stéroïdes — Interactive Chapter &amp; Self-Check | The Unfinished 30 · Day 18</title>
+  <meta name="description" content="An interactive digital book chapter and 2-minute Wheel Speed Self-Check on Stage 1 of burnout: uncontrolled over-ambition. 100% private in your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --paper: #FAF5EC;
+      --paper-card: #FFFDF8;
+      --paper-warm: #F3E9D8;
+      --ink: #1D1815;
+      --ink-muted: #5F554D;
+      --border: #E4D7C5;
+      --accent: #D85334;
+      --peach: #FFB894;
+      --peach-soft: #FFE7D9;
+      --sage: #387559;
+      --sage-soft: #E5F4EC;
+      --amber: #C77A14;
+      --amber-soft: #FFF2DC;
+      --red: #C83A2B;
+      --red-soft: #FDE9E6;
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      background: #1C1715;
+      color: #FAF5EC;
+      padding: 10px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .challenge-bar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .challenge-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .challenge-left a { color: #FAF5EC; text-decoration: none; font-weight: 600; }
+    .challenge-left a:hover { color: var(--peach); }
+    .challenge-sep { opacity: 0.35; }
+    .challenge-right { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(255, 255, 255, 0.08);
+      color: #FAF5EC;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .bar-btn:hover { border-color: var(--peach); color: var(--peach); }
+
+    /* Layout */
+    .book-layout {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 18px 72px;
+      display: grid;
+      grid-template-columns: 1fr 270px;
+      gap: 34px;
+      align-items: start;
+    }
+    @media (max-width: 920px) {
+      .book-layout { grid-template-columns: 1fr; gap: 22px; }
+    }
+
+    /* Sticky Wheel Meter */
+    .wheel-rail {
+      position: sticky;
+      top: 66px;
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: 0 12px 30px rgba(29, 24, 21, 0.06);
+      text-align: center;
+    }
+    @media (max-width: 920px) {
+      .wheel-rail {
+        order: -1;
+        position: sticky;
+        top: 48px;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        text-align: left;
+        padding: 10px 14px;
+      }
+      .wheel-svg-wrap { width: 64px !important; height: 64px !important; margin: 0 !important; flex-shrink: 0; }
+      .wheel-extra { display: none; }
+    }
+    .wheel-svg-wrap {
+      width: 148px;
+      height: 148px;
+      margin: 0 auto 10px;
+    }
+    .rpm-readout {
+      font-family: var(--font-mono);
+      font-size: 1.55rem;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+    .rpm-sub {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      margin-bottom: 8px;
+    }
+    .zone-pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .zone-cruising { background: var(--sage-soft); color: var(--sage); }
+    .zone-overheating { background: var(--amber-soft); color: var(--amber); }
+    .zone-redline { background: var(--red-soft); color: var(--red); }
+
+    .rail-btn {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--paper);
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 9px;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+    .rail-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* Editorial Cover */
+    .book-cover {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 28px;
+      margin-bottom: 32px;
+    }
+    .chapter-kicker {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .privacy-pill {
+      background: var(--sage-soft);
+      color: var(--sage);
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0;
+      text-transform: none;
+    }
+    .book-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.15rem, 4.6vw, 3.35rem);
+      font-weight: 500;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+    }
+    .book-title em { color: var(--accent); font-style: italic; }
+    .book-deck {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      color: var(--ink-muted);
+      max-width: 640px;
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+    .cover-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      appearance: none;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 10px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: all 0.16s;
+    }
+    .btn-primary { background: var(--ink); color: #FAF5EC; }
+    .btn-primary:hover { background: var(--accent); }
+    .btn-secondary { background: var(--paper-card); border-color: var(--border); color: var(--ink); }
+    .btn-secondary:hover { border-color: var(--ink); }
+
+    /* Reading Sections */
+    .chapter-card {
+      margin-bottom: 34px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .ch-num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .ch-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+    .ch-body p {
+      font-family: var(--font-serif);
+      font-size: 1.13rem;
+      line-height: 1.78;
+      color: #2A2420;
+      margin-bottom: 14px;
+    }
+    .pull-quote {
+      border-left: 3px solid var(--accent);
+      padding: 6px 0 6px 18px;
+      margin: 18px 0;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.22rem;
+      color: var(--ink);
+    }
+
+    /* Expandable Pause & Reflect */
+    .reflect-box {
+      margin-top: 16px;
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .reflect-toggle {
+      width: 100%;
+      background: transparent;
+      border: none;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: left;
+    }
+    .reflect-toggle:hover { background: var(--paper-warm); }
+    .reflect-content {
+      display: none;
+      padding: 0 16px 16px;
+      border-top: 1px solid #EFE5D6;
+    }
+    .reflect-box.open .reflect-content { display: block; }
+    .reflect-prompt {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--ink-muted);
+      margin: 12px 0 10px;
+    }
+    .reflect-textarea {
+      width: 100%;
+      min-height: 82px;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      color: var(--ink);
+      resize: vertical;
+      outline: none;
+    }
+    .reflect-textarea:focus { border-color: var(--accent); background: #fff; }
+    .saved-badge {
+      font-size: 11px;
+      color: var(--sage);
+      font-weight: 600;
+    }
+
+    /* Wheel Speed Self-Check */
+    .selfcheck-section {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 26px 24px;
+      margin-top: 12px;
+      box-shadow: 0 14px 36px rgba(29, 24, 21, 0.05);
+    }
+    .slider-row {
+      padding: 14px 0;
+      border-bottom: 1px solid #F0E6D7;
+    }
+    .slider-row:last-of-type { border-bottom: none; }
+    .slider-poles {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      font-size: 13.5px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .pole-left { color: var(--sage); }
+    .pole-right { color: var(--accent); text-align: right; }
+    .slider-control {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .slider-control input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+    .slider-num {
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      font-weight: 600;
+      width: 30px;
+      text-align: right;
+      color: var(--ink-muted);
+    }
+
+    /* Result Box */
+    .result-panel {
+      margin-top: 22px;
+      padding: 20px;
+      border-radius: var(--radius-md);
+      background: var(--paper);
+      border: 1px solid var(--border);
+    }
+    .result-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .result-title {
+      font-family: var(--font-serif);
+      font-size: 1.45rem;
+      font-weight: 600;
+    }
+    .brakes-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .brake-card {
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+    .brake-card strong { display: block; font-size: 14px; margin-bottom: 3px; }
+    .brake-card span { font-size: 13px; color: var(--ink-muted); }
+
+    /* Downloadable Reflection Card */
+    .card-export-box {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+    .promise-input {
+      width: 100%;
+      background: var(--paper-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: var(--font-serif);
+      font-size: 15px;
+      color: var(--ink);
+      margin: 8px 0 14px;
+      outline: none;
+    }
+    .promise-input:focus { border-color: var(--accent); }
+    .card-preview {
+      background: #1D1815;
+      color: #FAF5EC;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 14px;
+      border: 2px solid var(--peach);
+    }
+    .card-preview-top {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--peach);
+      margin-bottom: 12px;
+    }
+    .card-preview h4 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      margin-bottom: 8px;
+    }
+    .card-preview ul {
+      padding-left: 18px;
+      font-size: 13px;
+      color: #E7DDD0;
+      display: grid;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+    .card-preview-promise {
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: var(--peach);
+      font-size: 14.5px;
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      padding-top: 10px;
+    }
+
+    /* Unfinished */
+    .unfinished {
+      margin-top: 38px;
+      background: var(--paper-card);
+      border: 1px dashed #CFAF94;
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+    }
+    .unfinished h3 { font-family: var(--font-serif); font-size: 1.2rem; margin-bottom: 8px; }
+    .unfinished p, .unfinished li { font-size: 13.5px; color: var(--ink-muted); }
+    .unfinished ul { padding-left: 18px; margin-top: 8px; display: grid; gap: 6px; }
+  </style>
+</head>
+<body>
+  <!-- Challenge Top Bar -->
+  <header class="challenge-bar">
+    <div class="challenge-bar-inner">
+      <div class="challenge-left">
+        <a href="/" data-i18n="barTitle">The Unfinished 30 · Day 18/30</a>
+        <span class="challenge-sep">·</span>
+        <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener" data-i18n="barAuthor">by Salah Khenissi</a>
+      </div>
+      <div class="challenge-right">
+        <button class="bar-btn" id="langToggle" type="button">FR</button>
+        <button class="bar-btn" id="downloadHtmlBtn" type="button" data-i18n="downloadHtml">⬇ Download HTML</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="book-layout">
+    <!-- Main Book Column -->
+    <article>
+      <header class="book-cover">
+        <div class="chapter-kicker">
+          <span data-i18n="kicker">Interactive Book Chapter · Stage I of Burnout</span>
+          <span class="privacy-pill">🔒 <span data-i18n="privacyPill">100% Private · Zero Tracking</span></span>
+        </div>
+        <h1 class="book-title" data-i18n-html="bookTitle">Burnout: <em>The Hamster on Steroids</em></h1>
+        <p class="book-deck" data-i18n="bookDeck">
+          Burnout rarely starts with exhaustion. It starts with applause, adrenaline, and a quiet belief that if you run just a little faster, you will finally feel caught up.
+        </p>
+        <div class="cover-nav">
+          <a href="#chapters" class="btn btn-primary" data-i18n="startReading">Read the 4 Sections</a>
+          <a href="#selfcheck" class="btn btn-secondary" data-i18n="jumpCheck">Jump to 2-Min Self-Check ↓</a>
+        </div>
+      </header>
+
+      <!-- 4 Reading Sections -->
+      <div id="chapters"></div>
+
+      <!-- 2-Minute Wheel Speed Self-Check -->
+      <section class="selfcheck-section" id="selfcheck">
+        <div class="ch-num" data-i18n="checkKicker">Interactive Self-Check · 2 Minutes</div>
+        <h2 class="ch-heading" data-i18n="checkTitle">How fast is your wheel spinning right now?</h2>
+        <p style="font-size:14.5px; color:var(--ink-muted); margin-bottom:14px;" data-i18n="checkSub">
+          Move each slider honestly based on the last two weeks. Nothing is uploaded or tracked—this stays strictly inside your browser.
+        </p>
+
+        <div id="slidersContainer"></div>
+
+        <div class="result-panel" id="resultPanel">
+          <div class="result-head">
+            <div>
+              <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--ink-muted);" data-i18n="currentZone">CURRENT WHEEL ZONE</div>
+              <div class="result-title" id="resultZoneTitle">Overheating · 62 RPM</div>
+            </div>
+            <span class="zone-pill zone-overheating" id="resultZonePill">Overheating</span>
+          </div>
+          <p id="resultDiagnosis" style="font-family:var(--font-serif); font-size:1.05rem; color:var(--ink);"></p>
+
+          <div style="margin-top:16px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--accent);" data-i18n="brakesHeading">
+            3 Gentle Micro-Brakes to Pull This Week
+          </div>
+          <div class="brakes-list" id="brakesList"></div>
+
+          <!-- Downloadable Reflection Card -->
+          <div class="card-export-box">
+            <label for="promiseInput" style="font-size:13px; font-weight:600; display:block;" data-i18n="promiseLabel">
+              Optional: Write one gentle promise to yourself for this week
+            </label>
+            <input id="promiseInput" class="promise-input" type="text" placeholder="This week, I will close my laptop at 18:30 twice without guilt." />
+
+            <div class="card-preview" id="cardPreview">
+              <div class="card-preview-top">
+                <span>BURNOUT · STAGE I REFLECTION CARD</span>
+                <span id="previewDate"></span>
+              </div>
+              <h4 id="previewHeadline"></h4>
+              <ul id="previewBrakes"></ul>
+              <div class="card-preview-promise" id="previewPromise"></div>
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+              <button type="button" class="btn btn-primary" id="downloadCardBtn">⬇ <span data-i18n="downloadCard">Download Reflection Card (PNG)</span></button>
+              <button type="button" class="btn btn-secondary" id="resetAllBtn" data-i18n="resetPrivate">Reset My Private Answers</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Honest Unfinished Section -->
+      <section class="unfinished">
+        <h3 data-i18n="unfinishedTitle">What's still unfinished</h3>
+        <p data-i18n="unfinishedIntro">
+          This interactive chapter is a one-day prototype inspired by Salah Khenissi's writing on burnout. A few honest boundaries:
+        </p>
+        <ul>
+          <li data-i18n="unfin1">This is a self-reflection mirror, not a clinical diagnostic tool. If you feel persistently depleted, numb, or anxious, please talk to a doctor or therapist.</li>
+          <li data-i18n="unfin2">Only Stage I ("The Hamster on Steroids") is written here—the later stages of the burnout arc (cynicism, quiet detachment, and recovery) are still in draft form.</li>
+          <li data-i18n="unfin3">Reflections are stored only in browser localStorage with no multi-week trend chart yet.</li>
+        </ul>
+      </section>
+    </article>
+
+    <!-- Sticky Animated SVG Hamster-Wheel Speedometer -->
+    <aside class="wheel-rail" aria-label="Hamster wheel speed indicator">
+      <div class="wheel-svg-wrap">
+        <svg viewBox="0 0 180 180" width="100%" height="100%" aria-hidden="true">
+          <!-- Stand -->
+          <path d="M52 162 L82 95 L98 95 L128 162" fill="none" stroke="#1D1815" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="34" y="156" width="112" height="14" rx="7" fill="#FFB894" stroke="#1D1815" stroke-width="4"/>
+          <!-- Outer ring -->
+          <circle cx="90" cy="84" r="68" fill="#FFFDF8" stroke="#1D1815" stroke-width="6"/>
+          <circle cx="90" cy="84" r="56" fill="#FAF5EC" stroke="#1D1815" stroke-width="3"/>
+          <!-- Rotating spokes group -->
+          <g id="wheelSpokes" transform="rotate(0 90 84)">
+            <line x1="90" y1="28" x2="90" y2="140" stroke="#1D1815" stroke-width="4" stroke-linecap="round"/>
+            <line x1="34" y1="84" x2="146" y2="84" stroke="#1D1815" stroke-width="4" stroke-linecap="round"/>
+            <line x1="50" y1="44" x2="130" y2="124" stroke="#1D1815" stroke-width="4" stroke-linecap="round"/>
+            <line x1="50" y1="124" x2="130" y2="44" stroke="#1D1815" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="90" cy="34" r="6" fill="#D85334"/>
+            <circle cx="140" cy="84" r="5" fill="#FFB894"/>
+            <circle cx="90" cy="134" r="5" fill="#387559"/>
+            <circle cx="40" cy="84" r="5" fill="#C77A14"/>
+          </g>
+          <!-- Center hub -->
+          <circle cx="90" cy="84" r="11" fill="#D85334" stroke="#1D1815" stroke-width="4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="rpm-readout" id="railRpm">54 RPM</div>
+        <div class="rpm-sub" id="railSourceLabel" data-i18n="wheelSpeed">Wheel Speed</div>
+        <span class="zone-pill zone-overheating" id="railZonePill">Overheating</span>
+        <div class="wheel-extra">
+          <p style="font-size:12px; color:var(--ink-muted); line-height:1.45; margin-top:4px;" data-i18n="wheelNote">
+            Spins faster as you scroll or slide higher on the self-check.
+          </p>
+          <button type="button" class="rail-btn" id="toggleMotionBtn" data-i18n="pauseWheel">⏸ Pause Wheel</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const STORAGE_KEY = 'burnout_hamster_v1';
+
+      const CONTENT = {
+        en: {
+          barTitle: 'The Unfinished 30 · Day 18/30',
+          barAuthor: 'by Salah Khenissi',
+          downloadHtml: '⬇ Download HTML',
+          kicker: 'Interactive Book Chapter · Stage I of Burnout',
+          privacyPill: '100% Private · Zero Tracking',
+          bookTitle: 'Burnout: <em>The Hamster on Steroids</em>',
+          bookDeck: 'Burnout rarely starts with exhaustion. It starts with applause, adrenaline, and a quiet belief that if you run just a little faster, you will finally feel caught up.',
+          startReading: 'Read the 4 Sections',
+          jumpCheck: 'Jump to 2-Min Self-Check ↓',
+          wheelSpeed: 'Wheel Speed',
+          wheelNote: 'Spins faster as you scroll or slide higher on the self-check.',
+          pauseWheel: '⏸ Pause Wheel',
+          resumeWheel: '▶ Resume Wheel',
+          pauseReflectBtn: 'Pause & reflect',
+          savedLocal: 'Saved locally ✓',
+          checkKicker: 'Interactive Self-Check · 2 Minutes',
+          checkTitle: 'How fast is your wheel spinning right now?',
+          checkSub: 'Move each slider honestly based on the last two weeks. Nothing is uploaded or tracked—this stays strictly inside your browser.',
+          currentZone: 'CURRENT WHEEL ZONE',
+          brakesHeading: '3 Gentle Micro-Brakes to Pull This Week',
+          promiseLabel: 'Optional: Write one gentle promise to yourself for this week',
+          promisePlaceholder: 'This week, I will close my laptop at 18:30 twice without guilt.',
+          downloadCard: 'Download Reflection Card (PNG)',
+          resetPrivate: 'Reset My Private Answers',
+          unfinishedTitle: "What's still unfinished",
+          unfinishedIntro: "This interactive chapter is a one-day prototype inspired by Salah Khenissi's writing on burnout. A few honest boundaries:",
+          unfin1: 'This is a self-reflection mirror, not a clinical diagnostic tool. If you feel persistently depleted, numb, or anxious, please talk to a doctor or therapist.',
+          unfin2: 'Only Stage I ("The Hamster on Steroids") is written here—the later stages of the burnout arc (cynicism, quiet detachment, and recovery) are still in draft form.',
+          unfin3: 'Reflections are stored only in browser localStorage with no multi-week trend chart yet.',
+          zones: {
+            cruising: {
+              label: 'Cruising',
+              cls: 'zone-cruising',
+              diag: 'Your ambition still has steering. You can push when it matters and step off the wheel without guilt. Protect this rhythm fiercely—it is easier to maintain than to rebuild.'
+            },
+            overheating: {
+              label: 'Overheating',
+              cls: 'zone-overheating',
+              diag: 'You are in classic Stage I territory: productive from the outside, quietly wired on the inside. Your drive is starting to outpace your recovery. Small micro-brakes right now prevent a hard crash later.'
+            },
+            redline: {
+              label: 'Redline',
+              cls: 'zone-redline',
+              diag: 'The wheel is running you, not the other way around. Even rest feels like an unfinished task. You do not need a dramatic life overhaul tonight—you need one honest, protected pause this week.'
+            }
+          },
+          chapters: [
+            {
+              num: 'Section I',
+              title: 'The Invisible Audition',
+              paragraphs: [
+                'Nobody wakes up one morning and decides to burn out. The trap is far more flattering: it begins with competence. You ship early, you absorb messy problems without complaining, and people start calling you "reliable."',
+                'Slowly, almost invisibly, curiosity turns into an audition. Every project feels like proof that you deserve the seat you already earned three years ago.'
+              ],
+              quote: '“The most dangerous phase of burnout looks identical to high performance—until the day your nervous system sends the invoice.”',
+              prompt: 'Where in your work right now are you still auditioning for approval you have already earned?'
+            },
+            {
+              num: 'Section II',
+              title: 'The Moving Goalpost Reflex',
+              paragraphs: [
+                'Watch what happens the exact minute you finish something hard. Do you exhale and let the win land for an evening—or do you feel a twelve-minute flicker of relief before scanning the horizon for the next hill?',
+                'That is the hamster on steroids. You are not running toward a finish line; you are running to outrun the discomfort of standing still.'
+              ],
+              quote: '“If every summit immediately becomes a base camp, you never actually arrive anywhere.”',
+              prompt: 'What was the last genuine win you rushed past without celebrating for even ten minutes?'
+            },
+            {
+              num: 'Section III',
+              title: 'Velocity Masquerading as Meaning',
+              paragraphs: [
+                'Speed is seductive because it numbs doubt. When your calendar is packed back-to-back and Slack is glowing, there is no room to ask the scarier question: does any of this actually matter to me anymore?',
+                'So we add another side project, another metric, another commitment. Busyness becomes armor.'
+              ],
+              quote: '“Motion feels like progress, even when you are sprinting in a circle.”',
+              prompt: 'Which recurring commitment on your calendar creates motion without real meaning?'
+            },
+            {
+              num: 'Section IV',
+              title: 'Pulling the Micro-Brake',
+              paragraphs: [
+                'Stepping off the wheel does not require quitting your job or moving to a cabin. Ambitious people rarely respond well to "just do less." What actually works is friction—tiny, deliberate micro-brakes that interrupt autopilot.',
+                'Leaving one 20-minute gap unbooked. Saying "let me check my capacity and reply tomorrow" instead of an instant yes. Letting a B+ draft ship so your nervous system keeps its evening.'
+              ],
+              quote: '“Rest is not the prize you earn after finishing everything. Everything never finishes.”',
+              prompt: 'What is one tiny boundary you could test this week—small enough that you will actually keep it?'
+            }
+          ],
+          sliders: [
+            {
+              left: 'I celebrate wins and let them sink in',
+              right: 'I move the goalpost immediately',
+              brakeTitle: 'The 24-Hour Done Rule',
+              brakeDesc: 'After your next milestone, write down 3 things that went well and wait 24 hours before starting the next big sprint.'
+            },
+            {
+              left: 'Rest feels nourishing and normal',
+              right: 'Rest feels like falling behind',
+              brakeTitle: 'Schedule One Guilt-Free Hour',
+              brakeDesc: 'Block 60 minutes this week labeled "Non-Productive Time"—no podcasts, no optimizing, no side-project tinkering.'
+            },
+            {
+              left: 'My calendar has breathing room',
+              right: 'Back-to-back is my default state',
+              brakeTitle: 'Insert Two 15-Min Buffers',
+              brakeDesc: 'Shorten two 60-minute meetings to 45 minutes and spend the extra 15 minutes away from every screen.'
+            },
+            {
+              left: 'I say no cleanly when full',
+              right: 'I say yes, then quietly resent it',
+              brakeTitle: 'Use the 24-Hour Pause Script',
+              brakeDesc: 'Reply "Let me check my bandwidth and get back to you tomorrow" to the next non-urgent request.'
+            },
+            {
+              left: 'My mood is separate from my output',
+              right: 'A slow day makes me feel worthless',
+              brakeTitle: 'Track One Non-Work Anchor',
+              brakeDesc: 'Pick one daily ritual unrelated to achievement (a walk, cooking, reading fiction) and treat it as non-negotiable.'
+            },
+            {
+              left: 'Work ends when I close my laptop',
+              right: 'My brain keeps rehearsing tasks at night',
+              brakeTitle: '5-Minute Shutdown Dump',
+              brakeDesc: 'Write tomorrow’s top 3 tasks on paper at 18:00, close the notebook, and tell your brain the shift is officially over.'
+            },
+            {
+              left: 'Good enough ships peacefully',
+              right: 'Everything must be 110% or I spiral',
+              brakeTitle: 'Ship One Deliberate B+',
+              brakeDesc: 'Pick one low-stakes deliverable this week and intentionally stop polishing at 85%.'
+            },
+            {
+              left: 'I notice fatigue early and slow down',
+              right: 'I push harder when I feel tired',
+              brakeTitle: 'Respect the First Yawn',
+              brakeDesc: 'The next time you reach for late-day caffeine to force another hour, close the tab and take a 15-minute walk instead.'
+            }
+          ]
+        },
+        fr: {
+          barTitle: 'The Unfinished 30 · Jour 18/30',
+          barAuthor: 'par Salah Khenissi',
+          downloadHtml: '⬇ Télécharger HTML',
+          kicker: 'Chapitre de Livre Interactif · Stade I du Burnout',
+          privacyPill: '100% Privé · Zéro Tracking',
+          bookTitle: 'Burnout : <em>Le Hamster sous Stéroïdes</em>',
+          bookDeck: 'Le burnout commence rarement par l’épuisement. Il commence par les applaudissements, l’adrénaline, et la croyance silencieuse qu’en courant juste un peu plus vite, on finira enfin par respirer.',
+          startReading: 'Lire les 4 sections',
+          jumpCheck: 'Faire le test en 2 min ↓',
+          wheelSpeed: 'Vitesse de la Roue',
+          wheelNote: 'Accélère selon votre lecture et vos curseurs d’auto-évaluation.',
+          pauseWheel: '⏸ Mettre en pause',
+          resumeWheel: '▶ Relancer la roue',
+          pauseReflectBtn: 'Pause & réflexion',
+          savedLocal: 'Enregistré localement ✓',
+          checkKicker: 'Auto-évaluation · 2 Minutes',
+          checkTitle: 'À quelle vitesse tourne votre roue en ce moment ?',
+          checkSub: 'Placez chaque curseur honnêtement sur vos deux dernières semaines. Rien n’est envoyé ni tracé : tout reste dans votre navigateur.',
+          currentZone: 'ZONE ACTUELLE DE LA ROUE',
+          brakesHeading: '3 Micro-Freins Doux à Tirer Cette Semaine',
+          promiseLabel: 'Optionnel : Écrivez une petite promesse réaliste pour cette semaine',
+          promisePlaceholder: 'Cette semaine, je ferme mon ordinateur à 18h30 deux fois sans culpabiliser.',
+          downloadCard: 'Télécharger ma Carte Réflexion (PNG)',
+          resetPrivate: 'Effacer mes réponses privées',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          unfinishedIntro: 'Ce chapitre interactif est un prototype d’un jour inspiré des écrits de Salah Khenissi sur le burnout. Quelques limites honnêtes :',
+          unfin1: 'Ceci est un miroir de réflexion, pas un outil de diagnostic médical. Si vous vous sentez durablement vidé, anxieux ou détaché, parlez-en à un médecin ou un thérapeute.',
+          unfin2: 'Seul le Stade I (« Le Hamster sous Stéroïdes ») est présent ici : les étapes suivantes (cynisme, effacement silencieux, reconstruction) sont encore en brouillon.',
+          unfin3: 'Vos réflexions restent uniquement dans le localStorage, sans suivi d’évolution multi-semaines pour l’instant.',
+          zones: {
+            cruising: {
+              label: 'Vitesse de Croisière',
+              cls: 'zone-cruising',
+              diag: 'Votre ambition a encore un volant. Vous savez accélérer quand ça compte et descendre de la roue sans culpabilité. Protégez ce rythme : il est bien plus facile à préserver qu’à reconstruire.'
+            },
+            overheating: {
+              label: 'Surchauffe',
+              cls: 'zone-overheating',
+              diag: 'Vous êtes en plein Stade I : performant vu de l’extérieur, constamment sous tension à l’intérieur. Votre élan dépasse votre récupération. Quelques micro-freins maintenant évitent le mur plus tard.'
+            },
+            redline: {
+              label: 'Zone Rouge',
+              cls: 'zone-redline',
+              diag: 'C’est la roue qui vous pilote, plus l’inverse. Même le repos ressemble à une tâche inachevée. Vous n’avez pas besoin de tout changer ce soir — mais d’une vraie pause protégée cette semaine.'
+            }
+          },
+          chapters: [
+            {
+              num: 'Section I',
+              title: 'L’audition invisible',
+              paragraphs: [
+                'Personne ne se réveille un matin en décidant de faire un burnout. Le piège est beaucoup plus flatteur : il commence par la compétence. Vous livrez tôt, vous absorbez les problèmes complexes sans vous plaindre, et on vous qualifie de « fiable ».',
+                'Doucement, presque sans bruit, la curiosité se transforme en audition permanente. Chaque projet devient la preuve que vous méritez une place déjà gagnée il y a trois ans.'
+              ],
+              quote: '« La phase la plus dangereuse du burnout ressemble trait pour trait à la haute performance — jusqu’au jour où le système nerveux présente la facture. »',
+              prompt: 'Dans quel domaine de votre travail passez-vous encore une audition pour une légitimité déjà acquise ?'
+            },
+            {
+              num: 'Section II',
+              title: 'Le réflexe de la ligne d’arrivée mobile',
+              paragraphs: [
+                'Observez ce qui se passe à la seconde exacte où vous terminez quelque chose de difficile. Est-ce que vous expirez pour savourer la soirée — ou ressentez-vous douze minutes de soulagement avant de chercher le sommet suivant ?',
+                'C’est ça, le hamster sous stéroïdes. Vous ne courez pas vers une ligne d’arrivée : vous courez pour fuir l’inconfort de vous arrêter.'
+              ],
+              quote: '« Si chaque sommet devient immédiatement un camp de base, on n’arrive jamais nulle part. »',
+              prompt: 'Quelle est la dernière vraie réussite que vous avez dépassée sans même la fêter dix minutes ?'
+            },
+            {
+              num: 'Section III',
+              title: 'La vitesse déguisée en sens',
+              paragraphs: [
+                'La vitesse séduit parce qu’elle anesthésie le doute. Quand l’agenda est plein à craquer et que les notifications clignotent, il ne reste aucune place pour la question qui fait peur : est-ce que tout cela a encore du sens pour moi ?',
+                'Alors on ajoute un projet de plus, un objectif de plus. L’agitation devient une armure.'
+              ],
+              quote: '« Le mouvement donne l’illusion du progrès, même quand on sprinte en rond. »',
+              prompt: 'Quel engagement récurrent dans votre agenda crée beaucoup de mouvement pour très peu de sens ?'
+            },
+            {
+              num: 'Section IV',
+              title: 'Tirer le micro-frein',
+              paragraphs: [
+                'Descendre de la roue n’exige pas de tout plaquer pour élever des chèvres. Les esprits ambitieux réagissent mal au conseil « fais-en moins ». Ce qui fonctionne vraiment, c’est la friction : de minuscules micro-freins qui cassent le pilote automatique.',
+                'Laisser 20 minutes vides entre deux réunions. Répondre « je vérifie ma bande passante et je te dis demain » au lieu d’un oui réflexe. Livrer un brouillon à 85 % pour garder sa soirée.'
+              ],
+              quote: '« Le repos n’est pas la récompense quand tout est fini. Tout n’est jamais fini. »',
+              prompt: 'Quelle petite limite pourriez-vous tester cette semaine — assez simple pour être vraiment tenue ?'
+            }
+          ],
+          sliders: [
+            {
+              left: 'Je savoure mes réussites',
+              right: 'Je déplace l’objectif aussitôt',
+              brakeTitle: 'La Règle des 24h de Pause',
+              brakeDesc: 'Après votre prochain jalon, notez 3 choses réussies et attendez 24h avant de lancer le sprint suivant.'
+            },
+            {
+              left: 'Le repos me recharge naturellement',
+              right: 'Me reposer me donne l’impression de prendre du retard',
+              brakeTitle: 'Bloquer 1h Sans Culpabilité',
+              brakeDesc: 'Inscrivez 60 minutes « Temps Non-Productif » cette semaine — sans podcast, sans optimisation, sans écran.'
+            },
+            {
+              left: 'Mon agenda respire',
+              right: 'Les réunions s’enchaînent sans pause',
+              brakeTitle: 'Insérer Deux Tampons de 15 min',
+              brakeDesc: 'Raccourcissez deux réunions d’une heure à 45 minutes et passez les 15 minutes gagnées loin de l’écran.'
+            },
+            {
+              left: 'Je dis non clairement quand je suis plein',
+              right: 'Je dis oui puis j’en veux à tout le monde',
+              brakeTitle: 'Le Script des 24 Heures',
+              brakeDesc: 'Répondez « Je vérifie ma charge et je te réponds demain » à la prochaine demande non urgente.'
+            },
+            {
+              left: 'Mon humeur ne dépend pas de ma productivité',
+              right: 'Une journée lente me fait douter de ma valeur',
+              brakeTitle: 'Ancrer Un Rituel Hors-Travail',
+              brakeDesc: 'Choisissez un rituel quotidien zéro-performance (marche, cuisine, roman) et traitez-le comme sacré.'
+            },
+            {
+              left: 'Le travail s’arrête quand je ferme le PC',
+              right: 'Mon cerveau continue de mouliner le soir',
+              brakeTitle: 'Sas de Décompression 5 min',
+              brakeDesc: 'Notez sur papier vos 3 priorités de demain à 18h, fermez le carnet, et signalez la fin de journée.'
+            },
+            {
+              left: 'Le « assez bien » me suffit',
+              right: 'Tout doit être à 110 % sinon je stresse',
+              brakeTitle: 'Livrer Un B+ Assumé',
+              brakeDesc: 'Choisissez un livrable à faible enjeu cette semaine et arrêtez volontairement de polir à 85 %.'
+            },
+            {
+              left: 'J’écoute ma fatigue tôt',
+              right: 'J’accélère encore plus quand je suis fatigué',
+              brakeTitle: 'Respecter le Premier Bâillement',
+              brakeDesc: 'La prochaine fois que vous prenez un café tardif pour forcer 1h de plus, marchez 15 minutes à la place.'
+            }
+          ]
+        }
+      };
+
+      const state = {
+        lang: 'en',
+        sliders: [4, 3, 4, 3, 3, 4, 3, 3], // Preloaded realistic Overheating demo (~62 RPM)
+        reflections: ['', '', '', ''],
+        promise: '',
+        scrollBoost: 0,
+        motionPaused: false
+      };
+
+      const $ = (id) => document.getElementById(id);
+
+      function loadSaved() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed.sliders) && parsed.sliders.length === 8) state.sliders = parsed.sliders;
+          if (Array.isArray(parsed.reflections) && parsed.reflections.length === 4) state.reflections = parsed.reflections;
+          if (typeof parsed.promise === 'string') state.promise = parsed.promise;
+        } catch (_) {}
+      }
+
+      function saveLocal() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            sliders: state.sliders,
+            reflections: state.reflections,
+            promise: state.promise
+          }));
+        } catch (_) {}
+      }
+
+      function computeRpm() {
+        // 8 sliders each 1..5 -> sum 8..40 mapped to 12..100 RPM
+        const sum = state.sliders.reduce((a, b) => a + b, 0);
+        return Math.round(((sum - 8) / 32) * 88 + 12);
+      }
+
+      function getZoneKey(rpm) {
+        if (rpm <= 42) return 'cruising';
+        if (rpm <= 72) return 'overheating';
+        return 'redline';
+      }
+
+      function getTopBrakes() {
+        const slidersMeta = CONTENT[state.lang].sliders;
+        return state.sliders
+          .map((val, idx) => ({ val, idx }))
+          .sort((a, b) => b.val - a.val || a.idx - b.idx)
+          .slice(0, 3)
+          .map(item => slidersMeta[item.idx]);
+      }
+
+      // ---------- Render Chapters ----------
+      function renderChapters() {
+        const c = CONTENT[state.lang];
+        const container = $('chapters');
+        container.innerHTML = '';
+
+        c.chapters.forEach((ch, idx) => {
+          const sec = document.createElement('section');
+          sec.className = 'chapter-card';
+          const hasNote = Boolean((state.reflections[idx] || '').trim());
+
+          sec.innerHTML = `
+            <div class="ch-num">${ch.num}</div>
+            <h2 class="ch-heading">${ch.title}</h2>
+            <div class="ch-body">
+              ${ch.paragraphs.map(p => `<p>${p}</p>`).join('')}
+              <blockquote class="pull-quote">${ch.quote}</blockquote>
+            </div>
+            <div class="reflect-box${hasNote ? ' open' : ''}">
+              <button type="button" class="reflect-toggle">
+                <span>✍️ ${c.pauseReflectBtn}</span>
+                <span class="saved-badge" data-badge="${idx}">${hasNote ? c.savedLocal : '▾'}</span>
+              </button>
+              <div class="reflect-content">
+                <p class="reflect-prompt">${ch.prompt}</p>
+                <textarea class="reflect-textarea" data-idx="${idx}" placeholder="...">${escapeHtml(state.reflections[idx] || '')}</textarea>
+              </div>
+            </div>
+          `;
+
+          const box = sec.querySelector('.reflect-box');
+          sec.querySelector('.reflect-toggle').addEventListener('click', () => {
+            box.classList.toggle('open');
+          });
+          const ta = sec.querySelector('.reflect-textarea');
+          ta.addEventListener('input', () => {
+            state.reflections[idx] = ta.value;
+            saveLocal();
+            sec.querySelector(`[data-badge="${idx}"]`).textContent = ta.value.trim() ? c.savedLocal : '▾';
+          });
+
+          container.appendChild(sec);
+        });
+      }
+
+      // ---------- Render Sliders ----------
+      function renderSliders() {
+        const c = CONTENT[state.lang];
+        const box = $('slidersContainer');
+        box.innerHTML = '';
+
+        c.sliders.forEach((sl, idx) => {
+          const row = document.createElement('div');
+          row.className = 'slider-row';
+          row.innerHTML = `
+            <div class="slider-poles">
+              <span class="pole-left">${sl.left}</span>
+              <span class="pole-right">${sl.right}</span>
+            </div>
+            <div class="slider-control">
+              <input type="range" min="1" max="5" step="1" value="${state.sliders[idx]}" data-sidx="${idx}" />
+              <span class="slider-num" id="snum_${idx}">${state.sliders[idx]}/5</span>
+            </div>
+          `;
+          const input = row.querySelector('input');
+          input.addEventListener('input', () => {
+            state.sliders[idx] = parseInt(input.value, 10);
+            $(`snum_${idx}`).textContent = `${state.sliders[idx]}/5`;
+            saveLocal();
+            updateScoreUI();
+          });
+          box.appendChild(row);
+        });
+      }
+
+      // ---------- Update Score, Brakes & Preview Card ----------
+      function updateScoreUI() {
+        const c = CONTENT[state.lang];
+        const rpm = computeRpm();
+        const zoneKey = getZoneKey(rpm);
+        const zone = c.zones[zoneKey];
+        const brakes = getTopBrakes();
+
+        // Update rail
+        $('railRpm').textContent = `${rpm} RPM`;
+        const railPill = $('railZonePill');
+        railPill.textContent = zone.label;
+        railPill.className = `zone-pill ${zone.cls}`;
+
+        // Update result panel
+        $('resultZoneTitle').textContent = `${zone.label} · ${rpm} RPM`;
+        const resPill = $('resultZonePill');
+        resPill.textContent = zone.label;
+        resPill.className = `zone-pill ${zone.cls}`;
+        $('resultDiagnosis').textContent = zone.diag;
+
+        const bList = $('brakesList');
+        bList.innerHTML = '';
+        brakes.forEach(b => {
+          const card = document.createElement('div');
+          card.className = 'brake-card';
+          card.innerHTML = `<strong>${b.brakeTitle}</strong><span>${b.brakeDesc}</span>`;
+          bList.appendChild(card);
+        });
+
+        // Update Reflection Card Preview
+        const todayStr = new Date().toLocaleDateString(state.lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        $('previewDate').textContent = todayStr;
+        $('previewHeadline').textContent = `${zone.label} (${rpm} RPM)`;
+        $('previewBrakes').innerHTML = brakes.map(b => `<li><strong>${b.brakeTitle}:</strong> ${b.brakeDesc}</li>`).join('');
+        const promiseText = state.promise.trim() || c.promisePlaceholder;
+        $('previewPromise').textContent = `“${promiseText}”`;
+      }
+
+      function escapeHtml(s) {
+        return String(s || '').replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+      }
+
+      // ---------- Animated SVG Wheel Loop ----------
+      let wheelAngle = 0;
+      let lastTs = 0;
+      const spokesEl = $('wheelSpokes');
+
+      function animateWheel(ts) {
+        if (!lastTs) lastTs = ts;
+        const dt = Math.min(0.05, (ts - lastTs) / 1000);
+        lastTs = ts;
+
+        if (!state.motionPaused) {
+          const baseRpm = computeRpm();
+          const effectiveRpm = Math.min(115, baseRpm + state.scrollBoost);
+          // Degrees per second scaled gently for visual clarity
+          const degPerSec = effectiveRpm * 2.8;
+          wheelAngle = (wheelAngle + degPerSec * dt) % 360;
+          spokesEl.setAttribute('transform', `rotate(${wheelAngle.toFixed(1)} 90 84)`);
+        }
+        requestAnimationFrame(animateWheel);
+      }
+
+      window.addEventListener('scroll', () => {
+        const docH = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        const pct = Math.min(1, Math.max(0, window.scrollY / docH));
+        state.scrollBoost = Math.round(pct * 24);
+      }, { passive: true });
+
+      $('toggleMotionBtn').addEventListener('click', () => {
+        state.motionPaused = !state.motionPaused;
+        const c = CONTENT[state.lang];
+        $('toggleMotionBtn').textContent = state.motionPaused ? c.resumeWheel : c.pauseWheel;
+      });
+
+      // ---------- Download Reflection Card as PNG ----------
+      function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        let curY = y;
+        for (let n = 0; n < words.length; n++) {
+          const testLine = line + words[n] + ' ';
+          if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+            ctx.fillText(line.trim(), x, curY);
+            line = words[n] + ' ';
+            curY += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        if (line.trim()) ctx.fillText(line.trim(), x, curY);
+        return curY + lineHeight;
+      }
+
+      $('downloadCardBtn').addEventListener('click', () => {
+        const c = CONTENT[state.lang];
+        const rpm = computeRpm();
+        const zone = c.zones[getZoneKey(rpm)];
+        const brakes = getTopBrakes();
+        const promiseText = state.promise.trim() || c.promisePlaceholder;
+        const todayStr = new Date().toLocaleDateString(state.lang === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 1200;
+        canvas.height = 760;
+        const ctx = canvas.getContext('2d');
+
+        // Background
+        ctx.fillStyle = '#1D1815';
+        ctx.fillRect(0, 0, 1200, 760);
+
+        // Warm peach border frame
+        ctx.strokeStyle = '#FFB894';
+        ctx.lineWidth = 8;
+        ctx.strokeRect(28, 28, 1144, 704);
+
+        // Header metadata
+        ctx.fillStyle = '#FFB894';
+        ctx.font = '600 20px monospace';
+        ctx.fillText('BURNOUT · LE HAMSTER SOUS STÉROÏDES · STAGE I', 72, 92);
+        ctx.textAlign = 'right';
+        ctx.fillText(todayStr, 1128, 92);
+        ctx.textAlign = 'left';
+
+        // Main zone headline
+        ctx.fillStyle = '#FAF5EC';
+        ctx.font = '600 50px Georgia, serif';
+        ctx.fillText(`${zone.label} — ${rpm} RPM`, 72, 168);
+
+        // Divider
+        ctx.fillStyle = 'rgba(255, 184, 148, 0.35)';
+        ctx.fillRect(72, 198, 1056, 2);
+
+        // Brakes section
+        ctx.fillStyle = '#FFB894';
+        ctx.font = '700 20px sans-serif';
+        ctx.fillText(c.brakesHeading.toUpperCase(), 72, 248);
+
+        let y = 294;
+        brakes.forEach((b, i) => {
+          ctx.fillStyle = '#FAF5EC';
+          ctx.font = '700 24px sans-serif';
+          ctx.fillText(`${i + 1}. ${b.brakeTitle}`, 72, y);
+          y += 32;
+          ctx.fillStyle = '#D7CCC0';
+          ctx.font = '400 21px sans-serif';
+          y = wrapText(ctx, b.brakeDesc, 98, y, 1010, 29) + 14;
+        });
+
+        // Personal promise box
+        ctx.fillStyle = 'rgba(255, 184, 148, 0.12)';
+        ctx.fillRect(72, 578, 1056, 102);
+        ctx.fillStyle = '#FFB894';
+        ctx.font = 'italic 26px Georgia, serif';
+        wrapText(ctx, `“${promiseText}”`, 96, 622, 1008, 34);
+
+        // Footer
+        ctx.fillStyle = '#9C9086';
+        ctx.font = '500 16px monospace';
+        ctx.fillText('the-unfinished-30.vercel.app · Day 18/30 · 100% private local card', 72, 712);
+
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = 'burnout-reflection-card.png';
+        a.click();
+      });
+
+      // ---------- Promise & Reset ----------
+      $('promiseInput').addEventListener('input', (e) => {
+        state.promise = e.target.value;
+        saveLocal();
+        updateScoreUI();
+      });
+
+      $('resetAllBtn').addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        state.sliders = [3, 3, 3, 3, 3, 3, 3, 3];
+        state.reflections = ['', '', '', ''];
+        state.promise = '';
+        $('promiseInput').value = '';
+        renderChapters();
+        renderSliders();
+        updateScoreUI();
+      });
+
+      // ---------- Language & Download HTML ----------
+      function applyLanguage() {
+        const c = CONTENT[state.lang];
+        document.documentElement.lang = state.lang;
+        $('langToggle').textContent = state.lang === 'en' ? 'FR' : 'EN';
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.dataset.i18n;
+          if (c[k]) el.textContent = c[k];
+        });
+        document.querySelectorAll('[data-i18n-html]').forEach(el => {
+          const k = el.dataset.i18nHtml;
+          if (c[k]) el.innerHTML = c[k];
+        });
+        $('promiseInput').placeholder = c.promisePlaceholder;
+        $('promiseInput').value = state.promise;
+        $('toggleMotionBtn').textContent = state.motionPaused ? c.resumeWheel : c.pauseWheel;
+
+        renderChapters();
+        renderSliders();
+        updateScoreUI();
+      }
+
+      $('langToggle').addEventListener('click', () => {
+        state.lang = state.lang === 'en' ? 'fr' : 'en';
+        applyLanguage();
+      });
+
+      $('downloadHtmlBtn').addEventListener('click', () => {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'day-18-burnout-hamster.html';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      // ---------- Init ----------
+      loadSaved();
+      applyLanguage();
+      requestAnimationFrame(animateWheel);
+    })();
+  </script>
+</body>
+</html>

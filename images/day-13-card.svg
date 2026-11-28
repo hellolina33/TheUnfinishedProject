@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#3FD0A0"/>
+  <circle cx="210" cy="170" r="130" fill="#6EE2BC"/>
+  <circle cx="1490" cy="790" r="175" fill="#6EE2BC"/>
+
+  <!-- Workshop Board / Clipboard -->
+  <g transform="rotate(-3 610 480)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="180" y="130" width="840" height="690" rx="54"/>
+    </g>
+    <rect x="180" y="130" width="840" height="690" rx="54" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- Top Clipboard Clip -->
+    <rect x="460" y="88" width="280" height="84" rx="28" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <circle cx="600" cy="128" r="16" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+
+    <!-- Column dividers -->
+    <line x1="460" y1="220" x2="460" y2="760" stroke="#17141F" stroke-width="6" stroke-dasharray="14 14" opacity="0.22" stroke-linecap="round"/>
+    <line x1="740" y1="220" x2="740" y2="760" stroke="#17141F" stroke-width="6" stroke-dasharray="14 14" opacity="0.22" stroke-linecap="round"/>
+
+    <!-- Sticky Notes Column 1 -->
+    <g transform="rotate(-4 320 330)">
+      <rect x="235" y="250" width="170" height="150" rx="22" fill="#FFD84D" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+      <line x1="270" y1="305" x2="370" y2="305" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <line x1="270" y1="345" x2="340" y2="345" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="378" cy="276" r="13" fill="#FF8F6B" stroke="#17141F" stroke-width="5"/>
+    </g>
+    <g transform="rotate(3 320 560)">
+      <rect x="235" y="475" width="170" height="150" rx="22" fill="#FFB8DE" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+      <line x1="270" y1="530" x2="365" y2="530" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <line x1="270" y1="570" x2="335" y2="570" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    </g>
+
+    <!-- Sticky Notes Column 2 -->
+    <g transform="rotate(3 600 325)">
+      <rect x="515" y="245" width="170" height="150" rx="22" fill="#A9D6FF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+      <line x1="550" y1="300" x2="650" y2="300" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <line x1="550" y1="340" x2="620" y2="340" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="655" cy="274" r="13" fill="#3FD0A0" stroke="#17141F" stroke-width="5"/>
+      <circle cx="622" cy="274" r="13" fill="#3FD0A0" stroke="#17141F" stroke-width="5"/>
+    </g>
+    <g transform="rotate(-2 600 560)">
+      <rect x="515" y="470" width="170" height="150" rx="22" fill="#FFD84D" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+      <line x1="550" y1="525" x2="645" y2="525" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <line x1="550" y1="565" x2="615" y2="565" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    </g>
+
+    <!-- Sticky Notes Column 3 -->
+    <g transform="rotate(-3 875 340)">
+      <rect x="790" y="260" width="170" height="150" rx="22" fill="#C7F3E3" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+      <line x1="825" y1="315" x2="925" y2="315" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <line x1="825" y1="355" x2="895" y2="355" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="932" cy="288" r="13" fill="#FFD84D" stroke="#17141F" stroke-width="5"/>
+    </g>
+
+    <!-- Bottom Timeline Progress Pill -->
+    <rect x="235" y="690" width="730" height="62" rx="31" fill="#FFFFFF" stroke="#17141F" stroke-width="8"/>
+    <rect x="247" y="702" width="190" height="38" rx="19" fill="#FFD84D"/>
+    <rect x="447" y="702" width="230" height="38" rx="19" fill="#3FD0A0"/>
+    <rect x="687" y="702" width="150" height="38" rx="19" fill="#A9D6FF"/>
+  </g>
+
+  <!-- Smiling Room Stopwatch -->
+  <g transform="rotate(7 1320 490)">
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <circle cx="1320" cy="510" r="205"/>
+    </g>
+    <!-- Top Crown & Side Button -->
+    <rect x="1282" y="232" width="76" height="58" rx="18" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="1256" y="210" width="128" height="34" rx="16" fill="#FFD84D" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="1455" y="330" width="44" height="58" rx="14" transform="rotate(38 1477 359)" fill="#FFB8DE" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Main Dial -->
+    <circle cx="1320" cy="510" r="205" fill="#FFFFFF" stroke="#17141F" stroke-width="8"/>
+    <circle cx="1320" cy="510" r="168" fill="#FFF8EA" stroke="#17141F" stroke-width="6"/>
+    <!-- Remaining time wedge -->
+    <path d="M1320 510 L1320 356 A154 154 0 0 1 1468 552 Z" fill="#FFD84D" opacity="0.85"/>
+    <!-- Clock hand -->
+    <line x1="1320" y1="510" x2="1410" y2="435" stroke="#17141F" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="1320" cy="510" r="18" fill="#FF8F6B" stroke="#17141F" stroke-width="7"/>
+
+    <!-- Cute face at bottom of dial -->
+    <circle cx="1274" cy="585" r="12" fill="#17141F"/>
+    <circle cx="1366" cy="585" r="12" fill="#17141F"/>
+    <path d="M1292 612 Q1320 638 1348 612" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M1115 92 Q1115 134 1157 134 Q1115 134 1115 176 Q1115 134 1073 134 Q1115 134 1115 92Z" fill="#FFD84D" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1555 245 Q1555 278 1588 278 Q1555 278 1555 311 Q1555 278 1522 278 Q1555 278 1555 245Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1105 805 Q1105 835 1135 835 Q1105 835 1105 865 Q1105 835 1075 835 Q1105 835 1105 805Z" fill="#FFF8EA" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

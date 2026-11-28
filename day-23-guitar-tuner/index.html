@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 23 · Guitar Tuner — The Unfinished 30</title>
+  <meta name="description" content="Precision in-browser guitar tuner with real-time autocorrelation pitch detection and realistic Karplus-Strong plucked reference tones." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f8f2e8;
+      --surface: #fffdf9;
+      --surface-2: #f3eadc;
+      --ink: #221b17;
+      --muted: #6e5f55;
+      --border: rgba(34, 27, 23, 0.12);
+      --border-strong: rgba(34, 27, 23, 0.24);
+      --accent: #e56a38;
+      --accent-soft: rgba(229, 106, 56, 0.14);
+      --brass: #d4a138;
+      --wood: #9d5b34;
+      --wood-dark: #6b3b1e;
+      --ok: #1aa06d;
+      --ok-glow: rgba(26, 160, 109, 0.28);
+      --warn: #e09f24;
+      --flat: #d9534f;
+      --radius: 20px;
+      --topbar-bg: #171210;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(800px 460px at 85% -10%, rgba(255, 184, 148, 0.38), transparent 60%),
+        radial-gradient(700px 420px at 10% 100%, rgba(212, 161, 56, 0.16), transparent 60%),
+        var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar-bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .challenge-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .challenge-bar a {
+      color: #fbf7f0;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .challenge-bar a:hover { opacity: 0.78; }
+    .challenge-bar .sep { color: rgba(255, 255, 255, 0.3); }
+    .challenge-bar .author { color: #c7b8ad; font-weight: 500; }
+    .challenge-bar-right { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255, 255, 255, 0.09);
+      color: #fbf7f0;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .bar-btn:hover { background: rgba(255, 255, 255, 0.18); }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-size: clamp(30px, 4.2vw, 44px);
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+    h1 em {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 560px;
+      margin-top: 6px;
+    }
+    .privacy-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(26, 160, 109, 0.1);
+      border: 1px solid rgba(26, 160, 109, 0.28);
+      color: #13734f;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    /* Main Grid */
+    .tuner-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: 0 14px 36px rgba(34, 27, 23, 0.07);
+    }
+
+    /* Tuner Pedal Card */
+    .pedal-card {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+    .pedal-card.in-tune {
+      border-color: rgba(26, 160, 109, 0.55);
+      box-shadow: 0 0 0 4px var(--ok-glow), 0 18px 40px rgba(26, 160, 109, 0.14);
+    }
+
+    .pedal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tuning-select-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tuning-select-wrap label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    select {
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--surface-2);
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .btn {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 14px;
+      border-radius: 12px;
+      padding: 10px 16px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.12s, background 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { background: #eadccb; }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-mic {
+      background: var(--ink);
+      color: #fffdf9;
+      border-color: var(--ink);
+    }
+    .btn-mic:hover { background: #362c26; }
+    .btn-mic.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(229, 106, 56, 0.35);
+    }
+
+    /* Analog Dial Screen */
+    .dial-housing {
+      background: #1a1614;
+      border-radius: 18px;
+      padding: 20px 16px 18px;
+      color: #fbf7f0;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid #2f2723;
+      box-shadow: inset 0 6px 24px rgba(0, 0, 0, 0.5);
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+    .pedal-card.in-tune .dial-housing {
+      border-color: #25b87f;
+      box-shadow: inset 0 0 42px rgba(26, 160, 109, 0.26), inset 0 6px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .gauge-svg {
+      width: 100%;
+      max-width: 480px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .readout-row {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 10px;
+      margin-top: -12px;
+      padding: 0 8px;
+    }
+    .flat-sharp-ind {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: rgba(251, 247, 240, 0.32);
+      transition: color 0.15s;
+    }
+    .flat-sharp-ind.right { text-align: right; }
+    .flat-sharp-ind.active-flat { color: #ff7c6b; }
+    .flat-sharp-ind.active-sharp { color: #ffd84d; }
+
+    .note-center {
+      text-align: center;
+    }
+    .detected-note {
+      font-size: clamp(46px, 7vw, 66px);
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #fbf7f0;
+      transition: color 0.18s;
+    }
+    .pedal-card.in-tune .detected-note {
+      color: #46e0a5;
+      text-shadow: 0 0 24px rgba(70, 224, 165, 0.45);
+    }
+    .detected-note sub {
+      font-size: 0.42em;
+      font-weight: 600;
+      opacity: 0.72;
+      vertical-align: baseline;
+      margin-left: 2px;
+    }
+
+    .metrics-strip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #b7aba2;
+    }
+    .metric-pill {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4px 11px;
+      border-radius: 999px;
+    }
+    .metric-pill strong { color: #fbf7f0; }
+    .status-banner {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #c8bcb3;
+      min-height: 20px;
+    }
+    .pedal-card.in-tune .status-banner { color: #46e0a5; }
+
+    /* String Chips Row */
+    .strings-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+      gap: 8px;
+    }
+    .string-chip {
+      background: var(--surface-2);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+      cursor: pointer;
+      font-family: inherit;
+      color: var(--ink);
+      transition: all 0.15s;
+    }
+    .string-chip:hover {
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    .string-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(229, 106, 56, 0.28);
+    }
+    .string-chip.matched {
+      border-color: var(--ok);
+      box-shadow: 0 0 0 2px var(--ok-glow);
+    }
+    .string-chip .s-note {
+      font-size: 18px;
+      font-weight: 800;
+      display: block;
+      line-height: 1.1;
+    }
+    .string-chip .s-hz {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      opacity: 0.78;
+    }
+
+    /* Calibration Row */
+    .cal-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .cal-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cal-controls input[type="range"] {
+      width: 130px;
+      accent-color: var(--accent);
+    }
+    .mono-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--ink);
+      min-width: 64px;
+    }
+
+    /* Headstock Card */
+    .headstock-card {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .headstock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .headstock-hint {
+      font-size: 13.5px;
+      color: var(--muted);
+    }
+    .headstock-stage {
+      background: linear-gradient(180deg, #f7ede0 0%, #efe1ce 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 10px 6px;
+      display: flex;
+      justify-content: center;
+    }
+    #headstockSvg {
+      width: 100%;
+      max-width: 310px;
+      height: auto;
+      user-select: none;
+    }
+    .peg-btn { cursor: pointer; transition: transform 0.12s; }
+    .peg-btn:hover .peg-knob { fill: #f2be4b; }
+    .peg-btn.plucked .peg-knob { fill: #e56a38; }
+    .peg-btn.plucked .peg-ring { stroke: #e56a38; stroke-width: 4; }
+
+    .ref-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .ref-actions .btn { flex: 1; font-size: 13px; padding: 9px 12px; }
+    .btn-loop.active {
+      background: var(--ok);
+      border-color: var(--ok);
+      color: #fff;
+    }
+
+    /* Honest Unfinished */
+    .unfinished {
+      margin-top: 32px;
+      background: rgba(34, 27, 23, 0.035);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+    }
+    .unfinished h2 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .unfinished ul {
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    @media (max-width: 860px) {
+      .tuner-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="challenge-bar">
+    <div class="challenge-bar-left">
+      <a href="/">The Unfinished 30 · Day 23/30</a>
+      <span class="sep">·</span>
+      <a class="author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="challenge-bar-right">
+      <button class="bar-btn" id="langBtn" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button">↓ <span data-i18n="downloadHtml">Download HTML</span></button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow" data-i18n="eyebrow">WEB AUDIO AUTOCORRELATION + KARPLUS-STRONG</div>
+        <h1>Guitar <em>Tuner</em></h1>
+        <p class="hero-sub" data-i18n="subtitle">Tune live with your microphone using sub-Hz autocorrelation, or pluck any tuning peg on the headstock for a realistic synthesized reference tone.</p>
+      </div>
+      <div class="privacy-badge">
+        <span>🔒</span>
+        <span data-i18n="privacy">100% local in memory · Never recorded or sent</span>
+      </div>
+    </section>
+
+    <div class="tuner-grid">
+      <!-- Analog Tuner Pedal -->
+      <section class="card pedal-card" id="pedalCard">
+        <div class="pedal-top">
+          <div class="tuning-select-wrap">
+            <label for="tuningSelect" data-i18n="labelTuning">Tuning</label>
+            <select id="tuningSelect">
+              <option value="standard">Standard (E A D G B E)</option>
+              <option value="dropD">Drop D (D A D G B E)</option>
+              <option value="halfDown">Half-Step Down (Eb Ab Db Gb Bb Eb)</option>
+              <option value="openG">Open G (D G D G B D)</option>
+              <option value="dadgad">DADGAD (D A D G A D)</option>
+              <option value="ukulele">Ukulele (G C E A)</option>
+            </select>
+          </div>
+          <button class="btn btn-mic" id="micBtn" type="button">
+            <span>🎙</span>
+            <span data-i18n="startMic">Start Microphone</span>
+          </button>
+        </div>
+
+        <div class="dial-housing">
+          <svg class="gauge-svg" viewBox="0 0 420 225" aria-label="Tuning needle gauge">
+            <!-- Outer Arc -->
+            <path d="M 45 198 A 165 165 0 0 1 375 198" fill="none" stroke="#312a26" stroke-width="14" stroke-linecap="round"/>
+            <!-- Green Sweet Spot (-4 to +4 cents) -->
+            <path d="M 196 34 A 165 165 0 0 1 224 34" fill="none" stroke="#25b87f" stroke-width="16" stroke-linecap="round"/>
+            <!-- Tick marks generated via JS -->
+            <g id="gaugeTicks"></g>
+            <!-- Labels -->
+            <text x="46" y="218" fill="#9c8f86" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">-50¢</text>
+            <text x="210" y="20" fill="#46e0a5" font-family="JetBrains Mono, monospace" font-size="12" font-weight="700" text-anchor="middle">0¢</text>
+            <text x="374" y="218" fill="#9c8f86" font-family="JetBrains Mono, monospace" font-size="12" text-anchor="middle">+50¢</text>
+
+            <!-- Needle Group rotated around (210, 198) -->
+            <g id="needleGroup" transform="rotate(0 210 198)">
+              <line x1="210" y1="198" x2="210" y2="52" stroke="#e56a38" stroke-width="5" stroke-linecap="round" id="needleLine"/>
+              <circle cx="210" cy="52" r="5" fill="#fffdf9" id="needleTip"/>
+            </g>
+            <!-- Brass Pivot -->
+            <circle cx="210" cy="198" r="14" fill="#d4a138" stroke="#1a1614" stroke-width="4"/>
+            <circle cx="210" cy="198" r="5" fill="#1a1614"/>
+          </svg>
+
+          <div class="readout-row">
+            <div class="flat-sharp-ind" id="flatInd">♭ <span data-i18n="flat">FLAT</span></div>
+            <div class="note-center">
+              <div class="detected-note" id="noteDisplay">--<sub></sub></div>
+            </div>
+            <div class="flat-sharp-ind right" id="sharpInd"><span data-i18n="sharp">SHARP</span> ♯</div>
+          </div>
+
+          <div class="metrics-strip">
+            <span class="metric-pill"><span data-i18n="freq">Freq</span>: <strong id="hzDisplay">0.0 Hz</strong></span>
+            <span class="metric-pill"><span data-i18n="offset">Offset</span>: <strong id="centsDisplay">0 ¢</strong></span>
+            <span class="metric-pill"><span data-i18n="target">Target</span>: <strong id="targetDisplay">--</strong></span>
+          </div>
+          <div class="status-banner" id="statusBanner" data-i18n="idlePrompt">Click a peg on the headstock to hear a string, or start your microphone.</div>
+        </div>
+
+        <!-- Quick String Buttons -->
+        <div class="strings-strip" id="stringsStrip"></div>
+
+        <!-- A4 Calibration -->
+        <div class="cal-row">
+          <span data-i18n="calLabel">Concert Pitch Calibration (A4)</span>
+          <div class="cal-controls">
+            <input type="range" id="a4Slider" min="432" max="446" step="1" value="440" />
+            <span class="mono-val" id="a4Value">440 Hz</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Guitar Headstock (Reference Tone Mode) -->
+      <aside class="card headstock-card">
+        <div class="headstock-header">
+          <span class="section-label" data-i18n="refTitle">Reference Tone Mode</span>
+          <span class="section-label" style="color:var(--accent);" data-i18n="noMicNeeded">No mic needed</span>
+        </div>
+        <p class="headstock-hint" data-i18n="headstockHint">Click any brass peg to pluck a Karplus-Strong synthesized string tone and tune by ear.</p>
+
+        <div class="headstock-stage">
+          <svg id="headstockSvg" viewBox="0 0 320 420" aria-label="Interactive guitar headstock"></svg>
+        </div>
+
+        <div class="ref-actions">
+          <button class="btn" id="strumBtn" type="button">🎸 <span data-i18n="strumAll">Strum All</span></button>
+          <button class="btn btn-loop" id="loopRefBtn" type="button">↻ <span data-i18n="loopTone">Loop Last Tone</span></button>
+        </div>
+      </aside>
+    </div>
+
+    <section class="unfinished">
+      <h2 data-i18n="unfinishedTitle">What's still unfinished</h2>
+      <ul>
+        <li data-i18n="unfin1">Noisy rooms or heavy overtones on old nylon/steel strings can occasionally jump an octave; plucking cleanly near the 12th fret gives the steadiest reading.</li>
+        <li data-i18n="unfin2">Custom per-string tuning offsets (e.g. Sweetened / Buzz Feiten tunings) and strobe-ring mode aren't built yet.</li>
+        <li data-i18n="unfin3">Microphone pitch detection requires a secure context (HTTPS or localhost) in modern browsers.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    const I18N = {
+      en: {
+        downloadHtml: "Download HTML",
+        eyebrow: "WEB AUDIO AUTOCORRELATION + KARPLUS-STRONG",
+        subtitle: "Tune live with your microphone using sub-Hz autocorrelation, or pluck any tuning peg on the headstock for a realistic synthesized reference tone.",
+        privacy: "100% local in memory · Never recorded or sent",
+        labelTuning: "Tuning",
+        startMic: "Start Microphone",
+        stopMic: "Stop Microphone",
+        flat: "FLAT",
+        sharp: "SHARP",
+        freq: "Freq",
+        offset: "Offset",
+        target: "Target",
+        idlePrompt: "Click a peg on the headstock to hear a string, or start your microphone.",
+        listeningPrompt: "Listening… pluck a single open string cleanly.",
+        inTuneMsg: "In tune! Locked within ±4 cents.",
+        tuneUpMsg: "Tune up (tighten peg)",
+        tuneDownMsg: "Tune down (loosen peg)",
+        refPlayingMsg: "Playing reference tone · Tune your string to match",
+        micError: "Could not access microphone. Check browser permissions or use Reference Tone Mode.",
+        calLabel: "Concert Pitch Calibration (A4)",
+        refTitle: "Reference Tone Mode",
+        noMicNeeded: "No mic needed",
+        headstockHint: "Click any brass peg to pluck a Karplus-Strong synthesized string tone and tune by ear.",
+        strumAll: "Strum All",
+        loopTone: "Loop Last Tone",
+        looping: "Looping…",
+        unfinishedTitle: "What's still unfinished",
+        unfin1: "Noisy rooms or heavy overtones on old nylon/steel strings can occasionally jump an octave; plucking cleanly near the 12th fret gives the steadiest reading.",
+        unfin2: "Custom per-string tuning offsets (e.g. Sweetened / Buzz Feiten tunings) and strobe-ring mode aren't built yet.",
+        unfin3: "Microphone pitch detection requires a secure context (HTTPS or localhost) in modern browsers."
+      },
+      fr: {
+        downloadHtml: "Télécharger HTML",
+        eyebrow: "AUTOCORRÉLATION WEB AUDIO + KARPLUS-STRONG",
+        subtitle: "Accordez en direct au micro par autocorrélation, ou cliquez sur une mécanique de la tête de guitare pour entendre une corde synthétisée.",
+        privacy: "100% local en mémoire · Jamais enregistré ni envoyé",
+        labelTuning: "Accordage",
+        startMic: "Activer le micro",
+        stopMic: "Couper le micro",
+        flat: "BAS",
+        sharp: "HAUT",
+        freq: "Fréq",
+        offset: "Écart",
+        target: "Cible",
+        idlePrompt: "Cliquez sur une mécanique pour entendre une corde, ou activez le micro.",
+        listeningPrompt: "À l'écoute… pincez une seule corde à vide.",
+        inTuneMsg: "Accordé ! Verrouillé à ±4 cents.",
+        tuneUpMsg: "Trop bas · Tendez la corde",
+        tuneDownMsg: "Trop haut · Détendez la corde",
+        refPlayingMsg: "Son de référence en cours · Accordez à l'oreille",
+        micError: "Accès au micro refusé. Vérifiez les permissions ou utilisez le mode Référence.",
+        calLabel: "Calibration du La (A4)",
+        refTitle: "Mode Son de Référence",
+        noMicNeeded: "Sans micro",
+        headstockHint: "Cliquez sur une mécanique en laiton pour pincer une corde synthétisée (Karplus-Strong).",
+        strumAll: "Gratter tout",
+        loopTone: "Boucler le son",
+        looping: "En boucle…",
+        unfinishedTitle: "Ce qui reste inachevé",
+        unfin1: "Les pièces bruyantes ou les harmoniques fortes peuvent parfois sauter d'une octave ; pincez doucement près de la 12e frette pour un signal stable.",
+        unfin2: "Les accordages compensés personnalisés et le mode stroboscope ne sont pas encore intégrés.",
+        unfin3: "La détection au micro nécessite HTTPS ou localhost dans les navigateurs modernes."
+      }
+    };
+
+    const NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+
+    // MIDI note numbers for each tuning (low string -> high string)
+    const TUNINGS = {
+      standard: [40, 45, 50, 55, 59, 64], // E2 A2 D3 G3 B3 E4
+      dropD:    [38, 45, 50, 55, 59, 64], // D2 A2 D3 G3 B3 E4
+      halfDown: [39, 44, 49, 54, 58, 63], // Eb2 Ab2 Db3 Gb3 Bb3 Eb4
+      openG:    [38, 43, 50, 55, 59, 62], // D2 G2 D3 G3 B3 D4
+      dadgad:   [38, 45, 50, 55, 57, 62], // D2 A2 D3 G3 A3 D4
+      ukulele:  [67, 60, 64, 69]          // G4 C4 E4 A4
+    };
+
+    const state = {
+      lang: "en",
+      tuningKey: "standard",
+      a4: 440,
+      micActive: false,
+      loopRef: false,
+      lastPluckedIdx: 0,
+      smoothedCents: 0,
+      targetCents: 0
+    };
+
+    let audioCtx = null;
+    let micStream = null;
+    let analyser = null;
+    let micBuf = null;
+    let rafId = null;
+    let loopTimer = null;
+
+    const pedalCard = document.getElementById("pedalCard");
+    const micBtn = document.getElementById("micBtn");
+    const noteDisplay = document.getElementById("noteDisplay");
+    const hzDisplay = document.getElementById("hzDisplay");
+    const centsDisplay = document.getElementById("centsDisplay");
+    const targetDisplay = document.getElementById("targetDisplay");
+    const statusBanner = document.getElementById("statusBanner");
+    const flatInd = document.getElementById("flatInd");
+    const sharpInd = document.getElementById("sharpInd");
+    const needleGroup = document.getElementById("needleGroup");
+    const needleLine = document.getElementById("needleLine");
+    const stringsStrip = document.getElementById("stringsStrip");
+    const headstockSvg = document.getElementById("headstockSvg");
+    const loopRefBtn = document.getElementById("loopRefBtn");
+
+    function t(key) {
+      return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+    }
+
+    function midiToFreq(midi) {
+      return state.a4 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function midiToLabel(midi) {
+      const name = NOTE_NAMES[((midi % 12) + 12) % 12];
+      const oct = Math.floor(midi / 12) - 1;
+      return { name, oct, full: name + oct };
+    }
+
+    function freqToMidiFloat(freq) {
+      return 69 + 12 * Math.log2(freq / state.a4);
+    }
+
+    function ensureAudioContext() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+      }
+      if (audioCtx.state === "suspended") audioCtx.resume();
+    }
+
+    // Build SVG gauge ticks once
+    function initGaugeTicks() {
+      const g = document.getElementById("gaugeTicks");
+      let html = "";
+      for (let c = -50; c <= 50; c += 5) {
+        const angleDeg = (c / 50) * 78;
+        const rad = ((angleDeg - 90) * Math.PI) / 180;
+        const isMajor = c % 10 === 0;
+        const r1 = isMajor ? 140 : 148;
+        const r2 = 160;
+        const x1 = 210 + Math.cos(rad) * r1;
+        const y1 = 198 + Math.sin(rad) * r1;
+        const x2 = 210 + Math.cos(rad) * r2;
+        const y2 = 198 + Math.sin(rad) * r2;
+        const color = c === 0 ? "#46e0a5" : isMajor ? "#c9bdb4" : "#5c5048";
+        const sw = c === 0 ? 3.5 : isMajor ? 2.2 : 1.4;
+        html += `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="${color}" stroke-width="${sw}" stroke-linecap="round"/>`;
+      }
+      g.innerHTML = html;
+    }
+
+    function setGaugeAngle(cents, isInTune) {
+      const clamped = Math.max(-50, Math.min(50, cents));
+      const deg = (clamped / 50) * 78;
+      needleGroup.setAttribute("transform", `rotate(${deg.toFixed(1)} 210 198)`);
+      needleLine.setAttribute("stroke", isInTune ? "#46e0a5" : "#e56a38");
+    }
+
+    // Karplus-Strong physical-modeling guitar string synthesis
+    function pluckString(freq) {
+      ensureAudioContext();
+      const sr = audioCtx.sampleRate;
+      const duration = 2.6;
+      const totalSamples = Math.floor(sr * duration);
+      const buf = audioCtx.createBuffer(1, totalSamples, sr);
+      const out = buf.getChannelData(0);
+
+      const period = Math.max(2, Math.round(sr / freq));
+      const ring = new Float32Array(period);
+      // Warm filtered noise burst for pick excitation
+      let prev = 0;
+      for (let i = 0; i < period; i++) {
+        const white = Math.random() * 2 - 1;
+        prev = 0.55 * white + 0.45 * prev;
+        ring[i] = prev;
+      }
+
+      // Decay factor tuned by pitch so low strings ring naturally longer
+      const decay = freq < 140 ? 0.9968 : freq < 260 ? 0.9958 : 0.9942;
+      let idx = 0;
+      for (let i = 0; i < totalSamples; i++) {
+        const cur = ring[idx];
+        const next = ring[(idx + 1) % period];
+        out[i] = cur;
+        ring[idx] = 0.5 * (cur + next) * decay;
+        idx = (idx + 1) % period;
+      }
+
+      // Soft attack & release envelope
+      const attackSamples = Math.floor(sr * 0.004);
+      for (let i = 0; i < attackSamples && i < totalSamples; i++) {
+        out[i] *= i / attackSamples;
+      }
+      const fadeSamples = Math.floor(sr * 0.15);
+      for (let i = 0; i < fadeSamples; i++) {
+        const p = totalSamples - 1 - i;
+        if (p >= 0) out[p] *= i / fadeSamples;
+      }
+
+      const src = audioCtx.createBufferSource();
+      src.buffer = buf;
+
+      // Subtle acoustic body resonance filter
+      const bodyFilter = audioCtx.createBiquadFilter();
+      bodyFilter.type = "peaking";
+      bodyFilter.frequency.value = 210;
+      bodyFilter.Q.value = 1.4;
+      bodyFilter.gain.value = 3.5;
+
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.65;
+
+      src.connect(bodyFilter);
+      bodyFilter.connect(gain);
+      gain.connect(audioCtx.destination);
+      src.start();
+    }
+
+    function triggerReferenceString(idx, silentStatus = false) {
+      const mids = TUNINGS[state.tuningKey];
+      if (idx < 0 || idx >= mids.length) return;
+      state.lastPluckedIdx = idx;
+      const midi = mids[idx];
+      const freq = midiToFreq(midi);
+      const lbl = midiToLabel(midi);
+
+      pluckString(freq);
+
+      // Highlight peg & chip
+      document.querySelectorAll(".string-chip").forEach((el, i) => {
+        el.classList.toggle("active", i === idx);
+      });
+      document.querySelectorAll(".peg-btn").forEach((el) => {
+        el.classList.toggle("plucked", Number(el.dataset.idx) === idx);
+      });
+
+      // If mic isn't running, display the reference note locked at 0 cents
+      if (!state.micActive && !silentStatus) {
+        noteDisplay.innerHTML = `${lbl.name}<sub>${lbl.oct}</sub>`;
+        hzDisplay.textContent = freq.toFixed(1) + " Hz";
+        centsDisplay.textContent = "0 ¢";
+        targetDisplay.textContent = `${lbl.full} (${freq.toFixed(1)} Hz)`;
+        pedalCard.classList.add("in-tune");
+        flatInd.classList.remove("active-flat");
+        sharpInd.classList.remove("active-sharp");
+        setGaugeAngle(0, true);
+        statusBanner.textContent = t("refPlayingMsg");
+      }
+    }
+
+    function renderStringsAndHeadstock() {
+      const mids = TUNINGS[state.tuningKey];
+      const isUke = mids.length === 4;
+
+      // Bottom string chips
+      stringsStrip.innerHTML = mids.map((midi, idx) => {
+        const lbl = midiToLabel(midi);
+        const hz = midiToFreq(midi).toFixed(1);
+        return `
+          <button class="string-chip" type="button" data-idx="${idx}">
+            <span class="s-note">${lbl.name}<small style="font-size:11px;opacity:.75">${lbl.oct}</small></span>
+            <span class="s-hz">${hz} Hz</span>
+          </button>
+        `;
+      }).join("");
+
+      stringsStrip.querySelectorAll(".string-chip").forEach((btn) => {
+        btn.addEventListener("click", () => triggerReferenceString(Number(btn.dataset.idx)));
+      });
+
+      // Illustrated Headstock SVG (3+3 for guitar, 2+2 for ukulele)
+      const leftCount = isUke ? 2 : 3;
+      const pegs = [];
+      for (let i = 0; i < mids.length; i++) {
+        const lbl = midiToLabel(mids[i]);
+        const isLeft = i < leftCount;
+        const row = isLeft ? (leftCount - 1 - i) : (i - leftCount);
+        const y = isUke ? 120 + row * 95 : 88 + row * 78;
+        const postX = isLeft ? 132 : 188;
+        const knobX = isLeft ? 58 : 262;
+        const strX = isUke ? 133 + i * 18 : 122 + i * 15.2;
+        pegs.push({ idx: i, lbl, isLeft, y, postX, knobX, strX });
+      }
+
+      let svg = `
+        <!-- Neck -->
+        <rect x="114" y="302" width="92" height="118" rx="8" fill="#5b341c" stroke="#221b17" stroke-width="4"/>
+        <!-- Headstock Wood -->
+        <path d="M 92 42 Q 160 22 228 42 L 210 306 H 110 Z" fill="#9d5b34" stroke="#221b17" stroke-width="4.5" stroke-linejoin="round"/>
+        <!-- Subtle wood highlight -->
+        <path d="M 108 54 Q 160 38 212 54 L 198 292 H 122 Z" fill="rgba(255,230,200,0.08)"/>
+        <!-- Nut -->
+        <rect x="108" y="294" width="104" height="15" rx="4" fill="#fff8eb" stroke="#221b17" stroke-width="3.5"/>
+        <!-- Fret wires -->
+        <line x1="116" y1="354" x2="204" y2="354" stroke="#d4a138" stroke-width="3"/>
+        <line x1="116" y1="402" x2="204" y2="402" stroke="#d4a138" stroke-width="3"/>
+      `;
+
+      // Draw strings from posts down through nut
+      pegs.forEach((p, i) => {
+        const sw = Math.max(1.4, 3.2 - i * 0.32);
+        svg += `<path d="M ${p.postX} ${p.y} L ${p.strX} 300 L ${p.strX} 418" fill="none" stroke="#e9dfd2" stroke-width="${sw.toFixed(1)}" opacity="0.9"/>`;
+      });
+
+      // Draw clickable pegs
+      pegs.forEach((p) => {
+        const shaftX1 = p.isLeft ? p.knobX + 22 : p.postX;
+        const shaftX2 = p.isLeft ? p.postX : p.knobX - 22;
+        svg += `
+          <g class="peg-btn" data-idx="${p.idx}" role="button" tabindex="0" aria-label="Pluck ${p.lbl.full}">
+            <line x1="${shaftX1}" y1="${p.y}" x2="${shaftX2}" y2="${p.y}" stroke="#221b17" stroke-width="8" stroke-linecap="round"/>
+            <line x1="${shaftX1}" y1="${p.y}" x2="${shaftX2}" y2="${p.y}" stroke="#d4a138" stroke-width="4" stroke-linecap="round"/>
+            <circle cx="${p.postX}" cy="${p.y}" r="11" fill="#fff8eb" stroke="#221b17" stroke-width="3.5"/>
+            <circle cx="${p.postX}" cy="${p.y}" r="4" fill="#221b17"/>
+            <circle class="peg-ring" cx="${p.knobX}" cy="${p.y}" r="25" fill="none" stroke="transparent" stroke-width="3"/>
+            <circle class="peg-knob" cx="${p.knobX}" cy="${p.y}" r="22" fill="#d4a138" stroke="#221b17" stroke-width="3.5"/>
+            <text x="${p.knobX}" y="${p.y + 5}" fill="#221b17" font-family="Outfit, sans-serif" font-weight="800" font-size="14" text-anchor="middle">${p.lbl.name}</text>
+          </g>
+        `;
+      });
+
+      headstockSvg.innerHTML = svg;
+      headstockSvg.querySelectorAll(".peg-btn").forEach((el) => {
+        el.addEventListener("click", () => triggerReferenceString(Number(el.dataset.idx)));
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            triggerReferenceString(Number(el.dataset.idx));
+          }
+        });
+      });
+    }
+
+    // Normalized Autocorrelation Pitch Detection with parabolic interpolation
+    function detectPitch(buf, sampleRate) {
+      const size = buf.length;
+      let rms = 0;
+      for (let i = 0; i < size; i++) rms += buf[i] * buf[i];
+      rms = Math.sqrt(rms / size);
+      if (rms < 0.012) return -1;
+
+      const minLag = Math.floor(sampleRate / 1100); // ~1100 Hz max
+      const maxLag = Math.floor(sampleRate / 65);   // ~65 Hz min (below low D2=73.4Hz)
+      const corr = new Float32Array(maxLag + 1);
+
+      for (let lag = minLag; lag <= maxLag; lag++) {
+        let sum = 0;
+        let norm1 = 0;
+        let norm2 = 0;
+        const limit = size - lag;
+        for (let i = 0; i < limit; i++) {
+          const a = buf[i];
+          const b = buf[i + lag];
+          sum += a * b;
+          norm1 += a * a;
+          norm2 += b * b;
+        }
+        const denom = Math.sqrt(norm1 * norm2);
+        corr[lag] = denom > 0 ? sum / denom : 0;
+      }
+
+      // Find first strong peak above threshold after initial dip
+      let bestLag = -1;
+      let bestVal = 0.82;
+      let inPeak = false;
+      for (let lag = minLag + 1; lag < maxLag; lag++) {
+        const v = corr[lag];
+        if (v > bestVal && v >= corr[lag - 1] && v >= corr[lag + 1]) {
+          bestVal = v;
+          bestLag = lag;
+          inPeak = true;
+        } else if (inPeak && v < 0.5) {
+          break; // Take the fundamental peak rather than a subharmonic
+        }
+      }
+
+      if (bestLag === -1) return -1;
+
+      // Parabolic interpolation around bestLag
+      const y1 = corr[bestLag - 1];
+      const y2 = corr[bestLag];
+      const y3 = corr[bestLag + 1];
+      const denom = (y1 - 2 * y2 + y3);
+      const shift = denom !== 0 ? (0.5 * (y1 - y3)) / denom : 0;
+      const refinedLag = bestLag + Math.max(-0.5, Math.min(0.5, shift));
+      return sampleRate / refinedLag;
+    }
+
+    function updateMicLoop() {
+      if (!state.micActive || !analyser) return;
+      analyser.getFloatTimeDomainData(micBuf);
+      const freq = detectPitch(micBuf, audioCtx.sampleRate);
+
+      if (freq > 60 && freq < 1100) {
+        const midiFloat = freqToMidiFloat(freq);
+        const nearestMidi = Math.round(midiFloat);
+        const cents = (midiFloat - nearestMidi) * 100;
+        const lbl = midiToLabel(nearestMidi);
+
+        // Find closest string in selected tuning
+        const mids = TUNINGS[state.tuningKey];
+        let closestIdx = 0;
+        let minDiff = Infinity;
+        mids.forEach((m, i) => {
+          const d = Math.abs(m - midiFloat);
+          if (d < minDiff) { minDiff = d; closestIdx = i; }
+        });
+        const targetMidi = mids[closestIdx];
+        const targetLbl = midiToLabel(targetMidi);
+        const targetHz = midiToFreq(targetMidi);
+
+        state.targetCents = cents;
+        state.smoothedCents = state.smoothedCents * 0.72 + state.targetCents * 0.28;
+        const roundedCents = Math.round(state.smoothedCents);
+        const inTune = Math.abs(state.smoothedCents) <= 4;
+
+        noteDisplay.innerHTML = `${lbl.name}<sub>${lbl.oct}</sub>`;
+        hzDisplay.textContent = freq.toFixed(1) + " Hz";
+        centsDisplay.textContent = (roundedCents > 0 ? "+" : "") + roundedCents + " ¢";
+        targetDisplay.textContent = `${targetLbl.full} (${targetHz.toFixed(1)} Hz)`;
+
+        pedalCard.classList.toggle("in-tune", inTune);
+        flatInd.classList.toggle("active-flat", !inTune && state.smoothedCents < -4);
+        sharpInd.classList.toggle("active-sharp", !inTune && state.smoothedCents > 4);
+        setGaugeAngle(state.smoothedCents, inTune);
+
+        if (inTune) statusBanner.textContent = t("inTuneMsg");
+        else if (state.smoothedCents < -4) statusBanner.textContent = t("tuneUpMsg");
+        else statusBanner.textContent = t("tuneDownMsg");
+
+        document.querySelectorAll(".string-chip").forEach((el, i) => {
+          el.classList.toggle("matched", i === closestIdx);
+        });
+      }
+
+      rafId = requestAnimationFrame(updateMicLoop);
+    }
+
+    async function toggleMic() {
+      if (state.micActive) {
+        state.micActive = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        if (micStream) micStream.getTracks().forEach((tr) => tr.stop());
+        micStream = null;
+        micBtn.classList.remove("active");
+        micBtn.innerHTML = `<span>🎙</span><span>${t("startMic")}</span>`;
+        pedalCard.classList.remove("in-tune");
+        statusBanner.textContent = t("idlePrompt");
+        return;
+      }
+
+      try {
+        ensureAudioContext();
+        micStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false
+          }
+        });
+        const src = audioCtx.createMediaStreamSource(micStream);
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 4096;
+        micBuf = new Float32Array(analyser.fftSize);
+        src.connect(analyser);
+
+        state.micActive = true;
+        micBtn.classList.add("active");
+        micBtn.innerHTML = `<span>■</span><span>${t("stopMic")}</span>`;
+        statusBanner.textContent = t("listeningPrompt");
+        updateMicLoop();
+      } catch (_) {
+        statusBanner.textContent = t("micError");
+      }
+    }
+
+    function applyTranslations() {
+      document.documentElement.lang = state.lang;
+      document.getElementById("langBtn").textContent = state.lang === "en" ? "FR" : "EN";
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.textContent = t(el.getAttribute("data-i18n"));
+      });
+      micBtn.innerHTML = state.micActive
+        ? `<span>■</span><span>${t("stopMic")}</span>`
+        : `<span>🎙</span><span>${t("startMic")}</span>`;
+      loopRefBtn.innerHTML = state.loopRef
+        ? `■ <span>${t("looping")}</span>`
+        : `↻ <span>${t("loopTone")}</span>`;
+    }
+
+    // Events
+    micBtn.addEventListener("click", toggleMic);
+
+    document.getElementById("tuningSelect").addEventListener("change", (e) => {
+      state.tuningKey = e.target.value;
+      state.lastPluckedIdx = 0;
+      renderStringsAndHeadstock();
+    });
+
+    document.getElementById("a4Slider").addEventListener("input", (e) => {
+      state.a4 = Number(e.target.value);
+      document.getElementById("a4Value").textContent = state.a4 + " Hz";
+      renderStringsAndHeadstock();
+    });
+
+    document.getElementById("strumBtn").addEventListener("click", () => {
+      const mids = TUNINGS[state.tuningKey];
+      mids.forEach((_, idx) => {
+        setTimeout(() => triggerReferenceString(idx, idx < mids.length - 1), idx * 140);
+      });
+    });
+
+    loopRefBtn.addEventListener("click", () => {
+      state.loopRef = !state.loopRef;
+      loopRefBtn.classList.toggle("active", state.loopRef);
+      if (state.loopRef) {
+        triggerReferenceString(state.lastPluckedIdx);
+        loopTimer = setInterval(() => triggerReferenceString(state.lastPluckedIdx), 1850);
+      } else {
+        clearInterval(loopTimer);
+      }
+      applyTranslations();
+    });
+
+    document.getElementById("langBtn").addEventListener("click", () => {
+      state.lang = state.lang === "en" ? "fr" : "en";
+      applyTranslations();
+    });
+
+    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
+      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "day-23-guitar-tuner.html";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    });
+
+    // Init
+    initGaugeTicks();
+    renderStringsAndHeadstock();
+    applyTranslations();
+  </script>
+</body>
+</html>

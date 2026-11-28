@@ -230,15 +230,110 @@ const DAYS = [
     img: 'images/day-08-card.svg', alt: 'A red vending machine stocked with video snacks labelled with view counts, a link on a phone and a free coin',
     app: '/day-08-snack-machine/', dlUrl: '/day-08-snack-machine/index.html', dl: 'snack-machine-day-08.html', post: '',
     todo: "It reads the latest 60 videos of a profile, not the whole history. Stats are TikTok's public counters at that moment. On X it only sees the ~100 posts X shows publicly for an account, and ranks them by likes because X hides view counts there. Private accounts and slideshows are skipped. The zip is built in the browser, so bags stop at 25 clips." },
+  { n: 9, unlock: '2026-11-29', name: 'ZenFlow', line: 'A 2-to-15 minute breathing and micro-meditation studio for busy workdays — guided visual pacer, offline soundscapes and session log.', tags: ['Mindfulness', 'Web Audio', 'English & French'], emo: '🪷', c: 'var(--mint)',
+    img: 'images/day-09-card.svg', alt: 'Concentric pastel breathing rings and a calm lotus wave on a mint card',
+    app: '/day-09-zenflow/', dlUrl: '/day-09-zenflow/index.html', dl: 'zenflow-day-09.html', post: '',
+    todo: "Soundscapes are synthesised with Web Audio rather than field recordings, and mobile browsers pause audio when the screen locks. Session history stays in this browser unless exported as JSON. Custom AI scripts need your own API key." },
+  { n: 10, unlock: '2026-11-30', name: 'TetrisPlanning', line: 'See your global team’s working hours like Tetris blocks and spot the meeting slot that sacrifices nobody’s sleep.', tags: ['Remote teams', 'Timezones', 'English & French'], emo: '🧱', c: 'var(--sky)',
+    img: 'images/day-10-card.svg', alt: 'Colourful timezone blocks stacked like Tetris pieces across a 24-hour grid',
+    app: '/day-10-tetris-planning/', dlUrl: '/day-10-tetris-planning/index.html', dl: 'tetris-planning-day-10.html', post: '',
+    todo: "Uses your browser's current timezone offsets for today's date; DST transitions weeks ahead aren't simulated. Team presets are saved locally in this browser only." },
+  { n: 11, unlock: '2026-12-01', name: 'PDFBoard', line: 'Chain PDF actions like mini n8n nodes: merge, split, rotate, watermark and number pages without ever uploading a file.', tags: ['Visual nodes', '100% local', 'English & French'], emo: '🧩', c: 'var(--lilac)',
+    img: 'images/day-11-card.svg', alt: 'Connected pastel workflow nodes processing PDF pages',
+    app: '/day-11-pdfboard/', dlUrl: '/day-11-pdfboard/index.html', dl: 'pdfboard-day-11.html', post: '',
+    todo: "Loads pdf-lib from a CDN when online. Very large scanned PDFs (100+ MB) can slow down mobile browsers. Encrypted or password-protected PDFs are not supported yet." },
+  { n: 12, unlock: '2026-12-02', name: 'VibeIO', line: 'A minimalist local Frame.io alternative: drop a video, click to pin timestamped comments and export clean feedback notes.', tags: ['Video review', 'No upload', 'English & French'], emo: '🎬', c: 'var(--peach)',
+    img: 'images/day-12-card.svg', alt: 'A minimalist video player timeline with colourful timestamped comment pins',
+    app: '/day-12-vibeio/', dlUrl: '/day-12-vibeio/index.html', dl: 'vibeio-day-12.html', post: '',
+    todo: "No cloud hosting or live multi-user sync: share feedback by exporting Markdown, CSV or JSON. Large video files stay local and must be re-selected after closing the tab." },
+  { n: 13, unlock: '2026-12-03', name: 'Workshop Facilitator', line: 'Build a minute-by-minute team workshop agenda with facilitation scripts and run it live with a big room timer.', tags: ['Workshops', 'Live timer', 'English & French'], emo: '🧭', c: 'var(--mint)',
+    img: 'images/day-13-card.svg', alt: 'A structured workshop board with timed sticky blocks and a room clock',
+    app: '/day-13-workshop-facilitator/', dlUrl: '/day-13-workshop-facilitator/index.html', dl: 'workshop-facilitator-day-13.html', post: '',
+    todo: "Audio chimes rely on Web Audio after a first click. No live participant polling or Miro API sync yet; board layouts are exported as structured Markdown." },
+  { n: 14, unlock: '2026-12-04', name: 'VibeRead', line: 'Turn any long PDF or article into a chaptered audiobook you can listen to while walking — offline browser voices or BYOK Gemini.', tags: ['PDF to audio', 'Offline + BYOK', 'English & French'], emo: '🎧', c: 'var(--lemon)',
+    img: 'images/day-14-card.svg', alt: 'A document page turning into sound waves beside warm headphones',
+    app: '/day-14-viberead/', dlUrl: '/day-14-viberead/index.html', dl: 'viberead-day-14.html', post: '',
+    todo: "Browser speech synthesis voices vary by OS and browser. PDF extraction uses pdf.js from CDN and skips scanned image-only pages without OCR." },
+  { n: 15, unlock: '2026-12-05', name: 'CommuniDeck', line: 'Visual travel flashcards for restaurants, taxis, pharmacies and emergencies — tap any card for a giant screen you can show.', tags: ['Travel', '6 languages', 'Offline ready'], emo: '🗺️', c: 'var(--sky)',
+    img: 'images/day-15-card.svg', alt: 'Illustrated visual travel phrase cards fanned out over a sky-blue background',
+    app: '/day-15-communideck/', dlUrl: '/day-15-communideck/index.html', dl: 'communideck-day-15.html', post: '',
+    todo: "Curated everyday phrases, not a full dictionary or medical translator. Spoken pronunciation depends on the voices installed on your phone." },
+  { n: 16, unlock: '2026-12-06', name: 'DreamCast', line: 'Create a calm, personalised bedtime story for your kids in 20 seconds — soothing narration, lullaby mode and optional BYOK AI.', tags: ['Bedtime stories', 'Audio + lullaby', 'English & French'], emo: '🌙', c: 'var(--pink)',
+    img: 'images/day-16-card.svg', alt: 'A glowing crescent moon, starry book and sleepy fox on a pastel night card',
+    app: '/day-16-dreamcast/', dlUrl: '/day-16-dreamcast/index.html', dl: 'dreamcast-day-16.html', post: '',
+    todo: "Offline stories use a handcrafted multi-chapter generator; plug your own AI key for completely novel tales. Voice warmth depends on your device's TTS voices." },
+  { n: 17, unlock: '2026-12-07', name: 'CareerOS', line: 'A calm, local-first Kanban pipeline for job seekers and freelancers: track leads, follow-ups, interview prep and outreach templates.', tags: ['Kanban', 'No account', 'English & French'], emo: '💼', c: 'var(--lilac)',
+    img: 'images/day-17-card.svg', alt: 'A clean Kanban board with pastel opportunity cards and checkmarks',
+    app: '/day-17-careeros/', dlUrl: '/day-17-careeros/index.html', dl: 'careeros-day-17.html', post: '',
+    todo: "No email scraping or CRM sync: everything lives in your browser's localStorage. Export JSON or CSV regularly if you switch devices." },
+  { n: 18, unlock: '2026-12-08', name: 'Burnout: Hamster', line: 'An interactive chapter on the first stage of burnout — over-ambition on steroids — with a 2-minute wheel-speed self-check.', tags: ['Interactive chapter', 'Self-check', 'English & French'], emo: '🐹', c: 'var(--peach)',
+    img: 'images/day-18-card.svg', alt: 'A playful hamster wheel speedometer needle pointing between calm and redline',
+    app: '/day-18-burnout-hamster/', dlUrl: '/day-18-burnout-hamster/index.html', dl: 'burnout-hamster-day-18.html', post: '',
+    todo: "A personal reflection tool, not a clinical assessment or medical advice. Only one chapter is interactive here; no account or cloud sync." },
+  { n: 19, unlock: '2026-12-09', name: 'Audio Speed Editor', line: 'Drop any voice note or podcast clip, trim start and end, change playback speed and export a clean WAV straight from your browser.', tags: ['Web Audio', 'WAV export', 'English & French'], emo: '🎚️', c: 'var(--mint)',
+    img: 'images/day-19-card.svg', alt: 'A crisp audio waveform with trim handles and a speed dial',
+    app: '/day-19-audio-speed/', dlUrl: '/day-19-audio-speed/index.html', dl: 'audio-speed-day-19.html', post: '',
+    todo: "Exports uncompressed WAV (larger than MP3). Very long files (30+ minutes) can use significant browser memory during offline rendering." },
+  { n: 20, unlock: '2026-12-10', name: 'AutoLaunch', line: 'Turn a one-line side-project idea into a landing page blueprint, a 14-day launch calendar and a ship-ready checklist.', tags: ['Makers', 'Launch kit', 'English & French'], emo: '🚀', c: 'var(--lemon)',
+    img: 'images/day-20-card.svg', alt: 'A cheerful rocket lifting off from a launchpad checklist',
+    app: '/day-20-autolaunch/', dlUrl: '/day-20-autolaunch/index.html', dl: 'autolaunch-day-20.html', post: '',
+    todo: "Offline templates give strong structured drafts; bring your own AI key for tailored copywriting. Does not publish or schedule posts automatically." },
+  { n: 21, unlock: '2026-12-11', name: 'HabitQuest', line: 'A minimalist RPG habit tracker: turn 3 to 5 daily routines into XP quests with a Rest Day Shield so one missed day never breaks you.', tags: ['Habits', 'RPG XP', 'English & French'], emo: '🛡️', c: 'var(--sky)',
+    img: 'images/day-21-card.svg', alt: 'A pastel RPG shield, XP progress bar and quest checkmarks',
+    app: '/day-21-habitquest/', dlUrl: '/day-21-habitquest/index.html', dl: 'habitquest-day-21.html', post: '',
+    todo: "Single-browser storage with JSON backup; no push notifications or mobile home-screen widget yet." },
+  { n: 22, unlock: '2026-12-12', name: 'Vibe Visualizer', line: 'Turn any audio clip into an animated social media audiogram video (1:1, 9:16 or 16:9) and export WebM right in your browser.', tags: ['Audiogram', 'WebM export', 'English & French'], emo: '🌊', c: 'var(--pink)',
+    img: 'images/day-22-card.svg', alt: 'Animated neon waveform bars inside a rounded social video frame',
+    app: '/day-22-vibe-visualizer/', dlUrl: '/day-22-vibe-visualizer/index.html', dl: 'vibe-visualizer-day-22.html', post: '',
+    todo: "Records in real time via MediaRecorder (WebM); Safari may fall back to MP4 or require Chrome/Firefox for full audio+video capture." },
+  { n: 23, unlock: '2026-12-13', name: 'Guitar Tuner', line: 'A crisp, local-only chromatic guitar tuner powered by your microphone, plus plucked reference tones for 6 tunings.', tags: ['Web Audio FFT', '6 tunings', 'English & French'], emo: '🎸', c: 'var(--peach)',
+    img: 'images/day-23-card.svg', alt: 'A pastel guitar headstock beside an analog tuning needle gauge',
+    app: '/day-23-guitar-tuner/', dlUrl: '/day-23-guitar-tuner/index.html', dl: 'guitar-tuner-day-23.html', post: '',
+    todo: "Noisy rooms can make pitch detection jump. Works best on a quiet acoustic or electric guitar near the mic; requires HTTPS or localhost for microphone access." },
+  { n: 24, unlock: '2026-12-14', name: 'Headshot Studio', line: 'Crop, relight and grade a LinkedIn-ready 1024×1024 headshot locally in 30 seconds, with studio presets and optional BYOK Gemini prompts.', tags: ['LinkedIn photo', '1024px PNG', 'English & French'], emo: '📸', c: 'var(--lilac)',
+    img: 'images/day-24-card.svg', alt: 'A circular studio portrait frame surrounded by warm lighting badges',
+    app: '/day-24-headshot-studio/', dlUrl: '/day-24-headshot-studio/index.html', dl: 'headshot-studio-day-24.html', post: '',
+    todo: "Local mode handles framing, colour grading, vignette and brand ring; true generative background replacement needs your own Gemini API key." },
+  { n: 25, unlock: '2026-12-15', name: 'Odyssey 1-6-4', line: 'Plan your year on one calm printable page: 1 North Star, 6 quarterly milestones and 4 weekly non-negotiables.', tags: ['1-6-4 method', 'Printable A4', 'English & French'], emo: '🗺️', c: 'var(--mint)',
+    img: 'images/day-25-card.svg', alt: 'A serene compass and three-tier 1-6-4 planning cards',
+    app: '/day-25-odyssey/', dlUrl: '/day-25-odyssey/index.html', dl: 'odyssey-day-25.html', post: '',
+    todo: "Designed for a single active quarter at a time. No calendar sync or recurring reminders — print it or pin the tab." },
+  { n: 26, unlock: '2026-12-16', name: 'LogoMotion Studio', line: 'Generate a clean geometric monogram logo and a 3-second kinetic intro animation — export crisp SVG, PNG or WebM.', tags: ['SVG & WebM', 'No design tool', 'English & French'], emo: '✨', c: 'var(--lemon)',
+    img: 'images/day-26-card.svg', alt: 'A geometric emblem with motion trails and an export badge',
+    app: '/day-26-logomotion/', dlUrl: '/day-26-logomotion/index.html', dl: 'logomotion-day-26.html', post: '',
+    todo: "Uses 6 curated geometric emblem families rather than freehand vector drawing. WebM video export depends on browser MediaRecorder support." },
+  { n: 27, unlock: '2026-12-17', name: 'VIBE-FM', line: 'A procedural Web Audio focus radio with 4 generative channels, a live FFT visualiser, ambient texture mixer and Pomodoro timer.', tags: ['Generative audio', '100% offline', 'English & French'], emo: '📻', c: 'var(--sky)',
+    img: 'images/day-27-card.svg', alt: 'A retro pastel FM radio dial with glowing sound waves',
+    app: '/day-27-vibe-fm/', dlUrl: '/day-27-vibe-fm/index.html', dl: 'vibe-fm-day-27.html', post: '',
+    todo: "Purely synthesised Web Audio — charming and infinite, not recorded studio tracks. Mobile browsers pause Web Audio when the screen locks." },
+  { n: 28, unlock: '2026-12-18', name: 'BKK Yield Alpha', line: 'Compare real-estate deals by net yield, cashflow and lifestyle score — preloaded with Bangkok condos and editable for any city.', tags: ['Real estate', 'Yield & lifestyle', 'English & French'], emo: '🏙️', c: 'var(--peach)',
+    img: 'images/day-28-card.svg', alt: 'Stylised skyline towers beside a bold yield percentage gauge',
+    app: '/day-28-condo-alpha/', dlUrl: '/day-28-condo-alpha/index.html', dl: 'condo-alpha-day-28.html', post: '',
+    todo: "Simplified rental yield and mortgage model: excludes local property taxes, transfer fees and currency risk. Not financial advice." },
+  { n: 29, unlock: '2026-12-19', name: 'Infinite Webtoon', line: 'Build a witty 4-panel comic strip in your browser with expressive characters, speech bubbles, SFX and one-click PNG export.', tags: ['4-panel comic', 'PNG export', 'English & French'], emo: '💬', c: 'var(--pink)',
+    img: 'images/day-29-card.svg', alt: 'Four pastel comic panels with speech bubbles and a comic burst',
+    app: '/day-29-infinite-webtoon/', dlUrl: '/day-29-infinite-webtoon/index.html', dl: 'infinite-webtoon-day-29.html', post: '',
+    todo: "Includes a starter cast of illustrated characters and custom image uploads, not a full drawing tablet. AI script generation requires your own key." },
+  { n: 30, unlock: '2026-12-20', name: 'Foutez-vous la Paix', line: 'Day 30 finale: an interactive digital edition of my book with reading themes, a personal quote notebook, breathing pauses and quote cards.', tags: ['Interactive book', 'Quote cards', 'French & English'], emo: '🕊️', c: 'var(--lemon)',
+    img: 'images/day-30-card.svg', alt: 'An open warm cream book with a golden bookmark and gentle sparkles',
+    app: '/day-30-foutez-vous-la-paix/', dlUrl: '/day-30-foutez-vous-la-paix/index.html', dl: 'foutez-vous-la-paix-day-30.html', post: '',
+    todo: "Selected interactive chapters rather than the full print manuscript. Highlights and saved quotes stay in this browser's localStorage only." },
 ];
 /* ============================================ */
 
 const $ = s => document.querySelector(s);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const dateOf0 = n => { const d = new Date(START + 'T08:00:00+07:00'); d.setDate(d.getDate() + n - 1); return d; };
-const byN = new Map(DAYS.filter(d => d.name && !d.hidden && (d.n === 1 || Date.now() >= dateOf0(d.n).getTime())).map(d => [d.n, d]));
+const dayEntry = n => DAYS.find(d => d.n === n);
+const dateOf = n => {
+  const entry = dayEntry(n);
+  if (entry && entry.unlock) return new Date(entry.unlock + 'T08:00:00+07:00');
+  const d = new Date(START + 'T08:00:00+07:00');
+  d.setDate(d.getDate() + n - 1);
+  return d;
+};
+const previewAll = new URLSearchParams(location.search).get('preview') === 'all';
+const byN = new Map(DAYS.filter(d => d.name && !d.hidden && (previewAll || d.n === 1 || Date.now() >= dateOf(d.n).getTime())).map(d => [d.n, d]));
 const latest = Math.max(1, ...byN.keys());
-const dateOf = n => { const d = new Date(START + 'T08:00:00+07:00'); d.setDate(d.getDate() + n - 1); return d; };
 const fmt = d => d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 
 $('#todayChip').textContent = `Day ${latest} is live`;

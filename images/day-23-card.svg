@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#FFB894"/>
+  <circle cx="195" cy="175" r="130" fill="#FFD4BC"/>
+  <circle cx="1495" cy="805" r="175" fill="#FFD4BC"/>
+
+  <!-- Analog Tuner Gauge Pedal (Left/Center) -->
+  <g transform="rotate(-4 615 480)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="210" y="165" width="760" height="620" rx="64"/>
+    </g>
+    <rect x="210" y="165" width="760" height="620" rx="64" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- Gauge Display Screen -->
+    <rect x="275" y="230" width="630" height="360" rx="40" fill="#1E1B29" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Semicircle Meter Arc -->
+    <path d="M365 510 A225 225 0 0 1 815 510" fill="none" stroke="#3D3852" stroke-width="26" stroke-linecap="round"/>
+    <path d="M530 293 A225 225 0 0 1 650 293" fill="none" stroke="#3FD0A0" stroke-width="28" stroke-linecap="round"/>
+
+    <!-- Tick Dots -->
+    <circle cx="388" cy="450" r="10" fill="#FF8F6B"/>
+    <circle cx="445" cy="365" r="10" fill="#FFD84D"/>
+    <circle cx="590" cy="285" r="14" fill="#3FD0A0"/>
+    <circle cx="735" cy="365" r="10" fill="#FFD84D"/>
+    <circle cx="792" cy="450" r="10" fill="#FF8F6B"/>
+
+    <!-- Tuning Needle (locked near center green!) -->
+    <line x1="590" y1="530" x2="590" y2="318" stroke="#3FD0A0" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="590" cy="530" r="30" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Bottom Pedal LEDs & Footswitch -->
+    <circle cx="365" cy="685" r="36" fill="#3FD0A0" stroke="#17141F" stroke-width="8"/>
+    <circle cx="590" cy="685" r="54" fill="#A9D6FF" stroke="#17141F" stroke-width="8"/>
+    <circle cx="590" cy="685" r="22" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+    <circle cx="815" cy="685" r="36" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+  </g>
+
+  <!-- Guitar Headstock (Right) -->
+  <g transform="rotate(11 1280 480)">
+    <!-- Shadow -->
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <path d="M1155 155 H1395 L1365 570 H1185 Z"/>
+      <rect x="1195" y="570" width="160" height="270" rx="18"/>
+    </g>
+
+    <!-- Tuning Pegs Left -->
+    <rect x="1082" y="220" width="90" height="32" rx="16" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+    <rect x="1088" y="325" width="90" height="32" rx="16" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+    <rect x="1096" y="430" width="90" height="32" rx="16" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Tuning Pegs Right -->
+    <rect x="1378" y="220" width="90" height="32" rx="16" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+    <rect x="1372" y="325" width="90" height="32" rx="16" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+    <rect x="1364" y="430" width="90" height="32" rx="16" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Neck -->
+    <rect x="1195" y="565" width="160" height="275" rx="22" fill="#8C5230" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Headstock Wood -->
+    <path d="M1155 155 Q1275 125 1395 155 L1365 568 H1185 Z" fill="#C97B4B" stroke="#17141F" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- Nut -->
+    <rect x="1188" y="554" width="174" height="28" rx="10" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+
+    <!-- Tuning Posts -->
+    <circle cx="1220" cy="236" r="18" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+    <circle cx="1224" cy="341" r="18" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+    <circle cx="1228" cy="446" r="18" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+    <circle cx="1330" cy="236" r="18" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+    <circle cx="1326" cy="341" r="18" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+    <circle cx="1322" cy="446" r="18" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+
+    <!-- Strings -->
+    <line x1="1220" y1="254" x2="1220" y2="832" stroke="#17141F" stroke-width="6"/>
+    <line x1="1244" y1="358" x2="1244" y2="832" stroke="#17141F" stroke-width="5"/>
+    <line x1="1268" y1="462" x2="1268" y2="832" stroke="#17141F" stroke-width="5"/>
+    <line x1="1292" y1="462" x2="1292" y2="832" stroke="#17141F" stroke-width="4"/>
+    <line x1="1312" y1="358" x2="1312" y2="832" stroke="#17141F" stroke-width="4"/>
+    <line x1="1330" y1="254" x2="1330" y2="832" stroke="#17141F" stroke-width="4"/>
+  </g>
+
+  <!-- Playful Sparkles -->
+  <path d="M1070 92 Q1070 132 1110 132 Q1070 132 1070 172 Q1070 132 1030 132 Q1070 132 1070 92Z" fill="#FFD84D" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1545 270 Q1545 304 1579 304 Q1545 304 1545 338 Q1545 304 1511 304 Q1545 304 1545 270Z" fill="#3FD0A0" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M150 755 Q150 788 183 788 Q150 788 150 821 Q150 788 117 788 Q150 788 150 755Z" fill="#FFF8EA" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

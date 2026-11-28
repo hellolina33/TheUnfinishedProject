@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <!-- Pink pastel background -->
+  <rect width="1672" height="941" fill="#FFB8DE"/>
+  <circle cx="220" cy="190" r="145" fill="#FFD6EC"/>
+  <circle cx="1470" cy="770" r="185" fill="#FFD6EC"/>
+
+  <!-- 4-Panel Comic Page -->
+  <g transform="rotate(-2.5 760 475)">
+    <g transform="translate(16 18)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="270" y="105" width="960" height="730" rx="48"/>
+    </g>
+    <rect x="270" y="105" width="960" height="730" rx="48" fill="#FFFDF7" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Panel 1 (top-left) -->
+    <rect x="318" y="155" width="412" height="300" rx="26" fill="#A9D6FF" stroke="#17141F" stroke-width="8"/>
+    <!-- Cute character 1 -->
+    <circle cx="445" cy="345" r="72" fill="#FFE0B5" stroke="#17141F" stroke-width="7"/>
+    <path d="M380 322 Q445 255 510 322" fill="#17141F" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+    <circle cx="422" cy="346" r="9" fill="#17141F"/>
+    <circle cx="468" cy="346" r="9" fill="#17141F"/>
+    <path d="M428 376 Q445 394 462 376" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round"/>
+    <!-- Mini speech bubble -->
+    <path d="M530 198 H684 C698 198 708 208 708 222 V276 C708 290 698 300 684 300 H585 L546 328 L556 300 H530 C516 300 506 290 506 276 V222 C506 208 516 198 530 198 Z" fill="#FFFFFF" stroke="#17141F" stroke-width="7" stroke-linejoin="round"/>
+    <line x1="546" y1="238" x2="668" y2="238" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <line x1="546" y1="266" x2="632" y2="266" stroke="#FF5CA8" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Panel 2 (top-right) -->
+    <rect x="768" y="155" width="412" height="300" rx="26" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+    <!-- Cute coffee cup -->
+    <rect x="910" y="275" width="128" height="132" rx="26" fill="#FFFFFF" stroke="#17141F" stroke-width="7"/>
+    <path d="M1038 305 C1078 305 1078 372 1038 372" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="950" cy="336" r="8" fill="#17141F"/>
+    <circle cx="998" cy="336" r="8" fill="#17141F"/>
+    <path d="M956 362 Q974 378 992 362" fill="none" stroke="#17141F" stroke-width="6" stroke-linecap="round"/>
+    <!-- Steam waves -->
+    <path d="M944 252 Q932 228 948 206" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round"/>
+    <path d="M982 246 Q970 220 986 198" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round"/>
+    <path d="M1018 254 Q1006 230 1022 208" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- Panel 3 (bottom-left) -->
+    <rect x="318" y="492" width="412" height="295" rx="26" fill="#B8F2D6" stroke="#17141F" stroke-width="8"/>
+    <!-- Cute comic cat -->
+    <polygon points="448,572 480,626 420,626" fill="#FF8F6B" stroke="#17141F" stroke-width="7" stroke-linejoin="round"/>
+    <polygon points="586,572 614,626 554,626" fill="#FF8F6B" stroke="#17141F" stroke-width="7" stroke-linejoin="round"/>
+    <ellipse cx="518" cy="672" rx="92" ry="74" fill="#FF8F6B" stroke="#17141F" stroke-width="7"/>
+    <circle cx="486" cy="662" r="10" fill="#17141F"/>
+    <circle cx="550" cy="662" r="10" fill="#17141F"/>
+    <polygon points="518,676 508,690 528,690" fill="#17141F"/>
+    <line x1="406" y1="674" x2="452" y2="678" stroke="#17141F" stroke-width="6" stroke-linecap="round"/>
+    <line x1="584" y1="678" x2="630" y2="674" stroke="#17141F" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Panel 4 (bottom-right) -->
+    <rect x="768" y="492" width="412" height="295" rx="26" fill="#FF8F6B" stroke="#17141F" stroke-width="8"/>
+    <!-- Starburst SFX -->
+    <polygon points="974,522 1004,585 1072,566 1038,626 1102,658 1032,684 1054,750 988,712 942,764 934,696 864,704 908,650 858,600 928,596" fill="#FFD84D" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <circle cx="964" cy="642" r="10" fill="#17141F"/>
+    <circle cx="1002" cy="642" r="10" fill="#17141F"/>
+    <path d="M966 666 Q983 682 1000 666" fill="none" stroke="#17141F" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <!-- Chunky Comic Ink Pen on Right -->
+  <g transform="rotate(24 1410 475)">
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1358" y="210" width="96" height="420" rx="34"/>
+      <polygon points="1364,630 1448,630 1406,740"/>
+    </g>
+    <rect x="1358" y="210" width="96" height="420" rx="34" fill="#3FD0A0" stroke="#17141F" stroke-width="8"/>
+    <rect x="1358" y="270" width="96" height="54" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+    <polygon points="1364,630 1448,630 1406,740" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <polygon points="1390,698 1422,698 1406,740" fill="#17141F"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M165 560 Q165 596 201 596 Q165 596 165 632 Q165 596 129 596 Q165 596 165 560Z" fill="#FFD84D" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1310 120 Q1310 156 1346 156 Q1310 156 1310 192 Q1310 156 1274 156 Q1310 156 1310 120Z" fill="#A9D6FF" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1535 520 Q1535 550 1565 550 Q1535 550 1535 580 Q1535 550 1505 550 Q1535 550 1535 520Z" fill="#FFF8EA" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

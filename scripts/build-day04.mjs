@@ -485,7 +485,7 @@ fs.rmSync(publicRoot, { recursive: true, force: true });
 fs.mkdirSync(publicRoot, { recursive: true });
 for (const entry of fs.readdirSync(".")) {
   if (
-    /^day-\d+-/.test(entry) ||
+    (/^day-\d+-/.test(entry) && entry !== "day-07-energizer-studio") ||
     entry === "images" ||
     entry === ".well-known" ||
     [
