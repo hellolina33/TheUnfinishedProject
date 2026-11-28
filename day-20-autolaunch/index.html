@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoLaunch — Day 20 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bar-bg: #0E1638;
+      --paper: #FCFBF5;
+      --card: #FFFFFF;
+      --ink: #14151C;
+      --muted: #5A5F72;
+      --lemon: #FFE36E;
+      --lemon-deep: #F5C92A;
+      --cobalt: #2563EB;
+      --mint: #16A34A;
+      --border: #14151C;
+      --soft-border: #E4E1D5;
+      --shadow-hard: 4px 4px 0 #14151C;
+      --shadow-soft: 0 12px 30px rgba(20, 21, 28, 0.06);
+      --serif: 'Instrument Serif', Georgia, serif;
+      --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at 85% 8%, rgba(255, 227, 110, 0.38), transparent 36%),
+        radial-gradient(circle at 10% 85%, rgba(37, 99, 235, 0.08), transparent 38%),
+        var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--bar-bg);
+      color: #E8ECF8;
+      padding: 10px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .challenge-bar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .challenge-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .challenge-brand a { color: #FFFFFF; text-decoration: none; font-weight: 600; }
+    .challenge-brand a:hover { color: var(--lemon); }
+    .challenge-brand .sep { opacity: 0.4; }
+    .challenge-brand .author { color: #B6C2E2; font-weight: 500; }
+    .challenge-actions { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F4F7FF;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .bar-btn:hover { background: rgba(255, 255, 255, 0.16); }
+    .lang-pill span.active { color: var(--lemon); }
+
+    /* Layout */
+    .shell {
+      max-width: 1180px;
+      margin: 26px auto 60px;
+      padding: 0 18px;
+    }
+
+    .top-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--lemon);
+      border: 1.5px solid var(--border);
+      padding: 4px 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(36px, 5vw, 52px);
+      font-weight: 400;
+      line-height: 1.02;
+      letter-spacing: -0.01em;
+    }
+    .lead {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 580px;
+      margin-top: 6px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 10px 16px;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: transform 0.12s, box-shadow 0.12s, background 0.14s;
+      background: #FFFFFF;
+      color: var(--ink);
+    }
+    .btn:hover { background: #F7F5EC; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--lemon);
+      box-shadow: 3px 3px 0 var(--border);
+    }
+    .btn-primary:hover { background: #FFEA8C; }
+    .btn-primary:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
+    .btn-dark {
+      background: var(--ink);
+      color: #FFFFFF;
+      box-shadow: 3px 3px 0 #7C839B;
+    }
+    .btn-dark:hover { background: #262938; }
+    .btn-sm {
+      padding: 6px 11px;
+      font-size: 12px;
+      border-width: 1.5px;
+      border-radius: 9px;
+    }
+
+    /* Main Workspace Grid */
+    .workspace {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    /* Left Brief Panel */
+    .brief-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: var(--shadow-hard);
+      position: sticky;
+      top: 66px;
+    }
+    .section-kicker {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .preset-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .preset-btn {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 7px 8px;
+      border-radius: 10px;
+      border: 1.5px solid var(--soft-border);
+      background: #FAF9F3;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.14s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .preset-btn:hover { border-color: var(--ink); }
+    .preset-btn.active {
+      background: var(--lemon);
+      border-color: var(--ink);
+    }
+
+    .field {
+      margin-bottom: 13px;
+    }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: var(--ink);
+    }
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 13.5px;
+      padding: 9px 11px;
+      border: 1.5px solid #D6D2C4;
+      border-radius: 10px;
+      background: #FFFEFA;
+      color: var(--ink);
+      transition: border-color 0.15s;
+    }
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--ink);
+    }
+    .field textarea {
+      resize: vertical;
+      min-height: 66px;
+    }
+    .brief-foot {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .brief-foot .btn { flex: 1; }
+    .ai-status {
+      margin-top: 10px;
+      font-size: 11.5px;
+      color: var(--muted);
+      background: #F6F5EE;
+      border-radius: 10px;
+      padding: 8px 10px;
+    }
+
+    /* Right Output Panel */
+    .output-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+    .tab-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 12px 16px;
+      background: #F7F5EC;
+      border-bottom: 2px solid var(--border);
+    }
+    .tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 10px;
+      border: 1.5px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.14s;
+    }
+    .tab-btn:hover { color: var(--ink); background: rgba(255,255,255,0.6); }
+    .tab-btn.active {
+      background: #FFFFFF;
+      color: var(--ink);
+      border-color: var(--border);
+      box-shadow: 2px 2px 0 var(--border);
+    }
+    .tab-pane {
+      padding: 22px;
+      display: none;
+    }
+    .tab-pane.active { display: block; }
+
+    /* Landing Page Blueprint Preview */
+    .pane-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .pane-toolbar h2 {
+      font-size: 17px;
+      font-weight: 800;
+    }
+    .toolbar-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .lp-browser {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #FFFFFF;
+    }
+    .lp-chrome {
+      background: #F3F2EC;
+      border-bottom: 1.5px solid var(--border);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chrome-dot { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--border); }
+    .chrome-url {
+      margin-left: 8px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--muted);
+      background: #FFFFFF;
+      border: 1px solid #DCD9CC;
+      border-radius: 999px;
+      padding: 2px 12px;
+    }
+    .lp-body {
+      padding: 28px 24px;
+    }
+    .lp-hero {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 28px;
+    }
+    .lp-pill {
+      display: inline-block;
+      background: var(--lemon);
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 12px;
+      font-size: 11.5px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .lp-hero h3 {
+      font-family: var(--serif);
+      font-size: clamp(30px, 4vw, 42px);
+      font-weight: 400;
+      line-height: 1.06;
+      margin-bottom: 10px;
+    }
+    .lp-hero p {
+      color: var(--muted);
+      font-size: 15px;
+      margin-bottom: 18px;
+    }
+    .lp-cta-row {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+    }
+    .lp-cta-btn {
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 11px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-block;
+    }
+    .lp-trust {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .lp-props {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+    .lp-prop-card {
+      background: #FAF9F3;
+      border: 1.5px solid #E3DFD1;
+      border-radius: 14px;
+      padding: 15px;
+    }
+    .lp-prop-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--cobalt);
+      margin-bottom: 5px;
+    }
+    .lp-prop-card h4 {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+    .lp-prop-card p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .lp-faq {
+      border-top: 1.5px solid #ECE9DF;
+      padding-top: 20px;
+      margin-bottom: 22px;
+    }
+    .lp-faq-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .faq-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .faq-item {
+      background: #FFFFFF;
+      border: 1.5px solid #E5E2D7;
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .faq-item strong { display: block; font-size: 13.5px; margin-bottom: 3px; }
+    .faq-item span { font-size: 13px; color: var(--muted); }
+
+    .lp-bottom-cta {
+      background: var(--lemon);
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .lp-bottom-cta strong { font-size: 16px; display: block; }
+    .lp-bottom-cta span { font-size: 13px; color: #363945; }
+
+    /* 14-Day Launch Calendar */
+    .cal-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-pill {
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1.5px solid #D8D4C5;
+      background: #FAF9F3;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .filter-pill.active {
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+    .progress-bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .progress-track {
+      flex: 1;
+      height: 10px;
+      background: #ECE9DF;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #D5D1C3;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--mint);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+    .progress-text {
+      font-size: 12px;
+      font-weight: 800;
+      min-width: 72px;
+      text-align: right;
+    }
+
+    .cal-list {
+      display: grid;
+      gap: 10px;
+    }
+    .cal-item {
+      border: 1.5px solid #E2DFD3;
+      border-radius: 14px;
+      padding: 13px 15px;
+      background: #FFFEFA;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .cal-item.done {
+      background: #F4FBF6;
+      border-color: #B7E4C7;
+    }
+    .cal-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .cal-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      flex: 1;
+    }
+    .cal-check {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--mint);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .cal-day-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cal-title {
+      font-size: 14px;
+      font-weight: 700;
+      margin: 1px 0 3px;
+    }
+    .cal-item.done .cal-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .channel-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.12);
+      white-space: nowrap;
+    }
+    .ch-linkedin { background: #DBEAFE; color: #1E40AF; }
+    .ch-x { background: #E5E7EB; color: #111827; }
+    .ch-community { background: #FFEDD5; color: #9A3412; }
+    .ch-dm { background: #F3E8FF; color: #6B21A8; }
+
+    .cal-draft {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #FFFFFF;
+      border: 1px dashed #CFCBB9;
+      border-radius: 10px;
+      font-size: 12.5px;
+      color: #363A49;
+      white-space: pre-wrap;
+    }
+    .cal-draft-foot {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+
+    /* Ship-Ready Checklist */
+    .check-group {
+      margin-bottom: 18px;
+    }
+    .check-group h3 {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 9px;
+    }
+    .check-list {
+      display: grid;
+      gap: 8px;
+    }
+    .check-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      padding: 11px 13px;
+      border: 1.5px solid #E4E1D5;
+      border-radius: 12px;
+      background: #FFFEFA;
+      cursor: pointer;
+    }
+    .check-row.done {
+      background: #F4FBF6;
+      border-color: #B7E4C7;
+    }
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--mint);
+      flex-shrink: 0;
+    }
+    .check-row strong { display: block; font-size: 13.5px; }
+    .check-row span { font-size: 12.5px; color: var(--muted); }
+    .check-row.done strong { text-decoration: line-through; color: var(--muted); }
+
+    /* Modal (BYOK AI Polish) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 22, 56, 0.56);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 80;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: 20px;
+      max-width: 460px;
+      width: 100%;
+      padding: 22px;
+      box-shadow: 6px 6px 0 var(--border);
+    }
+    .modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .modal p { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    /* Unfinished Section */
+    .unfinished {
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1.5px solid #DCD8C9;
+      border-radius: 18px;
+      padding: 20px 22px;
+    }
+    .unfinished h2 {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .unfinished ul {
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13.5px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 90;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 920px) {
+      .workspace { grid-template-columns: 1fr; }
+      .brief-card { position: static; }
+      .lp-props { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 520px) {
+      .preset-pills { grid-template-columns: 1fr; }
+      .tab-pane { padding: 15px; }
+      .lp-body { padding: 18px 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="challenge-bar">
+    <div class="challenge-bar-inner">
+      <div class="challenge-brand">
+        <a href="/">The Unfinished 30 · Day 20/30</a>
+        <span class="sep">·</span>
+        <a class="author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener noreferrer">by Salah Khenissi</a>
+      </div>
+      <div class="challenge-actions">
+        <button id="langToggle" class="bar-btn lang-pill" type="button" aria-label="Toggle language">
+          <span id="langEn" class="active">EN</span> / <span id="langFr">FR</span>
+        </button>
+        <button id="downloadHtmlBtn" class="bar-btn" type="button" data-i18n="downloadHtml">Download HTML</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="top-header">
+      <div>
+        <div class="badge" data-i18n="badge">One-Click SaaS & Side-Project Launchpad</div>
+        <h1 data-i18n="title">AutoLaunch</h1>
+        <p class="lead" data-i18n="lead">Turn a rough project idea into a ready-to-paste landing page blueprint, a 14-day multi-channel launch calendar, and a ship-ready checklist in seconds.</p>
+      </div>
+      <div class="header-actions">
+        <button id="aiModalBtn" class="btn" type="button" data-i18n="byokBtn">✨ BYOK AI Polish</button>
+        <button id="exportMdBtn" class="btn btn-primary" type="button" data-i18n="exportMd">Export Launch Kit (.md)</button>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <!-- Left Brief Form -->
+      <aside class="brief-card">
+        <div class="section-kicker" data-i18n="presetsKicker">Try a realistic preset</div>
+        <div class="preset-pills" id="presetPills">
+          <button class="preset-btn active" type="button" data-preset="0">PulseClip</button>
+          <button class="preset-btn" type="button" data-preset="1">InvoiceNudge</button>
+          <button class="preset-btn" type="button" data-preset="2">ShelfNote</button>
+        </div>
+
+        <div class="section-kicker" data-i18n="briefKicker">Project Brief</div>
+        <div class="field">
+          <label for="projectName" data-i18n="lblName">Project Name</label>
+          <input id="projectName" type="text" placeholder="e.g. PulseClip" />
+        </div>
+        <div class="field">
+          <label for="projectPitch" data-i18n="lblPitch">1-Line Pitch</label>
+          <textarea id="projectPitch" placeholder="What it does and the concrete outcome..."></textarea>
+        </div>
+        <div class="field">
+          <label for="projectAudience" data-i18n="lblAudience">Target Audience</label>
+          <input id="projectAudience" type="text" placeholder="e.g. Solo B2B founders & podcasters" />
+        </div>
+        <div class="field">
+          <label for="projectPricing" data-i18n="lblPricing">Pricing Model</label>
+          <input id="projectPricing" type="text" placeholder="e.g. $19/mo or $29 one-time" />
+        </div>
+        <div class="field">
+          <label for="projectTone" data-i18n="lblTone">Voice & Angle</label>
+          <select id="projectTone">
+            <option value="direct" data-i18n="toneDirect">Direct & Punchy</option>
+            <option value="craft" data-i18n="toneCraft">Calm & Craft-Focused</option>
+            <option value="indie" data-i18n="toneIndie">Build-in-Public Indie</option>
+          </select>
+        </div>
+
+        <div class="brief-foot">
+          <button id="regenerateBtn" class="btn btn-dark" type="button" data-i18n="refreshKit">Refresh Launch Kit</button>
+          <button id="resetBtn" class="btn" type="button" data-i18n="resetBtn">Reset</button>
+        </div>
+        <div id="aiStatus" class="ai-status" data-i18n="offlineNote">Running 100% offline with structured launch frameworks. Progress auto-saves locally.</div>
+      </aside>
+
+      <!-- Right Tabs Output -->
+      <section class="output-card">
+        <div class="tab-bar">
+          <div class="tabs" role="tablist">
+            <button class="tab-btn active" type="button" data-tab="landing" data-i18n="tabLanding">1. Landing Blueprint</button>
+            <button class="tab-btn" type="button" data-tab="calendar" data-i18n="tabCalendar">2. 14-Day Calendar</button>
+            <button class="tab-btn" type="button" data-tab="checklist" data-i18n="tabChecklist">3. Ship Checklist</button>
+          </div>
+          <span id="overallBadge" style="font-size:12px;font-weight:800;color:var(--muted);">0% shipped</span>
+        </div>
+
+        <!-- Tab 1: Landing Page Blueprint -->
+        <div id="pane-landing" class="tab-pane active">
+          <div class="pane-toolbar">
+            <h2 data-i18n="lpHeading">Live Landing Page Preview</h2>
+            <div class="toolbar-btns">
+              <button id="copyLpHtmlBtn" class="btn btn-sm btn-primary" type="button" data-i18n="copyHtml">Copy HTML</button>
+              <button id="copyLpMdBtn" class="btn btn-sm" type="button" data-i18n="copyCopy">Copy Copywriting</button>
+            </div>
+          </div>
+
+          <div class="lp-browser">
+            <div class="lp-chrome">
+              <span class="chrome-dot" style="background:#FF8F6B;"></span>
+              <span class="chrome-dot" style="background:#FFE36E;"></span>
+              <span class="chrome-dot" style="background:#3FD0A0;"></span>
+              <span id="lpUrl" class="chrome-url">https://pulseclip.app</span>
+            </div>
+            <div id="lpPreviewBody" class="lp-body"></div>
+          </div>
+        </div>
+
+        <!-- Tab 2: 14-Day Launch Calendar -->
+        <div id="pane-calendar" class="tab-pane">
+          <div class="cal-controls">
+            <h2 data-i18n="calHeading">14-Day Launch Calendar</h2>
+            <div class="filter-pills" id="channelFilters">
+              <button class="filter-pill active" type="button" data-ch="all" data-i18n="chAll">All (14)</button>
+              <button class="filter-pill" type="button" data-ch="linkedin">LinkedIn</button>
+              <button class="filter-pill" type="button" data-ch="x">X</button>
+              <button class="filter-pill" type="button" data-ch="community">Reddit / IH</button>
+              <button class="filter-pill" type="button" data-ch="dm">DM Outreach</button>
+            </div>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div id="calProgressFill" class="progress-fill"></div></div>
+            <div id="calProgressText" class="progress-text">0 / 14</div>
+          </div>
+          <div id="calList" class="cal-list"></div>
+        </div>
+
+        <!-- Tab 3: Ship-Ready Checklist -->
+        <div id="pane-checklist" class="tab-pane">
+          <div class="pane-toolbar">
+            <h2 data-i18n="checkHeading">Ship-Ready Checklist</h2>
+            <span id="checkScore" style="font-size:13px;font-weight:800;color:var(--mint);">0 / 12</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-track"><div id="checkProgressFill" class="progress-fill"></div></div>
+            <div id="checkProgressText" class="progress-text">0%</div>
+          </div>
+          <div id="checkContainer"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="unfinished">
+      <h2 data-i18n="unfinishedTitle">What's unfinished</h2>
+      <ul>
+        <li data-i18n="u1">Offline generation relies on structured copywriting templates rather than real competitor research or live keyword data — always tweak the drafts so they sound like your own voice.</li>
+        <li data-i18n="u2">Direct browser calls to OpenAI / Anthropic / Gemini in BYOK mode depend on provider CORS policies (Gemini and OpenAI work reliably from browser; Anthropic requires their direct-browser header).</li>
+        <li data-i18n="u3">No direct social scheduling, OG image canvas exporter, or Stripe checkout generator yet.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- BYOK AI Polish Modal -->
+  <div id="aiModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="aiModalTitle">
+    <div class="modal">
+      <h3 id="aiModalTitle" data-i18n="modalTitle">BYOK AI Copy Polish</h3>
+      <p data-i18n="modalDesc">Optional: bring your own API key to rewrite the Landing Page Blueprint headline, value props, and FAQ with sharper positioning. Your key stays strictly in browser localStorage.</p>
+      <div class="field">
+        <label for="aiProvider" data-i18n="lblProvider">Provider</label>
+        <select id="aiProvider">
+          <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+          <option value="openai">OpenAI (gpt-4o-mini)</option>
+          <option value="anthropic">Anthropic (claude-3-5-haiku-latest)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="aiKeyInput" data-i18n="lblApiKey">API Key (stored locally only)</label>
+        <input id="aiKeyInput" type="password" placeholder="Paste your API key..." />
+      </div>
+      <div class="modal-actions">
+        <button id="clearKeyBtn" class="btn btn-sm" type="button" data-i18n="clearKey">Clear Key</button>
+        <button id="closeModalBtn" class="btn btn-sm" type="button" data-i18n="closeBtn">Close</button>
+        <button id="runAiBtn" class="btn btn-sm btn-primary" type="button" data-i18n="runPolish">Polish Blueprint with AI</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'unfinished30_day20_autolaunch_v1';
+      const AI_KEY_STORAGE = 'unfinished30_day20_byok_v1';
+
+      const PRESETS = {
+        en: [
+          {
+            name: 'PulseClip',
+            pitch: 'Turn 1-hour podcasts into 5 captioned LinkedIn clips in 90 seconds.',
+            audience: 'Solo B2B founders & podcasters',
+            pricing: '$19/mo (7-day free trial)',
+            tone: 'direct'
+          },
+          {
+            name: 'InvoiceNudge',
+            pitch: 'Polite, automated payment reminders that get late freelance invoices paid faster without awkward emails.',
+            audience: 'Independent designers & freelance developers',
+            pricing: '$29 one-time license',
+            tone: 'craft'
+          },
+          {
+            name: 'ShelfNote',
+            pitch: 'A private, local-first reading studio that turns book highlights into a 5-minute Sunday review.',
+            audience: 'Lifelong learners, writers & researchers',
+            pricing: 'Freemium · $7/mo Pro',
+            tone: 'indie'
+          }
+        ],
+        fr: [
+          {
+            name: 'PulseClip',
+            pitch: 'Transformez un podcast d’1 heure en 5 extraits LinkedIn sous-titrés en 90 secondes.',
+            audience: 'Fondateurs B2B solo & podcasteurs',
+            pricing: '19 €/mois (essai gratuit 7 jours)',
+            tone: 'direct'
+          },
+          {
+            name: 'InvoiceNudge',
+            pitch: 'Des relances polies et automatiques pour faire payer vos factures en retard sans e-mails gênants.',
+            audience: 'Designers & développeurs freelances',
+            pricing: '29 € paiement unique',
+            tone: 'craft'
+          },
+          {
+            name: 'ShelfNote',
+            pitch: 'Un studio de lecture local-first qui transforme vos notes de livres en revue du dimanche en 5 min.',
+            audience: 'Curieux, auteurs & chercheurs',
+            pricing: 'Freemium · 7 €/mois Pro',
+            tone: 'indie'
+          }
+        ]
+      };
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          badge: 'One-Click SaaS & Side-Project Launchpad',
+          title: 'AutoLaunch',
+          lead: 'Turn a rough project idea into a ready-to-paste landing page blueprint, a 14-day multi-channel launch calendar, and a ship-ready checklist in seconds.',
+          byokBtn: '✨ BYOK AI Polish',
+          exportMd: 'Export Launch Kit (.md)',
+          presetsKicker: 'Try a realistic preset',
+          briefKicker: 'Project Brief',
+          lblName: 'Project Name',
+          lblPitch: '1-Line Pitch',
+          lblAudience: 'Target Audience',
+          lblPricing: 'Pricing Model',
+          lblTone: 'Voice & Angle',
+          toneDirect: 'Direct & Punchy',
+          toneCraft: 'Calm & Craft-Focused',
+          toneIndie: 'Build-in-Public Indie',
+          refreshKit: 'Refresh Launch Kit',
+          resetBtn: 'Reset',
+          offlineNote: 'Running 100% offline with structured launch frameworks. Progress auto-saves locally.',
+          aiActiveNote: 'AI-polished landing blueprint active! Edit the brief or click Refresh to regenerate locally.',
+          tabLanding: '1. Landing Blueprint',
+          tabCalendar: '2. 14-Day Calendar',
+          tabChecklist: '3. Ship Checklist',
+          lpHeading: 'Live Landing Page Preview',
+          copyHtml: 'Copy HTML',
+          copyCopy: 'Copy Copywriting',
+          calHeading: '14-Day Launch Calendar',
+          chAll: 'All (14)',
+          checkHeading: 'Ship-Ready Checklist',
+          copyDraft: 'Copy Draft',
+          unfinishedTitle: "What's unfinished",
+          u1: 'Offline generation relies on structured copywriting templates rather than real competitor research or live keyword data — always tweak the drafts so they sound like your own voice.',
+          u2: 'Direct browser calls to OpenAI / Anthropic / Gemini in BYOK mode depend on provider CORS policies (Gemini and OpenAI work reliably from browser; Anthropic requires their direct-browser header).',
+          u3: 'No direct social scheduling, OG image canvas exporter, or Stripe checkout generator yet.',
+          modalTitle: 'BYOK AI Copy Polish',
+          modalDesc: 'Optional: bring your own API key to rewrite the Landing Page Blueprint headline, value props, and FAQ with sharper positioning. Your key stays strictly in browser localStorage.',
+          lblProvider: 'Provider',
+          lblApiKey: 'API Key (stored locally only)',
+          clearKey: 'Clear Key',
+          closeBtn: 'Close',
+          runPolish: 'Polish Blueprint with AI',
+          polishing: 'Polishing...',
+          toastHtmlCopied: 'Landing Page HTML copied!',
+          toastMdCopied: 'Copywriting copied!',
+          toastDraftCopied: 'Post draft copied!',
+          toastExported: 'Launch Kit Markdown downloaded!',
+          toastReset: 'Progress & brief reset.',
+          toastAiOk: 'Landing blueprint polished with AI!',
+          toastAiErr: 'AI call failed. Check key/CORS or continue offline.',
+          toastNoKey: 'Please enter an API key first.',
+          toastKeyCleared: 'API key removed from localStorage.',
+          toastHtmlDown: 'Standalone HTML downloaded!',
+          shippedSuffix: 'shipped'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          badge: 'Rampe de lancement SaaS & Side-Project',
+          title: 'AutoLaunch',
+          lead: 'Transformez une idée de projet en plan de landing page prêt à coller, calendrier de lancement sur 14 jours et checklist pré-décollage en quelques secondes.',
+          byokBtn: '✨ Polish IA (BYOK)',
+          exportMd: 'Exporter le Kit (.md)',
+          presetsKicker: 'Tester un exemple réaliste',
+          briefKicker: 'Brief du projet',
+          lblName: 'Nom du projet',
+          lblPitch: 'Pitch en 1 phrase',
+          lblAudience: 'Audience cible',
+          lblPricing: 'Modèle de prix',
+          lblTone: 'Ton & Angle',
+          toneDirect: 'Direct & Percutant',
+          toneCraft: 'Calme & Artisanal',
+          toneIndie: 'Build-in-Public Indie',
+          refreshKit: 'Actualiser le Kit',
+          resetBtn: 'Réinitialiser',
+          offlineNote: 'Fonctionne 100% hors-ligne via des frameworks structurés. Sauvegarde locale automatique.',
+          aiActiveNote: 'Blueprint amélioré par IA actif ! Modifiez le brief ou cliquez sur Actualiser pour revenir au mode local.',
+          tabLanding: '1. Blueprint Landing',
+          tabCalendar: '2. Calendrier 14j',
+          tabChecklist: '3. Checklist Ship',
+          lpHeading: 'Aperçu Landing Page',
+          copyHtml: 'Copier HTML',
+          copyCopy: 'Copier le texte',
+          calHeading: 'Calendrier de lancement (14 jours)',
+          chAll: 'Tous (14)',
+          checkHeading: 'Checklist pré-lancement',
+          copyDraft: 'Copier brouillon',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          u1: 'La génération hors-ligne repose sur des frameworks éditoriaux structurés et non sur une étude concurrentielle en direct — ajustez toujours les brouillons à votre voix.',
+          u2: 'Les appels navigateur directs en mode BYOK dépendent des règles CORS des fournisseurs (Gemini et OpenAI fonctionnent bien ; Anthropic requiert son en-tête navigateur).',
+          u3: 'Pas encore de planification sociale automatique, de générateur d’image OG ni de lien Stripe intégré.',
+          modalTitle: 'Polish Copywriting IA (BYOK)',
+          modalDesc: 'Optionnel : utilisez votre propre clé API pour affiner le titre, les bénéfices et la FAQ de la landing page. Votre clé reste uniquement dans localStorage.',
+          lblProvider: 'Fournisseur',
+          lblApiKey: 'Clé API (stockée localement uniquement)',
+          clearKey: 'Effacer clé',
+          closeBtn: 'Fermer',
+          runPolish: 'Améliorer avec l’IA',
+          polishing: 'Amélioration...',
+          toastHtmlCopied: 'HTML de la landing page copié !',
+          toastMdCopied: 'Copywriting copié !',
+          toastDraftCopied: 'Brouillon copié !',
+          toastExported: 'Kit de lancement (.md) téléchargé !',
+          toastReset: 'Progression et brief réinitialisés.',
+          toastAiOk: 'Blueprint affiné par l’IA !',
+          toastAiErr: 'Appel IA échoué. Vérifiez la clé/CORS ou restez hors-ligne.',
+          toastNoKey: 'Veuillez saisir une clé API.',
+          toastKeyCleared: 'Clé API supprimée de localStorage.',
+          toastHtmlDown: 'HTML autonome téléchargé !',
+          shippedSuffix: 'prêt'
+        }
+      };
+
+      let lang = 'en';
+      let activeTab = 'landing';
+      let activeChannel = 'all';
+      let state = {
+        presetIdx: 0,
+        brief: { ...PRESETS.en[0] },
+        doneDays: {},
+        doneChecks: {},
+        aiOverride: null
+      };
+
+      const els = {
+        langToggle: document.getElementById('langToggle'),
+        langEn: document.getElementById('langEn'),
+        langFr: document.getElementById('langFr'),
+        downloadHtmlBtn: document.getElementById('downloadHtmlBtn'),
+        aiModalBtn: document.getElementById('aiModalBtn'),
+        exportMdBtn: document.getElementById('exportMdBtn'),
+        presetPills: document.getElementById('presetPills'),
+        projectName: document.getElementById('projectName'),
+        projectPitch: document.getElementById('projectPitch'),
+        projectAudience: document.getElementById('projectAudience'),
+        projectPricing: document.getElementById('projectPricing'),
+        projectTone: document.getElementById('projectTone'),
+        regenerateBtn: document.getElementById('regenerateBtn'),
+        resetBtn: document.getElementById('resetBtn'),
+        aiStatus: document.getElementById('aiStatus'),
+        overallBadge: document.getElementById('overallBadge'),
+        lpUrl: document.getElementById('lpUrl'),
+        lpPreviewBody: document.getElementById('lpPreviewBody'),
+        copyLpHtmlBtn: document.getElementById('copyLpHtmlBtn'),
+        copyLpMdBtn: document.getElementById('copyLpMdBtn'),
+        channelFilters: document.getElementById('channelFilters'),
+        calProgressFill: document.getElementById('calProgressFill'),
+        calProgressText: document.getElementById('calProgressText'),
+        calList: document.getElementById('calList'),
+        checkScore: document.getElementById('checkScore'),
+        checkProgressFill: document.getElementById('checkProgressFill'),
+        checkProgressText: document.getElementById('checkProgressText'),
+        checkContainer: document.getElementById('checkContainer'),
+        aiModal: document.getElementById('aiModal'),
+        aiProvider: document.getElementById('aiProvider'),
+        aiKeyInput: document.getElementById('aiKeyInput'),
+        clearKeyBtn: document.getElementById('clearKeyBtn'),
+        closeModalBtn: document.getElementById('closeModalBtn'),
+        runAiBtn: document.getElementById('runAiBtn'),
+        toast: document.getElementById('toast')
+      };
+
+      function t(k) { return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
+
+      function esc(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function showToast(msg) {
+        els.toast.textContent = msg;
+        els.toast.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => els.toast.classList.remove('show'), 2400);
+      }
+
+      function saveState() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.brief) state = { ...state, ...parsed };
+          }
+        } catch (_) {}
+      }
+
+      function slugify(s) {
+        return (s || 'myproject').toLowerCase().replace(/[^a-z0-9]+/g, '') || 'myproject';
+      }
+
+      // Structured Offline Blueprint Generator
+      function buildBlueprint() {
+        if (state.aiOverride) return state.aiOverride;
+        const b = state.brief;
+        const name = (b.name || 'YourProject').trim();
+        const pitch = (b.pitch || 'Solve one painful workflow in minutes.').trim();
+        const aud = (b.audience || 'makers and freelancers').trim();
+        const price = (b.pricing || 'Free to start').trim();
+
+        if (lang === 'fr') {
+          const angleLead = b.tone === 'craft'
+            ? `Pensé avec soin pour ${aud}.`
+            : b.tone === 'indie'
+              ? `Construit en public pour ${aud}, sans usine à gaz.`
+              : `Conçu pour ${aud} qui veulent des résultats aujourd’hui.`;
+          return {
+            badge: `Pour ${aud}`,
+            headline: b.tone === 'direct'
+              ? `${name} : passez de l'effort manuel au résultat en quelques minutes.`
+              : b.tone === 'craft'
+                ? `Un outil calme et précis pour ${aud.toLowerCase()}.`
+                : `Enfin un outil simple pour ${aud.toLowerCase()} — sans abonnement lourd.`,
+            subhead: `${pitch} ${angleLead}`,
+            cta: `Essayer ${name} maintenant`,
+            trust: `${price} · Prise en main en moins de 2 min · Zéro friction`,
+            props: [
+              {
+                title: 'Résultat immédiat',
+                desc: `Arrêtez de bricoler des fichiers éparpillés. ${name} vous donne un workflow clair dès la première minute.`
+              },
+              {
+                title: `Taillé pour ${aud}`,
+                desc: `Aucune fonctionnalité superflue : uniquement ce qui fait avancer votre quotidien plus vite.`
+              },
+              {
+                title: 'Tarif transparent',
+                desc: `${price}. Commencez petit, validez la valeur réelle, et gardez le contrôle total.`
+              }
+            ],
+            faqs: [
+              {
+                q: `En quoi ${name} est-il différent des gros outils existants ?`,
+                a: `${name} se concentre sur un seul résultat précis (${pitch}) au lieu de vous noyer sous 40 menus inutiles.`
+              },
+              {
+                q: 'Combien de temps faut-il pour démarrer ?',
+                a: 'Moins de 2 minutes. Pas de formation ni d’appel commercial requis.'
+              },
+              {
+                q: 'Comment fonctionne la tarification ?',
+                a: `Simple et lisible : ${price}. Vous savez exactement ce que vous payez.`
+              }
+            ],
+            bottomTitle: `Prêt à tester ${name} ?`,
+            bottomSub: `Rejoignez les premiers ${aud.toLowerCase()} qui simplifient leur semaine.`
+          };
+        }
+
+        const angleLead = b.tone === 'craft'
+          ? `Thoughtfully built for ${aud}.`
+          : b.tone === 'indie'
+            ? `Built in public for ${aud} — zero enterprise bloat.`
+            : `Built for ${aud} who want results today.`;
+
+        return {
+          badge: `Built for ${aud}`,
+          headline: b.tone === 'direct'
+            ? `${name}: skip the busywork and ship the outcome faster.`
+            : b.tone === 'craft'
+              ? `A calm, focused tool crafted for ${aud.toLowerCase()}.`
+              : `The lightweight workflow ${aud.toLowerCase()} actually enjoy using.`,
+          subhead: `${pitch} ${angleLead}`,
+          cta: `Start using ${name}`,
+          trust: `${price} · Set up in under 2 minutes · Cancel or leave anytime`,
+          props: [
+            {
+              title: 'Outcome in minutes, not hours',
+              desc: `Stop stitching together spreadsheets and messy tabs. ${name} gets you from raw input to finished result fast.`
+            },
+            {
+              title: `Focused on ${aud}`,
+              desc: `Zero enterprise clutter. Every screen exists to remove friction from the exact job you do every week.`
+            },
+            {
+              title: 'Clear, honest pricing',
+              desc: `${price}. Try it on a real task today before committing a dollar more.`
+            }
+          ],
+          faqs: [
+            {
+              q: `Why use ${name} instead of a bloated all-in-one suite?`,
+              a: `Because ${name} does one thing exceptionally well: ${pitch} No 45-minute onboarding calls.`
+            },
+            {
+              q: 'How fast can I see value?',
+              a: 'In under 2 minutes. Drop in your first real workflow and see the output immediately.'
+            },
+            {
+              q: 'What does it cost?',
+              a: `Straightforward pricing: ${price}. No hidden seats or surprise renewals.`
+            }
+          ],
+          bottomTitle: `Ready to try ${name}?`,
+          bottomSub: `Built for ${aud.toLowerCase()} who value speed and clarity.`
+        };
+      }
+
+      // Structured 14-Day Launch Calendar
+      function buildCalendar() {
+        const b = state.brief;
+        const name = (b.name || 'YourProject').trim();
+        const pitch = (b.pitch || '').trim();
+        const aud = (b.audience || 'makers').trim();
+        const price = (b.pricing || 'Free').trim();
+
+        if (lang === 'fr') {
+          return [
+            { day: 1, ch: 'linkedin', title: 'Post "Problème vécu" (sans lien)', draft: `En parlant avec des ${aud.toLowerCase()}, j’entends toujours la même frustration.\n\nC’est pour ça que je construis ${name} : ${pitch}\n\nSi vous vivez ce souci chaque semaine, commentez "INTERESSÉ" et je vous envoie l’accès bêta.` },
+            { day: 2, ch: 'x', title: 'Thread Teaser + GIF de 15 sec', draft: `J’en avais assez de perdre du temps sur ce workflow.\n\nVoici un aperçu de 15 secondes de ${name} :\n→ ${pitch}\n→ Pensé pour ${aud}\n→ ${price}\n\nSortie cette semaine.` },
+            { day: 3, ch: 'dm', title: '10 DMs personnalisés à votre cible', draft: `Salut [Prénom], j’ai vu ton travail en tant que ${aud.toLowerCase()}. Je viens de créer un mini-outil (${name}) pour : ${pitch} Je peux t’envoyer un accès gratuit pour avoir ton avis honnête ?` },
+            { day: 4, ch: 'community', title: 'Demande de feedback sur IndieHackers / Reddit', draft: `Titre : J’ai construit ${name} pour aider les ${aud.toLowerCase()} — vos retours sur la landing ?\n\nPitch : ${pitch}\nPrix envisagé : ${price}.\nQu’est-ce qui manque pour que vous le testiez aujourd’hui ?` },
+            { day: 5, ch: 'linkedin', title: 'Post "Avant / Après" visuel', draft: `Avant : 45 minutes de copier-coller et d’outils dispersés.\nAprès avec ${name} : ${pitch}\n\nLa simplicité bat toujours la complexité. Lien en commentaire.` },
+            { day: 6, ch: 'x', title: 'Partage de votre premier retour utilisateur', draft: `Premier retour sur ${name} aujourd’hui : "[citation courte d’un testeur]".\n\nCorrigé 2 bugs en 20 minutes. Le build-in-public fonctionne quand on écoute vraiment.` },
+            { day: 7, ch: 'dm', title: 'Relance douce des 5 premiers testeurs', draft: `Salut [Prénom] ! Merci encore d’avoir testé ${name}. Qu’est-ce qui t’a bloqué ou surpris ? Même une critique brute m’aide énormément.` },
+            { day: 8, ch: 'linkedin', title: 'Jour J : Annonce de lancement officielle', draft: `C’est en ligne 🚀 ${name} est officiellement ouvert !\n\n${pitch}\n\nConçu pour ${aud} · ${price}.\nTestez-le en 2 minutes et dites-moi ce que je dois améliorer ensuite.` },
+            { day: 9, ch: 'community', title: 'Lancement Show HN / r/SideProject / MicroLaunch', draft: `Show & Tell : ${name} — ${pitch}\n\nJ’ai gardé le produit volontairement minimaliste pour ${aud}. Tarif : ${price}. Vos retours techniques et produit sont bienvenus !` },
+            { day: 10, ch: 'x', title: 'Mini démo vidéo de 30 sec', draft: `Pas de blabla marketing. Juste 30 secondes pour voir ${name} en action :\n\n${pitch}\n\nEssayez-le ici → [lien]` },
+            { day: 11, ch: 'dm', title: 'DM aux personnes qui ont liké/commenté', draft: `Merci pour ton soutien sur mon post ${name} ! Comme tu fais partie de ${aud.toLowerCase()}, voici le lien direct si tu veux tester : [lien]` },
+            { day: 12, ch: 'linkedin', title: 'Post "Les 3 leçons de ma semaine de lancement"', draft: `Une semaine après le lancement de ${name} :\n1. Ce que je pensais important ne l’était pas.\n2. Les ${aud.toLowerCase()} veulent surtout gagner du temps.\n3. Parler à 10 personnes vaut mieux que 100h de code caché.` },
+            { day: 13, ch: 'x', title: 'Chiffres transparents & roadmap publique', draft: `Bilan à J+5 pour ${name} :\n• [X] visiteurs\n• [Y] testeurs actifs\n• Prochaine étape : [fonctionnalité #1 demandée]\n\nMerci à tous ceux qui testent !` },
+            { day: 14, ch: 'community', title: 'Post-mortem honnête & appel aux cas d’usage', draft: `Ce qui a marché (et ce qui a floppé) pendant les 14 premiers jours de ${name}. Si vous êtes ${aud.toLowerCase()}, quel est votre plus gros blocage actuel ?` }
+          ];
+        }
+
+        return [
+          { day: 1, ch: 'linkedin', title: 'Problem-first story post (no link)', draft: `Talking to ${aud.toLowerCase()}, I kept hearing the exact same headache.\n\nSo I'm building ${name}: ${pitch}\n\nIf you deal with this every week, drop "BETA" below and I'll send early access.` },
+          { day: 2, ch: 'x', title: '15-second teaser GIF + 3 bullets', draft: `Got tired of duct-taping this workflow together.\n\nHere's a 15-sec peek at ${name}:\n→ ${pitch}\n→ Built for ${aud}\n→ ${price}\n\nShipping this week.` },
+          { day: 3, ch: 'dm', title: '10 warm personal DMs to ideal users', draft: `Hey [Name], saw your work as one of the ${aud.toLowerCase()} in my feed. I built a tiny tool (${name}) that helps you: ${pitch} Mind if I send a free link for blunt feedback?` },
+          { day: 4, ch: 'community', title: 'Roast-my-landing post on Reddit / IndieHackers', draft: `Title: Built ${name} for ${aud} — roast my landing page & pricing?\n\nPitch: ${pitch}\nPricing: ${price}.\nWhat's unclear or missing before you'd try it?` },
+          { day: 5, ch: 'linkedin', title: 'Visual Before vs After breakdown', draft: `Before: 45 minutes of messy tabs and manual work.\nAfter with ${name}: ${pitch}\n\nFocused tools beat bloated suites every time. Link in comments.` },
+          { day: 6, ch: 'x', title: 'Share your first real user quote', draft: `First user reaction to ${name} today: "[short quote from beta user]".\n\nFixed 2 rough edges in 20 minutes. Shipping small and listening fast.` },
+          { day: 7, ch: 'dm', title: 'Follow up with your first 5 testers', draft: `Hey [Name]! Thanks again for trying ${name}. What felt clunky or confusing? Brutally honest feedback is gold right now.` },
+          { day: 8, ch: 'linkedin', title: 'Launch Day announcement post', draft: `It's live 🚀 Today I'm launching ${name}!\n\n${pitch}\n\nMade for ${aud} · ${price}.\nTry it in 2 minutes and tell me what I should build next.` },
+          { day: 9, ch: 'community', title: 'Show HN / r/SideProject / Launch directory', draft: `Show & Tell: ${name} — ${pitch}\n\nKept the scope intentionally small for ${aud}. Pricing: ${price}. Would love honest feedback from fellow builders!` },
+          { day: 10, ch: 'x', title: '30-second no-fluff Loom / screen demo', draft: `Zero marketing fluff. Just 30 seconds of ${name} doing the actual job:\n\n${pitch}\n\nTry it here → [link]` },
+          { day: 11, ch: 'dm', title: 'DM everyone who liked or commented', draft: `Thanks for the support on the ${name} post! Since you're in the ${aud.toLowerCase()} space, here's the direct link if you want to give it a spin: [link]` },
+          { day: 12, ch: 'linkedin', title: '3 honest lessons from launch week', draft: `One week after launching ${name}:\n1. Features I obsessed over didn't matter.\n2. ${aud} just want speed and clarity.\n3. 10 real conversations beat 100 hours of silent coding.` },
+          { day: 13, ch: 'x', title: 'Transparent numbers + next sprint', draft: `Day 5 numbers for ${name}:\n• [X] visitors\n• [Y] active testers\n• Shipping next: [top requested tweak]\n\nOnward.` },
+          { day: 14, ch: 'community', title: '14-day retro & use-case thread', draft: `What worked (and what flopped) during the first 14 days of launching ${name}. If you're among ${aud.toLowerCase()}, what's your #1 bottleneck right now?` }
+        ];
+      }
+
+      function buildChecklist() {
+        if (lang === 'fr') {
+          return [
+            {
+              group: 'Image OG & Partage Social',
+              items: [
+                { id: 'og1', title: 'Créer une image Open Graph 1200×630', desc: 'Un visuel clair avec titre lisible pour LinkedIn, X et Slack.' },
+                { id: 'og2', title: 'Vérifier les balises title, meta description et favicon', desc: 'Testez l’aperçu sur opengraph.xyz avant de poster.' },
+                { id: 'og3', title: 'Enregistrer un GIF ou vidéo démo de 20 secondes', desc: 'Montrez le résultat produit dès les 3 premières secondes.' }
+              ]
+            },
+            {
+              group: 'Analytics & Fiabilité',
+              items: [
+                { id: 'an1', title: 'Installer un analytics léger (Plausible / Umami / Vercel)', desc: 'Suivez les visites et clics sur le CTA sans bannière lourde.' },
+                { id: 'an2', title: 'Tester le parcours complet sur mobile (360px)', desc: 'Plus de 60% des clics LinkedIn arrivent depuis un téléphone.' },
+                { id: 'an3', title: 'Vérifier les erreurs console et états vides', desc: 'Assurez-vous que le premier écran est compréhensible en 5 secondes.' }
+              ]
+            },
+            {
+              group: 'Prix & Paiement',
+              items: [
+                { id: 'pr1', title: 'Rendre le tarif visible dès la landing page', desc: 'Pas de mystère : affichez clairement votre modèle de prix.' },
+                { id: 'pr2', title: 'Tester un vrai paiement ou lien Stripe/LemonSqueezy', desc: 'Vérifiez l’e-mail de confirmation et l’accès post-achat.' },
+                { id: 'pr3', title: 'Ajouter une garantie ou un essai sans friction', desc: 'Réduisez le risque perçu pour vos premiers acheteurs.' }
+              ]
+            },
+            {
+              group: 'Premiers 5 Utilisateurs',
+              items: [
+                { id: 'u1', title: 'Lister 15 personnes précises à contacter en DM', desc: 'Des gens qui ont exprimé ce problème récemment.' },
+                { id: 'u2', title: 'Ajouter un moyen direct de donner son avis', desc: 'Un lien e-mail, Tally ou widget discret en bas de page.' },
+                { id: 'u3', title: 'Bloquer 30 min/jour pendant 14 jours pour distribuer', desc: 'La distribution compte autant que le code.' }
+              ]
+            }
+          ];
+        }
+        return [
+          {
+            group: 'OG Image & Social Cards',
+            items: [
+              { id: 'og1', title: 'Design a crisp 1200×630 Open Graph image', desc: 'High-contrast headline + product visual so links pop on LinkedIn & X.' },
+              { id: 'og2', title: 'Verify title, meta description & favicon', desc: 'Preview your URL in an OG debugger before posting anywhere.' },
+              { id: 'og3', title: 'Record a 20-second product demo GIF / MP4', desc: 'Show the "aha" moment within the first 3 seconds.' }
+            ]
+          },
+          {
+            group: 'Analytics & Polish',
+            items: [
+              { id: 'an1', title: 'Add lightweight privacy-friendly analytics', desc: 'Track pageviews and primary CTA clicks (Plausible, Umami, or Vercel).' },
+              { id: 'an2', title: 'Test the full flow on a 360px mobile screen', desc: 'Over 60% of LinkedIn and X launch clicks happen on mobile.' },
+              { id: 'an3', title: 'Check console errors & 5-second clarity', desc: 'A cold visitor should understand what it does without scrolling.' }
+            ]
+          },
+          {
+            group: 'Pricing & Checkout',
+            items: [
+              { id: 'pr1', title: 'Show clear pricing on the landing page', desc: 'Avoid vague "Contact us" walls for self-serve indie products.' },
+              { id: 'pr2', title: 'Run a real end-to-end test payment', desc: 'Verify Stripe / LemonSqueezy checkout, receipt email, and access.' },
+              { id: 'pr3', title: 'Add a low-friction trial or refund promise', desc: 'Lower perceived risk for early adopters.' }
+            ]
+          },
+          {
+            group: 'First 5 Users',
+            items: [
+              { id: 'u1', title: 'Build a list of 15 real people to DM', desc: 'People who recently posted about the exact problem you solve.' },
+              { id: 'u2', title: 'Add a 1-click feedback channel', desc: 'Mailto link, Tally form, or reply-to email right inside the app.' },
+              { id: 'u3', title: 'Block 30 mins/day for 14 days of distribution', desc: 'Shipping is day 1; consistent sharing brings the first users.' }
+            ]
+          }
+        ];
+      }
+
+      function renderLanding() {
+        const bp = buildBlueprint();
+        els.lpUrl.textContent = `https://${slugify(state.brief.name)}.app`;
+        els.lpPreviewBody.innerHTML = `
+          <div class="lp-hero">
+            <span class="lp-pill">${esc(bp.badge)}</span>
+            <h3>${esc(bp.headline)}</h3>
+            <p>${esc(bp.subhead)}</p>
+            <div class="lp-cta-row">
+              <span class="lp-cta-btn">${esc(bp.cta)} →</span>
+              <span class="lp-trust">${esc(bp.trust)}</span>
+            </div>
+          </div>
+          <div class="lp-props">
+            ${bp.props.map((p, idx) => `
+              <div class="lp-prop-card">
+                <div class="lp-prop-num">0${idx + 1}</div>
+                <h4>${esc(p.title)}</h4>
+                <p>${esc(p.desc)}</p>
+              </div>
+            `).join('')}
+          </div>
+          <div class="lp-faq">
+            <div class="lp-faq-title">FAQ</div>
+            <div class="faq-grid">
+              ${bp.faqs.map((f) => `
+                <div class="faq-item">
+                  <strong>${esc(f.q)}</strong>
+                  <span>${esc(f.a)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="lp-bottom-cta">
+            <div>
+              <strong>${esc(bp.bottomTitle)}</strong>
+              <span>${esc(bp.bottomSub)}</span>
+            </div>
+            <span class="lp-cta-btn">${esc(bp.cta)}</span>
+          </div>
+        `;
+      }
+
+      function generateLandingHtmlSnippet() {
+        const bp = buildBlueprint();
+        return `<!DOCTYPE html>
+<html lang="${lang}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${esc(state.brief.name)} — ${esc(bp.badge)}</title>
+  <style>
+    body{font-family:system-ui,-apple-system,sans-serif;margin:0;color:#14151C;background:#FCFBF5;line-height:1.6}
+    .wrap{max-width:860px;margin:0 auto;padding:64px 20px}
+    .pill{display:inline-block;background:#FFE36E;border:1.5px solid #14151C;padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700}
+    h1{font-size:clamp(34px,5vw,52px);line-height:1.08;margin:16px 0 12px}
+    .sub{color:#5A5F72;font-size:18px;max-width:620px;margin:0 auto 24px}
+    .cta{display:inline-block;background:#14151C;color:#fff;text-decoration:none;padding:13px 26px;border-radius:12px;font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:48px 0}
+    .card{background:#fff;border:1.5px solid #E4E1D5;border-radius:14px;padding:20px}
+    .faq{margin:36px 0;display:grid;gap:12px}
+    .banner{background:#FFE36E;border:2px solid #14151C;border-radius:16px;padding:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section style="text-align:center">
+      <span class="pill">${esc(bp.badge)}</span>
+      <h1>${esc(bp.headline)}</h1>
+      <p class="sub">${esc(bp.subhead)}</p>
+      <a class="cta" href="#start">${esc(bp.cta)} →</a>
+      <p style="font-size:13px;color:#5A5F72;margin-top:10px">${esc(bp.trust)}</p>
+    </section>
+    <section class="grid">
+      ${bp.props.map((p) => `<div class="card"><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p></div>`).join('\n      ')}
+    </section>
+    <section class="faq">
+      <h2>FAQ</h2>
+      ${bp.faqs.map((f) => `<div class="card"><strong>${esc(f.q)}</strong><p style="margin:6px 0 0;color:#5A5F72">${esc(f.a)}</p></div>`).join('\n      ')}
+    </section>
+    <section id="start" class="banner">
+      <div><strong style="font-size:20px">${esc(bp.bottomTitle)}</strong><div>${esc(bp.bottomSub)}</div></div>
+      <a class="cta" href="#">${esc(bp.cta)}</a>
+    </section>
+  </main>
+</body>
+</html>`;
+      }
+
+      function renderCalendar() {
+        const items = buildCalendar();
+        const doneCount = items.filter((it) => state.doneDays[it.day]).length;
+        els.calProgressFill.style.width = `${Math.round((doneCount / items.length) * 100)}%`;
+        els.calProgressText.textContent = `${doneCount} / ${items.length}`;
+
+        const channelLabels = {
+          linkedin: { text: 'LinkedIn', cls: 'ch-linkedin' },
+          x: { text: 'X', cls: 'ch-x' },
+          community: { text: 'Reddit / IH', cls: 'ch-community' },
+          dm: { text: 'DM Outreach', cls: 'ch-dm' }
+        };
+
+        const filtered = activeChannel === 'all' ? items : items.filter((it) => it.ch === activeChannel);
+        els.calList.innerHTML = filtered.map((it) => {
+          const isDone = !!state.doneDays[it.day];
+          const chMeta = channelLabels[it.ch];
+          return `
+            <div class="cal-item ${isDone ? 'done' : ''}">
+              <div class="cal-row">
+                <div class="cal-left">
+                  <input class="cal-check" type="checkbox" data-day="${it.day}" ${isDone ? 'checked' : ''} aria-label="Day ${it.day}" />
+                  <div>
+                    <div class="cal-day-tag">Day ${it.day}</div>
+                    <div class="cal-title">${esc(it.title)}</div>
+                  </div>
+                </div>
+                <span class="channel-badge ${chMeta.cls}">${chMeta.text}</span>
+              </div>
+              <div class="cal-draft">${esc(it.draft)}</div>
+              <div class="cal-draft-foot">
+                <button class="btn btn-sm copy-draft-btn" type="button" data-day="${it.day}">${esc(t('copyDraft'))}</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+        updateOverallBadge();
+      }
+
+      function renderChecklist() {
+        const groups = buildChecklist();
+        let total = 0;
+        let done = 0;
+        groups.forEach((g) => g.items.forEach((it) => {
+          total++;
+          if (state.doneChecks[it.id]) done++;
+        }));
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        els.checkScore.textContent = `${done} / ${total}`;
+        els.checkProgressFill.style.width = `${pct}%`;
+        els.checkProgressText.textContent = `${pct}%`;
+
+        els.checkContainer.innerHTML = groups.map((g) => `
+          <div class="check-group">
+            <h3>${esc(g.group)}</h3>
+            <div class="check-list">
+              ${g.items.map((it) => {
+                const isDone = !!state.doneChecks[it.id];
+                return `
+                  <label class="check-row ${isDone ? 'done' : ''}">
+                    <input type="checkbox" data-check="${it.id}" ${isDone ? 'checked' : ''} />
+                    <div>
+                      <strong>${esc(it.title)}</strong>
+                      <span>${esc(it.desc)}</span>
+                    </div>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('');
+        updateOverallBadge();
+      }
+
+      function updateOverallBadge() {
+        const calDone = Object.values(state.doneDays).filter(Boolean).length;
+        const chkDone = Object.values(state.doneChecks).filter(Boolean).length;
+        const pct = Math.round(((calDone + chkDone) / 26) * 100);
+        els.overallBadge.textContent = `${pct}% ${t('shippedSuffix')}`;
+      }
+
+      function syncBriefInputs() {
+        els.projectName.value = state.brief.name || '';
+        els.projectPitch.value = state.brief.pitch || '';
+        els.projectAudience.value = state.brief.audience || '';
+        els.projectPricing.value = state.brief.pricing || '';
+        els.projectTone.value = state.brief.tone || 'direct';
+        els.presetPills.querySelectorAll('.preset-btn').forEach((btn) => {
+          btn.classList.toggle('active', Number(btn.dataset.preset) === state.presetIdx);
+        });
+        els.aiStatus.textContent = state.aiOverride ? t('aiActiveNote') : t('offlineNote');
+      }
+
+      function renderAll() {
+        syncBriefInputs();
+        renderLanding();
+        renderCalendar();
+        renderChecklist();
+      }
+
+      function applyI18n() {
+        document.documentElement.lang = lang;
+        els.langEn.classList.toggle('active', lang === 'en');
+        els.langFr.classList.toggle('active', lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach((node) => {
+          const k = node.getAttribute('data-i18n');
+          if (I18N[lang][k]) node.textContent = I18N[lang][k];
+        });
+        renderAll();
+      }
+
+      // Copy & Export Helpers
+      async function copyText(str, msg) {
+        try {
+          await navigator.clipboard.writeText(str);
+          showToast(msg);
+        } catch (_) {
+          const ta = document.createElement('textarea');
+          ta.value = str;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          showToast(msg);
+        }
+      }
+
+      function buildFullMarkdown() {
+        const bp = buildBlueprint();
+        const cal = buildCalendar();
+        const groups = buildChecklist();
+        const lines = [];
+        lines.push(`# ${state.brief.name} — Launch Kit`);
+        lines.push('');
+        lines.push(`- **1-Line Pitch:** ${state.brief.pitch}`);
+        lines.push(`- **Target Audience:** ${state.brief.audience}`);
+        lines.push(`- **Pricing:** ${state.brief.pricing}`);
+        lines.push('');
+        lines.push('## 1. Landing Page Blueprint');
+        lines.push(`- **Badge:** ${bp.badge}`);
+        lines.push(`- **Headline:** ${bp.headline}`);
+        lines.push(`- **Subhead:** ${bp.subhead}`);
+        lines.push(`- **Primary CTA:** ${bp.cta} (${bp.trust})`);
+        lines.push('');
+        lines.push('### Value Props');
+        bp.props.forEach((p, i) => lines.push(`${i + 1}. **${p.title}** — ${p.desc}`));
+        lines.push('');
+        lines.push('### Objection FAQ');
+        bp.faqs.forEach((f) => {
+          lines.push(`- **Q: ${f.q}**`);
+          lines.push(`  A: ${f.a}`);
+        });
+        lines.push('');
+        lines.push('## 2. 14-Day Launch Calendar');
+        cal.forEach((it) => {
+          const mark = state.doneDays[it.day] ? 'x' : ' ';
+          lines.push(`- [${mark}] **Day ${it.day} (${it.ch.toUpperCase()})** — ${it.title}`);
+          lines.push('  > ' + it.draft.replace(/\n/g, '\n  > '));
+        });
+        lines.push('');
+        lines.push('## 3. Ship-Ready Checklist');
+        groups.forEach((g) => {
+          lines.push(`### ${g.group}`);
+          g.items.forEach((it) => {
+            const mark = state.doneChecks[it.id] ? 'x' : ' ';
+            lines.push(`- [${mark}] **${it.title}** — ${it.desc}`);
+          });
+        });
+        return lines.join('\n');
+      }
+
+      // BYOK AI Polish Call
+      async function runByokPolish() {
+        const provider = els.aiProvider.value;
+        const apiKey = els.aiKeyInput.value.trim();
+        if (!apiKey) {
+          showToast(t('toastNoKey'));
+          return;
+        }
+        try {
+          localStorage.setItem(AI_KEY_STORAGE, JSON.stringify({ provider, apiKey }));
+        } catch (_) {}
+
+        els.runAiBtn.disabled = true;
+        els.runAiBtn.textContent = t('polishing');
+
+        const prompt = `You are a sharp indie SaaS copywriter. Return ONLY valid JSON (no markdown fences) in ${lang === 'fr' ? 'French' : 'English'} with keys: badge, headline, subhead, cta, trust, props (array of 3 objects with title, desc), faqs (array of 3 objects with q, a), bottomTitle, bottomSub.
+Project Name: ${state.brief.name}
+Pitch: ${state.brief.pitch}
+Audience: ${state.brief.audience}
+Pricing: ${state.brief.pricing}
+Tone: ${state.brief.tone}`;
+
+        try {
+          let rawText = '';
+          if (provider === 'gemini') {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'Gemini error');
+            rawText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          } else if (provider === 'openai') {
+            const res = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [{ role: 'user', content: prompt }],
+                temperature: 0.7
+              })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'OpenAI error');
+            rawText = data.choices?.[0]?.message?.content || '';
+          } else {
+            const res = await fetch('https://api.anthropic.com/v1/messages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+              },
+              body: JSON.stringify({
+                model: 'claude-3-5-haiku-latest',
+                max_tokens: 900,
+                messages: [{ role: 'user', content: prompt }]
+              })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'Anthropic error');
+            rawText = data.content?.[0]?.text || '';
+          }
+
+          const cleaned = rawText.replace(/```json|```/g, '').trim();
+          const parsed = JSON.parse(cleaned);
+          if (!parsed.headline || !Array.isArray(parsed.props)) throw new Error('Invalid JSON shape');
+          state.aiOverride = parsed;
+          saveState();
+          renderAll();
+          els.aiModal.classList.remove('open');
+          showToast(t('toastAiOk'));
+        } catch (err) {
+          console.error(err);
+          showToast(t('toastAiErr'));
+        } finally {
+          els.runAiBtn.disabled = false;
+          els.runAiBtn.textContent = t('runPolish');
+        }
+      }
+
+      // Event Listeners
+      function onBriefChange() {
+        state.brief = {
+          name: els.projectName.value,
+          pitch: els.projectPitch.value,
+          audience: els.projectAudience.value,
+          pricing: els.projectPricing.value,
+          tone: els.projectTone.value
+        };
+        state.presetIdx = -1;
+        state.aiOverride = null;
+        saveState();
+        renderAll();
+      }
+
+      [els.projectName, els.projectPitch, els.projectAudience, els.projectPricing, els.projectTone].forEach((input) => {
+        input.addEventListener('input', onBriefChange);
+      });
+
+      els.presetPills.addEventListener('click', (e) => {
+        const btn = e.target.closest('.preset-btn');
+        if (!btn) return;
+        const idx = Number(btn.dataset.preset);
+        state.presetIdx = idx;
+        state.brief = { ...PRESETS[lang][idx] };
+        state.aiOverride = null;
+        saveState();
+        renderAll();
+      });
+
+      els.regenerateBtn.addEventListener('click', () => {
+        state.aiOverride = null;
+        saveState();
+        renderAll();
+      });
+
+      els.resetBtn.addEventListener('click', () => {
+        state = {
+          presetIdx: 0,
+          brief: { ...PRESETS[lang][0] },
+          doneDays: {},
+          doneChecks: {},
+          aiOverride: null
+        };
+        saveState();
+        renderAll();
+        showToast(t('toastReset'));
+      });
+
+      document.querySelectorAll('.tab-btn').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          activeTab = btn.dataset.tab;
+          document.querySelectorAll('.tab-btn').forEach((b) => b.classList.toggle('active', b === btn));
+          document.querySelectorAll('.tab-pane').forEach((p) => p.classList.toggle('active', p.id === `pane-${activeTab}`));
+        });
+      });
+
+      els.channelFilters.addEventListener('click', (e) => {
+        const pill = e.target.closest('.filter-pill');
+        if (!pill) return;
+        activeChannel = pill.dataset.ch;
+        els.channelFilters.querySelectorAll('.filter-pill').forEach((p) => p.classList.toggle('active', p === pill));
+        renderCalendar();
+      });
+
+      els.calList.addEventListener('change', (e) => {
+        if (e.target.matches('.cal-check')) {
+          const day = Number(e.target.dataset.day);
+          state.doneDays[day] = e.target.checked;
+          saveState();
+          renderCalendar();
+        }
+      });
+
+      els.calList.addEventListener('click', (e) => {
+        const btn = e.target.closest('.copy-draft-btn');
+        if (!btn) return;
+        const day = Number(btn.dataset.day);
+        const item = buildCalendar().find((x) => x.day === day);
+        if (item) copyText(item.draft, t('toastDraftCopied'));
+      });
+
+      els.checkContainer.addEventListener('change', (e) => {
+        if (e.target.matches('input[data-check]')) {
+          state.doneChecks[e.target.dataset.check] = e.target.checked;
+          saveState();
+          renderChecklist();
+        }
+      });
+
+      els.copyLpHtmlBtn.addEventListener('click', () => copyText(generateLandingHtmlSnippet(), t('toastHtmlCopied')));
+      els.copyLpMdBtn.addEventListener('click', () => {
+        const bp = buildBlueprint();
+        const md = `# ${bp.headline}\n\n${bp.subhead}\n\nCTA: ${bp.cta} (${bp.trust})\n\n` +
+          bp.props.map((p, i) => `${i + 1}. **${p.title}** — ${p.desc}`).join('\n') + '\n\n' +
+          bp.faqs.map((f) => `**${f.q}**\n${f.a}`).join('\n\n');
+        copyText(md, t('toastMdCopied'));
+      });
+
+      els.exportMdBtn.addEventListener('click', () => {
+        const md = buildFullMarkdown();
+        const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${slugify(state.brief.name)}-launch-kit.md`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(t('toastExported'));
+      });
+
+      // Modal events
+      els.aiModalBtn.addEventListener('click', () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(AI_KEY_STORAGE) || 'null');
+          if (saved) {
+            els.aiProvider.value = saved.provider || 'gemini';
+            els.aiKeyInput.value = saved.apiKey || '';
+          }
+        } catch (_) {}
+        els.aiModal.classList.add('open');
+      });
+      els.closeModalBtn.addEventListener('click', () => els.aiModal.classList.remove('open'));
+      els.aiModal.addEventListener('click', (e) => {
+        if (e.target === els.aiModal) els.aiModal.classList.remove('open');
+      });
+      els.clearKeyBtn.addEventListener('click', () => {
+        try { localStorage.removeItem(AI_KEY_STORAGE); } catch (_) {}
+        els.aiKeyInput.value = '';
+        showToast(t('toastKeyCleared'));
+      });
+      els.runAiBtn.addEventListener('click', runByokPolish);
+
+      // Top bar: EN/FR & Download HTML
+      els.langToggle.addEventListener('click', () => {
+        lang = lang === 'en' ? 'fr' : 'en';
+        if (state.presetIdx >= 0 && PRESETS[lang][state.presetIdx]) {
+          state.brief = { ...PRESETS[lang][state.presetIdx] };
+          state.aiOverride = null;
+        }
+        applyI18n();
+      });
+
+      els.downloadHtmlBtn.addEventListener('click', () => {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'day-20-autolaunch.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(t('toastHtmlDown'));
+      });
+
+      loadState();
+      applyI18n();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 22 · Vibe Visualizer — The Unfinished 30</title>
+  <meta name="description" content="Turn any audio recording into an animated social media audiogram video directly in your browser. Zero uploads, zero backend." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0e16;
+      --surface: #181624;
+      --surface-2: #211e30;
+      --border: rgba(255, 248, 234, 0.11);
+      --border-strong: rgba(255, 248, 234, 0.22);
+      --text: #f7f3eb;
+      --muted: #a69fb8;
+      --accent: #ff8ec7;
+      --accent-2: #ffd84d;
+      --mint: #3fd0a0;
+      --danger: #ff5c74;
+      --radius: 16px;
+      --topbar-bg: #0a0c1f;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(900px 500px at 12% -10%, rgba(255, 142, 199, 0.14), transparent 60%),
+        radial-gradient(700px 450px at 90% 10%, rgba(255, 216, 77, 0.09), transparent 60%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar-bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+    }
+    .challenge-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .challenge-bar a {
+      color: #f7f3eb;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+    .challenge-bar a:hover { opacity: 0.78; }
+    .challenge-bar .sep { color: rgba(255, 255, 255, 0.3); }
+    .challenge-bar .author { color: #b7b0cc; font-weight: 500; }
+    .challenge-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #f7f3eb;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .bar-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .hero-eyebrow .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+    h1 em {
+      font-family: 'Instrument Serif', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent-2);
+    }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 560px;
+      margin-top: 6px;
+    }
+    .privacy-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(63, 208, 160, 0.1);
+      border: 1px solid rgba(63, 208, 160, 0.28);
+      color: #9bf2d3;
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    /* Studio Grid */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+    }
+
+    /* Stage / Preview */
+    .stage-card {
+      position: sticky;
+      top: 62px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .stage-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stage-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .rec-badge {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 92, 116, 0.18);
+      color: #ff99a8;
+      border: 1px solid rgba(255, 92, 116, 0.45);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 11.5px;
+    }
+    .rec-badge.active { display: inline-flex; }
+    .rec-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--danger);
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
+    }
+
+    .canvas-shell {
+      background: #09080e;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 360px;
+      overflow: hidden;
+      position: relative;
+    }
+    #vizCanvas {
+      display: block;
+      max-width: 100%;
+      max-height: 520px;
+      width: auto;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Transport Bar */
+    .transport {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+    }
+    .transport-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 13.5px;
+      border-radius: 10px;
+      padding: 9px 14px;
+      border: 1px solid var(--border-strong);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform 0.12s, background 0.15s, border-color 0.15s;
+    }
+    .btn:hover:not(:disabled) {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.32);
+    }
+    .btn:active:not(:disabled) { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #ff8ec7, #ff6fa8);
+      color: #16111d;
+      border-color: transparent;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, #ffa1d0, #ff81b4);
+      border-color: transparent;
+    }
+
+    .btn-record {
+      background: linear-gradient(135deg, #ffd84d, #ffb84d);
+      color: #17131d;
+      border-color: transparent;
+      margin-left: auto;
+    }
+    .btn-record:hover:not(:disabled) {
+      background: linear-gradient(135deg, #ffe270, #ffc469);
+    }
+    .btn-record.recording {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .track-info {
+      font-size: 12.5px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .track-name {
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+    .scrub-bar {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+      height: 6px;
+    }
+
+    /* Controls Panel */
+    .controls-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dropzone {
+      border: 1.5px dashed var(--border-strong);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.02);
+      transition: border-color 0.15s, background 0.15s;
+      cursor: pointer;
+    }
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(255, 142, 199, 0.08);
+    }
+    .dropzone p {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .dropzone strong { color: var(--text); }
+    .audio-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .seg-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .seg-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 10px;
+      padding: 9px 8px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      transition: all 0.15s;
+    }
+    .seg-btn span.sub {
+      font-size: 10.5px;
+      font-weight: 400;
+      opacity: 0.72;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .seg-btn.active {
+      background: rgba(255, 142, 199, 0.15);
+      border-color: var(--accent);
+      color: var(--text);
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .theme-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+    }
+    .theme-chip.active {
+      border-color: var(--accent-2);
+      background: rgba(255, 216, 77, 0.12);
+    }
+    .swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      flex-shrink: 0;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .field:last-child { margin-bottom: 0; }
+    .field label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+    }
+    .field input[type="text"],
+    .field textarea {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 9px;
+      padding: 9px 11px;
+      font-family: inherit;
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input[type="text"]:focus,
+    .field textarea:focus {
+      border-color: var(--accent);
+    }
+    .field input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-2);
+    }
+
+    .status-toast {
+      font-size: 12.5px;
+      color: #9bf2d3;
+      min-height: 18px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Honest Unfinished Section */
+    .unfinished {
+      margin-top: 34px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+    }
+    .unfinished h2 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--accent-2);
+    }
+    .unfinished ul {
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .studio-grid { grid-template-columns: 1fr; }
+      .stage-card { position: static; }
+      .btn-record { margin-left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="challenge-bar">
+    <div class="challenge-bar-left">
+      <a href="/">The Unfinished 30 · Day 22/30</a>
+      <span class="sep">·</span>
+      <a class="author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="challenge-bar-right">
+      <button class="bar-btn" id="langBtn" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button">↓ <span data-i18n="downloadHtml">Download HTML</span></button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow"><span class="dot"></span> <span data-i18n="eyebrow">BROWSER AUDIOGRAM STUDIO</span></div>
+        <h1>Vibe <em>Visualizer</em></h1>
+        <p class="hero-sub" data-i18n="subtitle">Drop a voice note, podcast clip, or synth loop — customize the look and export an animated WebM audiogram right in your browser.</p>
+      </div>
+      <div class="privacy-pill">
+        <span>●</span>
+        <span data-i18n="privacy">100% local · Audio never leaves your device</span>
+      </div>
+    </section>
+
+    <div class="studio-grid">
+      <!-- Live Preview Stage -->
+      <section class="card stage-card">
+        <div class="stage-header">
+          <div class="stage-meta">
+            <span id="canvasDims">1080 × 1080</span>
+            <span>·</span>
+            <span id="fpsLabel">30 FPS WebM</span>
+          </div>
+          <div class="rec-badge" id="recBadge">
+            <span class="rec-dot"></span>
+            <span data-i18n="recording">REC</span>
+            <span id="recTimer">00:00</span>
+          </div>
+        </div>
+
+        <div class="canvas-shell">
+          <canvas id="vizCanvas" width="1080" height="1080"></canvas>
+        </div>
+
+        <div class="transport">
+          <div class="transport-top">
+            <button class="btn btn-primary" id="playBtn" type="button">▶ <span data-i18n="play">Play</span></button>
+            <button class="btn" id="restartBtn" type="button" title="Restart">↺ <span data-i18n="restart">Restart</span></button>
+            <button class="btn btn-record" id="recordBtn" type="button">● <span data-i18n="recordExport">Record &amp; Export WebM</span></button>
+          </div>
+          <input class="scrub-bar" id="scrubBar" type="range" min="0" max="100" value="0" step="0.1" />
+          <div class="track-info">
+            <span class="track-name" id="trackName" data-i18n="noAudioYet">Idle preview · Load audio or click Demo Beat</span>
+            <span id="timeReadout">00:00 / 00:00</span>
+          </div>
+          <div class="status-toast" id="statusToast"></div>
+        </div>
+      </section>
+
+      <!-- Controls -->
+      <aside class="controls-stack">
+        <!-- Audio Source -->
+        <div class="card">
+          <div class="section-title">
+            <span data-i18n="secAudio">1. Audio Source</span>
+          </div>
+          <div class="dropzone" id="dropzone">
+            <p data-i18n="dropHint"><strong>Drop an audio file</strong> (MP3, WAV, M4A, OGG) or try the built-in lo-fi beat.</p>
+            <div class="audio-actions">
+              <button class="btn" id="browseBtn" type="button" data-i18n="chooseFile">Choose Audio File</button>
+              <button class="btn btn-primary" id="demoBeatBtn" type="button">✦ <span data-i18n="demoBeat">Use Demo Beat</span></button>
+            </div>
+            <input type="file" id="audioFileInput" accept="audio/*" hidden />
+          </div>
+        </div>
+
+        <!-- Aspect Ratio & Waveform -->
+        <div class="card">
+          <div class="section-title"><span data-i18n="secFormat">2. Aspect Ratio &amp; Waveform</span></div>
+          <div class="seg-grid" id="ratioGroup" style="margin-bottom:12px;">
+            <button class="seg-btn active" data-ratio="1:1" type="button">
+              <span data-i18n="ratioSquare">Square</span>
+              <span class="sub">1:1</span>
+            </button>
+            <button class="seg-btn" data-ratio="9:16" type="button">
+              <span data-i18n="ratioVertical">Reels / TikTok</span>
+              <span class="sub">9:16</span>
+            </button>
+            <button class="seg-btn" data-ratio="16:9" type="button">
+              <span data-i18n="ratioLandscape">Landscape</span>
+              <span class="sub">16:9</span>
+            </button>
+          </div>
+
+          <div class="seg-grid" id="waveGroup">
+            <button class="seg-btn active" data-wave="bars" type="button">
+              <span data-i18n="waveBars">Bars</span>
+              <span class="sub">EQ</span>
+            </button>
+            <button class="seg-btn" data-wave="mirror" type="button">
+              <span data-i18n="waveMirror">Mirror Wave</span>
+              <span class="sub">RIBBON</span>
+            </button>
+            <button class="seg-btn" data-wave="circle" type="button">
+              <span data-i18n="waveCircle">Circular Pulse</span>
+              <span class="sub">HALO</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Theme -->
+        <div class="card">
+          <div class="section-title"><span data-i18n="secTheme">3. Visual Theme</span></div>
+          <div class="theme-grid" id="themeGroup">
+            <button class="theme-chip active" data-theme="midnightGold" type="button">
+              <span class="swatch" style="background:linear-gradient(135deg,#13111f,#ffd84d);"></span>
+              <span data-i18n="themeMidnight">Midnight Gold</span>
+            </button>
+            <button class="theme-chip" data-theme="warmCream" type="button">
+              <span class="swatch" style="background:linear-gradient(135deg,#faf3e6,#e06d53);"></span>
+              <span data-i18n="themeCream">Warm Cream</span>
+            </button>
+            <button class="theme-chip" data-theme="neoMint" type="button">
+              <span class="swatch" style="background:linear-gradient(135deg,#0d2220,#3fd0a0);"></span>
+              <span data-i18n="themeMint">Neo Mint</span>
+            </button>
+            <button class="theme-chip" data-theme="sunsetCoral" type="button">
+              <span class="swatch" style="background:linear-gradient(135deg,#2a1426,#ff7c6b);"></span>
+              <span data-i18n="themeCoral">Sunset Coral</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Copy & Sensitivity -->
+        <div class="card">
+          <div class="section-title"><span data-i18n="secCopy">4. Copy &amp; Motion</span></div>
+          <div class="field">
+            <label for="titleInput" data-i18n="labelTitle">Episode / Clip Title</label>
+            <input id="titleInput" type="text" value="Building 30 Unfinished Things in Public" maxlength="80" />
+          </div>
+          <div class="field">
+            <label for="speakerInput" data-i18n="labelSpeaker">Speaker / Handle</label>
+            <input id="speakerInput" type="text" value="Salah Khenissi · @theunfinished30" maxlength="60" />
+          </div>
+          <div class="field">
+            <label for="captionInput" data-i18n="labelCaption">Optional Caption Quote</label>
+            <textarea id="captionInput" rows="2" maxlength="140">“Ship the rough version today. Polish is a privilege of things that actually exist.”</textarea>
+          </div>
+          <div class="field">
+            <label for="sensInput">
+              <span data-i18n="labelSens">Waveform Sensitivity</span>
+              <span id="sensVal">1.25×</span>
+            </label>
+            <input id="sensInput" type="range" min="0.5" max="2.2" step="0.05" value="1.25" />
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <section class="unfinished">
+      <h2 data-i18n="unfinishedTitle">What's still unfinished</h2>
+      <ul>
+        <li data-i18n="unfin1">Exports as WebM (VP9/VP8 + Opus). Native MP4/H.264 export would require bundling FFmpeg.wasm (~25 MB), which we skipped to keep this a zero-build single HTML file.</li>
+        <li data-i18n="unfin2">Recording happens in real time using MediaRecorder — so exporting a 15-second clip takes 15 seconds while it plays.</li>
+        <li data-i18n="unfin3">No automatic speech-to-text karaoke captions yet; captions are static text overlays.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    const I18N = {
+      en: {
+        downloadHtml: "Download HTML",
+        eyebrow: "BROWSER AUDIOGRAM STUDIO",
+        subtitle: "Drop a voice note, podcast clip, or synth loop — customize the look and export an animated WebM audiogram right in your browser.",
+        privacy: "100% local · Audio never leaves your device",
+        recording: "REC",
+        play: "Play",
+        pause: "Pause",
+        restart: "Restart",
+        recordExport: "Record & Export WebM",
+        stopExport: "Stop & Save WebM",
+        noAudioYet: "Idle preview · Load audio or click Demo Beat",
+        secAudio: "1. Audio Source",
+        dropHint: "<strong>Drop an audio file</strong> (MP3, WAV, M4A, OGG) or try the built-in lo-fi beat.",
+        chooseFile: "Choose Audio File",
+        demoBeat: "Use Demo Beat",
+        secFormat: "2. Aspect Ratio & Waveform",
+        ratioSquare: "Square",
+        ratioVertical: "Reels / TikTok",
+        ratioLandscape: "Landscape",
+        waveBars: "Bars",
+        waveMirror: "Mirror Wave",
+        waveCircle: "Circular Pulse",
+        secTheme: "3. Visual Theme",
+        themeMidnight: "Midnight Gold",
+        themeCream: "Warm Cream",
+        themeMint: "Neo Mint",
+        themeCoral: "Sunset Coral",
+        secCopy: "4. Copy & Motion",
+        labelTitle: "Episode / Clip Title",
+        labelSpeaker: "Speaker / Handle",
+        labelCaption: "Optional Caption Quote",
+        labelSens: "Waveform Sensitivity",
+        unfinishedTitle: "What's still unfinished",
+        unfin1: "Exports as WebM (VP9/VP8 + Opus). Native MP4/H.264 export would require bundling FFmpeg.wasm (~25 MB), which we skipped to keep this a zero-build single HTML file.",
+        unfin2: "Recording happens in real time using MediaRecorder — so exporting a 15-second clip takes 15 seconds while it plays.",
+        unfin3: "No automatic speech-to-text karaoke captions yet; captions are static text overlays.",
+        statusDemoReady: "Warm Lo-Fi Demo Beat synthesized (12s loop) · Playing!",
+        statusLoaded: "Loaded audio file · Ready to play & export.",
+        statusRecStart: "Recording canvas + audio in real time… click Stop when done.",
+        statusRecSaved: "Exported WebM video downloaded!",
+        statusNoRecorder: "MediaRecorder is not supported in this browser.",
+        statusLoadFirst: "Synthesizing demo beat first so your video has audio…"
+      },
+      fr: {
+        downloadHtml: "Télécharger HTML",
+        eyebrow: "STUDIO AUDIOGRAMME NAVIGATEUR",
+        subtitle: "Déposez une note vocale, un extrait de podcast ou une boucle — personnalisez le visuel et exportez une vidéo WebM animée dans votre navigateur.",
+        privacy: "100% local · L'audio ne quitte jamais votre appareil",
+        recording: "ENR",
+        play: "Lire",
+        pause: "Pause",
+        restart: "Début",
+        recordExport: "Enregistrer & Exporter WebM",
+        stopExport: "Arrêter & Sauvegarder WebM",
+        noAudioYet: "Aperçu libre · Chargez un audio ou cliquez sur Démo",
+        secAudio: "1. Source Audio",
+        dropHint: "<strong>Déposez un fichier audio</strong> (MP3, WAV, M4A, OGG) ou testez le beat lo-fi intégré.",
+        chooseFile: "Choisir un fichier",
+        demoBeat: "Beat Démo Lo-Fi",
+        secFormat: "2. Format & Onde Sonore",
+        ratioSquare: "Carré",
+        ratioVertical: "Reels / TikTok",
+        ratioLandscape: "Paysage",
+        waveBars: "Barres",
+        waveMirror: "Onde Miroir",
+        waveCircle: "Halo Circulaire",
+        secTheme: "3. Thème Visuel",
+        themeMidnight: "Or de Minuit",
+        themeCream: "Crème Chaleureuse",
+        themeMint: "Néo Menthe",
+        themeCoral: "Corail Couchant",
+        secCopy: "4. Texte & Mouvement",
+        labelTitle: "Titre de l'épisode / extrait",
+        labelSpeaker: "Intervenant / Compte",
+        labelCaption: "Citation / Sous-titre optionnel",
+        labelSens: "Sensibilité de l'onde",
+        unfinishedTitle: "Ce qui reste inachevé",
+        unfin1: "Export en WebM (VP9/VP8 + Opus). Un export natif MP4/H.264 nécessiterait FFmpeg.wasm (~25 Mo), évité ici pour garder un fichier HTML autonome.",
+        unfin2: "L'enregistrement se fait en temps réel via MediaRecorder — exporter 15 secondes prend donc 15 secondes de lecture.",
+        unfin3: "Pas encore de sous-titres karaoké automatiques (speech-to-text) ; le texte affiché reste statique.",
+        statusDemoReady: "Beat Lo-Fi synthétisé (boucle 12s) · Lecture en cours !",
+        statusLoaded: "Fichier audio chargé · Prêt à lire et exporter.",
+        statusRecStart: "Enregistrement vidéo + audio en cours… cliquez sur Arrêter.",
+        statusRecSaved: "Vidéo WebM téléchargée avec succès !",
+        statusNoRecorder: "MediaRecorder n'est pas supporté par ce navigateur.",
+        statusLoadFirst: "Synthèse du beat démo pour inclure une piste audio…"
+      }
+    };
+
+    const RATIOS = {
+      "1:1": { w: 1080, h: 1080 },
+      "9:16": { w: 720, h: 1280 },
+      "16:9": { w: 1280, h: 720 }
+    };
+
+    const THEMES = {
+      midnightGold: {
+        bg1: "#12101d",
+        bg2: "#241d38",
+        orb1: "rgba(255, 216, 77, 0.18)",
+        orb2: "rgba(255, 142, 199, 0.16)",
+        text: "#FAF6EE",
+        muted: "rgba(250, 246, 238, 0.68)",
+        accent: "#FFD84D",
+        accent2: "#FF8EC7",
+        cardBg: "rgba(255, 255, 255, 0.06)",
+        cardBorder: "rgba(255, 216, 77, 0.28)"
+      },
+      warmCream: {
+        bg1: "#FAF3E6",
+        bg2: "#F1DFC6",
+        orb1: "rgba(224, 109, 83, 0.18)",
+        orb2: "rgba(244, 185, 66, 0.22)",
+        text: "#1E1924",
+        muted: "rgba(30, 25, 36, 0.65)",
+        accent: "#D95D39",
+        accent2: "#2A7F62",
+        cardBg: "rgba(30, 25, 36, 0.05)",
+        cardBorder: "rgba(30, 25, 36, 0.14)"
+      },
+      neoMint: {
+        bg1: "#0B1D1B",
+        bg2: "#133531",
+        orb1: "rgba(63, 208, 160, 0.22)",
+        orb2: "rgba(169, 214, 255, 0.16)",
+        text: "#F0FBF7",
+        muted: "rgba(240, 251, 247, 0.68)",
+        accent: "#3FD0A0",
+        accent2: "#A9D6FF",
+        cardBg: "rgba(255, 255, 255, 0.06)",
+        cardBorder: "rgba(63, 208, 160, 0.30)"
+      },
+      sunsetCoral: {
+        bg1: "#241123",
+        bg2: "#4A1E35",
+        orb1: "rgba(255, 124, 107, 0.26)",
+        orb2: "rgba(255, 209, 102, 0.20)",
+        text: "#FFF7F0",
+        muted: "rgba(255, 247, 240, 0.72)",
+        accent: "#FF7C6B",
+        accent2: "#FFD166",
+        cardBg: "rgba(255, 255, 255, 0.07)",
+        cardBorder: "rgba(255, 124, 107, 0.34)"
+      }
+    };
+
+    const state = {
+      lang: "en",
+      ratio: "1:1",
+      wave: "bars",
+      theme: "midnightGold",
+      title: "Building 30 Unfinished Things in Public",
+      speaker: "Salah Khenissi · @theunfinished30",
+      caption: "“Ship the rough version today. Polish is a privilege of things that actually exist.”",
+      sensitivity: 1.25,
+      trackLabel: "",
+      isPlaying: false,
+      isRecording: false,
+      audioBuffer: null,
+      pauseOffset: 0,
+      playStartTime: 0,
+      recStartMs: 0
+    };
+
+    let audioCtx = null;
+    let analyser = null;
+    let audioDest = null;
+    let sourceNode = null;
+    let freqData = null;
+    let timeData = null;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+    let recInterval = null;
+    let smoothBars = new Float32Array(64);
+
+    const canvas = document.getElementById("vizCanvas");
+    const ctx = canvas.getContext("2d");
+    const canvasDimsEl = document.getElementById("canvasDims");
+    const playBtn = document.getElementById("playBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const recordBtn = document.getElementById("recordBtn");
+    const scrubBar = document.getElementById("scrubBar");
+    const trackNameEl = document.getElementById("trackName");
+    const timeReadoutEl = document.getElementById("timeReadout");
+    const statusToastEl = document.getElementById("statusToast");
+    const recBadge = document.getElementById("recBadge");
+    const recTimerEl = document.getElementById("recTimer");
+
+    function t(key) {
+      return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+    }
+
+    function applyTranslations() {
+      document.documentElement.lang = state.lang;
+      document.getElementById("langBtn").textContent = state.lang === "en" ? "FR" : "EN";
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        const key = el.getAttribute("data-i18n");
+        const val = t(key);
+        if (key === "dropHint") {
+          el.innerHTML = val;
+        } else {
+          el.textContent = val;
+        }
+      });
+      if (!state.trackLabel) {
+        trackNameEl.textContent = t("noAudioYet");
+      }
+      updatePlayBtnLabel();
+      updateRecordBtnLabel();
+    }
+
+    function setStatus(msg) {
+      statusToastEl.textContent = msg;
+    }
+
+    function formatTime(sec) {
+      const s = Math.max(0, Math.floor(sec || 0));
+      const m = Math.floor(s / 60);
+      const r = s % 60;
+      return String(m).padStart(2, "0") + ":" + String(r).padStart(2, "0");
+    }
+
+    function ensureAudioContext() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AC();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 256;
+        analyser.smoothingTimeConstant = 0.8;
+        audioDest = audioCtx.createMediaStreamDestination();
+        analyser.connect(audioCtx.destination);
+        analyser.connect(audioDest);
+        freqData = new Uint8Array(analyser.frequencyBinCount);
+        timeData = new Uint8Array(analyser.frequencyBinCount);
+      }
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    // Synthesize a genuinely pleasant 12-second warm lo-fi synth loop via OfflineAudioContext
+    async function synthesizeDemoBeat() {
+      const sr = 44100;
+      const duration = 12.0; // 4 bars @ 80 BPM
+      const offline = new OfflineAudioContext(2, Math.floor(sr * duration), sr);
+      const beat = 60 / 80; // 0.75s per quarter note
+
+      // Master warm lowpass bus
+      const master = offline.createGain();
+      master.gain.value = 0.85;
+      const masterFilter = offline.createBiquadFilter();
+      masterFilter.type = "lowpass";
+      masterFilter.frequency.value = 3400;
+      master.connect(masterFilter);
+      masterFilter.connect(offline.destination);
+
+      // 4 warm jazz chords (Fmaj7, Em7, Dm7, Cmaj7)
+      const chords = [
+        [174.61, 220.0, 261.63, 329.63],
+        [164.81, 196.0, 246.94, 293.66],
+        [146.83, 174.61, 220.0, 261.63],
+        [130.81, 164.81, 196.0, 246.94]
+      ];
+      const bassNotes = [87.31, 82.41, 73.42, 65.41];
+
+      chords.forEach((notes, barIdx) => {
+        const start = barIdx * beat * 4;
+        const barLen = beat * 4;
+
+        // Rhodes-like electric piano chord
+        notes.forEach((freq, i) => {
+          const osc = offline.createOscillator();
+          const osc2 = offline.createOscillator();
+          const g = offline.createGain();
+          osc.type = "triangle";
+          osc2.type = "sine";
+          osc.frequency.value = freq;
+          osc2.frequency.value = freq * 2;
+
+          const g2 = offline.createGain();
+          g2.gain.value = 0.14;
+
+          const t0 = start + i * 0.025;
+          g.gain.setValueAtTime(0.0001, t0);
+          g.gain.linearRampToValueAtTime(0.11, t0 + 0.04);
+          g.gain.exponentialRampToValueAtTime(0.045, t0 + 0.8);
+          g.gain.exponentialRampToValueAtTime(0.001, start + barLen - 0.05);
+
+          osc.connect(g);
+          osc2.connect(g2);
+          g2.connect(g);
+          g.connect(master);
+          osc.start(t0);
+          osc2.start(t0);
+          osc.stop(start + barLen);
+          osc2.stop(start + barLen);
+        });
+
+        // Warm sub bass
+        const bOsc = offline.createOscillator();
+        const bGain = offline.createGain();
+        bOsc.type = "sine";
+        bOsc.frequency.value = bassNotes[barIdx];
+        bGain.gain.setValueAtTime(0.0001, start);
+        bGain.gain.linearRampToValueAtTime(0.28, start + 0.03);
+        bGain.gain.exponentialRampToValueAtTime(0.14, start + barLen * 0.7);
+        bGain.gain.exponentialRampToValueAtTime(0.001, start + barLen - 0.04);
+        bOsc.connect(bGain);
+        bGain.connect(master);
+        bOsc.start(start);
+        bOsc.stop(start + barLen);
+
+        // Gentle melody plucks
+        const mel = [notes[3] * 2, notes[2] * 2, notes[1] * 2, notes[3] * 2];
+        [0.5, 1.75, 2.5, 3.25].forEach((offsetBeats, mIdx) => {
+          const mt = start + offsetBeats * beat;
+          const mOsc = offline.createOscillator();
+          const mGain = offline.createGain();
+          mOsc.type = "sine";
+          mOsc.frequency.value = mel[mIdx % mel.length];
+          mGain.gain.setValueAtTime(0.0001, mt);
+          mGain.gain.linearRampToValueAtTime(0.075, mt + 0.015);
+          mGain.gain.exponentialRampToValueAtTime(0.001, mt + 0.55);
+          mOsc.connect(mGain);
+          mGain.connect(master);
+          mOsc.start(mt);
+          mOsc.stop(mt + 0.6);
+        });
+      });
+
+      // Kick & brushed hi-hat
+      const noiseBuf = offline.createBuffer(1, sr * 0.12, sr);
+      const nd = noiseBuf.getChannelData(0);
+      for (let i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * Math.exp(-i / (sr * 0.025));
+
+      const totalBeats = Math.floor(duration / beat);
+      for (let b = 0; b < totalBeats; b++) {
+        const bt = b * beat;
+        // Kick on 1 & 2.5
+        if (b % 4 === 0 || b % 4 === 2) {
+          const kOsc = offline.createOscillator();
+          const kGain = offline.createGain();
+          kOsc.type = "sine";
+          kOsc.frequency.setValueAtTime(125, bt);
+          kOsc.frequency.exponentialRampToValueAtTime(42, bt + 0.12);
+          kGain.gain.setValueAtTime(0.45, bt);
+          kGain.gain.exponentialRampToValueAtTime(0.001, bt + 0.22);
+          kOsc.connect(kGain);
+          kGain.connect(master);
+          kOsc.start(bt);
+          kOsc.stop(bt + 0.25);
+        }
+        // Soft snare on 2 & 4
+        if (b % 4 === 1 || b % 4 === 3) {
+          const sSrc = offline.createBufferSource();
+          sSrc.buffer = noiseBuf;
+          const sFilter = offline.createBiquadFilter();
+          sFilter.type = "bandpass";
+          sFilter.frequency.value = 1500;
+          const sGain = offline.createGain();
+          sGain.gain.value = 0.16;
+          sSrc.connect(sFilter);
+          sFilter.connect(sGain);
+          sGain.connect(master);
+          sSrc.start(bt);
+        }
+        // Eighth-note hats
+        [0, 0.5].forEach((sub) => {
+          const ht = bt + sub * beat;
+          if (ht >= duration - 0.05) return;
+          const hSrc = offline.createBufferSource();
+          hSrc.buffer = noiseBuf;
+          const hFilter = offline.createBiquadFilter();
+          hFilter.type = "highpass";
+          hFilter.frequency.value = 6000;
+          const hGain = offline.createGain();
+          hGain.gain.value = sub === 0 ? 0.055 : 0.035;
+          hSrc.connect(hFilter);
+          hFilter.connect(hGain);
+          hGain.connect(master);
+          hSrc.start(ht);
+        });
+      }
+
+      return await offline.startRendering();
+    }
+
+    function stopPlayback(resetOffset = false) {
+      if (sourceNode) {
+        try {
+          sourceNode.onended = null;
+          sourceNode.stop();
+          sourceNode.disconnect();
+        } catch (_) {}
+        sourceNode = null;
+      }
+      if (state.isPlaying && audioCtx && state.audioBuffer) {
+        const elapsed = audioCtx.currentTime - state.playStartTime;
+        state.pauseOffset = (state.pauseOffset + elapsed) % state.audioBuffer.duration;
+      }
+      if (resetOffset) state.pauseOffset = 0;
+      state.isPlaying = false;
+      updatePlayBtnLabel();
+    }
+
+    function startPlayback(fromOffset) {
+      if (!state.audioBuffer) return;
+      ensureAudioContext();
+      stopPlayback(false);
+
+      const offset = typeof fromOffset === "number" ? fromOffset : state.pauseOffset;
+      const safeOffset = Math.max(0, Math.min(offset, state.audioBuffer.duration - 0.01));
+
+      sourceNode = audioCtx.createBufferSource();
+      sourceNode.buffer = state.audioBuffer;
+      sourceNode.loop = true;
+      sourceNode.connect(analyser);
+      sourceNode.start(0, safeOffset);
+
+      state.pauseOffset = safeOffset;
+      state.playStartTime = audioCtx.currentTime;
+      state.isPlaying = true;
+      updatePlayBtnLabel();
+    }
+
+    function getCurrentPlaybackTime() {
+      if (!state.audioBuffer) return 0;
+      if (!state.isPlaying || !audioCtx) return state.pauseOffset;
+      return (state.pauseOffset + (audioCtx.currentTime - state.playStartTime)) % state.audioBuffer.duration;
+    }
+
+    function updatePlayBtnLabel() {
+      playBtn.innerHTML = state.isPlaying
+        ? `❚❚ <span>${t("pause")}</span>`
+        : `▶ <span>${t("play")}</span>`;
+    }
+
+    function updateRecordBtnLabel() {
+      recordBtn.classList.toggle("recording", state.isRecording);
+      recordBtn.innerHTML = state.isRecording
+        ? `■ <span>${t("stopExport")}</span>`
+        : `● <span>${t("recordExport")}</span>`;
+    }
+
+    async function loadDemoBeat() {
+      ensureAudioContext();
+      stopPlayback(true);
+      const buf = await synthesizeDemoBeat();
+      state.audioBuffer = buf;
+      state.trackLabel = "Warm Lo-Fi Synth Loop (12s)";
+      trackNameEl.textContent = state.trackLabel;
+      startPlayback(0);
+      setStatus(t("statusDemoReady"));
+    }
+
+    async function loadAudioFile(file) {
+      if (!file) return;
+      ensureAudioContext();
+      stopPlayback(true);
+      const arr = await file.arrayBuffer();
+      const decoded = await audioCtx.decodeAudioData(arr);
+      state.audioBuffer = decoded;
+      state.trackLabel = file.name;
+      trackNameEl.textContent = file.name;
+      startPlayback(0);
+      setStatus(t("statusLoaded"));
+    }
+
+    async function toggleRecording() {
+      if (state.isRecording) {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
+        return;
+      }
+
+      if (typeof MediaRecorder === "undefined" || !canvas.captureStream) {
+        setStatus(t("statusNoRecorder"));
+        return;
+      }
+
+      if (!state.audioBuffer) {
+        setStatus(t("statusLoadFirst"));
+        await loadDemoBeat();
+      } else if (!state.isPlaying) {
+        startPlayback(state.pauseOffset);
+      }
+
+      ensureAudioContext();
+      const canvasStream = canvas.captureStream(30);
+      const tracks = [...canvasStream.getVideoTracks()];
+      if (audioDest && audioDest.stream) {
+        tracks.push(...audioDest.stream.getAudioTracks());
+      }
+      const combined = new MediaStream(tracks);
+
+      const mimeCandidates = [
+        "video/webm;codecs=vp9,opus",
+        "video/webm;codecs=vp8,opus",
+        "video/webm"
+      ];
+      const mimeType = mimeCandidates.find((m) => MediaRecorder.isTypeSupported(m)) || "";
+
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(combined, mimeType ? { mimeType } : undefined);
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) recordedChunks.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        state.isRecording = false;
+        recBadge.classList.remove("active");
+        clearInterval(recInterval);
+        updateRecordBtnLabel();
+        const blob = new Blob(recordedChunks, { type: mimeType || "video/webm" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `vibe-visualizer-${state.ratio.replace(":", "x")}.webm`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+        setStatus(t("statusRecSaved"));
+      };
+
+      mediaRecorder.start(200);
+      state.isRecording = true;
+      state.recStartMs = Date.now();
+      recBadge.classList.add("active");
+      recTimerEl.textContent = "00:00";
+      recInterval = setInterval(() => {
+        recTimerEl.textContent = formatTime((Date.now() - state.recStartMs) / 1000);
+      }, 250);
+      updateRecordBtnLabel();
+      setStatus(t("statusRecStart"));
+    }
+
+    function setAspectRatio(ratio) {
+      state.ratio = ratio;
+      const dims = RATIOS[ratio];
+      canvas.width = dims.w;
+      canvas.height = dims.h;
+      canvasDimsEl.textContent = `${dims.w} × ${dims.h}`;
+    }
+
+    function wrapText(context, text, maxWidth) {
+      const words = (text || "").trim().split(/\s+/).filter(Boolean);
+      const lines = [];
+      let line = "";
+      for (const word of words) {
+        const test = line ? line + " " + word : word;
+        if (context.measureText(test).width > maxWidth && line) {
+          lines.push(line);
+          line = word;
+        } else {
+          line = test;
+        }
+      }
+      if (line) lines.push(line);
+      return lines;
+    }
+
+    function roundRectPath(context, x, y, w, h, r) {
+      const rr = Math.min(r, w / 2, h / 2);
+      context.beginPath();
+      context.moveTo(x + rr, y);
+      context.arcTo(x + w, y, x + w, y + h, rr);
+      context.arcTo(x + w, y + h, x, y + h, rr);
+      context.arcTo(x, y + h, x, y, rr);
+      context.arcTo(x, y, x + w, y, rr);
+      context.closePath();
+    }
+
+    function drawFrame(nowMs) {
+      const w = canvas.width;
+      const h = canvas.height;
+      const th = THEMES[state.theme];
+      const tSec = nowMs * 0.001;
+
+      // Update scrub bar & time readout
+      if (state.audioBuffer) {
+        const cur = getCurrentPlaybackTime();
+        const dur = state.audioBuffer.duration;
+        timeReadoutEl.textContent = `${formatTime(cur)} / ${formatTime(dur)}`;
+        if (document.activeElement !== scrubBar) {
+          scrubBar.value = ((cur / dur) * 100).toFixed(1);
+        }
+      }
+
+      // Compute spectrum values (real AnalyserNode when playing, gentle idle wave otherwise)
+      const binCount = 48;
+      if (state.isPlaying && analyser && freqData) {
+        analyser.getByteFrequencyData(freqData);
+        for (let i = 0; i < binCount; i++) {
+          const idx = Math.floor((i / binCount) * (freqData.length * 0.72));
+          const raw = (freqData[idx] / 255) * state.sensitivity;
+          smoothBars[i] = smoothBars[i] * 0.68 + Math.min(1.25, raw) * 0.32;
+        }
+      } else {
+        for (let i = 0; i < binCount; i++) {
+          const wave =
+            0.22 +
+            0.18 * Math.sin(tSec * 2.4 + i * 0.28) +
+            0.12 * Math.cos(tSec * 1.5 - i * 0.16);
+          const env = Math.sin((i / (binCount - 1)) * Math.PI);
+          const target = Math.max(0.05, wave * (0.45 + 0.55 * env) * state.sensitivity * 0.8);
+          smoothBars[i] = smoothBars[i] * 0.85 + target * 0.15;
+        }
+      }
+
+      // Average energy for subtle glow pulse
+      let energy = 0;
+      for (let i = 0; i < 16; i++) energy += smoothBars[i];
+      energy /= 16;
+
+      // Background Gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, w, h);
+      bgGrad.addColorStop(0, th.bg1);
+      bgGrad.addColorStop(1, th.bg2);
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Ambient reactive orbs
+      const orbR1 = Math.min(w, h) * (0.42 + energy * 0.09);
+      const orb1 = ctx.createRadialGradient(w * 0.2, h * 0.22, 10, w * 0.2, h * 0.22, orbR1);
+      orb1.addColorStop(0, th.orb1);
+      orb1.addColorStop(1, "transparent");
+      ctx.fillStyle = orb1;
+      ctx.fillRect(0, 0, w, h);
+
+      const orbR2 = Math.min(w, h) * (0.46 + energy * 0.08);
+      const orb2 = ctx.createRadialGradient(w * 0.82, h * 0.78, 10, w * 0.82, h * 0.78, orbR2);
+      orb2.addColorStop(0, th.orb2);
+      orb2.addColorStop(1, "transparent");
+      ctx.fillStyle = orb2;
+      ctx.fillRect(0, 0, w, h);
+
+      // Layout metrics
+      const isVertical = state.ratio === "9:16";
+      const isLandscape = state.ratio === "16:9";
+      const pad = Math.round(Math.min(w, h) * 0.075);
+
+      // Subtle framed glass card
+      roundRectPath(ctx, pad * 0.55, pad * 0.55, w - pad * 1.1, h - pad * 1.1, 34);
+      ctx.fillStyle = th.cardBg;
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = th.cardBorder;
+      ctx.stroke();
+
+      // Top Speaker Pill
+      const pillY = pad * 1.05;
+      ctx.font = `600 ${Math.round(Math.min(w, h) * 0.025)}px "JetBrains Mono", monospace`;
+      const speakerText = state.speaker.trim() || "Vibe Visualizer";
+      const spWidth = ctx.measureText(speakerText).width + 44;
+      roundRectPath(ctx, pad, pillY, Math.min(spWidth, w - pad * 2), 44, 22);
+      ctx.fillStyle = th.cardBg;
+      ctx.fill();
+      ctx.strokeStyle = th.cardBorder;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Live dot inside pill
+      ctx.beginPath();
+      ctx.arc(pad + 22, pillY + 22, 6, 0, Math.PI * 2);
+      ctx.fillStyle = th.accent;
+      ctx.fill();
+
+      ctx.fillStyle = th.text;
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "left";
+      ctx.fillText(speakerText, pad + 38, pillY + 23, w - pad * 2 - 48);
+
+      // Title
+      const titleSize = isVertical ? 48 : isLandscape ? 46 : 54;
+      ctx.font = `700 ${titleSize}px "Space Grotesk", sans-serif`;
+      ctx.fillStyle = th.text;
+      ctx.textBaseline = "top";
+      const titleLines = wrapText(ctx, state.title || "Vibe Visualizer", w - pad * 2).slice(0, 2);
+      let cursorY = pillY + 70;
+      titleLines.forEach((line) => {
+        ctx.fillText(line, pad, cursorY);
+        cursorY += titleSize * 1.16;
+      });
+
+      // Visualizer Region
+      const vizTop = cursorY + (isVertical ? 44 : 20);
+      const captionSpace = state.caption.trim() ? (isVertical ? 230 : 155) : 90;
+      const vizBottom = h - pad - captionSpace;
+      const vizH = Math.max(180, vizBottom - vizTop);
+      const vizCenterY = vizTop + vizH / 2;
+      const vizW = w - pad * 2;
+
+      const waveGrad = ctx.createLinearGradient(pad, vizTop, pad + vizW, vizBottom);
+      waveGrad.addColorStop(0, th.accent);
+      waveGrad.addColorStop(1, th.accent2);
+
+      if (state.wave === "bars") {
+        const count = 40;
+        const gap = Math.max(6, Math.floor(vizW * 0.012));
+        const barW = (vizW - gap * (count - 1)) / count;
+        for (let i = 0; i < count; i++) {
+          const val = Math.min(1, smoothBars[i]);
+          const bh = Math.max(14, val * vizH * 0.88);
+          const bx = pad + i * (barW + gap);
+          const by = vizCenterY - bh / 2;
+          roundRectPath(ctx, bx, by, barW, bh, barW / 2);
+          ctx.fillStyle = waveGrad;
+          ctx.fill();
+        }
+      } else if (state.wave === "mirror") {
+        const count = 44;
+        const stepX = vizW / (count - 1);
+        ctx.beginPath();
+        for (let i = 0; i < count; i++) {
+          const x = pad + i * stepX;
+          const amp = Math.max(8, Math.min(1, smoothBars[i]) * (vizH * 0.44));
+          const y = vizCenterY - amp;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        for (let i = count - 1; i >= 0; i--) {
+          const x = pad + i * stepX;
+          const amp = Math.max(8, Math.min(1, smoothBars[i]) * (vizH * 0.44));
+          ctx.lineTo(x, vizCenterY + amp);
+        }
+        ctx.closePath();
+        ctx.fillStyle = waveGrad;
+        ctx.globalAlpha = 0.86;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+
+        // Crisp center line
+        ctx.beginPath();
+        ctx.moveTo(pad, vizCenterY);
+        ctx.lineTo(pad + vizW, vizCenterY);
+        ctx.strokeStyle = th.text;
+        ctx.globalAlpha = 0.35;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      } else if (state.wave === "circle") {
+        const cx = w / 2;
+        const cy = vizCenterY;
+        const baseR = Math.min(vizW, vizH) * 0.27;
+        const spokes = 48;
+
+        // Outer halo glow
+        ctx.beginPath();
+        ctx.arc(cx, cy, baseR * (0.94 + energy * 0.14), 0, Math.PI * 2);
+        ctx.fillStyle = th.cardBg;
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = th.accent;
+        ctx.stroke();
+
+        for (let i = 0; i < spokes; i++) {
+          const angle = (i / spokes) * Math.PI * 2 - Math.PI / 2;
+          const val = Math.min(1, smoothBars[i]);
+          const len = 14 + val * (Math.min(vizW, vizH) * 0.2);
+          const x1 = cx + Math.cos(angle) * (baseR + 8);
+          const y1 = cy + Math.sin(angle) * (baseR + 8);
+          const x2 = cx + Math.cos(angle) * (baseR + 8 + len);
+          const y2 = cy + Math.sin(angle) * (baseR + 8 + len);
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.strokeStyle = i % 2 === 0 ? th.accent : th.accent2;
+          ctx.lineWidth = Math.max(5, Math.min(w, h) * 0.0085);
+          ctx.lineCap = "round";
+          ctx.stroke();
+        }
+
+        // Play triangle in center
+        ctx.beginPath();
+        const tri = baseR * 0.34;
+        ctx.moveTo(cx - tri * 0.42, cy - tri * 0.65);
+        ctx.lineTo(cx + tri * 0.72, cy);
+        ctx.lineTo(cx - tri * 0.42, cy + tri * 0.65);
+        ctx.closePath();
+        ctx.fillStyle = th.text;
+        ctx.fill();
+      }
+
+      // Caption Quote
+      if (state.caption.trim()) {
+        const capSize = isVertical ? 32 : isLandscape ? 26 : 30;
+        ctx.font = `italic 400 ${capSize}px "Instrument Serif", Georgia, serif`;
+        ctx.fillStyle = th.muted;
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        const capLines = wrapText(ctx, state.caption.trim(), w - pad * 2).slice(0, 3);
+        let capY = h - pad - 54 - capLines.length * (capSize * 1.24);
+        capLines.forEach((line) => {
+          ctx.fillText(line, pad, capY);
+          capY += capSize * 1.24;
+        });
+      }
+
+      // Bottom Progress Bar
+      const progY = h - pad - 18;
+      const progW = w - pad * 2;
+      const progress = state.audioBuffer
+        ? getCurrentPlaybackTime() / state.audioBuffer.duration
+        : (tSec % 12) / 12;
+
+      roundRectPath(ctx, pad, progY, progW, 8, 4);
+      ctx.fillStyle = th.cardBorder;
+      ctx.fill();
+
+      roundRectPath(ctx, pad, progY, Math.max(12, progW * progress), 8, 4);
+      ctx.fillStyle = waveGrad;
+      ctx.fill();
+
+      requestAnimationFrame(drawFrame);
+    }
+
+    // Event bindings
+    document.getElementById("langBtn").addEventListener("click", () => {
+      state.lang = state.lang === "en" ? "fr" : "en";
+      applyTranslations();
+    });
+
+    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
+      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "day-22-vibe-visualizer.html";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    });
+
+    document.getElementById("demoBeatBtn").addEventListener("click", loadDemoBeat);
+    document.getElementById("browseBtn").addEventListener("click", () => {
+      document.getElementById("audioFileInput").click();
+    });
+    document.getElementById("audioFileInput").addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) loadAudioFile(e.target.files[0]);
+    });
+
+    const dropzone = document.getElementById("dropzone");
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("dragover");
+    });
+    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("dragover");
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        loadAudioFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    playBtn.addEventListener("click", async () => {
+      if (!state.audioBuffer) {
+        await loadDemoBeat();
+        return;
+      }
+      if (state.isPlaying) stopPlayback(false);
+      else startPlayback(state.pauseOffset);
+    });
+
+    restartBtn.addEventListener("click", () => {
+      if (!state.audioBuffer) return;
+      startPlayback(0);
+    });
+
+    scrubBar.addEventListener("input", () => {
+      if (!state.audioBuffer) return;
+      const target = (parseFloat(scrubBar.value) / 100) * state.audioBuffer.duration;
+      state.pauseOffset = target;
+      if (state.isPlaying) startPlayback(target);
+    });
+
+    recordBtn.addEventListener("click", toggleRecording);
+
+    document.querySelectorAll("#ratioGroup .seg-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#ratioGroup .seg-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        setAspectRatio(btn.dataset.ratio);
+      });
+    });
+
+    document.querySelectorAll("#waveGroup .seg-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#waveGroup .seg-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.wave = btn.dataset.wave;
+      });
+    });
+
+    document.querySelectorAll("#themeGroup .theme-chip").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#themeGroup .theme-chip").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.theme = btn.dataset.theme;
+      });
+    });
+
+    document.getElementById("titleInput").addEventListener("input", (e) => { state.title = e.target.value; });
+    document.getElementById("speakerInput").addEventListener("input", (e) => { state.speaker = e.target.value; });
+    document.getElementById("captionInput").addEventListener("input", (e) => { state.caption = e.target.value; });
+    document.getElementById("sensInput").addEventListener("input", (e) => {
+      state.sensitivity = parseFloat(e.target.value);
+      document.getElementById("sensVal").textContent = state.sensitivity.toFixed(2) + "×";
+    });
+
+    // Init
+    setAspectRatio("1:1");
+    applyTranslations();
+    requestAnimationFrame(drawFrame);
+  </script>
+</body>
+</html>

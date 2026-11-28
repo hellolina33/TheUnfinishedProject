@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DreamCast — Bedtime Story &amp; Kids Podcast Creator | The Unfinished 30 · Day 16</title>
+  <meta name="description" content="A cozy, offline-first bedtime story & kids podcast creator with soothing narration, gentle Web Audio lullaby chimes, sleep timer, and optional BYOK AI." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-deep: #0E0B1D;
+      --bg-mid: #16112E;
+      --bg-card: rgba(31, 24, 61, 0.86);
+      --bg-card-solid: #1E173B;
+      --bg-soft: rgba(255, 255, 255, 0.055);
+      --border: rgba(235, 206, 255, 0.16);
+      --border-strong: rgba(247, 201, 126, 0.42);
+      --text: #F9F4EE;
+      --text-muted: #BFB6D6;
+      --gold: #F7C97E;
+      --gold-soft: rgba(247, 201, 126, 0.16);
+      --pink: #FFB8DE;
+      --lavender: #D8C6FA;
+      --mint: #6EE7B7;
+      --danger: #FDA4AF;
+      --radius-lg: 24px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+      --font-display: 'Fraunces', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: radial-gradient(ellipse at 20% 0%, #24194A 0%, #120E24 52%, #0B0917 100%);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* Animated subtle starfield */
+    .starfield {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: #FFF7DF;
+      opacity: 0.45;
+      animation: twinkle var(--dur, 4s) ease-in-out infinite alternate;
+      animation-delay: var(--delay, 0s);
+    }
+    @keyframes twinkle {
+      0% { opacity: 0.18; transform: scale(0.85); }
+      100% { opacity: 0.85; transform: scale(1.2); }
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(10, 8, 22, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 18px;
+    }
+    .challenge-bar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
+    .challenge-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .challenge-left a {
+      color: #F7F4FF;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.18s;
+    }
+    .challenge-left a:hover { color: var(--gold); }
+    .challenge-sep { color: rgba(255, 255, 255, 0.35); }
+    .challenge-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar-btn {
+      appearance: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: #F9F4EE;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 11px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .bar-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(247, 201, 126, 0.12);
+    }
+
+    /* Main Layout */
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 18px 64px;
+    }
+
+    /* Hero Header */
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 26px;
+    }
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 184, 222, 0.14);
+      border: 1px solid rgba(255, 184, 222, 0.34);
+      color: var(--pink);
+      padding: 5px 13px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4.4vw, 3.1rem);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: #FFF8EE;
+    }
+    .hero h1 span { color: var(--gold); font-style: italic; }
+    .hero-sub {
+      color: var(--text-muted);
+      max-width: 560px;
+      margin-top: 8px;
+      font-size: 15px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Main Grid */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: minmax(310px, 410px) 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .studio-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 50px rgba(6, 4, 18, 0.45);
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 1.22rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .field-group { margin-bottom: 18px; }
+    .field-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .text-input, .select-input {
+      width: 100%;
+      background: rgba(12, 9, 27, 0.72);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .text-input:focus, .select-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(247, 201, 126, 0.16);
+    }
+
+    .demo-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .demo-pill {
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.16s;
+    }
+    .demo-pill:hover, .demo-pill.active {
+      border-color: var(--pink);
+      color: #16112E;
+      background: var(--pink);
+    }
+
+    /* Age segmented control */
+    .age-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .choice-chip {
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 10px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.18s;
+      text-align: center;
+    }
+    .choice-chip:hover { border-color: rgba(247, 201, 126, 0.5); }
+    .choice-chip.active {
+      background: var(--gold-soft);
+      border-color: var(--gold);
+      color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(247, 201, 126, 0.35);
+    }
+
+    /* 2x2 Option Cards */
+    .card-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .option-card {
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      color: var(--text);
+      font-family: inherit;
+      padding: 10px 11px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      text-align: left;
+      transition: all 0.18s;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .option-card .opt-emoji {
+      font-size: 18px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .option-card:hover {
+      border-color: rgba(255, 184, 222, 0.45);
+      transform: translateY(-1px);
+    }
+    .option-card.active {
+      background: rgba(255, 184, 222, 0.16);
+      border-color: var(--pink);
+      color: #FFF8EE;
+    }
+
+    /* Primary & Secondary Buttons */
+    .btn {
+      appearance: none;
+      border: none;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 12px 18px;
+      border-radius: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s, opacity 0.2s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: linear-gradient(135deg, #F7C97E 0%, #FFB8DE 100%);
+      color: #16112E;
+      box-shadow: 0 10px 26px rgba(247, 201, 126, 0.24);
+    }
+    .btn-primary:hover { box-shadow: 0 12px 30px rgba(255, 184, 222, 0.34); }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover {
+      border-color: var(--lavender);
+      background: rgba(216, 198, 250, 0.14);
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 13px;
+      font-size: 13px;
+    }
+    .btn-ghost:hover { color: var(--text); border-color: var(--gold); }
+    .btn-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    /* Podcast Player Card */
+    .player-bar {
+      background: linear-gradient(135deg, rgba(45, 34, 86, 0.92) 0%, rgba(28, 21, 56, 0.96) 100%);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      box-shadow: 0 16px 40px rgba(5, 3, 15, 0.45);
+    }
+    .player-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .play-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: none;
+      background: var(--gold);
+      color: #16112E;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(247, 201, 126, 0.35);
+      transition: transform 0.15s;
+    }
+    .play-btn:hover { transform: scale(1.06); }
+    .player-status {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .player-status strong {
+      display: block;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .audio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    @media (max-width: 680px) {
+      .audio-grid { grid-template-columns: 1fr; }
+    }
+    .audio-box {
+      background: rgba(12, 9, 27, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .audio-box-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+    .toggle-pill {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .toggle-pill.on {
+      background: rgba(110, 231, 183, 0.2);
+      border-color: var(--mint);
+      color: var(--mint);
+    }
+    .range-slider {
+      width: 100%;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .timer-pills {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .timer-pill {
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .timer-pill.active {
+      background: var(--gold-soft);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* Story Reader Card */
+    .story-card {
+      background: linear-gradient(180deg, rgba(35, 28, 68, 0.9) 0%, rgba(23, 18, 46, 0.94) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 30px;
+      box-shadow: 0 20px 55px rgba(5, 3, 16, 0.5);
+    }
+    @media (max-width: 560px) {
+      .story-card { padding: 20px 18px; }
+    }
+    .story-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .story-tags {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .story-tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(216, 198, 250, 0.14);
+      border: 1px solid rgba(216, 198, 250, 0.25);
+      color: var(--lavender);
+    }
+    .story-tag.ai-tag {
+      background: rgba(110, 231, 183, 0.16);
+      border-color: rgba(110, 231, 183, 0.35);
+      color: var(--mint);
+    }
+    .story-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
+      font-weight: 600;
+      line-height: 1.18;
+      color: #FFF8EE;
+      margin-bottom: 6px;
+    }
+    .story-subtitle {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--gold);
+      font-size: 15px;
+      margin-bottom: 22px;
+    }
+
+    .chapter {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid transparent;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .chapter.reading {
+      background: rgba(247, 201, 126, 0.1);
+      border-color: rgba(247, 201, 126, 0.45);
+    }
+    .chapter-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .chapter-title {
+      font-family: var(--font-display);
+      font-size: 1.08rem;
+      color: var(--pink);
+      font-weight: 600;
+    }
+    .chapter-num {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--text-muted);
+    }
+    .chapter p {
+      font-family: var(--font-display);
+      font-size: 1.04rem;
+      line-height: 1.78;
+      color: #F4ECE4;
+      margin-bottom: 10px;
+    }
+    .chapter p:last-child { margin-bottom: 0; }
+
+    .story-footer-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Saved Shelf */
+    .shelf-section {
+      margin-top: 26px;
+    }
+    .saved-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .saved-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .saved-item h4 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: #FFF8EE;
+    }
+    .saved-meta { font-size: 12px; color: var(--text-muted); }
+    .saved-actions { display: flex; gap: 8px; margin-top: auto; }
+
+    /* Modal (BYOK AI) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 6, 18, 0.78);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      width: 100%;
+      max-width: 500px;
+      background: #1C1536;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .modal-head h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+    }
+    .icon-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .privacy-note {
+      font-size: 12px;
+      color: var(--mint);
+      background: rgba(110, 231, 183, 0.1);
+      border: 1px solid rgba(110, 231, 183, 0.26);
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-bottom: 14px;
+    }
+    .ai-error {
+      font-size: 13px;
+      color: var(--danger);
+      margin-top: 8px;
+      min-height: 18px;
+    }
+
+    /* Honest Unfinished Section */
+    .unfinished-box {
+      margin-top: 40px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed rgba(247, 201, 126, 0.34);
+      border-radius: var(--radius-lg);
+      padding: 22px 24px;
+    }
+    .unfinished-box h3 {
+      font-family: var(--font-display);
+      font-size: 1.18rem;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .unfinished-box p {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+    .unfinished-box ul {
+      padding-left: 18px;
+      color: var(--text-muted);
+      font-size: 13.5px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 120;
+      background: #271E4A;
+      border: 1px solid var(--gold);
+      color: #FFF8EE;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.25s;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <div class="starfield" id="starfield" aria-hidden="true"></div>
+
+  <!-- Challenge Top Bar -->
+  <header class="challenge-bar">
+    <div class="challenge-bar-inner">
+      <div class="challenge-left">
+        <a href="/" data-i18n="barTitle">The Unfinished 30 · Day 16/30</a>
+        <span class="challenge-sep">·</span>
+        <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener" data-i18n="barAuthor">by Salah Khenissi</a>
+      </div>
+      <div class="challenge-right">
+        <button class="bar-btn" id="langToggle" type="button" aria-label="Switch language">FR</button>
+        <button class="bar-btn" id="downloadHtmlBtn" type="button" data-i18n="downloadHtml">⬇ Download HTML</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell">
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <div class="brand-badge">🌙 <span data-i18n="badge">Cozy Night-Time Story Studio · 100% Local</span></div>
+        <h1>Dream<span>Cast</span></h1>
+        <p class="hero-sub" data-i18n="heroSub">
+          Weave a gentle, multi-chapter bedtime story or kids podcast in seconds. Plays offline with warm chimes, slow narration, and a sleep fade-out timer.
+        </p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-secondary" id="openByokBtn" type="button">✨ <span data-i18n="byokBtn">Optional BYOK AI</span></button>
+      </div>
+    </section>
+
+    <div class="studio-grid">
+      <!-- Left: Story Builder -->
+      <aside class="panel">
+        <div class="panel-title">
+          <span data-i18n="builderTitle">Tonight's Episode</span>
+          <button class="btn-ghost" id="surpriseBtn" type="button" data-i18n="surprise">🎲 Surprise</button>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label" for="childNameInput">
+            <span data-i18n="childNameLabel">Child's Name</span>
+          </label>
+          <input id="childNameInput" class="text-input" type="text" value="Lina" maxlength="28" autocomplete="off" />
+          <div class="demo-pills" id="demoPills">
+            <button type="button" class="demo-pill active" data-name="Lina">Lina</button>
+            <button type="button" class="demo-pill" data-name="Milo">Milo</button>
+            <button type="button" class="demo-pill" data-name="Noor">Noor</button>
+            <button type="button" class="demo-pill" data-name="Sami">Sami</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label"><span data-i18n="ageLabel">Age Group</span></div>
+          <div class="age-grid" id="ageGrid">
+            <button type="button" class="choice-chip" data-age="3-5" data-i18n="age35">3–5 yrs</button>
+            <button type="button" class="choice-chip active" data-age="6-8" data-i18n="age68">6–8 yrs</button>
+            <button type="button" class="choice-chip" data-age="9-11" data-i18n="age911">9–11 yrs</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label"><span data-i18n="companionLabel">Companion</span></div>
+          <div class="card-grid-2" id="companionGrid">
+            <button type="button" class="option-card active" data-val="fox"><span class="opt-emoji">🦊</span><span data-i18n="comp_fox">Sleepy Fox</span></button>
+            <button type="button" class="option-card" data-val="dragon"><span class="opt-emoji">🐉</span><span data-i18n="comp_dragon">Cloud Dragon</span></button>
+            <button type="button" class="option-card" data-val="astronaut"><span class="opt-emoji">👩‍🚀</span><span data-i18n="comp_astronaut">Tiny Astronaut</span></button>
+            <button type="button" class="option-card" data-val="turtle"><span class="opt-emoji">🐢</span><span data-i18n="comp_turtle">Wise Turtle</span></button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label"><span data-i18n="settingLabel">Setting</span></div>
+          <div class="card-grid-2" id="settingGrid">
+            <button type="button" class="option-card active" data-val="forest"><span class="opt-emoji">🏮</span><span data-i18n="set_forest">Lantern Forest</span></button>
+            <button type="button" class="option-card" data-val="library"><span class="opt-emoji">📚</span><span data-i18n="set_library">Floating Library</span></button>
+            <button type="button" class="option-card" data-val="train"><span class="opt-emoji">🚂</span><span data-i18n="set_train">Starlight Train</span></button>
+            <button type="button" class="option-card" data-val="coral"><span class="opt-emoji">🐚</span><span data-i18n="set_coral">Coral Kingdom</span></button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="field-label"><span data-i18n="themeLabel">Gentle Theme</span></div>
+          <div class="card-grid-2" id="themeGrid">
+            <button type="button" class="option-card active" data-val="curiosity"><span class="opt-emoji">🔭</span><span data-i18n="thm_curiosity">Curiosity</span></button>
+            <button type="button" class="option-card" data-val="courage"><span class="opt-emoji">🌟</span><span data-i18n="thm_courage">Courage</span></button>
+            <button type="button" class="option-card" data-val="kindness"><span class="opt-emoji">💛</span><span data-i18n="thm_kindness">Kindness</span></button>
+            <button type="button" class="option-card" data-val="lettinggo"><span class="opt-emoji">🍃</span><span data-i18n="thm_lettinggo">Letting Go</span></button>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" id="generateBtn">✨ <span data-i18n="weaveBtn">Weave Bedtime Story</span></button>
+          <button type="button" class="btn btn-secondary" id="aiGenerateBtn" title="Generate with BYOK AI">🤖 AI</button>
+        </div>
+      </aside>
+
+      <!-- Right: Player + Story Reader -->
+      <section>
+        <!-- Podcast & Sleep Player -->
+        <div class="player-bar">
+          <div class="player-top">
+            <div class="player-controls">
+              <button type="button" class="play-btn" id="playNarrateBtn" aria-label="Play narration">▶</button>
+              <button type="button" class="btn-ghost" id="stopNarrateBtn" data-i18n="stopBtn">■ Stop</button>
+              <div class="player-status">
+                <strong id="playerEpisodeTitle">Episode Ready</strong>
+                <span id="playerStatusText" data-i18n="readyStatus">Tap play for slow bedtime narration</span>
+              </div>
+            </div>
+            <div class="player-status" id="timerCountdownDisplay" style="text-align:right; color: var(--gold); font-weight: 700;"></div>
+          </div>
+
+          <div class="audio-grid">
+            <!-- Narration speed -->
+            <div class="audio-box">
+              <div class="audio-box-head">
+                <span data-i18n="voicePace">Voice Pace</span>
+                <span id="speedVal">0.84×</span>
+              </div>
+              <input type="range" id="speedSlider" class="range-slider" min="0.65" max="1.05" step="0.03" value="0.84" />
+            </div>
+
+            <!-- Lullaby Chimes -->
+            <div class="audio-box">
+              <div class="audio-box-head">
+                <span data-i18n="lullabyLabel">Lullaby Chimes</span>
+                <button type="button" class="toggle-pill" id="lullabyToggle">OFF</button>
+              </div>
+              <input type="range" id="lullabyVol" class="range-slider" min="0.05" max="0.6" step="0.05" value="0.25" />
+            </div>
+
+            <!-- Sleep Fade-Out Timer -->
+            <div class="audio-box">
+              <div class="audio-box-head">
+                <span data-i18n="sleepTimer">Sleep Fade-Out</span>
+              </div>
+              <div class="timer-pills" id="timerPills">
+                <button type="button" class="timer-pill active" data-mins="0" data-i18n="timerOff">Off</button>
+                <button type="button" class="timer-pill" data-mins="5">5m</button>
+                <button type="button" class="timer-pill" data-mins="10">10m</button>
+                <button type="button" class="timer-pill" data-mins="15">15m</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Story Reader -->
+        <article class="story-card" id="storyCard">
+          <div class="story-meta">
+            <div class="story-tags" id="storyTags"></div>
+            <div style="font-size:12px; color:var(--text-muted);" id="storyReadTime"></div>
+          </div>
+          <h2 class="story-title" id="storyTitle"></h2>
+          <p class="story-subtitle" id="storySubtitle"></p>
+
+          <div id="chaptersContainer"></div>
+
+          <div class="story-footer-actions">
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+              <button type="button" class="btn btn-secondary" id="saveFavoriteBtn">⭐ <span data-i18n="saveStory">Save Favorite</span></button>
+              <button type="button" class="btn btn-ghost" id="exportTxtBtn">📄 <span data-i18n="exportTxt">Export .txt</span></button>
+            </div>
+            <span style="font-size:12px; color:var(--text-muted);" data-i18n="clickChapterHint">Tip: click any chapter to start reading from there</span>
+          </div>
+        </article>
+
+        <!-- Saved Stories Shelf -->
+        <section class="panel shelf-section">
+          <div class="panel-title">
+            <span>⭐ <span data-i18n="savedTitle">Saved Bedtime Stories</span> (<span id="savedCount">0</span>)</span>
+          </div>
+          <div id="savedList" class="saved-list"></div>
+          <p id="savedEmpty" style="font-size:13.5px; color:var(--text-muted);" data-i18n="savedEmpty">
+            No favorite stories saved yet. Save tonight's episode to keep it on this device.
+          </p>
+        </section>
+      </section>
+    </div>
+
+    <!-- Honest "What's unfinished" Section -->
+    <section class="unfinished-box">
+      <h3 data-i18n="unfinishedTitle">What's still unfinished</h3>
+      <p data-i18n="unfinishedIntro">
+        DreamCast is a single-file prototype built in one day for The Unfinished 30. It works completely offline, but a few magical touches are still missing:
+      </p>
+      <ul>
+        <li data-i18n="unfin1">Browser SpeechSynthesis voices vary wildly by OS (macOS &amp; iOS sound warmest; some Linux browsers sound robotic). Real studio-grade neural voices would need a paid TTS API.</li>
+        <li data-i18n="unfin2">The offline story engine weaves modular scenes and dialogue, so after 10–15 nights you may recognize familiar story rhythms unless you plug in a BYOK AI key.</li>
+        <li data-i18n="unfin3">No real MP3 podcast export or background lock-screen audio session yet—keeping the screen dimmed works best for now.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- BYOK AI Modal -->
+  <div class="modal-backdrop" id="byokModal" role="dialog" aria-modal="true" aria-labelledby="byokTitle">
+    <div class="modal">
+      <div class="modal-head">
+        <h3 id="byokTitle" data-i18n="byokModalTitle">Bring Your Own AI Key (Optional)</h3>
+        <button type="button" class="icon-close" id="closeByokBtn" aria-label="Close">✕</button>
+      </div>
+      <div class="privacy-note" data-i18n="byokPrivacy">
+        🔒 Your API key is stored only in your browser's localStorage and sent directly from your browser to the provider you choose.
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="aiProvider" data-i18n="providerLabel">Provider</label>
+        <select id="aiProvider" class="select-input">
+          <option value="openai">OpenAI (gpt-4o-mini)</option>
+          <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+          <option value="anthropic">Anthropic (claude-3-5-haiku-latest)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="aiKeyInput" data-i18n="apiKeyLabel">API Key</label>
+        <input id="aiKeyInput" class="text-input" type="password" placeholder="sk-... / AIza... / sk-ant-..." autocomplete="off" />
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="aiExtraInput" data-i18n="extraDetailLabel">Optional Cozy Detail (e.g., favorite stuffed toy)</label>
+        <input id="aiExtraInput" class="text-input" type="text" placeholder="A blue plush bunny named Pip" />
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+        <button type="button" class="btn btn-primary" id="saveAndGenAiBtn" data-i18n="saveGenAi">Save Key &amp; Generate AI Story</button>
+        <button type="button" class="btn btn-ghost" id="clearKeyBtn" data-i18n="clearKey">Clear Key</button>
+      </div>
+      <div class="ai-error" id="aiErrorMsg"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // ---------- Translations ----------
+      const I18N = {
+        en: {
+          barTitle: 'The Unfinished 30 · Day 16/30',
+          barAuthor: 'by Salah Khenissi',
+          downloadHtml: '⬇ Download HTML',
+          badge: 'Cozy Night-Time Story Studio · 100% Local',
+          heroSub: 'Weave a gentle, multi-chapter bedtime story or kids podcast in seconds. Plays offline with warm chimes, slow narration, and a sleep fade-out timer.',
+          byokBtn: 'Optional BYOK AI',
+          builderTitle: "Tonight's Episode",
+          surprise: '🎲 Surprise',
+          childNameLabel: "Child's Name",
+          ageLabel: 'Age Group',
+          age35: '3–5 yrs',
+          age68: '6–8 yrs',
+          age911: '9–11 yrs',
+          companionLabel: 'Companion',
+          comp_fox: 'Sleepy Fox',
+          comp_dragon: 'Cloud Dragon',
+          comp_astronaut: 'Tiny Astronaut',
+          comp_turtle: 'Wise Turtle',
+          settingLabel: 'Setting',
+          set_forest: 'Lantern Forest',
+          set_library: 'Floating Library',
+          set_train: 'Starlight Train',
+          set_coral: 'Coral Kingdom',
+          themeLabel: 'Gentle Theme',
+          thm_curiosity: 'Curiosity',
+          thm_courage: 'Courage',
+          thm_kindness: 'Kindness',
+          thm_lettinggo: 'Letting Go',
+          weaveBtn: 'Weave Bedtime Story',
+          stopBtn: '■ Stop',
+          readyStatus: 'Tap play for slow bedtime narration',
+          playingStatus: 'Reading softly… Chapter',
+          pausedStatus: 'Paused — tap play to resume',
+          voicePace: 'Voice Pace',
+          lullabyLabel: 'Lullaby Chimes',
+          sleepTimer: 'Sleep Fade-Out',
+          timerOff: 'Off',
+          saveStory: 'Save Favorite',
+          exportTxt: 'Export .txt',
+          clickChapterHint: 'Tip: click any chapter to start reading from there',
+          savedTitle: 'Saved Bedtime Stories',
+          savedEmpty: "No favorite stories saved yet. Save tonight's episode to keep it on this device.",
+          loadBtn: 'Open',
+          delBtn: 'Delete',
+          unfinishedTitle: "What's still unfinished",
+          unfinishedIntro: 'DreamCast is a single-file prototype built in one day for The Unfinished 30. It works completely offline, but a few magical touches are still missing:',
+          unfin1: 'Browser SpeechSynthesis voices vary wildly by OS (macOS & iOS sound warmest; some Linux browsers sound robotic). Real studio-grade neural voices would need a paid TTS API.',
+          unfin2: 'The offline story engine weaves modular scenes and dialogue, so after 10–15 nights you may recognize familiar story rhythms unless you plug in a BYOK AI key.',
+          unfin3: 'No real MP3 podcast export or background lock-screen audio session yet—keeping the screen dimmed works best for now.',
+          byokModalTitle: 'Bring Your Own AI Key (Optional)',
+          byokPrivacy: "🔒 Your API key is stored only in your browser's localStorage and sent directly from your browser to the provider you choose.",
+          providerLabel: 'Provider',
+          apiKeyLabel: 'API Key',
+          extraDetailLabel: 'Optional Cozy Detail (e.g., favorite stuffed toy)',
+          saveGenAi: 'Save Key & Generate AI Story',
+          clearKey: 'Clear Key',
+          chapterLabel: 'Chapter',
+          readMin: 'min listen',
+          offlineBadge: 'Offline Story Engine',
+          aiBadge: 'BYOK AI Original',
+          savedToast: 'Story saved to this device ⭐',
+          keyCleared: 'API key removed from localStorage',
+          timerDone: 'Sweet dreams — audio gently faded out 🌙',
+          generatingAi: 'Weaving an original AI story…'
+        },
+        fr: {
+          barTitle: 'The Unfinished 30 · Jour 16/30',
+          barAuthor: 'par Salah Khenissi',
+          downloadHtml: '⬇ Télécharger HTML',
+          badge: 'Studio d’histoires du soir · 100% Local',
+          heroSub: 'Créez une douce histoire du soir ou un mini-podcast enfant en quelques secondes. Fonctionne hors-ligne avec carillons apaisants, narration lente et minuteur d’endormissement.',
+          byokBtn: 'IA BYOK (Optionnel)',
+          builderTitle: 'L’épisode de ce soir',
+          surprise: '🎲 Surprise',
+          childNameLabel: 'Prénom de l’enfant',
+          ageLabel: 'Tranche d’âge',
+          age35: '3–5 ans',
+          age68: '6–8 ans',
+          age911: '9–11 ans',
+          companionLabel: 'Compagnon',
+          comp_fox: 'Renard Somnolent',
+          comp_dragon: 'Dragon Nuage',
+          comp_astronaut: 'Petit Astronaute',
+          comp_turtle: 'Tortue Sage',
+          settingLabel: 'Décor',
+          set_forest: 'Forêt des Lanternes',
+          set_library: 'Bibliothèque Flottante',
+          set_train: 'Train des Étoiles',
+          set_coral: 'Royaume Corail',
+          themeLabel: 'Thème Doux',
+          thm_curiosity: 'Curiosité',
+          thm_courage: 'Courage',
+          thm_kindness: 'Bienveillance',
+          thm_lettinggo: 'Lâcher-prise',
+          weaveBtn: 'Tisser l’histoire du soir',
+          stopBtn: '■ Stop',
+          readyStatus: 'Appuyez sur lecture pour une narration douce',
+          playingStatus: 'Lecture douce… Chapitre',
+          pausedStatus: 'En pause — appuyez pour reprendre',
+          voicePace: 'Rythme de la voix',
+          lullabyLabel: 'Carillons Berceuse',
+          sleepTimer: 'Extinction Douce',
+          timerOff: 'Off',
+          saveStory: 'Sauvegarder',
+          exportTxt: 'Exporter .txt',
+          clickChapterHint: 'Astuce : cliquez sur un chapitre pour lancer la lecture à partir de là',
+          savedTitle: 'Histoires favorites sauvegardées',
+          savedEmpty: 'Aucune histoire sauvegardée pour l’instant. Enregistrez l’épisode de ce soir sur cet appareil.',
+          loadBtn: 'Ouvrir',
+          delBtn: 'Supprimer',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          unfinishedIntro: 'DreamCast est un prototype mono-fichier réalisé en un jour pour The Unfinished 30. Tout marche hors-ligne, mais quelques touches magiques manquent encore :',
+          unfin1: 'Les voix SpeechSynthesis du navigateur varient beaucoup selon l’OS (macOS et iOS sont plus chaleureux ; certains navigateurs Linux restent robotiques). De vraies voix neuronales demanderaient une API payante.',
+          unfin2: 'Le moteur hors-ligne assemble des scènes modulaires : après 10–15 soirs, vous reconnaîtrez certains rythmes narratifs sauf si vous ajoutez votre propre clé IA (BYOK).',
+          unfin3: 'Pas encore d’export MP3 ni de lecture écran verrouillé native : laisser l’écran tamisé reste la meilleure option.',
+          byokModalTitle: 'Votre propre clé IA (Optionnel)',
+          byokPrivacy: '🔒 Votre clé API reste uniquement dans le localStorage de votre navigateur et appelle directement le fournisseur choisi.',
+          providerLabel: 'Fournisseur',
+          apiKeyLabel: 'Clé API',
+          extraDetailLabel: 'Détail doux optionnel (ex : doudou préféré)',
+          saveGenAi: 'Enregistrer & Générer avec l’IA',
+          clearKey: 'Effacer la clé',
+          chapterLabel: 'Chapitre',
+          readMin: 'min d’écoute',
+          offlineBadge: 'Moteur hors-ligne',
+          aiBadge: 'Histoire originale IA',
+          savedToast: 'Histoire enregistrée sur cet appareil ⭐',
+          keyCleared: 'Clé API supprimée du localStorage',
+          timerDone: 'Fais de beaux rêves — son estompé en douceur 🌙',
+          generatingAi: 'Création d’une histoire originale par l’IA…'
+        }
+      };
+
+      // ---------- Rich Offline Story Data ----------
+      const STORY_DATA = {
+        en: {
+          companions: {
+            fox: { name: 'Pip the Sleepy Fox', short: 'Sleepy Fox', trait: 'a scarf woven from dandelion fluff and a tail warm as toasted bread', sound: 'a soft, whistling yawn' },
+            dragon: { name: 'Nimbus the Cloud Dragon', short: 'Cloud Dragon', trait: 'scales that shimmered like silver mist and sneezes that puffed tiny marshmallows', sound: 'a gentle rumble like distant summer thunder' },
+            astronaut: { name: 'Nova the Tiny Astronaut', short: 'Tiny Astronaut', trait: 'boots that bounced on moonbeams and a helmet full of humming fireflies', sound: 'a cheerful little radio chime' },
+            turtle: { name: 'Barnaby the Wise Turtle', short: 'Wise Turtle', trait: 'a mossy shell painted with constellations and a pocket watch that only measured cozy moments', sound: 'a calm, reassuring sigh' }
+          },
+          settings: {
+            forest: { name: 'the Lantern Forest', arrival: 'tall pine trees hung with amber paper lanterns swaying in a lavender breeze', discovery: 'a clearing where glowing moss hummed a lullaby beneath silver ferns', detail: 'fireflies drifting like slow golden snow' },
+            library: { name: 'the Floating Library', arrival: 'velvet staircases drifting between clouds of cream and bookshelves whispering softly', discovery: 'a round reading nook suspended inside a giant glass teacup', detail: 'paper cranes folding themselves into quiet constellations' },
+            train: { name: 'the Starlight Train', arrival: 'brass sleeper cars gliding silently across ribbons of midnight stardust', discovery: 'the observation dome where warm cocoa floated in tiny glowing droplets', detail: 'the rhythmic hush-hush of wheels over soft cloud tracks' },
+            coral: { name: 'the Coral Kingdom', arrival: 'rose-pink reefs glowing gently beneath an ocean as calm as warm milk', discovery: 'a pearl garden where seahorses rocked inside hammock-shaped shells', detail: 'tiny silver bubbles rising slowly toward the moonlit surface' }
+          },
+          themes: {
+            curiosity: {
+              titleWord: 'Secret',
+              spark: 'a small glowing compass that did not point north—it pointed toward whatever was most wondrous nearby',
+              turn: 'Instead of rushing to find an answer, they listened closely. A whisper inside the glow reminded them that the best questions are not puzzles to solve fast, but lanterns to carry slowly.',
+              lesson: 'Wonder never runs out, and tomorrow will always hold another gentle discovery.'
+            },
+            courage: {
+              titleWord: 'Brave Glow',
+              spark: 'a shadow-bridge that looked a little wobbly at first, humming with quiet nighttime unknowns',
+              turn: 'Taking one small step together, they noticed the bridge lit up softly under every footfall. Courage, they realized, does not mean having zero butterflies—it means letting the butterflies fly in formation.',
+              lesson: 'Even the smallest lantern is enough to light the very next step.'
+            },
+            kindness: {
+              titleWord: 'Warm Gift',
+              spark: 'a tiny lost starling who had dropped its lullaby note somewhere in the twilight',
+              turn: 'Together they shared their quietest hum until the little creature felt safe enough to sing again. Warmth doubled the very moment they gave a piece of it away.',
+              lesson: 'A gentle word or a shared blanket can turn any wide night into home.'
+            },
+            lettinggo: {
+              titleWord: 'Feather Drift',
+              spark: 'a woven basket where travelers placed any heavy thoughts or busy wiggles left over from the day',
+              turn: 'One by one, they placed the day’s unfinished puzzles into the basket and watched it float effortlessly up to the crescent moon for safekeeping until morning.',
+              lesson: 'You do not have to hold everything tonight; the night sky is happy to hold it for you.'
+            }
+          }
+        },
+        fr: {
+          companions: {
+            fox: { name: 'Pip le Renard Somnolent', short: 'Renard Somnolent', trait: 'une écharpe tissée de duvet de pissenlit et une queue chaude comme du pain grillé', sound: 'un petit bâillement tout doux' },
+            dragon: { name: 'Nimbus le Dragon Nuage', short: 'Dragon Nuage', trait: 'des écailles argentées comme la brume et des éternuements qui soufflent des nuages de coton', sound: 'un ronronnement léger comme un orage d’été très lointain' },
+            astronaut: { name: 'Nova le Petit Astronaute', short: 'Petit Astronaute', trait: 'des bottes qui rebondissent sur les rayons de lune et un casque rempli de lucioles', sound: 'un petit carillon radio tout joyeux' },
+            turtle: { name: 'Barnabé la Tortue Sage', short: 'Tortue Sage', trait: 'une carapace ornée de constellations et une montre qui ne mesure que les instants câlins', sound: 'un soupir calme et rassurant' }
+          },
+          settings: {
+            forest: { name: 'la Forêt des Lanternes', arrival: 'de grands pins habillés de lanternes ambrées qui se balancent dans une brise lavande', discovery: 'une clairière où la mousse lumineuse fredonne une berceuse sous les fougères', detail: 'des lucioles flottant comme une neige dorée au ralenti' },
+            library: { name: 'la Bibliothèque Flottante', arrival: 'des escaliers de velours glissant entre des nuages crème et des livres qui chuchotent', discovery: 'un coin lecture rond suspendu dans une immense tasse de verre étoilée', detail: 'des grues en papier se pliant doucement vers les étoiles' },
+            train: { name: 'le Train des Étoiles', arrival: 'des wagons de laiton glissant sans bruit sur des rubans de poussière d’étoiles', discovery: 'le wagon panoramique où le chocolat chaud sent la vanille et la cannelle', detail: 'le doux chuintement régulier des roues sur des rails de nuages' },
+            coral: { name: 'le Royaume Corail', arrival: 'des récifs rose tendre brillant sous un océan calme comme du lait tiède', discovery: 'un jardin de perles où les hippocampes se bercent dans des coquillages-hamacs', detail: 'de minuscules bulles d’argent montant lentement vers la lune' }
+          },
+          themes: {
+            curiosity: {
+              titleWord: 'Secret',
+              spark: 'une petite boussole lumineuse qui n’indiquait pas le nord, mais ce qu’il y avait de plus merveilleux tout près',
+              turn: 'Au lieu de se presser pour tout comprendre, ils prirent le temps d’écouter. Les plus belles questions ne sont pas des devoirs à finir vite, mais des lanternes qu’on porte doucement.',
+              lesson: 'L’émerveillement ne s’épuise jamais, et demain garde déjà une nouvelle surprise.'
+            },
+            courage: {
+              titleWord: 'Lueur Courageuse',
+              spark: 'un pont d’ombres qui semblait un peu tremblant au premier regard, bercé par le silence de la nuit',
+              turn: 'En faisant un tout petit pas ensemble, le pont s’illumina sous leurs pieds. Le courage, comprirent-ils, ce n’est pas de n’avoir aucun papillon dans le ventre : c’est de les faire voler ensemble.',
+              lesson: 'Même la plus petite lanterne suffit pour éclairer le tout prochain pas.'
+            },
+            kindness: {
+              titleWord: 'Doux Présent',
+              spark: 'un tout petit oiseau égaré qui avait perdu la note la plus douce de sa berceuse',
+              turn: 'Ensemble, ils fredonnèrent tout bas jusqu’à ce que le petit visiteur retrouve confiance. La chaleur grandit toujours au moment exact où on la partage.',
+              lesson: 'Un mot tendre ou une couverture partagée transforme n’importe quelle nuit en maison.'
+            },
+            lettinggo: {
+              titleWord: 'Plume Légère',
+              spark: 'un panier tressé où les voyageurs déposaient les petites inquiétudes et l’agitation de la journée',
+              turn: 'Une à une, ils confièrent les pensées trop lourdes au panier, qui s’éleva tranquillement vers le croissant de lune pour être gardé en sécurité jusqu’au matin.',
+              lesson: 'Tu n’as pas besoin de tout porter cette nuit : le ciel étoilé veille sur tout pour toi.'
+            }
+          }
+        }
+      };
+
+      // ---------- State ----------
+      const state = {
+        lang: 'en',
+        name: 'Lina',
+        age: '6-8',
+        companion: 'fox',
+        setting: 'forest',
+        theme: 'curiosity',
+        currentStory: null,
+        isSpeaking: false,
+        isPaused: false,
+        activeChapterIdx: -1,
+        speechRate: 0.84,
+        lullabyOn: false,
+        lullabyVolume: 0.25,
+        sleepTimerMins: 0,
+        sleepTimerRemainingSec: 0
+      };
+
+      const STORAGE_SAVED = 'dreamcast_saved_v1';
+      const STORAGE_BYOK = 'dreamcast_byok_v1';
+
+      // ---------- DOM Refs ----------
+      const $ = (id) => document.getElementById(id);
+      const childNameInput = $('childNameInput');
+      const storyTitleEl = $('storyTitle');
+      const storySubtitleEl = $('storySubtitle');
+      const storyTagsEl = $('storyTags');
+      const storyReadTimeEl = $('storyReadTime');
+      const chaptersContainer = $('chaptersContainer');
+      const playerEpisodeTitle = $('playerEpisodeTitle');
+      const playerStatusText = $('playerStatusText');
+      const playNarrateBtn = $('playNarrateBtn');
+      const speedSlider = $('speedSlider');
+      const speedVal = $('speedVal');
+      const lullabyToggle = $('lullabyToggle');
+      const lullabyVol = $('lullabyVol');
+      const timerCountdownDisplay = $('timerCountdownDisplay');
+      const savedListEl = $('savedList');
+      const savedEmptyEl = $('savedEmpty');
+      const savedCountEl = $('savedCount');
+      const toastEl = $('toast');
+
+      // ---------- Starfield ----------
+      function initStars() {
+        const sf = $('starfield');
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < 64; i++) {
+          const s = document.createElement('div');
+          s.className = 'star';
+          const size = (Math.random() * 2.4 + 1).toFixed(1);
+          s.style.width = size + 'px';
+          s.style.height = size + 'px';
+          s.style.left = (Math.random() * 100).toFixed(2) + '%';
+          s.style.top = (Math.random() * 100).toFixed(2) + '%';
+          s.style.setProperty('--dur', (2.6 + Math.random() * 4.2).toFixed(1) + 's');
+          s.style.setProperty('--delay', (Math.random() * 4).toFixed(1) + 's');
+          frag.appendChild(s);
+        }
+        sf.appendChild(frag);
+      }
+
+      // ---------- Toast ----------
+      let toastTimer = null;
+      function showToast(msg) {
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2800);
+      }
+
+      // ---------- Procedural Story Engine ----------
+      function buildOfflineStory() {
+        const lang = state.lang;
+        const d = STORY_DATA[lang];
+        const child = (state.name || 'Lina').trim();
+        const comp = d.companions[state.companion];
+        const set = d.settings[state.setting];
+        const thm = d.themes[state.theme];
+        const age = state.age;
+
+        if (lang === 'en') {
+          const title = `${child} and the ${thm.titleWord} of ${set.name.replace(/^the /, '')}`;
+          const subtitle = `A DreamCast bedtime episode starring ${child} & ${comp.name}`;
+
+          let ch1, ch2, ch3, ch4;
+          if (age === '3-5') {
+            ch1 = [
+              `Good evening, ${child}. The sky has put on its softest velvet blanket, and the little stars are blinking hello.`,
+              `Right beside your pillow waits ${comp.name}, wearing ${comp.trait}. With ${comp.sound}, ${comp.name.split(' ')[0]} whispers, "Ready for a gentle trip to ${set.name}, ${child}?"`
+            ];
+            ch2 = [
+              `Whoosh—soft as a feather—you both arrive in ${set.name}. Everywhere you look, there are ${set.arrival}.`,
+              `Soon you tip-toe into ${set.discovery}. Right in the middle glows ${thm.spark}.`
+            ];
+            ch3 = [
+              `"Look closely," says ${comp.name.split(' ')[0]} with a cozy smile. ${thm.turn}`,
+              `${child} takes a slow breath in… and a slow breath out… watching ${set.detail}.`
+            ];
+            ch4 = [
+              `Now the moon tilts her silver hat and hums a quiet tune. ${thm.lesson}`,
+              `${comp.name.split(' ')[0]} curls up nearby, eyelids growing heavy and warm. Safe in your cozy bed, ${child}, it is time to drift into sweet, peaceful dreams. Goodnight.`
+            ];
+          } else if (age === '9-11') {
+            ch1 = [
+              `Just after the house settles into its quietest midnight creaks, a pale beam of moonlight sketches a doorway across ${child}'s ceiling.`,
+              `Stepping through it is ${comp.name}, unmistakable with ${comp.trait}. After ${comp.sound}, they nod toward the horizon. "Tonight," they say softly, "we have a quiet invitation to ${set.name}."`
+            ];
+            ch2 = [
+              `Within a heartbeat, the ordinary room dissolves into ${set.arrival}. Nothing here hurries; even the air feels unhurried and kind.`,
+              `Following a quiet trail, ${child} and ${comp.name.split(' ')[0]} reach ${set.discovery}. Waiting patiently for them is ${thm.spark}.`
+            ];
+            ch3 = [
+              `${child} pauses, letting the hush of ${set.name} sink in. ${thm.turn}`,
+              `All around them, ${set.detail}—as if the entire night were nodding in quiet agreement.`
+            ];
+            ch4 = [
+              `When it is time to return, there is no sudden wake-up, only the gentle certainty of arriving back under warm blankets. ${thm.lesson}`,
+              `Somewhere just beyond the window, ${comp.name.split(' ')[0]} waves goodnight. Breath slows, shoulders soften, and ${child} drifts effortlessly toward morning.`
+            ];
+          } else {
+            ch1 = [
+              `When the evening lamps click off and the house grows hush-quiet, a tiny golden shimmer floats past ${child}'s window.`,
+              `Waiting on the sill is ${comp.name}, carrying ${comp.trait}. With ${comp.sound}, they smile and say, "Come along, ${child}—${set.name} is glowing just for us tonight."`
+            ];
+            ch2 = [
+              `Together you glide softly into ${set.name}, greeted by ${set.arrival}. Everything smells faintly of warm vanilla and fresh night air.`,
+              `A few gentle steps further, you discover ${set.discovery}, where something special awaits: ${thm.spark}.`
+            ];
+            ch3 = [
+              `${child} leans in with gentle wonder, and ${comp.name.split(' ')[0]} listens beside you. ${thm.turn}`,
+              `For a long, peaceful moment, you both simply watch ${set.detail}.`
+            ];
+            ch4 = [
+              `Slowly, the lanterns dim to a honey-gold glow, guiding you smoothly back to your soft pillow. ${thm.lesson}`,
+              `${comp.name.split(' ')[0]} tucks a final stardust wish beside your blanket. Close your eyes, ${child}—the night is kind, and sleep is already here.`
+            ];
+          }
+
+          return {
+            id: 'story_' + Date.now(),
+            lang: 'en',
+            source: 'offline',
+            child,
+            age,
+            companion: state.companion,
+            setting: state.setting,
+            theme: state.theme,
+            title,
+            subtitle,
+            chapters: [
+              { title: '1. The Twilight Invitation', paragraphs: ch1 },
+              { title: '2. Into the Quiet Wonder', paragraphs: ch2 },
+              { title: '3. The Gentle Discovery', paragraphs: ch3 },
+              { title: '4. Drifting to Sleep', paragraphs: ch4 }
+            ]
+          };
+        } else {
+          const cleanSet = set.name.replace(/^(la |le |l’)/, '');
+          const title = `${child} et le ${thm.titleWord} de ${set.name}`;
+          const subtitle = `Un épisode du soir DreamCast avec ${child} & ${comp.name}`;
+
+          let ch1, ch2, ch3, ch4;
+          if (age === '3-5') {
+            ch1 = [
+              `Bonsoir, ${child}. Le ciel a mis sa grande couverture de velours, et les petites étoiles te font coucou.`,
+              `Tout près de ton oreiller attend ${comp.name}, avec ${comp.trait}. Dans ${comp.sound}, il chuchote : « On part tout doucement vers ${set.name}, ${child} ? »`
+            ];
+            ch2 = [
+              `Flouf, léger comme une plume, vous arrivez dans ${set.name}. Tout autour brille un décor magique : ${set.arrival}.`,
+              `Sur la pointe des pieds, vous découvrez ${set.discovery}. Juste au milieu repose ${thm.spark}.`
+            ];
+            ch3 = [
+              `« Regarde tout doucement », sourit ton compagnon. ${thm.turn}`,
+              `${child} prend une grande respiration calme… puis expire lentement… en admirant ${set.detail}.`
+            ];
+            ch4 = [
+              `La lune penche son chapeau d’argent et fredonne une berceuse. ${thm.lesson}`,
+              `Bien au chaud sous ta couette, ${child}, tes paupières deviennent toutes légères. Bonne nuit, fais de très beaux rêves.`
+            ];
+          } else if (age === '9-11') {
+            ch1 = [
+              `Juste après que la maison s’installe dans son silence de minuit, un rayon de lune dessine une porte tranquille près du lit de ${child}.`,
+              `${comp.name} apparaît avec ${comp.trait}. Après ${comp.sound}, il murmure : « Ce soir, nous avons une invitation calme vers ${set.name}. »`
+            ];
+            ch2 = [
+              `En un instant, la chambre s’ouvre sur ${set.arrival}. Ici rien ne presse ; même le temps semble respirer plus lentement.`,
+              `En suivant un sentier lumineux, ${child} et son compagnon atteignent ${set.discovery}, où les attend ${thm.spark}.`
+            ];
+            ch3 = [
+              `${child} s’arrête un instant pour savourer le calme de ${cleanSet}. ${thm.turn}`,
+              `Tout autour d’eux flottent ${set.detail}, comme si la nuit entière approuvait en silence.`
+            ];
+            ch4 = [
+              `Le retour se fait sans secousse, comme un glissement naturel sous des draps tièdes. ${thm.lesson}`,
+              `Derrière la fenêtre, ${comp.name} salue une dernière fois. Le souffle s’apaise, et ${child} glisse doucement vers le sommeil.`
+            ];
+          } else {
+            ch1 = [
+              `Quand les lampes du soir s’éteignent et que la maison devient silencieuse, une petite lueur dorée danse près de la fenêtre de ${child}.`,
+              `C’est ${comp.name}, reconnaissable à ${comp.trait}. Avec ${comp.sound}, il sourit : « Viens, ${child}, ${set.name} s’illumine rien que pour nous ce soir. »`
+            ];
+            ch2 = [
+              `Ensemble, vous glissez doucement vers ${set.name}, accueillis par ${set.arrival}. L’air sent légèrement la vanille chaude et la nuit d’été.`,
+              `Quelques pas plus loin se cache ${set.discovery}, où brille un trésor paisible : ${thm.spark}.`
+            ];
+            ch3 = [
+              `${child} s’approche avec curiosité, bien entouré. ${thm.turn}`,
+              `Pendant un long moment apaisant, vous observez simplement ${set.detail}.`
+            ];
+            ch4 = [
+              `Peu à peu, les lumières prennent une teinte miel et vous ramènent tout en douceur sur ton oreiller. ${thm.lesson}`,
+              `Ferme doucement les yeux, ${child} : la nuit est douce, et les rêves t’attendent déjà.`
+            ];
+          }
+
+          return {
+            id: 'story_' + Date.now(),
+            lang: 'fr',
+            source: 'offline',
+            child,
+            age,
+            companion: state.companion,
+            setting: state.setting,
+            theme: state.theme,
+            title,
+            subtitle,
+            chapters: [
+              { title: '1. L’invitation du crépuscule', paragraphs: ch1 },
+              { title: '2. Au cœur de la merveille', paragraphs: ch2 },
+              { title: '3. La douce découverte', paragraphs: ch3 },
+              { title: '4. Glisser vers les rêves', paragraphs: ch4 }
+            ]
+          };
+        }
+      }
+
+      // ---------- Render Story ----------
+      function renderStory(story) {
+        state.currentStory = story;
+        const t = I18N[state.lang];
+        const d = STORY_DATA[state.lang];
+
+        storyTitleEl.textContent = story.title;
+        storySubtitleEl.textContent = story.subtitle;
+        playerEpisodeTitle.textContent = story.title;
+
+        // Estimate listen time
+        const wordCount = story.chapters.reduce((acc, ch) => acc + ch.paragraphs.join(' ').split(/\s+/).length, 0);
+        const mins = Math.max(2, Math.round(wordCount / 115));
+        storyReadTimeEl.textContent = `~${mins} ${t.readMin}`;
+
+        // Tags
+        storyTagsEl.innerHTML = '';
+        const tags = [
+          { label: story.source === 'ai' ? t.aiBadge : t.offlineBadge, cls: story.source === 'ai' ? 'story-tag ai-tag' : 'story-tag' },
+          { label: story.age, cls: 'story-tag' },
+          { label: d.companions[story.companion]?.short || story.companion, cls: 'story-tag' },
+          { label: d.settings[story.setting]?.name || story.setting, cls: 'story-tag' }
+        ];
+        tags.forEach(tg => {
+          const span = document.createElement('span');
+          span.className = tg.cls;
+          span.textContent = tg.label;
+          storyTagsEl.appendChild(span);
+        });
+
+        // Chapters
+        chaptersContainer.innerHTML = '';
+        story.chapters.forEach((ch, idx) => {
+          const div = document.createElement('div');
+          div.className = 'chapter' + (idx === state.activeChapterIdx ? ' reading' : '');
+          div.dataset.idx = idx;
+          div.style.cursor = 'pointer';
+          div.addEventListener('click', () => startNarration(idx));
+
+          const head = document.createElement('div');
+          head.className = 'chapter-head';
+          head.innerHTML = `<h3 class="chapter-title">${escapeHtml(ch.title)}</h3><span class="chapter-num">${t.chapterLabel} ${idx + 1}/4</span>`;
+          div.appendChild(head);
+
+          ch.paragraphs.forEach(pText => {
+            const p = document.createElement('p');
+            p.textContent = pText;
+            div.appendChild(p);
+          });
+          chaptersContainer.appendChild(div);
+        });
+      }
+
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+      }
+
+      function highlightChapter(idx) {
+        state.activeChapterIdx = idx;
+        chaptersContainer.querySelectorAll('.chapter').forEach((el, i) => {
+          el.classList.toggle('reading', i === idx);
+        });
+      }
+
+      // ---------- Web SpeechSynthesis Narration ----------
+      function stopNarration() {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+        state.isSpeaking = false;
+        state.isPaused = false;
+        highlightChapter(-1);
+        playNarrateBtn.textContent = '▶';
+        playerStatusText.textContent = I18N[state.lang].readyStatus;
+      }
+
+      function pickVoice(lang) {
+        if (!('speechSynthesis' in window)) return null;
+        const voices = window.speechSynthesis.getVoices();
+        const prefix = lang === 'fr' ? 'fr' : 'en';
+        const matching = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith(prefix));
+        // Prefer warm natural/Samantha/Thomas/Amelie/Google voices if available
+        const preferred = matching.find(v => /natural|samantha|amelie|audrey|thomas|serena|daniel|google/i.test(v.name));
+        return preferred || matching[0] || voices[0] || null;
+      }
+
+      function speakChapter(idx) {
+        if (!state.currentStory || idx >= state.currentStory.chapters.length) {
+          stopNarration();
+          return;
+        }
+        if (!('speechSynthesis' in window)) {
+          showToast('SpeechSynthesis not supported in this browser');
+          return;
+        }
+
+        const ch = state.currentStory.chapters[idx];
+        const text = `${ch.title}. ${ch.paragraphs.join(' ')}`;
+        const utter = new SpeechSynthesisUtterance(text);
+        const targetLang = state.currentStory.lang || state.lang;
+        utter.lang = targetLang === 'fr' ? 'fr-FR' : 'en-US';
+        utter.rate = state.speechRate;
+        utter.pitch = 0.94;
+        const voice = pickVoice(targetLang);
+        if (voice) utter.voice = voice;
+
+        utter.onstart = () => {
+          state.isSpeaking = true;
+          state.isPaused = false;
+          highlightChapter(idx);
+          playNarrateBtn.textContent = '⏸';
+          playerStatusText.textContent = `${I18N[state.lang].playingStatus} ${idx + 1}/4`;
+        };
+        utter.onend = () => {
+          if (state.isSpeaking && !state.isPaused) {
+            speakChapter(idx + 1);
+          }
+        };
+        utter.onerror = () => {
+          stopNarration();
+        };
+        window.speechSynthesis.speak(utter);
+      }
+
+      function startNarration(fromIdx = 0) {
+        if (!('speechSynthesis' in window)) {
+          showToast('SpeechSynthesis not supported in this browser');
+          return;
+        }
+        window.speechSynthesis.cancel();
+        state.isSpeaking = true;
+        state.isPaused = false;
+        speakChapter(fromIdx);
+      }
+
+      playNarrateBtn.addEventListener('click', () => {
+        if (!('speechSynthesis' in window)) {
+          showToast('SpeechSynthesis not supported');
+          return;
+        }
+        if (state.isSpeaking && !state.isPaused) {
+          window.speechSynthesis.pause();
+          state.isPaused = true;
+          playNarrateBtn.textContent = '▶';
+          playerStatusText.textContent = I18N[state.lang].pausedStatus;
+        } else if (state.isSpeaking && state.isPaused) {
+          window.speechSynthesis.resume();
+          state.isPaused = false;
+          playNarrateBtn.textContent = '⏸';
+          playerStatusText.textContent = `${I18N[state.lang].playingStatus} ${Math.max(1, state.activeChapterIdx + 1)}/4`;
+        } else {
+          startNarration(0);
+        }
+      });
+
+      $('stopNarrateBtn').addEventListener('click', stopNarration);
+
+      speedSlider.addEventListener('input', (e) => {
+        state.speechRate = parseFloat(e.target.value);
+        speedVal.textContent = state.speechRate.toFixed(2) + '×';
+      });
+
+      // ---------- Web Audio Gentle Lullaby Chimes ----------
+      let audioCtx = null;
+      let masterGain = null;
+      let lullabyInterval = null;
+      let padOsc1 = null;
+      let padOsc2 = null;
+
+      // Warm C-major pentatonic frequencies across octaves
+      const LULLABY_NOTES = [261.63, 293.66, 329.63, 392.00, 440.00, 523.25, 587.33, 659.25];
+      let noteStep = 0;
+      const MELODY_SEQ = [0, 2, 4, 5, 4, 2, 1, 3, 5, 7, 5, 3, 2, 4, 3, 0];
+
+      function triggerChime(freq) {
+        if (!audioCtx || !masterGain) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const overtone = audioCtx.createOscillator();
+        const env = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now);
+        overtone.type = 'triangle';
+        overtone.frequency.setValueAtTime(freq * 2, now);
+
+        const overGain = audioCtx.createGain();
+        overGain.gain.setValueAtTime(0.08, now);
+
+        env.gain.setValueAtTime(0.0001, now);
+        env.gain.exponentialRampToValueAtTime(0.28, now + 0.06);
+        env.gain.exponentialRampToValueAtTime(0.0001, now + 3.2);
+
+        osc.connect(env);
+        overtone.connect(overGain);
+        overGain.connect(env);
+        env.connect(masterGain);
+
+        osc.start(now);
+        overtone.start(now);
+        osc.stop(now + 3.3);
+        overtone.stop(now + 3.3);
+      }
+
+      function startLullaby() {
+        const AudioContextCls = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContextCls) return;
+        if (!audioCtx) {
+          audioCtx = new AudioContextCls();
+          masterGain = audioCtx.createGain();
+          masterGain.gain.setValueAtTime(state.lullabyVolume, audioCtx.currentTime);
+          masterGain.connect(audioCtx.destination);
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+
+        // Warm soft drone pad
+        const now = audioCtx.currentTime;
+        const padGain = audioCtx.createGain();
+        padGain.gain.setValueAtTime(0.055, now);
+        padGain.connect(masterGain);
+
+        padOsc1 = audioCtx.createOscillator();
+        padOsc2 = audioCtx.createOscillator();
+        padOsc1.type = 'sine';
+        padOsc2.type = 'sine';
+        padOsc1.frequency.setValueAtTime(130.81, now); // C3
+        padOsc2.frequency.setValueAtTime(196.00, now); // G3
+        padOsc1.connect(padGain);
+        padOsc2.connect(padGain);
+        padOsc1.start(now);
+        padOsc2.start(now);
+
+        triggerChime(LULLABY_NOTES[MELODY_SEQ[noteStep % MELODY_SEQ.length]]);
+        noteStep++;
+        lullabyInterval = setInterval(() => {
+          const idx = MELODY_SEQ[noteStep % MELODY_SEQ.length];
+          triggerChime(LULLABY_NOTES[idx]);
+          noteStep++;
+        }, 1650);
+
+        state.lullabyOn = true;
+        lullabyToggle.textContent = 'ON';
+        lullabyToggle.classList.add('on');
+      }
+
+      function stopLullaby() {
+        clearInterval(lullabyInterval);
+        lullabyInterval = null;
+        try {
+          if (padOsc1) { padOsc1.stop(); padOsc1.disconnect(); padOsc1 = null; }
+          if (padOsc2) { padOsc2.stop(); padOsc2.disconnect(); padOsc2 = null; }
+        } catch (_) {}
+        state.lullabyOn = false;
+        lullabyToggle.textContent = 'OFF';
+        lullabyToggle.classList.remove('on');
+      }
+
+      lullabyToggle.addEventListener('click', () => {
+        if (state.lullabyOn) stopLullaby();
+        else startLullaby();
+      });
+
+      lullabyVol.addEventListener('input', (e) => {
+        state.lullabyVolume = parseFloat(e.target.value);
+        if (masterGain && audioCtx) {
+          masterGain.gain.setTargetAtTime(state.lullabyVolume, audioCtx.currentTime, 0.08);
+        }
+      });
+
+      // ---------- Sleep Fade-Out Timer ----------
+      let sleepTick = null;
+      function setSleepTimer(mins) {
+        clearInterval(sleepTick);
+        state.sleepTimerMins = mins;
+        state.sleepTimerRemainingSec = mins * 60;
+        if (mins === 0) {
+          timerCountdownDisplay.textContent = '';
+          return;
+        }
+        updateTimerLabel();
+        sleepTick = setInterval(() => {
+          state.sleepTimerRemainingSec--;
+          updateTimerLabel();
+          // Smoothly fade ambient volume in last 30 seconds
+          if (state.sleepTimerRemainingSec <= 30 && state.sleepTimerRemainingSec > 0 && masterGain && audioCtx) {
+            const factor = state.sleepTimerRemainingSec / 30;
+            masterGain.gain.setTargetAtTime(Math.max(0.001, state.lullabyVolume * factor), audioCtx.currentTime, 0.2);
+          }
+          if (state.sleepTimerRemainingSec <= 0) {
+            clearInterval(sleepTick);
+            stopNarration();
+            stopLullaby();
+            timerCountdownDisplay.textContent = '';
+            document.querySelectorAll('#timerPills .timer-pill').forEach(b => b.classList.toggle('active', b.dataset.mins === '0'));
+            showToast(I18N[state.lang].timerDone);
+          }
+        }, 1000);
+      }
+
+      function updateTimerLabel() {
+        const m = Math.floor(state.sleepTimerRemainingSec / 60);
+        const s = String(state.sleepTimerRemainingSec % 60).padStart(2, '0');
+        timerCountdownDisplay.textContent = `🌙 ${m}:${s}`;
+      }
+
+      $('timerPills').addEventListener('click', (e) => {
+        const btn = e.target.closest('.timer-pill');
+        if (!btn) return;
+        $('timerPills').querySelectorAll('.timer-pill').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        setSleepTimer(parseInt(btn.dataset.mins, 10));
+      });
+
+      // ---------- Saved Stories (localStorage) ----------
+      function getSavedStories() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_SAVED) || '[]'); }
+        catch (_) { return []; }
+      }
+
+      function saveStoriesList(list) {
+        try { localStorage.setItem(STORAGE_SAVED, JSON.stringify(list)); } catch (_) {}
+      }
+
+      function renderSavedList() {
+        const list = getSavedStories();
+        const t = I18N[state.lang];
+        savedCountEl.textContent = list.length;
+        savedEmptyEl.style.display = list.length ? 'none' : 'block';
+        savedListEl.innerHTML = '';
+
+        list.forEach((st) => {
+          const item = document.createElement('div');
+          item.className = 'saved-item';
+          item.innerHTML = `
+            <h4>${escapeHtml(st.title)}</h4>
+            <div class="saved-meta">${escapeHtml(st.child)} · ${escapeHtml(st.age)} · ${(st.lang || 'en').toUpperCase()}</div>
+            <div class="saved-actions">
+              <button type="button" class="btn-ghost" data-act="open">${t.loadBtn}</button>
+              <button type="button" class="btn-ghost" data-act="del" style="color:var(--danger);">${t.delBtn}</button>
+            </div>
+          `;
+          item.querySelector('[data-act="open"]').addEventListener('click', () => {
+            stopNarration();
+            renderStory(st);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+          item.querySelector('[data-act="del"]').addEventListener('click', () => {
+            const next = getSavedStories().filter(x => x.id !== st.id);
+            saveStoriesList(next);
+            renderSavedList();
+          });
+          savedListEl.appendChild(item);
+        });
+      }
+
+      $('saveFavoriteBtn').addEventListener('click', () => {
+        if (!state.currentStory) return;
+        const list = getSavedStories().filter(x => x.id !== state.currentStory.id);
+        list.unshift(state.currentStory);
+        saveStoriesList(list.slice(0, 20));
+        renderSavedList();
+        showToast(I18N[state.lang].savedToast);
+      });
+
+      $('exportTxtBtn').addEventListener('click', () => {
+        if (!state.currentStory) return;
+        const s = state.currentStory;
+        const content = [
+          s.title,
+          s.subtitle,
+          '',
+          ...s.chapters.flatMap(ch => [ch.title, ...ch.paragraphs, ''])
+        ].join('\n');
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `dreamcast-${s.child.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.txt`;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      // ---------- BYOK AI Generation ----------
+      const byokModal = $('byokModal');
+      const aiProviderEl = $('aiProvider');
+      const aiKeyInput = $('aiKeyInput');
+      const aiExtraInput = $('aiExtraInput');
+      const aiErrorMsg = $('aiErrorMsg');
+
+      function loadByokConfig() {
+        try {
+          const cfg = JSON.parse(localStorage.getItem(STORAGE_BYOK) || '{}');
+          if (cfg.provider) aiProviderEl.value = cfg.provider;
+          if (cfg.key) aiKeyInput.value = cfg.key;
+        } catch (_) {}
+      }
+
+      function openByokModal() {
+        loadByokConfig();
+        aiErrorMsg.textContent = '';
+        byokModal.classList.add('open');
+      }
+
+      $('openByokBtn').addEventListener('click', openByokModal);
+      $('closeByokBtn').addEventListener('click', () => byokModal.classList.remove('open'));
+      byokModal.addEventListener('click', (e) => { if (e.target === byokModal) byokModal.classList.remove('open'); });
+
+      $('clearKeyBtn').addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_BYOK);
+        aiKeyInput.value = '';
+        showToast(I18N[state.lang].keyCleared);
+      });
+
+      async function generateWithAi() {
+        const provider = aiProviderEl.value;
+        const key = aiKeyInput.value.trim();
+        if (!key) {
+          openByokModal();
+          aiErrorMsg.textContent = state.lang === 'fr' ? 'Ajoutez votre clé API d’abord.' : 'Please enter your API key first.';
+          return;
+        }
+        try { localStorage.setItem(STORAGE_BYOK, JSON.stringify({ provider, key })); } catch (_) {}
+
+        const d = STORY_DATA[state.lang];
+        const child = (state.name || 'Lina').trim();
+        const extra = aiExtraInput.value.trim();
+        const langName = state.lang === 'fr' ? 'French' : 'English';
+
+        const prompt = `Write a cozy, calming 4-chapter bedtime story in ${langName} for a child named ${child} (age ${state.age}).
+Companion: ${d.companions[state.companion].name}.
+Setting: ${d.settings[state.setting].name}.
+Theme: ${state.theme}.
+${extra ? 'Include this cozy detail: ' + extra : ''}
+Return ONLY valid JSON with this exact shape:
+{"title":"...","subtitle":"...","chapters":[{"title":"1. ...","paragraphs":["...","..."]},{"title":"2. ...","paragraphs":["...","..."]},{"title":"3. ...","paragraphs":["...","..."]},{"title":"4. ...","paragraphs":["...","..."]}]}`;
+
+        aiErrorMsg.textContent = I18N[state.lang].generatingAi;
+        try {
+          let rawText = '';
+          if (provider === 'openai') {
+            const res = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+              body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                response_format: { type: 'json_object' },
+                messages: [{ role: 'user', content: prompt }]
+              })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'OpenAI error');
+            rawText = data.choices[0].message.content;
+          } else if (provider === 'gemini') {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: 'application/json' }
+              })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'Gemini error');
+            rawText = data.candidates[0].content.parts[0].text;
+          } else {
+            const res = await fetch('https://api.anthropic.com/v1/messages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+              },
+              body: JSON.stringify({
+                model: 'claude-3-5-haiku-latest',
+                max_tokens: 1400,
+                messages: [{ role: 'user', content: prompt }]
+              })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'Anthropic error');
+            rawText = data.content[0].text;
+          }
+
+          const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+          const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : rawText);
+          if (!parsed.chapters || !parsed.chapters.length) throw new Error('Invalid story format');
+
+          stopNarration();
+          renderStory({
+            id: 'ai_' + Date.now(),
+            lang: state.lang,
+            source: 'ai',
+            child,
+            age: state.age,
+            companion: state.companion,
+            setting: state.setting,
+            theme: state.theme,
+            title: parsed.title,
+            subtitle: parsed.subtitle || '',
+            chapters: parsed.chapters
+          });
+          byokModal.classList.remove('open');
+          showToast('✨ AI Story ready!');
+        } catch (err) {
+          aiErrorMsg.textContent = 'Error: ' + (err.message || 'Could not reach AI provider');
+        }
+      }
+
+      $('saveAndGenAiBtn').addEventListener('click', generateWithAi);
+      $('aiGenerateBtn').addEventListener('click', () => {
+        loadByokConfig();
+        if (aiKeyInput.value.trim()) generateWithAi();
+        else openByokModal();
+      });
+
+      // ---------- Builder Interactions ----------
+      childNameInput.addEventListener('input', () => {
+        state.name = childNameInput.value.trim() || 'Lina';
+        $('demoPills').querySelectorAll('.demo-pill').forEach(p => {
+          p.classList.toggle('active', p.dataset.name.toLowerCase() === state.name.toLowerCase());
+        });
+      });
+
+      $('demoPills').addEventListener('click', (e) => {
+        const pill = e.target.closest('.demo-pill');
+        if (!pill) return;
+        state.name = pill.dataset.name;
+        childNameInput.value = state.name;
+        $('demoPills').querySelectorAll('.demo-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        stopNarration();
+        renderStory(buildOfflineStory());
+      });
+
+      function bindSingleSelect(containerId, attr, stateKey) {
+        $(containerId).addEventListener('click', (e) => {
+          const btn = e.target.closest(`[data-${attr}]`);
+          if (!btn) return;
+          $(containerId).querySelectorAll(`[data-${attr}]`).forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          state[stateKey] = btn.dataset[attr];
+        });
+      }
+      bindSingleSelect('ageGrid', 'age', 'age');
+      bindSingleSelect('companionGrid', 'val', 'companion');
+      bindSingleSelect('settingGrid', 'val', 'setting');
+      bindSingleSelect('themeGrid', 'val', 'theme');
+
+      $('generateBtn').addEventListener('click', () => {
+        state.name = childNameInput.value.trim() || 'Lina';
+        stopNarration();
+        renderStory(buildOfflineStory());
+      });
+
+      $('surpriseBtn').addEventListener('click', () => {
+        const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const names = ['Lina', 'Milo', 'Noor', 'Sami'];
+        state.name = pick(names);
+        state.age = pick(['3-5', '6-8', '9-11']);
+        state.companion = pick(['fox', 'dragon', 'astronaut', 'turtle']);
+        state.setting = pick(['forest', 'library', 'train', 'coral']);
+        state.theme = pick(['curiosity', 'courage', 'kindness', 'lettinggo']);
+
+        childNameInput.value = state.name;
+        $('demoPills').querySelectorAll('.demo-pill').forEach(p => p.classList.toggle('active', p.dataset.name === state.name));
+        $('ageGrid').querySelectorAll('[data-age]').forEach(b => b.classList.toggle('active', b.dataset.age === state.age));
+        $('companionGrid').querySelectorAll('[data-val]').forEach(b => b.classList.toggle('active', b.dataset.val === state.companion));
+        $('settingGrid').querySelectorAll('[data-val]').forEach(b => b.classList.toggle('active', b.dataset.val === state.setting));
+        $('themeGrid').querySelectorAll('[data-val]').forEach(b => b.classList.toggle('active', b.dataset.val === state.theme));
+
+        stopNarration();
+        renderStory(buildOfflineStory());
+      });
+
+      // ---------- EN / FR Language Toggle ----------
+      function applyLanguage() {
+        const t = I18N[state.lang];
+        document.documentElement.lang = state.lang;
+        $('langToggle').textContent = state.lang === 'en' ? 'FR' : 'EN';
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.dataset.i18n;
+          if (t[key]) el.textContent = t[key];
+        });
+        if (!state.currentStory || state.currentStory.source === 'offline') {
+          stopNarration();
+          renderStory(buildOfflineStory());
+        } else {
+          renderStory(state.currentStory);
+        }
+        renderSavedList();
+      }
+
+      $('langToggle').addEventListener('click', () => {
+        state.lang = state.lang === 'en' ? 'fr' : 'en';
+        applyLanguage();
+      });
+
+      // ---------- Download Standalone HTML ----------
+      $('downloadHtmlBtn').addEventListener('click', () => {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'day-16-dreamcast.html';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      // ---------- Init ----------
+      initStars();
+      applyLanguage();
+    })();
+  </script>
+</body>
+</html>

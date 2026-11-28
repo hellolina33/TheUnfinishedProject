@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BKK Yield Alpha — Day 28/30 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FAF7F2;
+      --surface: #FFFFFF;
+      --surface-soft: #F4EFE6;
+      --ink: #12232E;
+      --ink-muted: #556673;
+      --border: #E5DDD0;
+      --peach: #FFB894;
+      --terracotta: #E25D34;
+      --terracotta-dark: #C24924;
+      --emerald: #13855E;
+      --emerald-soft: #E6F6F0;
+      --amber: #C98212;
+      --amber-soft: #FEF5E3;
+      --rose: #C83E4D;
+      --rose-soft: #FDECEF;
+      --topbar: #0E1638;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(18, 35, 46, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar);
+      color: #F4F6FF;
+      font-size: 13px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .challenge-bar a {
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .challenge-bar a:hover { text-decoration: underline; }
+    .bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .bar-dot { opacity: 0.45; }
+    .bar-author { opacity: 0.85; font-weight: 400 !important; }
+    .bar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .bar-btn {
+      background: rgba(255,255,255,0.1);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.12s;
+    }
+    .bar-btn:hover { background: rgba(255,255,255,0.2); }
+    .bar-btn:active { transform: scale(0.97); }
+    .bar-btn.active {
+      background: var(--peach);
+      color: #12232E;
+      border-color: var(--peach);
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #FFE5D6;
+      color: #8D3215;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(28px, 4.2vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+    }
+    .hero-sub {
+      color: var(--ink-muted);
+      font-size: 15px;
+      max-width: 600px;
+      margin-top: 8px;
+    }
+    .currency-group {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+      box-shadow: var(--shadow);
+    }
+    .curr-btn {
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.16s;
+    }
+    .curr-btn.active {
+      background: var(--ink);
+      color: #FFFFFF;
+    }
+
+    /* Preset Strip */
+    .preset-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .preset-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.18s, transform 0.15s, box-shadow 0.18s;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: inherit;
+    }
+    .preset-card:hover {
+      border-color: var(--terracotta);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .preset-card.active {
+      border-color: var(--terracotta);
+      background: #FFF9F5;
+    }
+    .preset-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .preset-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .preset-tag {
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--surface-soft);
+      color: var(--ink-muted);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+    .preset-meta {
+      font-size: 12px;
+      color: var(--ink-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Main Workspace Grid */
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+      gap: 22px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .workspace { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .card-title {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-muted);
+      margin: 18px 0 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+    .section-label:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    @media (max-width: 540px) {
+      .form-grid { grid-template-columns: 1fr; }
+    }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .field.full { grid-column: 1 / -1; }
+    .field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .field input[type="text"],
+    .field input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--ink);
+      background: #FCFBF9;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .field input[type="text"] {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+    }
+    .field input:focus {
+      outline: none;
+      border-color: var(--terracotta);
+      background: #FFFFFF;
+    }
+
+    /* Mortgage Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-soft);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-top: 14px;
+    }
+    .toggle-row span {
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider-round {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #CBD3DA;
+      border-radius: 999px;
+      transition: 0.2s;
+    }
+    .slider-round:before {
+      content: "";
+      position: absolute;
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.2s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+    }
+    .switch input:checked + .slider-round { background: var(--terracotta); }
+    .switch input:checked + .slider-round:before { transform: translateX(20px); }
+
+    .mortgage-fields {
+      margin-top: 12px;
+      padding: 14px;
+      border-radius: 12px;
+      background: #FFF9F5;
+      border: 1px dashed #F0B99E;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    @media (max-width: 540px) {
+      .mortgage-fields { grid-template-columns: 1fr; }
+    }
+    .mortgage-fields.hidden { display: none; }
+
+    /* Lifestyle Sliders */
+    .sliders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .slider-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .slider-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .slider-val {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--terracotta-dark);
+      font-weight: 700;
+    }
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 7px;
+      background: var(--surface-soft);
+      border-radius: 999px;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(18,35,46,0.22);
+      cursor: pointer;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--terracotta);
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(18,35,46,0.22);
+      cursor: pointer;
+    }
+
+    /* Right Panel: Alpha Score & KPIs */
+    .alpha-card {
+      position: sticky;
+      top: 18px;
+    }
+    .alpha-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 18px;
+    }
+    @media (max-width: 440px) {
+      .alpha-header { flex-direction: column; text-align: center; }
+    }
+    .ring-wrap {
+      position: relative;
+      width: 122px;
+      height: 122px;
+      flex-shrink: 0;
+    }
+    .ring-wrap svg {
+      transform: rotate(-90deg);
+      width: 122px;
+      height: 122px;
+    }
+    .ring-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .ring-score {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 34px;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .ring-max {
+      font-size: 11px;
+      color: var(--ink-muted);
+      font-weight: 600;
+    }
+    .alpha-info { flex: 1; min-width: 0; }
+    .verdict-pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 6px;
+    }
+    .verdict-strong { background: var(--emerald-soft); color: var(--emerald); }
+    .verdict-balanced { background: var(--amber-soft); color: var(--amber); }
+    .verdict-weak { background: var(--rose-soft); color: var(--rose); }
+
+    .alpha-title {
+      font-size: 17px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .subscores {
+      display: flex;
+      gap: 14px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--ink-muted);
+      flex-wrap: wrap;
+    }
+    .subscores strong {
+      color: var(--ink);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .kpi-box {
+      background: var(--surface-soft);
+      border-radius: 12px;
+      padding: 13px 14px;
+    }
+    .kpi-box.wide {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+    }
+    .kpi-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 600;
+      margin-top: 3px;
+      color: var(--ink);
+    }
+    .kpi-val.pos { color: var(--emerald); }
+    .kpi-val.neg { color: var(--rose); }
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--ink-muted);
+      margin-top: 2px;
+    }
+
+    /* Cashflow Allocation Bar */
+    .bar-section { margin-bottom: 18px; }
+    .bar-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .stacked-bar {
+      height: 14px;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+      background: var(--surface-soft);
+    }
+    .seg-net { background: #13855E; }
+    .seg-mortgage { background: #E25D34; }
+    .seg-cam { background: #FFB894; }
+    .seg-mgmt { background: #3E6B89; }
+    .seg-vac { background: #CBD3DA; }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Action Buttons */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      border-radius: 11px;
+      padding: 11px 16px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s, background 0.16s, border-color 0.16s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-primary {
+      background: var(--terracotta);
+      color: #FFFFFF;
+      flex: 1;
+    }
+    .btn-primary:hover { background: var(--terracotta-dark); }
+    .btn-secondary {
+      background: var(--surface-soft);
+      color: var(--ink);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: #EAE2D5; }
+    .btn-sm {
+      padding: 7px 12px;
+      font-size: 12px;
+      border-radius: 9px;
+    }
+
+    /* Comparison Section */
+    .compare-card {
+      margin-top: 24px;
+    }
+    .compare-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+      font-size: 13px;
+    }
+    th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-muted);
+      padding: 10px 12px;
+      border-bottom: 1.5px solid var(--border);
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tbody tr {
+      transition: background 0.14s;
+    }
+    tbody tr:hover {
+      background: #FCF9F4;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+    }
+    .best-cell {
+      color: var(--emerald);
+      font-weight: 700;
+    }
+    .alpha-badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .row-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .icon-btn {
+      border: 1px solid var(--border);
+      background: #FFFFFF;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 5px 9px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .icon-btn:hover { background: var(--surface-soft); }
+    .icon-btn.del:hover { background: var(--rose-soft); color: var(--rose); border-color: #F4C3C8; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.22);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.22s;
+      z-index: 90;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Honest Unfinished Section */
+    .unfinished {
+      margin-top: 32px;
+      background: var(--surface-soft);
+      border: 1px dashed #D3C6B4;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+    }
+    .unfinished h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .unfinished ul {
+      padding-left: 20px;
+      color: var(--ink-muted);
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Challenge Top Bar -->
+  <header class="challenge-bar">
+    <div class="bar-left">
+      <a href="/">The Unfinished 30 · Day 28/30</a>
+      <span class="bar-dot">•</span>
+      <a class="bar-author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="bar-actions">
+      <button class="bar-btn active" id="langEn" type="button">EN</button>
+      <button class="bar-btn" id="langFr" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button" data-i18n="downloadHtml">Download HTML</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="hero-eyebrow" data-i18n="eyebrow">Real Estate Yield × Lifestyle</div>
+        <h1>BKK Yield Alpha</h1>
+        <p class="hero-sub" data-i18n="subtitle">
+          Evaluate Bangkok condos — or any property worldwide — by combining hard rental math with real daily livability into a single Alpha Score.
+        </p>
+      </div>
+      <div class="currency-group" role="group" aria-label="Currency">
+        <button class="curr-btn active" data-curr="THB" type="button">THB ฿</button>
+        <button class="curr-btn" data-curr="EUR" type="button">EUR €</button>
+        <button class="curr-btn" data-curr="USD" type="button">USD $</button>
+      </div>
+    </section>
+
+    <!-- Preloaded Bangkok Condo Presets -->
+    <section class="preset-strip" id="presetStrip"></section>
+
+    <!-- Calculator + Live KPIs -->
+    <section class="workspace">
+      <!-- Left: Inputs -->
+      <div class="card">
+        <div class="card-title">
+          <span data-i18n="inputsTitle">Property &amp; Deal Assumptions</span>
+          <button class="btn btn-secondary btn-sm" id="resetDemoBtn" type="button" data-i18n="resetDemo">Reset Demo</button>
+        </div>
+
+        <div class="section-label" data-i18n="secIdentity">Identity</div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="propName" data-i18n="lblName">Property Name</label>
+            <input type="text" id="propName" />
+          </div>
+          <div class="field">
+            <label for="propArea" data-i18n="lblArea">Neighborhood / City</label>
+            <input type="text" id="propArea" />
+          </div>
+        </div>
+
+        <div class="section-label" data-i18n="secFinancials">Acquisition &amp; Cashflow</div>
+        <div class="form-grid">
+          <div class="field">
+            <label for="purchasePrice"><span data-i18n="lblPrice">Purchase Price</span><span class="curr-tag">THB</span></label>
+            <input type="number" id="purchasePrice" min="0" step="50000" />
+          </div>
+          <div class="field">
+            <label for="closingCosts"><span data-i18n="lblClosing">Closing &amp; Renovation</span><span class="curr-tag">THB</span></label>
+            <input type="number" id="closingCosts" min="0" step="10000" />
+          </div>
+          <div class="field">
+            <label for="monthlyRent"><span data-i18n="lblRent">Monthly Rent</span><span class="curr-tag">THB</span></label>
+            <input type="number" id="monthlyRent" min="0" step="500" />
+          </div>
+          <div class="field">
+            <label for="camFee"><span data-i18n="lblCam">Common / CAM Fee (mo)</span><span class="curr-tag">THB</span></label>
+            <input type="number" id="camFee" min="0" step="100" />
+          </div>
+          <div class="field">
+            <label for="vacancyPct"><span data-i18n="lblVacancy">Annual Vacancy</span><span>%</span></label>
+            <input type="number" id="vacancyPct" min="0" max="60" step="0.5" />
+          </div>
+          <div class="field">
+            <label for="mgmtPct"><span data-i18n="lblMgmt">Management / Agent</span><span>%</span></label>
+            <input type="number" id="mgmtPct" min="0" max="40" step="0.5" />
+          </div>
+        </div>
+
+        <!-- Optional Mortgage -->
+        <div class="toggle-row">
+          <span data-i18n="lblMortgageToggle">Include Mortgage Financing</span>
+          <label class="switch">
+            <input type="checkbox" id="useMortgage" />
+            <span class="slider-round"></span>
+          </label>
+        </div>
+        <div class="mortgage-fields hidden" id="mortgageFields">
+          <div class="field">
+            <label for="downPct"><span data-i18n="lblDown">Down Payment</span><span>%</span></label>
+            <input type="number" id="downPct" min="5" max="95" step="5" />
+          </div>
+          <div class="field">
+            <label for="interestRate"><span data-i18n="lblRate">Interest Rate</span><span>%</span></label>
+            <input type="number" id="interestRate" min="0.5" max="18" step="0.1" />
+          </div>
+          <div class="field">
+            <label for="loanYears"><span data-i18n="lblTerm">Loan Term</span><span data-i18n="yrsUnit">yrs</span></label>
+            <input type="number" id="loanYears" min="5" max="35" step="1" />
+          </div>
+        </div>
+
+        <div class="section-label" data-i18n="secLifestyle">Lifestyle Quality (40% of Alpha Score)</div>
+        <div class="sliders-list">
+          <div class="slider-item">
+            <div class="slider-head">
+              <span data-i18n="lsTransit">Transit / BTS Distance</span>
+              <span class="slider-val" id="valTransit">8 / 10</span>
+            </div>
+            <input type="range" id="lsTransit" min="1" max="10" step="1" />
+          </div>
+          <div class="slider-item">
+            <div class="slider-head">
+              <span data-i18n="lsLight">Natural Light &amp; Orientation</span>
+              <span class="slider-val" id="valLight">9 / 10</span>
+            </div>
+            <input type="range" id="lsLight" min="1" max="10" step="1" />
+          </div>
+          <div class="slider-item">
+            <div class="slider-head">
+              <span data-i18n="lsQuiet">Quietness &amp; Street Calm</span>
+              <span class="slider-val" id="valQuiet">6 / 10</span>
+            </div>
+            <input type="range" id="lsQuiet" min="1" max="10" step="1" />
+          </div>
+          <div class="slider-item">
+            <div class="slider-head">
+              <span data-i18n="lsWalk">Neighborhood Walkability</span>
+              <span class="slider-val" id="valWalk">9 / 10</span>
+            </div>
+            <input type="range" id="lsWalk" min="1" max="10" step="1" />
+          </div>
+          <div class="slider-item">
+            <div class="slider-head">
+              <span data-i18n="lsAmenities">Building Amenities (Pool/Gym)</span>
+              <span class="slider-val" id="valAmenities">9 / 10</span>
+            </div>
+            <input type="range" id="lsAmenities" min="1" max="10" step="1" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live KPIs & Alpha Score -->
+      <div class="card alpha-card">
+        <div class="alpha-header">
+          <div class="ring-wrap">
+            <svg viewBox="0 0 120 120">
+              <circle cx="60" cy="60" r="50" fill="none" stroke="#EFE8DC" stroke-width="10" />
+              <circle id="alphaRing" cx="60" cy="60" r="50" fill="none" stroke="#13855E" stroke-width="10"
+                stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="80"
+                style="transition: stroke-dashoffset 0.35s ease, stroke 0.25s ease;" />
+            </svg>
+            <div class="ring-center">
+              <div class="ring-score" id="kpiAlpha">76</div>
+              <div class="ring-max">/ 100</div>
+            </div>
+          </div>
+          <div class="alpha-info">
+            <span class="verdict-pill verdict-strong" id="verdictBadge">Strong Alpha</span>
+            <div class="alpha-title" id="livePropTitle">Thonglor Loft 1BR</div>
+            <div class="subscores">
+              <span><span data-i18n="subFin">Financial</span>: <strong id="subFinVal">72</strong>/100</span>
+              <span><span data-i18n="subLife">Lifestyle</span>: <strong id="subLifeVal">82</strong>/100</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-box">
+            <div class="kpi-label" data-i18n="kpiGross">Gross Yield</div>
+            <div class="kpi-val" id="kpiGross">5.42%</div>
+            <div class="kpi-sub" data-i18n="kpiGrossSub">Annual rent / price</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label" data-i18n="kpiNet">Net Yield (Cap)</div>
+            <div class="kpi-val" id="kpiNet">4.11%</div>
+            <div class="kpi-sub" data-i18n="kpiNetSub">NOI / total cost</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label" data-i18n="kpiCoc">Cash-on-Cash</div>
+            <div class="kpi-val" id="kpiCoc">4.11%</div>
+            <div class="kpi-sub" id="kpiCashInSub">Cash in: 6,420,000 ฿</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label" data-i18n="kpiBreakEven">Break-Even Occ.</div>
+            <div class="kpi-val" id="kpiBreakEven">10.4%</div>
+            <div class="kpi-sub" data-i18n="kpiBreakSub">Min occupancy to cover costs</div>
+          </div>
+          <div class="kpi-box wide">
+            <div>
+              <div class="kpi-label" data-i18n="kpiCashflow">Monthly Net Cashflow</div>
+              <div class="kpi-sub" id="mortgageNote">All-cash acquisition (no debt)</div>
+            </div>
+            <div class="kpi-val pos" id="kpiCashflow">+21,980 ฿</div>
+          </div>
+        </div>
+
+        <!-- Stacked Monthly Breakdown -->
+        <div class="bar-section">
+          <div class="bar-title">
+            <span data-i18n="barTitle">Monthly Rent Allocation</span>
+            <span class="mono" id="barRentTotal">28,000 ฿</span>
+          </div>
+          <div class="stacked-bar" id="stackedBar"></div>
+          <div class="legend" id="barLegend"></div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" id="saveCompareBtn" type="button" data-i18n="saveCompare">
+            Save to Comparison
+          </button>
+          <button class="btn btn-secondary" id="newBlankBtn" type="button" data-i18n="newProp">
+            + Custom
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Side-by-Side Comparison Table -->
+    <section class="card compare-card">
+      <div class="compare-head">
+        <div>
+          <h2 class="card-title" style="margin-bottom:2px;" data-i18n="compareTitle">Side-by-Side Comparison (up to 5)</h2>
+          <p style="font-size:13px;color:var(--ink-muted);" data-i18n="compareSub">
+            Click any saved property to load it back into the calculator. Best metric per column is highlighted in green.
+          </p>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="exportCsvBtn" type="button" data-i18n="exportCsv">Export CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th data-i18n="thProp">Property</th>
+              <th data-i18n="thPrice">Price</th>
+              <th data-i18n="thGross">Gross</th>
+              <th data-i18n="thNet">Net</th>
+              <th data-i18n="thCoc">CoC</th>
+              <th data-i18n="thCashflow">Mo. Cashflow</th>
+              <th data-i18n="thLife">Lifestyle</th>
+              <th data-i18n="thAlpha">Alpha</th>
+              <th data-i18n="thActions">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="compareBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Honest What's Unfinished Section -->
+    <section class="unfinished">
+      <h2 data-i18n="unfTitle">What's still unfinished</h2>
+      <ul>
+        <li data-i18n="unf1">Does not model country-specific income taxes, Thai transfer/stamp duties, or capital gains on exit.</li>
+        <li data-i18n="unf2">Currency switching updates the display symbol and default scale, not live FX exchange rates.</li>
+        <li data-i18n="unf3">Lifestyle scores are subjective self-ratings rather than live Google Maps / BTS walking-time lookups.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'u30_day28_bkk_alpha_v1';
+
+      const CURRENCY_META = {
+        THB: { symbol: '฿', code: 'THB', locale: 'en-US' },
+        EUR: { symbol: '€', code: 'EUR', locale: 'fr-FR' },
+        USD: { symbol: '$', code: 'USD', locale: 'en-US' }
+      };
+
+      const DEMO_PROPERTIES = [
+        {
+          id: 'bkk-thonglor',
+          name: 'Thonglor Loft 1BR',
+          area: 'Sukhumvit 55, Bangkok',
+          currency: 'THB',
+          purchasePrice: 6200000,
+          closingCosts: 220000,
+          monthlyRent: 28000,
+          camFee: 2470,
+          vacancyPct: 6,
+          mgmtPct: 8,
+          useMortgage: false,
+          downPct: 30,
+          interestRate: 5.2,
+          loanYears: 20,
+          lifestyle: { transit: 8, light: 9, quiet: 6, walk: 9, amenities: 9 }
+        },
+        {
+          id: 'bkk-ari',
+          name: 'Ari Quiet Garden 1BR',
+          area: 'Phahonyothin 7, Bangkok',
+          currency: 'THB',
+          purchasePrice: 4350000,
+          closingCosts: 150000,
+          monthlyRent: 21500,
+          camFee: 1980,
+          vacancyPct: 5,
+          mgmtPct: 5,
+          useMortgage: false,
+          downPct: 30,
+          interestRate: 5.0,
+          loanYears: 20,
+          lifestyle: { transit: 8, light: 8, quiet: 9, walk: 10, amenities: 7 }
+        },
+        {
+          id: 'bkk-asoke',
+          name: 'Asoke Skyline Studio',
+          area: 'Sukhumvit 21, Bangkok',
+          currency: 'THB',
+          purchasePrice: 3850000,
+          closingCosts: 120000,
+          monthlyRent: 20000,
+          camFee: 1860,
+          vacancyPct: 4,
+          mgmtPct: 8,
+          useMortgage: false,
+          downPct: 30,
+          interestRate: 5.2,
+          loanYears: 20,
+          lifestyle: { transit: 10, light: 7, quiet: 4, walk: 9, amenities: 8 }
+        }
+      ];
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          eyebrow: 'Real Estate Yield × Lifestyle',
+          subtitle: 'Evaluate Bangkok condos — or any property worldwide — by combining hard rental math with real daily livability into a single Alpha Score.',
+          inputsTitle: 'Property & Deal Assumptions',
+          resetDemo: 'Reset Demo',
+          secIdentity: 'Identity',
+          lblName: 'Property Name',
+          lblArea: 'Neighborhood / City',
+          secFinancials: 'Acquisition & Cashflow',
+          lblPrice: 'Purchase Price',
+          lblClosing: 'Closing & Renovation',
+          lblRent: 'Monthly Rent',
+          lblCam: 'Common / CAM Fee (mo)',
+          lblVacancy: 'Annual Vacancy',
+          lblMgmt: 'Management / Agent',
+          lblMortgageToggle: 'Include Mortgage Financing',
+          lblDown: 'Down Payment',
+          lblRate: 'Interest Rate',
+          lblTerm: 'Loan Term',
+          yrsUnit: 'yrs',
+          secLifestyle: 'Lifestyle Quality (40% of Alpha Score)',
+          lsTransit: 'Transit / BTS Distance',
+          lsLight: 'Natural Light & Orientation',
+          lsQuiet: 'Quietness & Street Calm',
+          lsWalk: 'Neighborhood Walkability',
+          lsAmenities: 'Building Amenities (Pool/Gym)',
+          subFin: 'Financial',
+          subLife: 'Lifestyle',
+          kpiGross: 'Gross Yield',
+          kpiGrossSub: 'Annual rent / price',
+          kpiNet: 'Net Yield (Cap)',
+          kpiNetSub: 'NOI / total cost',
+          kpiCoc: 'Cash-on-Cash',
+          kpiBreakEven: 'Break-Even Occ.',
+          kpiBreakSub: 'Min occupancy to cover costs',
+          kpiCashflow: 'Monthly Net Cashflow',
+          barTitle: 'Monthly Rent Allocation',
+          saveCompare: 'Save to Comparison',
+          newProp: '+ Custom',
+          compareTitle: 'Side-by-Side Comparison (up to 5)',
+          compareSub: 'Click any saved property to load it back into the calculator. Best metric per column is highlighted in green.',
+          exportCsv: 'Export CSV',
+          thProp: 'Property',
+          thPrice: 'Price',
+          thGross: 'Gross',
+          thNet: 'Net',
+          thCoc: 'CoC',
+          thCashflow: 'Mo. Cashflow',
+          thLife: 'Lifestyle',
+          thAlpha: 'Alpha',
+          thActions: 'Actions',
+          unfTitle: "What's still unfinished",
+          unf1: 'Does not model country-specific income taxes, Thai transfer/stamp duties, or capital gains on exit.',
+          unf2: 'Currency switching updates the display symbol and formatting, not live FX exchange rates.',
+          unf3: 'Lifestyle scores are subjective self-ratings rather than live Google Maps / BTS walking-time lookups.',
+          allCash: 'All-cash acquisition (no debt)',
+          mortgagePayment: 'Mortgage: {amt}/mo',
+          cashIn: 'Cash in: {amt}',
+          verdictStrong: 'Strong Alpha',
+          verdictBalanced: 'Balanced Gem',
+          verdictLifestyle: 'Lifestyle Play',
+          verdictWeak: 'Yield Trap',
+          legNet: 'Net Cashflow',
+          legMort: 'Mortgage',
+          legCam: 'CAM Fee',
+          legMgmt: 'Mgmt',
+          legVac: 'Vacancy',
+          btnLoad: 'Load',
+          toastSaved: 'Saved to comparison table',
+          toastMax: 'Max 5 properties reached — remove one first',
+          toastReset: 'Demo Bangkok condos restored',
+          toastCsv: 'Comparison exported as CSV',
+          toastCustom: 'Started a fresh custom property',
+          emptyCompare: 'No saved properties yet. Click "Save to Comparison" above.'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          eyebrow: 'Rendement Immobilier × Qualité de Vie',
+          subtitle: 'Évaluez des condos à Bangkok — ou n’importe quel bien dans le monde — en combinant rendement locatif net et confort quotidien dans un seul Score Alpha.',
+          inputsTitle: 'Hypothèses du bien & financement',
+          resetDemo: 'Réinitialiser',
+          secIdentity: 'Identité',
+          lblName: 'Nom du bien',
+          lblArea: 'Quartier / Ville',
+          secFinancials: 'Acquisition & Cashflow',
+          lblPrice: 'Prix d’achat',
+          lblClosing: 'Frais de notaire & travaux',
+          lblRent: 'Loyer mensuel',
+          lblCam: 'Charges de copropriété (mois)',
+          lblVacancy: 'Vacance locative annuelle',
+          lblMgmt: 'Gestion / Agence',
+          lblMortgageToggle: 'Inclure un crédit immobilier',
+          lblDown: 'Apport personnel',
+          lblRate: 'Taux d’intérêt',
+          lblTerm: 'Durée du prêt',
+          yrsUnit: 'ans',
+          secLifestyle: 'Qualité de vie (40% du Score Alpha)',
+          lsTransit: 'Proximité BTS / Transports',
+          lsLight: 'Lumière naturelle & orientation',
+          lsQuiet: 'Calme & sérénité de la rue',
+          lsWalk: 'Vie de quartier à pied',
+          lsAmenities: 'Équipements (Piscine / Gym)',
+          subFin: 'Financier',
+          subLife: 'Lifestyle',
+          kpiGross: 'Rendement Brut',
+          kpiGrossSub: 'Loyer annuel / prix',
+          kpiNet: 'Rendement Net',
+          kpiNetSub: 'NOI / coût total',
+          kpiCoc: 'Cash-on-Cash',
+          kpiBreakEven: 'Seuil d’occupation',
+          kpiBreakSub: 'Occupation min. pour couvrir les charges',
+          kpiCashflow: 'Cashflow Net Mensuel',
+          barTitle: 'Répartition du loyer mensuel',
+          saveCompare: 'Enregistrer dans le comparateur',
+          newProp: '+ Nouveau',
+          compareTitle: 'Comparaison côte à côte (max 5)',
+          compareSub: 'Cliquez sur un bien pour le recharger dans le calculateur. La meilleure valeur par colonne apparaît en vert.',
+          exportCsv: 'Exporter CSV',
+          thProp: 'Bien',
+          thPrice: 'Prix',
+          thGross: 'Brut',
+          thNet: 'Net',
+          thCoc: 'CoC',
+          thCashflow: 'Cashflow/m',
+          thLife: 'Lifestyle',
+          thAlpha: 'Alpha',
+          thActions: 'Actions',
+          unfTitle: 'Ce qui reste inachevé',
+          unf1: 'Ne modélise pas encore la fiscalité locale (LMNP, impôt sur le revenu, frais de transfert thaïlandais ou plus-value).',
+          unf2: 'Le sélecteur de devise change le symbole et le formatage, sans conversion de taux de change en direct.',
+          unf3: 'Les notes lifestyle sont déclaratives et ne requêtent pas encore le temps de marche réel vers le BTS.',
+          allCash: 'Achat comptant (sans crédit)',
+          mortgagePayment: 'Mensualité crédit : {amt}/m',
+          cashIn: 'Apport total : {amt}',
+          verdictStrong: 'Alpha Solide',
+          verdictBalanced: 'Équilibre Rare',
+          verdictLifestyle: 'Pari Lifestyle',
+          verdictWeak: 'Rendement Tendu',
+          legNet: 'Cashflow net',
+          legMort: 'Crédit',
+          legCam: 'Charges',
+          legMgmt: 'Gestion',
+          legVac: 'Vacance',
+          btnLoad: 'Charger',
+          toastSaved: 'Ajouté au tableau comparatif',
+          toastMax: 'Maximum 5 biens atteint — supprimez-en un d’abord',
+          toastReset: 'Condos de démo Bangkok restaurés',
+          toastCsv: 'Tableau exporté en CSV',
+          toastCustom: 'Nouveau bien personnalisé prêt',
+          emptyCompare: 'Aucun bien enregistré. Cliquez sur « Enregistrer dans le comparateur ».'
+        }
+      };
+
+      let lang = 'en';
+      let state = {
+        current: clone(DEMO_PROPERTIES[0]),
+        saved: DEMO_PROPERTIES.map(clone)
+      };
+
+      function clone(obj) {
+        return JSON.parse(JSON.stringify(obj));
+      }
+
+      function t(key, vars) {
+        let str = (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+        if (vars) {
+          Object.keys(vars).forEach(k => {
+            str = str.replace('{' + k + '}', vars[k]);
+          });
+        }
+        return str;
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.current && Array.isArray(parsed.saved)) {
+              state = parsed;
+            }
+          }
+        } catch (e) {}
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      function fmtMoney(amount, currency, showSign) {
+        const meta = CURRENCY_META[currency] || CURRENCY_META.THB;
+        const abs = Math.round(Math.abs(amount)).toLocaleString(meta.locale);
+        const sign = amount < 0 ? '-' : (showSign && amount > 0 ? '+' : '');
+        if (currency === 'USD') return sign + '$' + abs;
+        return sign + abs + ' ' + meta.symbol;
+      }
+
+      function computeMetrics(prop) {
+        const price = Math.max(0, Number(prop.purchasePrice) || 0);
+        const closing = Math.max(0, Number(prop.closingCosts) || 0);
+        const totalCost = price + closing;
+        const rent = Math.max(0, Number(prop.monthlyRent) || 0);
+        const cam = Math.max(0, Number(prop.camFee) || 0);
+        const vacRate = Math.min(99, Math.max(0, Number(prop.vacancyPct) || 0)) / 100;
+        const mgmtRate = Math.min(99, Math.max(0, Number(prop.mgmtPct) || 0)) / 100;
+
+        const annualGrossRent = rent * 12;
+        const effectiveAnnualRent = annualGrossRent * (1 - vacRate);
+        const annualMgmt = effectiveAnnualRent * mgmtRate;
+        const annualCam = cam * 12;
+        const annualNOI = effectiveAnnualRent - annualMgmt - annualCam;
+
+        const grossYield = price > 0 ? (annualGrossRent / price) * 100 : 0;
+        const netYield = totalCost > 0 ? (annualNOI / totalCost) * 100 : 0;
+
+        // Mortgage
+        let monthlyMortgage = 0;
+        let cashInvested = totalCost;
+        if (prop.useMortgage && price > 0) {
+          const downRatio = Math.min(95, Math.max(5, Number(prop.downPct) || 30)) / 100;
+          const loanPrincipal = price * (1 - downRatio);
+          const r = ((Number(prop.interestRate) || 5) / 100) / 12;
+          const n = Math.max(1, (Number(prop.loanYears) || 20) * 12);
+          if (r > 0) {
+            const factor = Math.pow(1 + r, n);
+            monthlyMortgage = loanPrincipal * (r * factor) / (factor - 1);
+          } else {
+            monthlyMortgage = loanPrincipal / n;
+          }
+          cashInvested = price * downRatio + closing;
+        }
+
+        const annualDebt = monthlyMortgage * 12;
+        const annualCashflow = annualNOI - annualDebt;
+        const monthlyCashflow = annualCashflow / 12;
+        const cashOnCash = cashInvested > 0 ? (annualCashflow / cashInvested) * 100 : 0;
+
+        // Break-even occupancy:
+        // Effective rent * (1 - mgmtRate) >= annualCam + annualDebt
+        const denom = annualGrossRent * (1 - mgmtRate);
+        const breakEvenOcc = denom > 0 ? ((annualCam + annualDebt) / denom) * 100 : 100;
+
+        // Lifestyle score (0-100)
+        const ls = prop.lifestyle || { transit: 7, light: 7, quiet: 7, walk: 7, amenities: 7 };
+        const lifestyleScore = Math.round(((ls.transit + ls.light + ls.quiet + ls.walk + ls.amenities) / 50) * 100);
+
+        // Financial score (0-100):
+        // Net yield benchmark: 6.5% net yield -> ~92 pts, Cash-on-Cash bonus if positive
+        const yieldPart = Math.min(100, Math.max(0, (netYield / 6.8) * 82));
+        const cocPart = Math.min(20, Math.max(-15, (cashOnCash / 8) * 18));
+        const financialScore = Math.round(Math.min(100, Math.max(0, yieldPart + cocPart)));
+
+        // Composite Alpha Score (60% Financial, 40% Lifestyle)
+        const alphaScore = Math.round(financialScore * 0.6 + lifestyleScore * 0.4);
+
+        let verdictKey = 'verdictWeak';
+        let verdictClass = 'verdict-weak';
+        if (alphaScore >= 72) {
+          verdictKey = 'verdictStrong';
+          verdictClass = 'verdict-strong';
+        } else if (alphaScore >= 56) {
+          verdictKey = lifestyleScore >= financialScore + 15 ? 'verdictLifestyle' : 'verdictBalanced';
+          verdictClass = 'verdict-balanced';
+        }
+
+        return {
+          totalCost,
+          cashInvested,
+          grossYield,
+          netYield,
+          cashOnCash,
+          monthlyCashflow,
+          monthlyMortgage,
+          monthlyVacancyReserve: rent * vacRate,
+          monthlyMgmt: rent * (1 - vacRate) * mgmtRate,
+          monthlyCam: cam,
+          breakEvenOcc,
+          lifestyleScore,
+          financialScore,
+          alphaScore,
+          verdictKey,
+          verdictClass
+        };
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => el.classList.remove('show'), 2400);
+      }
+
+      function syncInputsFromState() {
+        const p = state.current;
+        document.getElementById('propName').value = p.name;
+        document.getElementById('propArea').value = p.area;
+        document.getElementById('purchasePrice').value = p.purchasePrice;
+        document.getElementById('closingCosts').value = p.closingCosts;
+        document.getElementById('monthlyRent').value = p.monthlyRent;
+        document.getElementById('camFee').value = p.camFee;
+        document.getElementById('vacancyPct').value = p.vacancyPct;
+        document.getElementById('mgmtPct').value = p.mgmtPct;
+        document.getElementById('useMortgage').checked = !!p.useMortgage;
+        document.getElementById('downPct').value = p.downPct;
+        document.getElementById('interestRate').value = p.interestRate;
+        document.getElementById('loanYears').value = p.loanYears;
+        document.getElementById('mortgageFields').classList.toggle('hidden', !p.useMortgage);
+
+        document.getElementById('lsTransit').value = p.lifestyle.transit;
+        document.getElementById('lsLight').value = p.lifestyle.light;
+        document.getElementById('lsQuiet').value = p.lifestyle.quiet;
+        document.getElementById('lsWalk').value = p.lifestyle.walk;
+        document.getElementById('lsAmenities').value = p.lifestyle.amenities;
+
+        document.querySelectorAll('.curr-btn').forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.curr === p.currency);
+        });
+        document.querySelectorAll('.curr-tag').forEach(tag => {
+          tag.textContent = p.currency;
+        });
+      }
+
+      function renderPresets() {
+        const strip = document.getElementById('presetStrip');
+        strip.innerHTML = DEMO_PROPERTIES.map(p => {
+          const m = computeMetrics(p);
+          const active = state.current.id === p.id ? ' active' : '';
+          return `
+            <button type="button" class="preset-card${active}" data-preset="${p.id}">
+              <div class="preset-top">
+                <span class="preset-name">${escapeHtml(p.name)}</span>
+                <span class="preset-tag">Alpha ${m.alphaScore}</span>
+              </div>
+              <div class="preset-meta">${fmtMoney(p.purchasePrice, p.currency)} · ${fmtMoney(p.monthlyRent, p.currency)}/mo</div>
+            </button>
+          `;
+        }).join('');
+
+        strip.querySelectorAll('.preset-card').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const found = DEMO_PROPERTIES.find(x => x.id === btn.dataset.preset);
+            if (found) {
+              state.current = clone(found);
+              saveState();
+              syncInputsFromState();
+              renderAll();
+            }
+          });
+        });
+      }
+
+      function renderKPIs() {
+        const p = state.current;
+        const m = computeMetrics(p);
+
+        document.getElementById('valTransit').textContent = p.lifestyle.transit + ' / 10';
+        document.getElementById('valLight').textContent = p.lifestyle.light + ' / 10';
+        document.getElementById('valQuiet').textContent = p.lifestyle.quiet + ' / 10';
+        document.getElementById('valWalk').textContent = p.lifestyle.walk + ' / 10';
+        document.getElementById('valAmenities').textContent = p.lifestyle.amenities + ' / 10';
+
+        document.getElementById('kpiAlpha').textContent = m.alphaScore;
+        document.getElementById('subFinVal').textContent = m.financialScore;
+        document.getElementById('subLifeVal').textContent = m.lifestyleScore;
+        document.getElementById('livePropTitle').textContent = p.name || 'Untitled Property';
+
+        const ring = document.getElementById('alphaRing');
+        const circ = 2 * Math.PI * 50;
+        ring.style.strokeDashoffset = (circ * (1 - m.alphaScore / 100)).toFixed(2);
+        ring.style.stroke = m.alphaScore >= 72 ? '#13855E' : (m.alphaScore >= 56 ? '#C98212' : '#C83E4D');
+
+        const badge = document.getElementById('verdictBadge');
+        badge.textContent = t(m.verdictKey);
+        badge.className = 'verdict-pill ' + m.verdictClass;
+
+        document.getElementById('kpiGross').textContent = m.grossYield.toFixed(2) + '%';
+        document.getElementById('kpiNet').textContent = m.netYield.toFixed(2) + '%';
+        const cocEl = document.getElementById('kpiCoc');
+        cocEl.textContent = m.cashOnCash.toFixed(2) + '%';
+        cocEl.className = 'kpi-val ' + (m.cashOnCash >= 0 ? 'pos' : 'neg');
+
+        document.getElementById('kpiCashInSub').textContent = t('cashIn', { amt: fmtMoney(m.cashInvested, p.currency) });
+        document.getElementById('kpiBreakEven').textContent = Math.min(999, m.breakEvenOcc).toFixed(1) + '%';
+
+        const cfEl = document.getElementById('kpiCashflow');
+        cfEl.textContent = fmtMoney(m.monthlyCashflow, p.currency, true);
+        cfEl.className = 'kpi-val ' + (m.monthlyCashflow >= 0 ? 'pos' : 'neg');
+
+        document.getElementById('mortgageNote').textContent = p.useMortgage
+          ? t('mortgagePayment', { amt: fmtMoney(m.monthlyMortgage, p.currency) })
+          : t('allCash');
+
+        // Stacked Bar
+        const rent = Math.max(1, Number(p.monthlyRent) || 1);
+        document.getElementById('barRentTotal').textContent = fmtMoney(p.monthlyRent, p.currency);
+        const segs = [
+          { key: 'legNet', cls: 'seg-net', color: '#13855E', val: Math.max(0, m.monthlyCashflow) },
+          { key: 'legMort', cls: 'seg-mortgage', color: '#E25D34', val: m.monthlyMortgage },
+          { key: 'legCam', cls: 'seg-cam', color: '#FFB894', val: m.monthlyCam },
+          { key: 'legMgmt', cls: 'seg-mgmt', color: '#3E6B89', val: m.monthlyMgmt },
+          { key: 'legVac', cls: 'seg-vac', color: '#CBD3DA', val: m.monthlyVacancyReserve }
+        ];
+        const totalSeg = Math.max(rent, segs.reduce((a, s) => a + s.val, 0));
+
+        document.getElementById('stackedBar').innerHTML = segs
+          .filter(s => s.val > 0)
+          .map(s => `<div class="${s.cls}" style="width:${(s.val / totalSeg * 100).toFixed(2)}%" title="${t(s.key)}: ${fmtMoney(s.val, p.currency)}"></div>`)
+          .join('');
+
+        document.getElementById('barLegend').innerHTML = segs
+          .filter(s => s.val > 0 || s.key === 'legNet')
+          .map(s => `<span class="legend-item"><span class="dot" style="background:${s.color}"></span>${t(s.key)}: <strong>${fmtMoney(s.val, p.currency)}</strong></span>`)
+          .join('');
+      }
+
+      function renderCompareTable() {
+        const tbody = document.getElementById('compareBody');
+        if (!state.saved.length) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--ink-muted);padding:26px;">${t('emptyCompare')}</td></tr>`;
+          return;
+        }
+        const rows = state.saved.map(p => ({ p, m: computeMetrics(p) }));
+        const maxGross = Math.max(...rows.map(r => r.m.grossYield));
+        const maxNet = Math.max(...rows.map(r => r.m.netYield));
+        const maxCoc = Math.max(...rows.map(r => r.m.cashOnCash));
+        const maxLife = Math.max(...rows.map(r => r.m.lifestyleScore));
+        const maxAlpha = Math.max(...rows.map(r => r.m.alphaScore));
+
+        tbody.innerHTML = rows.map(({ p, m }) => `
+          <tr>
+            <td>
+              <div style="font-weight:700;">${escapeHtml(p.name)}</div>
+              <div style="font-size:11px;color:var(--ink-muted);">${escapeHtml(p.area)}</div>
+            </td>
+            <td class="mono">${fmtMoney(p.purchasePrice, p.currency)}</td>
+            <td class="mono ${m.grossYield === maxGross ? 'best-cell' : ''}">${m.grossYield.toFixed(2)}%</td>
+            <td class="mono ${m.netYield === maxNet ? 'best-cell' : ''}">${m.netYield.toFixed(2)}%</td>
+            <td class="mono ${m.cashOnCash === maxCoc ? 'best-cell' : ''}">${m.cashOnCash.toFixed(2)}%</td>
+            <td class="mono" style="color:${m.monthlyCashflow >= 0 ? 'var(--emerald)' : 'var(--rose)'}">${fmtMoney(m.monthlyCashflow, p.currency, true)}</td>
+            <td class="mono ${m.lifestyleScore === maxLife ? 'best-cell' : ''}">${m.lifestyleScore}/100</td>
+            <td>
+              <span class="alpha-badge ${m.verdictClass}" ${m.alphaScore === maxAlpha ? 'style="outline:2px solid var(--emerald);"' : ''}>${m.alphaScore}</span>
+            </td>
+            <td>
+              <div class="row-actions">
+                <button class="icon-btn load-row" data-id="${p.id}" type="button">${t('btnLoad')}</button>
+                <button class="icon-btn del del-row" data-id="${p.id}" type="button" aria-label="Remove">×</button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+
+        tbody.querySelectorAll('.load-row').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const found = state.saved.find(x => x.id === btn.dataset.id);
+            if (found) {
+              state.current = clone(found);
+              saveState();
+              syncInputsFromState();
+              renderAll();
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          });
+        });
+
+        tbody.querySelectorAll('.del-row').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.saved = state.saved.filter(x => x.id !== btn.dataset.id);
+            saveState();
+            renderCompareTable();
+          });
+        });
+      }
+
+      function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"']/g, c => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[c]));
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = lang;
+        document.getElementById('langEn').classList.toggle('active', lang === 'en');
+        document.getElementById('langFr').classList.toggle('active', lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (I18N[lang][key]) el.textContent = I18N[lang][key];
+        });
+        renderAll();
+      }
+
+      function renderAll() {
+        renderPresets();
+        renderKPIs();
+        renderCompareTable();
+      }
+
+      function bindEvents() {
+        const numFields = ['purchasePrice', 'closingCosts', 'monthlyRent', 'camFee', 'vacancyPct', 'mgmtPct', 'downPct', 'interestRate', 'loanYears'];
+        numFields.forEach(id => {
+          document.getElementById(id).addEventListener('input', e => {
+            state.current[id] = Number(e.target.value) || 0;
+            saveState();
+            renderKPIs();
+          });
+        });
+
+        document.getElementById('propName').addEventListener('input', e => {
+          state.current.name = e.target.value;
+          saveState();
+          renderKPIs();
+        });
+        document.getElementById('propArea').addEventListener('input', e => {
+          state.current.area = e.target.value;
+          saveState();
+        });
+
+        document.getElementById('useMortgage').addEventListener('change', e => {
+          state.current.useMortgage = e.target.checked;
+          document.getElementById('mortgageFields').classList.toggle('hidden', !e.target.checked);
+          saveState();
+          renderKPIs();
+        });
+
+        [
+          ['lsTransit', 'transit'],
+          ['lsLight', 'light'],
+          ['lsQuiet', 'quiet'],
+          ['lsWalk', 'walk'],
+          ['lsAmenities', 'amenities']
+        ].forEach(([id, key]) => {
+          document.getElementById(id).addEventListener('input', e => {
+            state.current.lifestyle[key] = Number(e.target.value) || 5;
+            saveState();
+            renderKPIs();
+          });
+        });
+
+        document.querySelectorAll('.curr-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.current.currency = btn.dataset.curr;
+            saveState();
+            syncInputsFromState();
+            renderKPIs();
+          });
+        });
+
+        document.getElementById('saveCompareBtn').addEventListener('click', () => {
+          const idx = state.saved.findIndex(x => x.id === state.current.id);
+          if (idx >= 0) {
+            state.saved[idx] = clone(state.current);
+          } else {
+            if (state.saved.length >= 5) {
+              showToast(t('toastMax'));
+              return;
+            }
+            const copy = clone(state.current);
+            copy.id = 'prop-' + Date.now();
+            state.current.id = copy.id;
+            state.saved.push(copy);
+          }
+          saveState();
+          renderCompareTable();
+          showToast(t('toastSaved'));
+        });
+
+        document.getElementById('newBlankBtn').addEventListener('click', () => {
+          const curr = state.current.currency;
+          const isThb = curr === 'THB';
+          state.current = {
+            id: 'custom-' + Date.now(),
+            name: isThb ? 'Custom Condo' : (curr === 'EUR' ? 'Paris / Lisbon Studio' : 'Austin 1BR Condo'),
+            area: isThb ? 'Bangkok' : (curr === 'EUR' ? 'Europe' : 'United States'),
+            currency: curr,
+            purchasePrice: isThb ? 4500000 : (curr === 'EUR' ? 240000 : 280000),
+            closingCosts: isThb ? 160000 : 18000,
+            monthlyRent: isThb ? 22000 : (curr === 'EUR' ? 1250 : 1950),
+            camFee: isThb ? 2000 : (curr === 'EUR' ? 140 : 320),
+            vacancyPct: 5,
+            mgmtPct: 7,
+            useMortgage: !isThb,
+            downPct: 25,
+            interestRate: isThb ? 5.2 : 4.2,
+            loanYears: 20,
+            lifestyle: { transit: 8, light: 7, quiet: 7, walk: 8, amenities: 7 }
+          };
+          saveState();
+          syncInputsFromState();
+          renderAll();
+          showToast(t('toastCustom'));
+        });
+
+        document.getElementById('resetDemoBtn').addEventListener('click', () => {
+          state = {
+            current: clone(DEMO_PROPERTIES[0]),
+            saved: DEMO_PROPERTIES.map(clone)
+          };
+          saveState();
+          syncInputsFromState();
+          renderAll();
+          showToast(t('toastReset'));
+        });
+
+        document.getElementById('exportCsvBtn').addEventListener('click', () => {
+          const headers = ['Property', 'Area', 'Currency', 'Price', 'Closing', 'MonthlyRent', 'CAM', 'VacancyPct', 'MgmtPct', 'Mortgage', 'GrossYieldPct', 'NetYieldPct', 'CashOnCashPct', 'MonthlyCashflow', 'BreakEvenOccPct', 'LifestyleScore', 'AlphaScore'];
+          const lines = [headers.join(',')];
+          state.saved.forEach(p => {
+            const m = computeMetrics(p);
+            const row = [
+              p.name, p.area, p.currency, p.purchasePrice, p.closingCosts,
+              p.monthlyRent, p.camFee, p.vacancyPct, p.mgmtPct, p.useMortgage ? 'Yes' : 'No',
+              m.grossYield.toFixed(2), m.netYield.toFixed(2), m.cashOnCash.toFixed(2),
+              Math.round(m.monthlyCashflow), m.breakEvenOcc.toFixed(1), m.lifestyleScore, m.alphaScore
+            ].map(v => '"' + String(v).replace(/"/g, '""') + '"');
+            lines.push(row.join(','));
+          });
+          const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'bkk-yield-alpha-comparison.csv';
+          a.click();
+          URL.revokeObjectURL(url);
+          showToast(t('toastCsv'));
+        });
+
+        document.getElementById('langEn').addEventListener('click', () => { lang = 'en'; applyLanguage(); });
+        document.getElementById('langFr').addEventListener('click', () => { lang = 'fr'; applyLanguage(); });
+
+        document.getElementById('downloadHtmlBtn').addEventListener('click', () => {
+          const blob = new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'day-28-bkk-yield-alpha.html';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      loadState();
+      syncInputsFromState();
+      bindEvents();
+      applyLanguage();
+    })();
+  </script>
+</body>
+</html>

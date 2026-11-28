@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#FFE36E"/>
+  <circle cx="200" cy="180" r="135" fill="#FFF0A8"/>
+  <circle cx="1485" cy="785" r="175" fill="#FFF0A8"/>
+
+  <!-- Open Book / Document -->
+  <g transform="rotate(-3 630 490)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="175" y="150" width="840" height="650" rx="52"/>
+    </g>
+    <rect x="175" y="150" width="840" height="650" rx="52" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Spine -->
+    <line x1="595" y1="154" x2="595" y2="796" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Left page text lines -->
+    <rect x="240" y="235" width="210" height="28" rx="14" fill="#FF8F6B" stroke="#17141F" stroke-width="6"/>
+    <line x1="240" y1="315" x2="525" y2="315" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="240" y1="365" x2="500" y2="365" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <!-- Highlighted spoken sentence -->
+    <rect x="228" y="398" width="310" height="54" rx="18" fill="#FFE36E" stroke="#17141F" stroke-width="6"/>
+    <line x1="252" y1="425" x2="510" y2="425" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+
+    <line x1="240" y1="495" x2="515" y2="495" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="240" y1="545" x2="470" y2="545" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="240" y1="595" x2="520" y2="595" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="240" y1="645" x2="420" y2="645" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+
+    <!-- Right page text lines + bookmark ribbon -->
+    <path d="M885 150 V315 L918 286 L951 315 V150 Z" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <line x1="655" y1="365" x2="930" y2="365" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="655" y1="415" x2="910" y2="415" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="655" y1="465" x2="940" y2="465" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="655" y1="515" x2="860" y2="515" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+
+    <!-- Audio waveform card on right page -->
+    <rect x="655" y="580" width="295" height="145" rx="28" fill="#A9D6FF" stroke="#17141F" stroke-width="8"/>
+    <line x1="705" y1="635" x2="705" y2="670" stroke="#17141F" stroke-width="12" stroke-linecap="round"/>
+    <line x1="742" y1="612" x2="742" y2="693" stroke="#17141F" stroke-width="12" stroke-linecap="round"/>
+    <line x1="779" y1="624" x2="779" y2="681" stroke="#17141F" stroke-width="12" stroke-linecap="round"/>
+    <line x1="816" y1="604" x2="816" y2="701" stroke="#17141F" stroke-width="12" stroke-linecap="round"/>
+    <line x1="853" y1="622" x2="853" y2="683" stroke="#17141F" stroke-width="12" stroke-linecap="round"/>
+    <line x1="890" y1="638" x2="890" y2="667" stroke="#17141F" stroke-width="12" stroke-linecap="round"/>
+  </g>
+
+  <!-- Chunky Cozy Headphones + Play Badge -->
+  <g transform="rotate(8 1320 485)">
+    <!-- Shadow -->
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1125" y="455" width="96" height="210" rx="44"/>
+      <rect x="1420" y="455" width="96" height="210" rx="44"/>
+    </g>
+    <!-- Headband -->
+    <path d="M1170 495 C1170 250 1470 250 1470 495" fill="none" stroke="#17141F" stroke-width="46" stroke-linecap="round"/>
+    <path d="M1170 495 C1170 250 1470 250 1470 495" fill="none" stroke="#FF8F6B" stroke-width="30" stroke-linecap="round"/>
+
+    <!-- Earcups -->
+    <rect x="1125" y="455" width="96" height="210" rx="44" fill="#FFFFFF" stroke="#17141F" stroke-width="8"/>
+    <rect x="1192" y="485" width="38" height="150" rx="19" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+
+    <rect x="1420" y="455" width="96" height="210" rx="44" fill="#FFFFFF" stroke="#17141F" stroke-width="8"/>
+    <rect x="1410" y="485" width="38" height="150" rx="19" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+
+    <!-- Center Play Button Circle -->
+    <circle cx="1320" cy="560" r="88" fill="#3FD0A0" stroke="#17141F" stroke-width="8"/>
+    <polygon points="1298,518 1298,602 1368,560" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M1110 88 Q1110 130 1152 130 Q1110 130 1110 172 Q1110 130 1068 130 Q1110 130 1110 88Z" fill="#FF8F6B" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1558 258 Q1558 292 1592 292 Q1558 292 1558 326 Q1558 292 1524 292 Q1558 292 1558 258Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1085 815 Q1085 845 1115 845 Q1085 845 1085 875 Q1085 845 1055 845 Q1085 845 1085 815Z" fill="#3FD0A0" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

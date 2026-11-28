@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#FFE36E"/>
+  <circle cx="210" cy="175" r="135" fill="#FFF0A8"/>
+  <circle cx="1485" cy="790" r="175" fill="#FFF0A8"/>
+  <circle cx="1460" cy="145" r="76" fill="#FFF0A8"/>
+
+  <!-- Tilted Motion Artboard Stage -->
+  <g transform="rotate(-3 630 470)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="176" y="136" width="896" height="656" rx="54"/>
+    </g>
+    <rect x="176" y="136" width="896" height="656" rx="54" fill="#17141F" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="210" y="172" width="828" height="476" rx="34" fill="#23283A" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Motion trail arcs behind logo -->
+    <path d="M350 410 A 150 150 0 0 1 620 310" fill="none" stroke="#3FD0A0" stroke-width="10" stroke-linecap="round" stroke-dasharray="22 22"/>
+    <path d="M590 500 A 150 150 0 0 1 360 465" fill="none" stroke="#FFB8DE" stroke-width="10" stroke-linecap="round" stroke-dasharray="18 20"/>
+
+    <!-- Geometric Orbit Logo Mark -->
+    <g transform="translate(458 410)">
+      <ellipse cx="0" cy="0" rx="116" ry="52" transform="rotate(-28)" fill="none" stroke="#FFE36E" stroke-width="16"/>
+      <ellipse cx="0" cy="0" rx="116" ry="52" transform="rotate(28)" fill="none" stroke="#A9D6FF" stroke-width="14"/>
+      <circle cx="0" cy="0" r="34" fill="#FFE36E" stroke="#17141F" stroke-width="8"/>
+      <circle cx="96" cy="-42" r="18" fill="#FF8F6B" stroke="#17141F" stroke-width="7"/>
+    </g>
+
+    <!-- Stylized Wordmark Bars (no text clutter) -->
+    <rect x="626" y="366" width="328" height="36" rx="18" fill="#FFF8EA"/>
+    <rect x="626" y="424" width="218" height="22" rx="11" fill="#FFE36E" opacity="0.85"/>
+
+    <!-- Timeline Scrubber Bar at bottom of artboard -->
+    <rect x="236" y="688" width="776" height="58" rx="29" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+    <circle cx="282" cy="717" r="18" fill="#3FD0A0" stroke="#17141F" stroke-width="6"/>
+    <rect x="326" y="707" width="644" height="20" rx="10" fill="#E3DFD3" stroke="#17141F" stroke-width="5"/>
+    <rect x="326" y="707" width="420" height="20" rx="10" fill="#FF8F6B" stroke="#17141F" stroke-width="5"/>
+    <circle cx="746" cy="717" r="22" fill="#FFE36E" stroke="#17141F" stroke-width="7"/>
+  </g>
+
+  <!-- Playful Clapper / Play Badge Mascot -->
+  <g transform="rotate(9 1338 486)">
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1162" y="300" width="340" height="340" rx="74"/>
+    </g>
+    <rect x="1162" y="300" width="340" height="340" rx="74" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Play Triangle -->
+    <polygon points="1296,368 1396,426 1296,484" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Cute Face below -->
+    <circle cx="1276" cy="540" r="14" fill="#17141F"/>
+    <circle cx="1388" cy="540" r="14" fill="#17141F"/>
+    <path d="M1298 574 Q1332 606 1366 574" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M1136 86 Q1136 128 1178 128 Q1136 128 1136 170 Q1136 128 1094 128 Q1136 128 1136 86Z" fill="#FFF8EA" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1558 274 Q1558 308 1592 308 Q1558 308 1558 342 Q1558 308 1524 308 Q1558 308 1558 274Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1116 812 Q1116 844 1148 844 Q1116 844 1116 876 Q1116 844 1084 844 Q1116 844 1116 812Z" fill="#3FD0A0" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

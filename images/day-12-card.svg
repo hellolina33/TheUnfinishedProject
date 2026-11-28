@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#FFB894"/>
+  <circle cx="190" cy="180" r="130" fill="#FFD3BD"/>
+  <circle cx="1490" cy="795" r="185" fill="#FFD3BD"/>
+
+  <!-- Main Video Review Monitor -->
+  <g transform="rotate(-2 700 470)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="170" y="135" width="960" height="670" rx="52"/>
+    </g>
+    <rect x="170" y="135" width="960" height="670" rx="52" fill="#FFFDF7" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Dark Cinema Viewport -->
+    <rect x="218" y="185" width="864" height="440" rx="32" fill="#1D2238" stroke="#17141F" stroke-width="8"/>
+    <!-- Decorative cinema wave / bars -->
+    <rect x="275" y="475" width="28" height="95" rx="14" fill="#60A5FA"/>
+    <rect x="320" y="430" width="28" height="140" rx="14" fill="#FFB894"/>
+    <rect x="365" y="490" width="28" height="80" rx="14" fill="#FFE15D"/>
+    <rect x="410" y="450" width="28" height="120" rx="14" fill="#3FD0A0"/>
+    <rect x="455" y="505" width="28" height="65" rx="14" fill="#FFB8DE"/>
+
+    <!-- Big Play Button -->
+    <circle cx="650" cy="395" r="88" fill="#FF8F6B" stroke="#17141F" stroke-width="8"/>
+    <polygon points="626,352 700,395 626,438" fill="#FFFFFF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Timeline Scrubber Bar -->
+    <rect x="230" y="688" width="840" height="32" rx="16" fill="#E2E8F0" stroke="#17141F" stroke-width="7"/>
+    <rect x="230" y="688" width="460" height="32" rx="16" fill="#FF8F6B" stroke="#17141F" stroke-width="7"/>
+    <!-- Playhead Knob -->
+    <circle cx="690" cy="704" r="24" fill="#FFE15D" stroke="#17141F" stroke-width="7"/>
+
+    <!-- Pinned Comment Markers along Timeline -->
+    <circle cx="360" cy="656" r="18" fill="#60A5FA" stroke="#17141F" stroke-width="6"/>
+    <circle cx="545" cy="656" r="18" fill="#D8C6FA" stroke="#17141F" stroke-width="6"/>
+    <circle cx="820" cy="656" r="18" fill="#FFE15D" stroke="#17141F" stroke-width="6"/>
+    <circle cx="960" cy="656" r="18" fill="#3FD0A0" stroke="#17141F" stroke-width="6"/>
+  </g>
+
+  <!-- Floating Timestamped Comment Bubbles on the Right -->
+  <g transform="rotate(5 1355 340)">
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1190" y="210" width="320" height="190" rx="38"/>
+    </g>
+    <rect x="1190" y="210" width="320" height="190" rx="38" fill="#FFFFFF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="1225" y="246" width="108" height="34" rx="17" fill="#FFE15D" stroke="#17141F" stroke-width="6"/>
+    <rect x="1352" y="246" width="122" height="34" rx="17" fill="#60A5FA" stroke="#17141F" stroke-width="6"/>
+    <line x1="1228" y1="316" x2="1470" y2="316" stroke="#17141F" stroke-width="11" stroke-linecap="round"/>
+    <line x1="1228" y1="352" x2="1405" y2="352" stroke="#94A3B8" stroke-width="11" stroke-linecap="round"/>
+  </g>
+
+  <g transform="rotate(-4 1355 615)">
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1190" y="495" width="320" height="195" rx="38"/>
+    </g>
+    <rect x="1190" y="495" width="320" height="195" rx="38" fill="#3FD0A0" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <circle cx="1265" cy="592" r="40" fill="#FFFFFF" stroke="#17141F" stroke-width="7"/>
+    <path d="M1246 593 L1260 607 L1286 578" fill="none" stroke="#17141F" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="1330" y1="572" x2="1470" y2="572" stroke="#17141F" stroke-width="11" stroke-linecap="round"/>
+    <line x1="1330" y1="612" x2="1435" y2="612" stroke="#17141F" stroke-width="11" stroke-linecap="round"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M1160 88 Q1160 128 1200 128 Q1160 128 1160 168 Q1160 128 1120 128 Q1160 128 1160 88Z" fill="#FFE15D" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1565 420 Q1565 452 1597 452 Q1565 452 1565 484 Q1565 452 1533 452 Q1565 452 1565 420Z" fill="#A9D6FF" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1180 790 Q1180 820 1210 820 Q1180 820 1180 850 Q1180 820 1150 820 Q1180 820 1180 790Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

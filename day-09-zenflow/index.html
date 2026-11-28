@@ -1,0 +1,2866 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ZenFlow · Day 9/30 · The Unfinished 30</title>
+<meta name="author" content="Salah Khenissi">
+<meta name="description" content="A serene, tactile guided breathing & micro-meditation studio for busy workdays with procedural Web Audio soundscapes, reflections, and optional BYOK AI scripts. Day 9 of The Unfinished 30.">
+<meta property="og:title" content="ZenFlow — Guided Breathing & Micro-Meditation Studio">
+<meta property="og:description" content="2 to 15-minute workday resets with visual breathing pacer, offline procedural Web Audio soundscape mixer, and optional BYOK AI meditation scripts. Day 9 of The Unfinished 30.">
+<meta name="theme-color" content="#0E1638">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script defer src="/_vercel/insights/script.js"></script>
+<style>
+:root {
+  --topbar: #0E1638;
+  --topbar-text: #E6ECF8;
+  --topbar-muted: #9AA8C7;
+  --bg: #F5F1E8;
+  --bg-glow: #E2F3EA;
+  --surface: #FFFEFB;
+  --surface-soft: #F7F4EC;
+  --border: #E4DDD0;
+  --border-strong: #CFC5B4;
+  --ink: #172520;
+  --muted: #566860;
+  --accent: #228B6D;
+  --accent-bright: #3FD0A0;
+  --accent-soft: #E3F6EE;
+  --accent-deep: #155E49;
+  --amber: #D5942B;
+  --amber-soft: #FDF3DF;
+  --rose: #C86A6A;
+  --shadow-sm: 0 2px 8px rgba(23, 37, 32, 0.05);
+  --shadow-md: 0 12px 32px rgba(23, 37, 32, 0.08);
+  --radius: 20px;
+  --radius-sm: 12px;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 0%, var(--bg-glow) 0%, transparent 65%),
+    radial-gradient(ellipse 65% 45% at 88% 15%, #FBF0D9 0%, transparent 60%),
+    var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 var(--sans);
+  min-height: 100dvh;
+  overflow-x: clip;
+}
+button, input, textarea, select { font: inherit; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 2.5px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+[hidden] { display: none !important; }
+
+/* Slim Challenge Top Bar */
+.chal-bar {
+  background: var(--topbar);
+  color: var(--topbar-text);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+.chal-inner {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 9px max(16px, env(safe-area-inset-left));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.chal-left {
+  display: flex;
+  align-items: center;
+  gap: 8px 14px;
+  flex-wrap: wrap;
+}
+.chal-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  text-decoration: none;
+  color: #FFFFFF;
+}
+.chal-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--accent-bright);
+  box-shadow: 0 0 10px rgba(63, 208, 160, 0.7);
+}
+.chal-author {
+  color: var(--topbar-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.chal-author:hover { color: #FFFFFF; text-decoration: underline; }
+.chal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.lang-seg {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  padding: 2px;
+}
+.lang-seg button {
+  border: 0;
+  background: transparent;
+  color: var(--topbar-muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.lang-seg button[aria-pressed="true"] {
+  background: #FFFFFF;
+  color: var(--topbar);
+}
+.btn-dl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(63, 208, 160, 0.16);
+  color: #9BF3D4;
+  border: 1px solid rgba(63, 208, 160, 0.35);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn-dl:hover { background: rgba(63, 208, 160, 0.26); color: #FFFFFF; }
+.btn-dl:active { transform: translateY(1px); }
+
+/* Main Container */
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 26px max(16px, env(safe-area-inset-left)) 64px;
+}
+
+/* Header */
+.hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.hero-title-wrap { max-width: 620px; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  border: 1px solid rgba(34, 139, 109, 0.2);
+  padding: 4px 11px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 5vw, 46px);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.hero-sub {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 15.5px;
+  max-width: 54ch;
+}
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn-ai-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  color: var(--ink);
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s, transform 0.12s, box-shadow 0.15s;
+}
+.btn-ai-trigger:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+.ai-pill-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--amber);
+}
+.ai-pill-dot.connected { background: var(--accent-bright); }
+
+/* Studio Grid */
+.studio-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
+  gap: 22px;
+  align-items: start;
+}
+@media (max-width: 920px) {
+  .studio-grid { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 22px;
+}
+.card + .card { margin-top: 18px; }
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Preset Mood Pills */
+.mood-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+@media (max-width: 600px) {
+  .mood-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.mood-btn {
+  border: 1.5px solid var(--border);
+  background: var(--surface-soft);
+  border-radius: 14px;
+  padding: 10px 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.mood-btn:hover { border-color: var(--accent); background: #FFFFFF; }
+.mood-btn[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  box-shadow: 0 4px 14px rgba(34, 139, 109, 0.12);
+}
+.mood-icon { font-size: 17px; line-height: 1.2; margin-bottom: 2px; }
+.mood-name { font-weight: 700; font-size: 13px; color: var(--ink); line-height: 1.25; }
+.mood-sub { font-size: 11.5px; color: var(--muted); line-height: 1.25; }
+
+/* Breathing Stage */
+.pacer-stage {
+  position: relative;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(63, 208, 160, 0.17) 0%, rgba(246, 242, 233, 0.65) 62%, #F3EFE5 100%);
+  border: 1px solid var(--border);
+  padding: 24px 18px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+.stage-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+.stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-deep);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+}
+.stage-timer {
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 13px;
+}
+
+/* Organic Orb */
+.orb-shell {
+  position: relative;
+  width: 264px;
+  height: 264px;
+  display: grid;
+  place-items: center;
+  margin: 8px 0 14px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+@media (max-width: 400px) {
+  .orb-shell { width: 232px; height: 232px; }
+}
+.orb-ring-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.orb-ripple {
+  position: absolute;
+  width: 176px;
+  height: 176px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(63, 208, 160, 0.25) 0%, rgba(63, 208, 160, 0.04) 70%, transparent 100%);
+  transform: scale(1);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+.orb-ripple.r2 {
+  width: 204px;
+  height: 204px;
+  border: 1.5px dashed rgba(34, 139, 109, 0.25);
+  background: transparent;
+}
+.orb-core {
+  position: relative;
+  width: 148px;
+  height: 148px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #7CEAC4 0%, #31B58C 58%, #1C7C60 100%);
+  box-shadow:
+    0 18px 40px rgba(34, 139, 109, 0.28),
+    inset 0 4px 12px rgba(255, 255, 255, 0.45),
+    inset 0 -8px 18px rgba(15, 68, 52, 0.28);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  transform: scale(0.84);
+  will-change: transform;
+  transition: box-shadow 0.4s ease;
+}
+.orb-shell:hover .orb-core {
+  box-shadow:
+    0 20px 46px rgba(34, 139, 109, 0.36),
+    inset 0 4px 12px rgba(255, 255, 255, 0.55),
+    inset 0 -8px 18px rgba(15, 68, 52, 0.28);
+}
+.orb-phase {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.1;
+  text-shadow: 0 1px 6px rgba(12, 48, 37, 0.25);
+}
+.orb-sec {
+  font-family: var(--mono);
+  font-size: 13px;
+  opacity: 0.92;
+  margin-top: 4px;
+}
+
+/* Guided Cue Ribbon */
+.cue-ribbon {
+  width: 100%;
+  max-width: 520px;
+  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin-top: 2px;
+  min-height: 66px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+}
+.cue-step-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--accent-deep);
+}
+.cue-text {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+
+/* Primary Controls */
+.controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--accent);
+  color: #FFFFFF;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 26px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(34, 139, 109, 0.25);
+  transition: background 0.15s, transform 0.1s;
+  min-width: 148px;
+}
+.btn-primary:hover { background: var(--accent-deep); }
+.btn-primary:active { transform: translateY(1px); }
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1.5px solid var(--border-strong);
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.btn-ghost:hover { border-color: var(--accent); background: #FFFFFF; }
+.btn-ghost[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-deep);
+}
+
+/* Duration & Technique Selector */
+.selector-block {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--border-strong);
+}
+.dur-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.chip-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.chip {
+  border: 1.5px solid var(--border);
+  background: var(--surface-soft);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 13px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.14s;
+}
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #FFFFFF;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 540px) {
+  .tech-grid { grid-template-columns: 1fr; }
+}
+.tech-card {
+  border: 1.5px solid var(--border);
+  background: var(--surface-soft);
+  border-radius: 14px;
+  padding: 12px 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tech-card:hover { border-color: var(--accent); background: #FFFFFF; }
+.tech-card[aria-pressed="true"] {
+  background: #FFFFFF;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(63, 208, 160, 0.18);
+}
+.tech-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.tech-name { font-weight: 700; font-size: 14px; color: var(--ink); }
+.tech-ratio {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.tech-desc { font-size: 12.5px; color: var(--muted); margin-top: 4px; line-height: 1.35; }
+
+/* Soundscape Mixer */
+.mixer-list { display: grid; gap: 14px; }
+.mixer-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 10px;
+}
+.mixer-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+}
+.mixer-mid { display: flex; flex-direction: column; gap: 5px; }
+.mixer-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.mixer-name { font-weight: 600; font-size: 13.5px; color: var(--ink); }
+.mixer-test-btn {
+  border: 1px solid var(--border);
+  background: var(--amber-soft);
+  color: #8B5B0B;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.mixer-test-btn:hover { background: #F8E5BE; }
+.mixer-val {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  text-align: right;
+}
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent) var(--val, 0%), #DDD5C7 var(--val, 0%));
+  outline: none;
+  cursor: pointer;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2.5px solid var(--accent);
+  box-shadow: 0 2px 6px rgba(23, 37, 32, 0.2);
+}
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2.5px solid var(--accent);
+  box-shadow: 0 2px 6px rgba(23, 37, 32, 0.2);
+}
+.audio-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.audio-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #C7BFB0;
+}
+.audio-led.on {
+  background: var(--accent-bright);
+  box-shadow: 0 0 8px rgba(63, 208, 160, 0.7);
+}
+.voice-row {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+}
+.switch input {
+  appearance: none;
+  width: 40px;
+  height: 22px;
+  border-radius: 999px;
+  background: #D5CEC0;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.switch input::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  transition: transform 0.18s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.switch input:checked { background: var(--accent); }
+.switch input:checked::after { transform: translateX(18px); }
+
+/* Intention Input */
+.intention-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  background: var(--surface-soft);
+  border-radius: 12px;
+  padding: 10px 13px;
+  font-size: 14px;
+  color: var(--ink);
+  transition: border-color 0.15s, background 0.15s;
+}
+.intention-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #FFFFFF;
+}
+
+/* Reflection & History */
+.stats-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.stat-box {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.stat-num {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.stat-lbl {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.reflect-form {
+  background: var(--accent-soft);
+  border: 1px solid rgba(34, 139, 109, 0.25);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.reflect-form h3 {
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--accent-deep);
+}
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0 10px;
+}
+.tag-btn {
+  border: 1px solid rgba(34, 139, 109, 0.3);
+  background: #FFFFFF;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.tag-btn[aria-pressed="true"] {
+  background: var(--accent);
+  color: #FFFFFF;
+  border-color: var(--accent);
+}
+.log-list {
+  display: grid;
+  gap: 10px;
+  max-height: 290px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+.log-item {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.log-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.log-tag {
+  font-weight: 700;
+  color: var(--accent-deep);
+  background: var(--accent-soft);
+  padding: 1px 8px;
+  border-radius: 999px;
+}
+.log-text { font-size: 13.5px; color: var(--ink); line-height: 1.4; }
+.log-del {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 5px;
+  border-radius: 6px;
+}
+.log-del:hover { color: var(--rose); background: rgba(200, 106, 106, 0.12); }
+
+.backup-bar {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.btn-mini {
+  border: 1px solid var(--border-strong);
+  background: #FFFFFF;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-mini:hover { border-color: var(--accent); color: var(--accent-deep); }
+
+/* Honest What's Unfinished Section */
+.unfinished {
+  margin-top: 34px;
+  background: var(--surface);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+}
+.unfinished h2 {
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.unfinished ul {
+  padding-left: 18px;
+  color: var(--muted);
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+}
+.kbd-hint {
+  margin-top: 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+kbd {
+  font-family: var(--mono);
+  font-size: 11px;
+  background: var(--surface-soft);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  padding: 2px 6px;
+  color: var(--ink);
+}
+
+/* Modal for BYOK AI Studio */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 22, 56, 0.52);
+  backdrop-filter: blur(4px);
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  z-index: 80;
+}
+.modal-card {
+  width: 100%;
+  max-width: 560px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  background: var(--surface);
+  border-radius: 22px;
+  border: 1px solid var(--border);
+  box-shadow: 0 24px 64px rgba(14, 22, 56, 0.28);
+  padding: 24px;
+}
+.modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.modal-head h2 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+}
+.modal-close {
+  border: 1px solid var(--border);
+  background: var(--surface-soft);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+.field { margin-bottom: 14px; }
+.field label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 5px;
+}
+.field select, .field input, .field textarea {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  background: var(--surface-soft);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+.field textarea { min-height: 82px; resize: vertical; }
+.field select:focus, .field input:focus, .field textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: #FFFFFF;
+}
+.privacy-note {
+  font-size: 12px;
+  color: var(--muted);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 9px 12px;
+  margin-bottom: 14px;
+}
+.status-msg {
+  font-size: 13px;
+  margin-top: 10px;
+  padding: 9px 12px;
+  border-radius: 10px;
+}
+.status-msg.ok { background: var(--accent-soft); color: var(--accent-deep); }
+.status-msg.err { background: #FDECEC; color: #9C2C2C; }
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--topbar);
+  color: #FFFFFF;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 10px 28px rgba(14, 22, 56, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, transform 0.2s;
+  z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- Challenge Top Bar -->
+<header class="chal-bar">
+  <div class="chal-inner">
+    <div class="chal-left">
+      <a class="chal-brand" href="/">
+        <span class="chal-dot" aria-hidden="true"></span>
+        <span data-i18n="topBrand">The Unfinished 30 · Day 9/30</span>
+      </a>
+      <a class="chal-author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener noreferrer" data-i18n="topAuthor">by Salah Khenissi</a>
+    </div>
+    <div class="chal-actions">
+      <div class="lang-seg" role="group" aria-label="Language">
+        <button type="button" id="btnLangEn" aria-pressed="true">EN</button>
+        <button type="button" id="btnLangFr" aria-pressed="false">FR</button>
+      </div>
+      <button type="button" class="btn-dl" id="btnDownloadHtml" title="Download standalone HTML">
+        <span aria-hidden="true">↓</span>
+        <span data-i18n="downloadHtml">Download HTML</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-title-wrap">
+      <div class="eyebrow">
+        <span aria-hidden="true">🌿</span>
+        <span data-i18n="eyebrow">Workday Micro-Meditation Studio</span>
+      </div>
+      <h1>ZenFlow</h1>
+      <p class="hero-sub" data-i18n="heroSub">A serene, tactile breathing pacer and procedural soundscape studio for 2 to 15-minute workday resets — 100% offline in your browser.</p>
+    </div>
+    <div class="hero-meta">
+      <button type="button" class="btn-ai-trigger" id="btnOpenAi">
+        <span class="ai-pill-dot" id="aiStatusDot"></span>
+        <span data-i18n="openAiBtn">Custom AI Script (Optional BYOK)</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Main Studio Grid -->
+  <div class="studio-grid">
+    <!-- LEFT COLUMN: Breathing Stage & Controls -->
+    <div>
+      <section class="card">
+        <div class="card-head">
+          <span class="card-title" data-i18n="secMood">1 · Choose Your Moment</span>
+          <span style="font-size:12px;color:var(--muted)" id="activeScriptTag" data-i18n="scriptBuiltIn">Built-in guided script</span>
+        </div>
+
+        <!-- Mood / Goal Presets -->
+        <div class="mood-row" id="moodRow" role="group" aria-label="Workday mood presets"></div>
+
+        <!-- Organic Breathing Pacer Stage -->
+        <div class="pacer-stage">
+          <div class="stage-top">
+            <span class="stage-badge" id="cycleBadge">Cycle 0 · Ready</span>
+            <span class="stage-timer" id="sessionTimer">02:00</span>
+          </div>
+
+          <div class="orb-shell" id="orbShell" role="button" tabindex="0" aria-label="Start or pause breathing session">
+            <svg class="orb-ring-svg" viewBox="0 0 264 264" aria-hidden="true">
+              <circle cx="132" cy="132" r="120" fill="none" stroke="rgba(34,139,109,0.14)" stroke-width="5"/>
+              <circle id="progressArc" cx="132" cy="132" r="120" fill="none" stroke="#228B6D" stroke-width="5.5" stroke-linecap="round" stroke-dasharray="753.98" stroke-dashoffset="753.98"/>
+            </svg>
+            <div class="orb-ripple r2" id="orbRipple2"></div>
+            <div class="orb-ripple" id="orbRipple1"></div>
+            <div class="orb-core" id="orbCore">
+              <div class="orb-phase" id="orbPhase">Breathe</div>
+              <div class="orb-sec" id="orbSec">Tap to begin</div>
+            </div>
+          </div>
+
+          <!-- Guided Script Ribbon -->
+          <div class="cue-ribbon" aria-live="polite">
+            <div class="cue-step-label" id="cueStepLabel">Opening · Pre-Meeting Calm</div>
+            <div class="cue-text" id="cueText">Drop your shoulders away from your ears and soften your jaw.</div>
+          </div>
+
+          <!-- Primary Action Buttons -->
+          <div class="controls-row">
+            <button type="button" class="btn-primary" id="btnPlayPause">
+              <span id="playIcon">▶</span>
+              <span id="playLabel" data-i18n="startSession">Start Session</span>
+            </button>
+            <button type="button" class="btn-ghost" id="btnReset" data-i18n="resetBtn">↺ Reset</button>
+            <button type="button" class="btn-ghost" id="btnMute" aria-pressed="false">
+              <span id="muteIcon">🔊</span>
+              <span id="muteLabel" data-i18n="soundOn">Sound On</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Duration & Technique Selectors -->
+        <div class="selector-block">
+          <div class="dur-row">
+            <span class="card-title" data-i18n="secDuration">2 · Session Length</span>
+            <div class="chip-group" id="durationChips" role="group" aria-label="Session duration">
+              <button type="button" class="chip" data-min="2" aria-pressed="true">2 min</button>
+              <button type="button" class="chip" data-min="5" aria-pressed="false">5 min</button>
+              <button type="button" class="chip" data-min="10" aria-pressed="false">10 min</button>
+              <button type="button" class="chip" data-min="15" aria-pressed="false">15 min</button>
+            </div>
+          </div>
+
+          <div class="card-head" style="margin-bottom:10px">
+            <span class="card-title" data-i18n="secTechnique">3 · Breathing Technique</span>
+          </div>
+          <div class="tech-grid" id="techGrid" role="group" aria-label="Breathing techniques"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- RIGHT COLUMN: Soundscape Mixer, Intention & Reflections -->
+    <div>
+      <!-- Procedural Soundscape Mixer -->
+      <section class="card">
+        <div class="card-head">
+          <span class="card-title" data-i18n="secSoundscape">Procedural Soundscape (Offline)</span>
+          <span class="audio-status">
+            <span class="audio-led" id="audioLed"></span>
+            <span id="audioStateText" data-i18n="audioIdle">Standby</span>
+          </span>
+        </div>
+
+        <div class="mixer-list">
+          <div class="mixer-row">
+            <div class="mixer-icon" aria-hidden="true">🔔</div>
+            <div class="mixer-mid">
+              <div class="mixer-label-row">
+                <span class="mixer-name" data-i18n="sndBowl">Singing Bowl Chime</span>
+                <button type="button" class="mixer-test-btn" id="btnTestBowl" data-i18n="testChime">Ring</button>
+              </div>
+              <input type="range" class="slider" id="volBowl" min="0" max="100" value="65" aria-label="Singing Bowl volume">
+            </div>
+            <span class="mixer-val" id="valBowl">65%</span>
+          </div>
+
+          <div class="mixer-row">
+            <div class="mixer-icon" aria-hidden="true">〰️</div>
+            <div class="mixer-mid">
+              <div class="mixer-label-row">
+                <span class="mixer-name" data-i18n="sndDrone">Warm Drone Pad</span>
+              </div>
+              <input type="range" class="slider" id="volDrone" min="0" max="100" value="35" aria-label="Warm Drone Pad volume">
+            </div>
+            <span class="mixer-val" id="valDrone">35%</span>
+          </div>
+
+          <div class="mixer-row">
+            <div class="mixer-icon" aria-hidden="true">🌧️</div>
+            <div class="mixer-mid">
+              <div class="mixer-label-row">
+                <span class="mixer-name" data-i18n="sndRain">Gentle Rain / Pink Noise</span>
+              </div>
+              <input type="range" class="slider" id="volRain" min="0" max="100" value="40" aria-label="Gentle Rain volume">
+            </div>
+            <span class="mixer-val" id="valRain">40%</span>
+          </div>
+
+          <div class="mixer-row">
+            <div class="mixer-icon" aria-hidden="true">🎐</div>
+            <div class="mixer-mid">
+              <div class="mixer-label-row">
+                <span class="mixer-name" data-i18n="sndChimes">Wind Chimes</span>
+              </div>
+              <input type="range" class="slider" id="volChimes" min="0" max="100" value="25" aria-label="Wind Chimes volume">
+            </div>
+            <span class="mixer-val" id="valChimes">25%</span>
+          </div>
+        </div>
+
+        <div class="voice-row">
+          <label class="switch">
+            <input type="checkbox" id="toggleVoice">
+            <span data-i18n="voiceCues">Gentle voice cues (SpeechSynthesis)</span>
+          </label>
+          <button type="button" class="btn-mini" id="btnPreviewSound" data-i18n="previewAudio">Test Mix</button>
+        </div>
+      </section>
+
+      <!-- Session Intention -->
+      <section class="card">
+        <div class="card-head">
+          <span class="card-title" data-i18n="secIntention">Session Intention</span>
+        </div>
+        <input type="text" class="intention-input" id="intentionInput" maxlength="120" placeholder="e.g. Enter the 2pm call calm and unhurried...">
+      </section>
+
+      <!-- Reflection & History -->
+      <section class="card">
+        <div class="card-head">
+          <span class="card-title" data-i18n="secJournal">Mindful Log & Reflections</span>
+          <button type="button" class="btn-mini" id="btnToggleReflect" data-i18n="logNowBtn">+ Log Reflection</button>
+        </div>
+
+        <div class="stats-strip">
+          <div class="stat-box">
+            <div class="stat-num" id="statSessions">0</div>
+            <div class="stat-lbl" data-i18n="statSessions">Sessions</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="statMinutes">0</div>
+            <div class="stat-lbl" data-i18n="statMinutes">Minutes</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-num" id="statStreak">0</div>
+            <div class="stat-lbl" data-i18n="statStreak">Day Streak</div>
+          </div>
+        </div>
+
+        <!-- Post-Session Reflection Drawer -->
+        <form class="reflect-form" id="reflectForm" hidden>
+          <h3 id="reflectHeading" data-i18n="reflectPrompt">How do you feel right now?</h3>
+          <input type="text" class="intention-input" id="reflectText" maxlength="160" required placeholder="One honest line about your state of mind...">
+          <div class="tag-row" id="reflectTags" role="group" aria-label="Feeling tag"></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button type="button" class="btn-mini" id="btnCancelReflect" data-i18n="cancel">Cancel</button>
+            <button type="submit" class="btn-primary" style="padding:7px 16px;font-size:13px;min-width:auto" data-i18n="saveReflect">Save Reflection</button>
+          </div>
+        </form>
+
+        <div class="log-list" id="logList"></div>
+
+        <div class="backup-bar">
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button type="button" class="btn-mini" id="btnExportJson" data-i18n="exportJson">Export JSON</button>
+            <button type="button" class="btn-mini" id="btnImportJson" data-i18n="importJson">Import JSON</button>
+            <input type="file" id="importFileInput" accept="application/json" hidden>
+          </div>
+          <button type="button" class="btn-mini" id="btnResetDemo" data-i18n="resetDemo">Reset Demo</button>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Honest What's Unfinished Section -->
+  <section class="unfinished">
+    <h2 data-i18n="unfinTitle">What’s still unfinished</h2>
+    <ul>
+      <li data-i18n="unfin1">Web SpeechSynthesis voice quality varies widely across browsers and operating systems — some devices sound warm, others noticeably robotic.</li>
+      <li data-i18n="unfin2">The soundscape mixer is 100% procedural Web Audio (zero external files, instant load), so it lacks the acoustic micro-texture of studio-recorded singing bowls or real rain.</li>
+      <li data-i18n="unfin3">Direct browser BYOK calls to Anthropic may be blocked by CORS in some browsers without a proxy; Gemini, OpenAI, and the built-in offline script crafter work right out of the box.</li>
+      <li data-i18n="unfin4">Session history lives only in your browser’s localStorage (with JSON export/import backup) — no cloud sync or calendar reminders yet.</li>
+    </ul>
+    <div class="kbd-hint">
+      <span data-i18n="shortcutsLabel">Shortcuts:</span>
+      <span><kbd>Space</kbd> <span data-i18n="scPlay">Play / Pause</span></span>
+      <span><kbd>R</kbd> <span data-i18n="scReset">Reset</span></span>
+      <span><kbd>M</kbd> <span data-i18n="scMute">Mute</span></span>
+    </div>
+  </section>
+</main>
+
+<!-- Optional BYOK AI Script Studio Modal -->
+<div class="modal-backdrop" id="aiModal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="aiModalTitle">
+    <div class="modal-head">
+      <div>
+        <h2 id="aiModalTitle" data-i18n="aiTitle">Custom Guided Script Studio</h2>
+        <p style="font-size:13.5px;color:var(--muted);margin-top:3px" data-i18n="aiSubtitle">Tailor a 4-stage micro-meditation script to your current stressor — offline or with your own API key.</p>
+      </div>
+      <button type="button" class="modal-close" id="btnCloseAi" aria-label="Close">×</button>
+    </div>
+
+    <div class="field">
+      <label for="stressorInput" data-i18n="aiStressorLbl">What’s on your mind right now?</label>
+      <textarea id="stressorInput" placeholder="e.g. Back-to-back stakeholder meetings, tight deadline, and my shoulders feel tense..."></textarea>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:10px">
+      <div class="field">
+        <label for="aiProvider" data-i18n="aiProviderLbl">AI Provider (Optional BYOK)</label>
+        <select id="aiProvider">
+          <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+          <option value="openai">OpenAI (gpt-4o-mini)</option>
+          <option value="anthropic">Anthropic (claude-3-5-haiku)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="aiKeyInput" data-i18n="aiKeyLbl">API Key (stored locally only)</label>
+        <input type="password" id="aiKeyInput" placeholder="Paste key or leave blank for offline mode" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="privacy-note" data-i18n="aiPrivacy">
+      🔒 Your API key is stored only in this browser’s localStorage and sent directly from your browser to your chosen provider. Zero backend servers.
+    </div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center">
+      <button type="button" class="btn-mini" id="btnClearKey" data-i18n="aiClearKey">Clear Saved Key</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="btn-ghost" id="btnCraftOffline" data-i18n="aiCraftOffline">Craft Locally (No Key)</button>
+        <button type="button" class="btn-primary" id="btnCraftAi" style="padding:10px 18px;min-width:auto" data-i18n="aiCraftByok">Generate with AI</button>
+      </div>
+    </div>
+
+    <div id="aiStatusMsg" class="status-msg" hidden></div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ==================== I18N DICTIONARY ==================== */
+  const I18N = {
+    en: {
+      topBrand: "The Unfinished 30 · Day 9/30",
+      topAuthor: "by Salah Khenissi",
+      downloadHtml: "Download HTML",
+      eyebrow: "Workday Micro-Meditation Studio",
+      heroSub: "A serene, tactile breathing pacer and procedural soundscape studio for 2 to 15-minute workday resets — 100% offline in your browser.",
+      openAiBtn: "Custom AI Script (Optional BYOK)",
+      secMood: "1 · Choose Your Moment",
+      scriptBuiltIn: "Built-in guided script",
+      scriptCustomAi: "Custom AI script active",
+      scriptCustomLocal: "Custom local script active",
+      secDuration: "2 · Session Length",
+      secTechnique: "3 · Breathing Technique",
+      secSoundscape: "Procedural Soundscape (Offline)",
+      audioIdle: "Standby",
+      audioActive: "Playing",
+      audioMuted: "Muted",
+      sndBowl: "Singing Bowl Chime",
+      testChime: "Ring",
+      sndDrone: "Warm Drone Pad",
+      sndRain: "Gentle Rain / Pink Noise",
+      sndChimes: "Wind Chimes",
+      voiceCues: "Gentle voice cues (SpeechSynthesis)",
+      previewAudio: "Test Mix",
+      stopPreview: "Stop Mix",
+      secIntention: "Session Intention",
+      intentionPh: "e.g. Enter the 2pm call calm and unhurried...",
+      secJournal: "Mindful Log & Reflections",
+      logNowBtn: "+ Log Reflection",
+      statSessions: "Sessions",
+      statMinutes: "Minutes",
+      statStreak: "Day Streak",
+      reflectPrompt: "How do you feel right now?",
+      reflectComplete: "Session complete. Capture one line:",
+      reflectPh: "One honest line about your state of mind...",
+      cancel: "Cancel",
+      saveReflect: "Save Reflection",
+      exportJson: "Export JSON",
+      importJson: "Import JSON",
+      resetDemo: "Reset Demo",
+      startSession: "Start Session",
+      pauseSession: "Pause",
+      resumeSession: "Resume",
+      resetBtn: "↺ Reset",
+      soundOn: "Sound On",
+      soundOff: "Muted",
+      ready: "Ready",
+      breathe: "Breathe",
+      tapToBegin: "Tap to begin",
+      paused: "Paused",
+      completed: "Complete",
+      cycleWord: "Cycle",
+      unfinTitle: "What’s still unfinished",
+      unfin1: "Web SpeechSynthesis voice quality varies widely across browsers and operating systems — some devices sound warm, others noticeably robotic.",
+      unfin2: "The soundscape mixer is 100% procedural Web Audio (zero external files, instant load), so it lacks the acoustic micro-texture of studio-recorded singing bowls or real rain.",
+      unfin3: "Direct browser BYOK calls to Anthropic may be blocked by CORS in some browsers without a proxy; Gemini, OpenAI, and the built-in offline script crafter work right out of the box.",
+      unfin4: "Session history lives only in your browser’s localStorage (with JSON export/import backup) — no cloud sync or calendar reminders yet.",
+      shortcutsLabel: "Shortcuts:",
+      scPlay: "Play / Pause",
+      scReset: "Reset",
+      scMute: "Mute",
+      aiTitle: "Custom Guided Script Studio",
+      aiSubtitle: "Tailor a 4-stage micro-meditation script to your current stressor — offline or with your own API key.",
+      aiStressorLbl: "What’s on your mind right now?",
+      aiStressorPh: "e.g. Back-to-back stakeholder meetings, tight deadline, and my shoulders feel tense...",
+      aiProviderLbl: "AI Provider (Optional BYOK)",
+      aiKeyLbl: "API Key (stored locally only)",
+      aiKeyPh: "Paste key or leave blank for offline mode",
+      aiPrivacy: "🔒 Your API key is stored only in this browser’s localStorage and sent directly from your browser to your chosen provider. Zero backend servers.",
+      aiClearKey: "Clear Saved Key",
+      aiCraftOffline: "Craft Locally (No Key)",
+      aiCraftByok: "Generate with AI",
+      stages: ["Opening", "Settling", "Deepening", "Returning"],
+      phases: {
+        inhale: "Inhale",
+        inhale2: "Top-up Inhale",
+        hold: "Hold",
+        exhale: "Exhale",
+        holdOut: "Rest Empty"
+      },
+      tags: ["Calm", "Focused", "Grounded", "Lighter", "Rested"],
+      toastSaved: "Reflection saved locally",
+      toastReset: "Demo history restored",
+      toastExported: "Backup JSON downloaded",
+      toastImported: "History imported",
+      toastInvalidJson: "Invalid JSON backup file",
+      toastDownloaded: "Standalone HTML downloaded",
+      toastKeyCleared: "Saved API key cleared",
+      toastLocalCrafted: "Tailored offline script applied!",
+      toastAiCrafted: "Custom AI meditation script applied!",
+      errNoStressor: "Write a short note about your current stressor first.",
+      errNoKey: "Add an API key above, or click 'Craft Locally (No Key)'."
+    },
+    fr: {
+      topBrand: "The Unfinished 30 · Jour 9/30",
+      topAuthor: "par Salah Khenissi",
+      downloadHtml: "Télécharger HTML",
+      eyebrow: "Studio de Micro-Méditation",
+      heroSub: "Un guide respiratoire tactile et un mixeur sonore procédural pour des pauses de 2 à 15 minutes au travail — 100 % hors ligne dans votre navigateur.",
+      openAiBtn: "Script IA sur mesure (BYOK)",
+      secMood: "1 · Choisissez votre moment",
+      scriptBuiltIn: "Script guidé intégré",
+      scriptCustomAi: "Script IA personnalisé actif",
+      scriptCustomLocal: "Script local personnalisé actif",
+      secDuration: "2 · Durée de la séance",
+      secTechnique: "3 · Technique de respiration",
+      secSoundscape: "Paysage sonore procédural (Hors ligne)",
+      audioIdle: "Veille",
+      audioActive: "Actif",
+      audioMuted: "Muet",
+      sndBowl: "Bol chantant",
+      testChime: "Sonner",
+      sndDrone: "Nappe harmonique douce",
+      sndRain: "Pluie douce / Bruit rose",
+      sndChimes: "Carillons éoliens",
+      voiceCues: "Guidage vocal doux (SpeechSynthesis)",
+      previewAudio: "Tester le mix",
+      stopPreview: "Arrêter le mix",
+      secIntention: "Intention de la séance",
+      intentionPh: "ex. Entrer en réunion de 14h calme et présent...",
+      secJournal: "Journal & Réflexions",
+      logNowBtn: "+ Noter une réflexion",
+      statSessions: "Séances",
+      statMinutes: "Minutes",
+      statStreak: "Jours de suite",
+      reflectPrompt: "Comment vous sentez-vous maintenant ?",
+      reflectComplete: "Séance terminée. Notez une ligne :",
+      reflectPh: "Une ligne sincère sur votre état d’esprit...",
+      cancel: "Annuler",
+      saveReflect: "Enregistrer",
+      exportJson: "Exporter JSON",
+      importJson: "Importer JSON",
+      resetDemo: "Réinitialiser démo",
+      startSession: "Démarrer",
+      pauseSession: "Pause",
+      resumeSession: "Reprendre",
+      resetBtn: "↺ Réinitialiser",
+      soundOn: "Son activé",
+      soundOff: "Muet",
+      ready: "Prêt",
+      breathe: "Respirez",
+      tapToBegin: "Touchez pour lancer",
+      paused: "En pause",
+      completed: "Terminé",
+      cycleWord: "Cycle",
+      unfinTitle: "Ce qui reste inachevé",
+      unfin1: "La qualité vocale de Web SpeechSynthesis varie beaucoup selon le navigateur et l’OS — chaleureuse sur certains appareils, robotique sur d’autres.",
+      unfin2: "Le mixeur est 100 % synthétisé via Web Audio (zéro fichier externe, chargement instantané), mais n’a pas encore la richesse acoustique d’enregistrements studio.",
+      unfin3: "Les appels directs navigateur vers Anthropic peuvent être bloqués par CORS sans proxy ; Gemini, OpenAI et le générateur local hors ligne fonctionnent immédiatement.",
+      unfin4: "L’historique reste uniquement dans le localStorage du navigateur (avec export/import JSON) — pas encore de synchronisation cloud ni de rappels calendrier.",
+      shortcutsLabel: "Raccourcis :",
+      scPlay: "Démarrer / Pause",
+      scReset: "Réinitialiser",
+      scMute: "Muet",
+      aiTitle: "Studio de Script Guidé",
+      aiSubtitle: "Créez une micro-méditation en 4 étapes adaptée à votre stress du moment — hors ligne ou avec votre propre clé API.",
+      aiStressorLbl: "Qu’est-ce qui occupe votre esprit en ce moment ?",
+      aiStressorPh: "ex. Réunions enchaînées, délai serré, épaules tendues...",
+      aiProviderLbl: "Fournisseur IA (BYOK optionnel)",
+      aiKeyLbl: "Clé API (stockée localement uniquement)",
+      aiKeyPh: "Collez votre clé ou laissez vide pour le mode local",
+      aiPrivacy: "🔒 Votre clé API est enregistrée uniquement dans le localStorage de ce navigateur et envoyée directement au fournisseur choisi. Aucun serveur intermédiaire.",
+      aiClearKey: "Effacer la clé",
+      aiCraftOffline: "Créer hors ligne (Sans clé)",
+      aiCraftByok: "Générer avec l’IA",
+      stages: ["Ouverture", "Ancrage", "Approfondissement", "Retour"],
+      phases: {
+        inhale: "Inspirez",
+        inhale2: "Double inspiration",
+        hold: "Retenez",
+        exhale: "Expirez",
+        holdOut: "Pause douce"
+      },
+      tags: ["Calme", "Concentré", "Ancré", "Allégé", "Reposé"],
+      toastSaved: "Réflexion enregistrée localement",
+      toastReset: "Historique de démo restauré",
+      toastExported: "Sauvegarde JSON téléchargée",
+      toastImported: "Historique importé",
+      toastInvalidJson: "Fichier JSON invalide",
+      toastDownloaded: "Fichier HTML autonome téléchargé",
+      toastKeyCleared: "Clé API effacée",
+      toastLocalCrafted: "Script hors ligne personnalisé appliqué !",
+      toastAiCrafted: "Script IA personnalisé appliqué !",
+      errNoStressor: "Décrivez brièvement ce qui vous préoccupe d’abord.",
+      errNoKey: "Ajoutez une clé API ci-dessus, ou cliquez sur « Créer hors ligne »."
+    }
+  };
+
+  /* ==================== TECHNIQUES & PRESETS ==================== */
+  const TECHNIQUES = [
+    {
+      id: "box",
+      ratio: "4·4·4·4",
+      name: { en: "Box Breathing", fr: "Respiration carrée" },
+      desc: { en: "Steady nerves & sharp focus before high-stakes moments.", fr: "Calme les nerfs et clarifie l’esprit avant un moment clé." },
+      phases: [
+        { type: "inhale", dur: 4 },
+        { type: "hold", dur: 4 },
+        { type: "exhale", dur: 4 },
+        { type: "holdOut", dur: 4 }
+      ]
+    },
+    {
+      id: "478",
+      ratio: "4·7·8",
+      name: { en: "4–7–8 Relax", fr: "Relaxation 4–7–8" },
+      desc: { en: "Deep nervous system down-regulation for calm & sleep.", fr: "Apaise le système nerveux pour la détente et le sommeil." },
+      phases: [
+        { type: "inhale", dur: 4 },
+        { type: "hold", dur: 7 },
+        { type: "exhale", dur: 8 }
+      ]
+    },
+    {
+      id: "sigh",
+      ratio: "2.5+1.5·6",
+      name: { en: "Physiological Sigh", fr: "Soupir physiologique" },
+      desc: { en: "Double inhale + long exhale for the fastest stress reset.", fr: "Double inspiration + longue expiration pour relâcher le stress." },
+      phases: [
+        { type: "inhale", dur: 2.5 },
+        { type: "inhale2", dur: 1.5 },
+        { type: "exhale", dur: 6 }
+      ]
+    },
+    {
+      id: "coherent",
+      ratio: "5.5·5.5",
+      name: { en: "Coherent Flow", fr: "Cohérence 5,5·5,5" },
+      desc: { en: "Balanced rhythm to restore heart-rate variability & flow.", fr: "Rythme équilibré pour la variabilité cardiaque et le flow." },
+      phases: [
+        { type: "inhale", dur: 5.5 },
+        { type: "exhale", dur: 5.5 }
+      ]
+    }
+  ];
+
+  const MOODS = [
+    {
+      id: "pre-meeting",
+      icon: "🎯",
+      tech: "box",
+      dur: 2,
+      name: { en: "Pre-Meeting Calm", fr: "Avant réunion" },
+      sub: { en: "2 min · Box 4-4-4-4", fr: "2 min · Carrée 4-4-4-4" },
+      intention: {
+        en: "Enter the conversation clear, grounded, and unhurried.",
+        fr: "Entrer dans l’échange avec clarté, calme et présence."
+      },
+      script: {
+        en: [
+          "Drop your shoulders away from your ears and unclench your jaw.",
+          "Let each four-second inhale gather your attention into this room.",
+          "You don’t need to rush your words; calm cadence carries authority.",
+          "Carry this steady rhythm into your next conversation."
+        ],
+        fr: [
+          "Relâchez vos épaules loin des oreilles et desserrez la mâchoire.",
+          "Laissez chaque inspiration de quatre secondes recentrer votre attention.",
+          "Nul besoin de précipiter vos mots : un rythme posé inspire confiance.",
+          "Emportez cette cadence stable dans votre prochaine conversation."
+        ]
+      }
+    },
+    {
+      id: "post-lunch",
+      icon: "☀️",
+      tech: "coherent",
+      dur: 5,
+      name: { en: "Post-Lunch Reset", fr: "Reset après-midi" },
+      sub: { en: "5 min · Coherent 5.5", fr: "5 min · Cohérence 5,5" },
+      intention: {
+        en: "Clear afternoon fog and return to deep, quiet focus.",
+        fr: "Dissiper la fatigue de l’après-midi et retrouver un focus serein."
+      },
+      script: {
+        en: [
+          "Sit tall, soften your gaze away from the screen, and exhale fully.",
+          "Follow the smooth 5.5-second wave — effortless in, effortless out.",
+          "Notice the quiet space behind the afternoon noise and tabs.",
+          "Return to one meaningful task with fresh, unforced energy."
+        ],
+        fr: [
+          "Redressez doucement le dos, reposez le regard loin de l’écran et expirez.",
+          "Suivez la vague fluide de 5,5 secondes — sans effort à l’aller comme au retour.",
+          "Observez l’espace calme derrière le bruit et les onglets ouverts.",
+          "Revenez à une seule tâche essentielle avec une énergie renouvelée."
+        ]
+      }
+    },
+    {
+      id: "unwind",
+      icon: "🌇",
+      tech: "sigh",
+      dur: 5,
+      name: { en: "End-of-Day Unwind", fr: "Fin de journée" },
+      sub: { en: "5 min · Physio Sigh", fr: "5 min · Soupir physio" },
+      intention: {
+        en: "Close today’s open loops and leave work at the desk.",
+        fr: "Refermer les boucles du jour et laisser le travail au bureau."
+      },
+      script: {
+        en: [
+          "Take a full breath in, add a gentle top-up sip, and sigh it all out.",
+          "Let unfinished tasks rest until tomorrow; you did enough today.",
+          "Feel the weight settle into your chair as every exhale lengthens.",
+          "Step away from the screen knowing the workday is cleanly closed."
+        ],
+        fr: [
+          "Inspirez pleinement, ajoutez une petite bouffée, puis relâchez dans un long soupir.",
+          "Laissez les tâches inachevées reposer jusqu’à demain ; vous avez fait assez.",
+          "Sentez le poids du corps se déposer à chaque longue expiration.",
+          "Quittez l’écran avec le sentiment clair que la journée de travail est close."
+        ]
+      }
+    },
+    {
+      id: "sleep",
+      icon: "🌙",
+      tech: "478",
+      dur: 10,
+      name: { en: "Sleep Prep", fr: "Préparer le sommeil" },
+      sub: { en: "10 min · 4-7-8 Calm", fr: "10 min · 4-7-8 Calme" },
+      intention: {
+        en: "Slow the mind and invite deep, restorative rest.",
+        fr: "Ralentir le mental et inviter un repos profond."
+      },
+      script: {
+        en: [
+          "Dim your gaze, rest your hands warmly, and release the day’s timeline.",
+          "Inhale softly for four, linger gently for seven, melt out for eight.",
+          "With each long exhale, let thoughts drift past like clouds at night.",
+          "There is nothing left to solve tonight — only quiet rest."
+        ],
+        fr: [
+          "Adoucissez votre regard, posez vos mains et relâchez le fil de la journée.",
+          "Inspirez doucement sur quatre, suspendez sur sept, fondez sur huit.",
+          "À chaque longue expiration, laissez les pensées glisser comme des nuages.",
+          "Il n’y a plus rien à résoudre ce soir — seulement le repos."
+        ]
+      }
+    }
+  ];
+
+  /* ==================== STATE & STORAGE ==================== */
+  const STORAGE_LOGS = "zenflow_logs_v1";
+  const STORAGE_BYOK = "zenflow_byok_v1";
+
+  const DEMO_LOGS = [
+    {
+      id: "demo-1",
+      ts: Date.now() - 1000 * 60 * 60 * 22,
+      min: 2,
+      tech: "box",
+      mood: "pre-meeting",
+      tagIdx: 1,
+      text: "Dropped my shoulders before the Q3 review — spoke twice as slowly."
+    },
+    {
+      id: "demo-2",
+      ts: Date.now() - 1000 * 60 * 60 * 3,
+      min: 5,
+      tech: "sigh",
+      mood: "unwind",
+      tagIdx: 0,
+      text: "Three physiological sighs melted the tension behind my eyes."
+    }
+  ];
+
+  const state = {
+    lang: "en",
+    moodId: "pre-meeting",
+    techId: "box",
+    durationMin: 2,
+    running: false,
+    paused: false,
+    muted: false,
+    voiceEnabled: false,
+    previewingAudio: false,
+    customScript: null, // { source: 'ai'|'local', lines: [4 strings] }
+    // Session runtime
+    totalSec: 120,
+    elapsedSec: 0,
+    phaseIdx: 0,
+    phaseElapsed: 0,
+    cycles: 0,
+    lastFrameTs: 0,
+    lastSpokenStage: -1,
+    rafId: null,
+    // Mixer volumes (0..100)
+    vols: { bowl: 65, drone: 35, rain: 40, chimes: 25 },
+    selectedTagIdx: 0,
+    logs: []
+  };
+
+  /* ==================== DOM REFS ==================== */
+  const $ = (id) => document.getElementById(id);
+  const el = {
+    btnLangEn: $("btnLangEn"),
+    btnLangFr: $("btnLangFr"),
+    btnDownloadHtml: $("btnDownloadHtml"),
+    moodRow: $("moodRow"),
+    techGrid: $("techGrid"),
+    durationChips: $("durationChips"),
+    cycleBadge: $("cycleBadge"),
+    sessionTimer: $("sessionTimer"),
+    orbShell: $("orbShell"),
+    orbCore: $("orbCore"),
+    orbRipple1: $("orbRipple1"),
+    orbRipple2: $("orbRipple2"),
+    orbPhase: $("orbPhase"),
+    orbSec: $("orbSec"),
+    progressArc: $("progressArc"),
+    cueStepLabel: $("cueStepLabel"),
+    cueText: $("cueText"),
+    activeScriptTag: $("activeScriptTag"),
+    btnPlayPause: $("btnPlayPause"),
+    playIcon: $("playIcon"),
+    playLabel: $("playLabel"),
+    btnReset: $("btnReset"),
+    btnMute: $("btnMute"),
+    muteIcon: $("muteIcon"),
+    muteLabel: $("muteLabel"),
+    volBowl: $("volBowl"),
+    volDrone: $("volDrone"),
+    volRain: $("volRain"),
+    volChimes: $("volChimes"),
+    valBowl: $("valBowl"),
+    valDrone: $("valDrone"),
+    valRain: $("valRain"),
+    valChimes: $("valChimes"),
+    btnTestBowl: $("btnTestBowl"),
+    btnPreviewSound: $("btnPreviewSound"),
+    audioLed: $("audioLed"),
+    audioStateText: $("audioStateText"),
+    toggleVoice: $("toggleVoice"),
+    intentionInput: $("intentionInput"),
+    statSessions: $("statSessions"),
+    statMinutes: $("statMinutes"),
+    statStreak: $("statStreak"),
+    btnToggleReflect: $("btnToggleReflect"),
+    reflectForm: $("reflectForm"),
+    reflectHeading: $("reflectHeading"),
+    reflectText: $("reflectText"),
+    reflectTags: $("reflectTags"),
+    btnCancelReflect: $("btnCancelReflect"),
+    logList: $("logList"),
+    btnExportJson: $("btnExportJson"),
+    btnImportJson: $("btnImportJson"),
+    importFileInput: $("importFileInput"),
+    btnResetDemo: $("btnResetDemo"),
+    btnOpenAi: $("btnOpenAi"),
+    aiStatusDot: $("aiStatusDot"),
+    aiModal: $("aiModal"),
+    btnCloseAi: $("btnCloseAi"),
+    stressorInput: $("stressorInput"),
+    aiProvider: $("aiProvider"),
+    aiKeyInput: $("aiKeyInput"),
+    btnClearKey: $("btnClearKey"),
+    btnCraftOffline: $("btnCraftOffline"),
+    btnCraftAi: $("btnCraftAi"),
+    aiStatusMsg: $("aiStatusMsg"),
+    toast: $("toast")
+  };
+
+  /* ==================== PROCEDURAL WEB AUDIO ENGINE ==================== */
+  const AudioEngine = {
+    ctx: null,
+    masterGain: null,
+    droneGain: null,
+    rainGain: null,
+    isAmbientOn: false,
+    chimeTimer: null,
+
+    ensureContext() {
+      if (!this.ctx) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return null;
+        this.ctx = new AudioCtx();
+        this.masterGain = this.ctx.createGain();
+        this.masterGain.gain.value = state.muted ? 0 : 0.9;
+        this.masterGain.connect(this.ctx.destination);
+        this.setupDrone();
+        this.setupRain();
+      }
+      if (this.ctx.state === "suspended") {
+        this.ctx.resume().catch(() => {});
+      }
+      return this.ctx;
+    },
+
+    setupDrone() {
+      const ctx = this.ctx;
+      const droneGain = ctx.createGain();
+      droneGain.gain.value = 0;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 420;
+      filter.Q.value = 0.8;
+
+      // Slow breathing LFO on filter cutoff
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.frequency.value = 0.09;
+      lfoGain.gain.value = 130;
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
+      lfo.start();
+
+      // Warm fifth + ninth chord (C3, G3, D4)
+      const freqs = [130.81, 196.0, 293.66];
+      const types = ["sine", "triangle", "sine"];
+      freqs.forEach((f, idx) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = types[idx];
+        osc.frequency.value = f;
+        osc.detune.value = idx === 1 ? -4 : idx === 2 ? 5 : 0;
+        g.gain.value = idx === 0 ? 0.32 : idx === 1 ? 0.16 : 0.08;
+        osc.connect(g);
+        g.connect(filter);
+        osc.start();
+      });
+
+      filter.connect(droneGain);
+      droneGain.connect(this.masterGain);
+      this.droneGain = droneGain;
+    },
+
+    setupRain() {
+      const ctx = this.ctx;
+      const sampleRate = ctx.sampleRate;
+      const bufferSize = sampleRate * 3;
+      const buffer = ctx.createBuffer(2, bufferSize, sampleRate);
+
+      // Paul Kellet pink noise approximation for gentle rain texture
+      for (let ch = 0; ch < 2; ch++) {
+        const out = buffer.getChannelData(ch);
+        let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+        for (let i = 0; i < bufferSize; i++) {
+          const white = Math.random() * 2 - 1;
+          b0 = 0.99886 * b0 + white * 0.0555179;
+          b1 = 0.99332 * b1 + white * 0.0750759;
+          b2 = 0.96900 * b2 + white * 0.1538520;
+          b3 = 0.86650 * b3 + white * 0.3104856;
+          b4 = 0.55000 * b4 + white * 0.5329522;
+          b5 = -0.7616 * b5 - white * 0.0168980;
+          out[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.045;
+          b6 = white * 0.115926;
+        }
+      }
+
+      const src = ctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.value = 1150;
+
+      const hp = ctx.createBiquadFilter();
+      hp.type = "highpass";
+      hp.frequency.value = 180;
+
+      const rainGain = ctx.createGain();
+      rainGain.gain.value = 0;
+
+      src.connect(hp);
+      hp.connect(lp);
+      lp.connect(rainGain);
+      rainGain.connect(this.masterGain);
+      src.start();
+      this.rainGain = rainGain;
+    },
+
+    playSingingBowl(baseFreq = 261.63, customVol = null) {
+      if (state.muted) return;
+      const volPct = customVol !== null ? customVol : state.vols.bowl;
+      if (volPct <= 0) return;
+      const ctx = this.ensureContext();
+      if (!ctx) return;
+
+      const now = ctx.currentTime;
+      const level = (volPct / 100) * 0.28;
+      // Tibetan singing bowl partials
+      const partials = [
+        { mult: 1.0, amp: 1.0, decay: 4.2 },
+        { mult: 1.003, amp: 0.45, decay: 3.9 }, // warm shimmer beat
+        { mult: 2.756, amp: 0.34, decay: 2.8 },
+        { mult: 5.404, amp: 0.14, decay: 1.6 }
+      ];
+
+      partials.forEach((p) => {
+        const osc = ctx.createOscillator();
+        const g = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(baseFreq * p.mult, now);
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(Math.max(0.0002, level * p.amp), now + 0.045);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + p.decay);
+        osc.connect(g);
+        g.connect(this.masterGain);
+        osc.start(now);
+        osc.stop(now + p.decay + 0.05);
+      });
+    },
+
+    playWindChime() {
+      if (state.muted || !this.isAmbientOn || state.vols.chimes <= 0) return;
+      const ctx = this.ensureContext();
+      if (!ctx) return;
+
+      const notes = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66];
+      const freq = notes[Math.floor(Math.random() * notes.length)];
+      const now = ctx.currentTime;
+      const level = (state.vols.chimes / 100) * 0.11;
+
+      const osc = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = "sine";
+      osc2.type = "triangle";
+      osc.frequency.setValueAtTime(freq, now);
+      osc2.frequency.setValueAtTime(freq * 2.01, now);
+
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(Math.max(0.0002, level), now + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+
+      osc.connect(g);
+      osc2.connect(g);
+      g.connect(this.masterGain);
+      osc.start(now);
+      osc2.start(now);
+      osc.stop(now + 2.5);
+      osc2.stop(now + 2.5);
+    },
+
+    scheduleNextChime() {
+      clearTimeout(this.chimeTimer);
+      if (!this.isAmbientOn) return;
+      const delay = 2600 + Math.random() * 4400;
+      this.chimeTimer = setTimeout(() => {
+        this.playWindChime();
+        this.scheduleNextChime();
+      }, delay);
+    },
+
+    startAmbient() {
+      const ctx = this.ensureContext();
+      if (!ctx) return;
+      this.isAmbientOn = true;
+      this.updateVolumes();
+      this.scheduleNextChime();
+      updateAudioIndicator();
+    },
+
+    stopAmbient() {
+      this.isAmbientOn = false;
+      clearTimeout(this.chimeTimer);
+      if (this.ctx && this.droneGain && this.rainGain) {
+        const now = this.ctx.currentTime;
+        this.droneGain.gain.setTargetAtTime(0, now, 0.25);
+        this.rainGain.gain.setTargetAtTime(0, now, 0.25);
+      }
+      updateAudioIndicator();
+    },
+
+    updateVolumes() {
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      if (this.masterGain) {
+        this.masterGain.gain.setTargetAtTime(state.muted ? 0 : 0.9, now, 0.08);
+      }
+      if (this.isAmbientOn && this.droneGain && this.rainGain) {
+        this.droneGain.gain.setTargetAtTime((state.vols.drone / 100) * 0.26, now, 0.15);
+        this.rainGain.gain.setTargetAtTime((state.vols.rain / 100) * 0.45, now, 0.15);
+      }
+    }
+  };
+
+  /* ==================== SPEECH SYNTHESIS ==================== */
+  function speakGentle(text) {
+    if (!state.voiceEnabled || state.muted || !("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = state.lang === "fr" ? "fr-FR" : "en-US";
+      u.rate = 0.86;
+      u.pitch = 0.95;
+      u.volume = 0.75;
+      window.speechSynthesis.speak(u);
+    } catch (_) {}
+  }
+
+  /* ==================== HELPERS ==================== */
+  function t(key) {
+    return I18N[state.lang][key] || I18N.en[key] || key;
+  }
+
+  function showToast(msg) {
+    el.toast.textContent = msg;
+    el.toast.classList.add("show");
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => el.toast.classList.remove("show"), 2500);
+  }
+
+  function formatTime(sec) {
+    const s = Math.max(0, Math.ceil(sec));
+    const m = Math.floor(s / 60);
+    const r = s % 60;
+    return String(m).padStart(2, "0") + ":" + String(r).padStart(2, "0");
+  }
+
+  function getTech() {
+    return TECHNIQUES.find((x) => x.id === state.techId) || TECHNIQUES[0];
+  }
+
+  function getMood() {
+    return MOODS.find((x) => x.id === state.moodId) || MOODS[0];
+  }
+
+  function getActiveScriptLines() {
+    if (state.customScript && Array.isArray(state.customScript.lines) && state.customScript.lines.length === 4) {
+      return state.customScript.lines;
+    }
+    return getMood().script[state.lang];
+  }
+
+  function updateAudioIndicator() {
+    const active = AudioEngine.isAmbientOn && !state.muted;
+    el.audioLed.classList.toggle("on", active);
+    el.audioStateText.textContent = state.muted
+      ? t("audioMuted")
+      : active
+      ? t("audioActive")
+      : t("audioIdle");
+    el.btnPreviewSound.textContent = state.previewingAudio ? t("stopPreview") : t("previewAudio");
+  }
+
+  /* ==================== BREATHING ENGINE ==================== */
+  const ARC_CIRCUMFERENCE = 2 * Math.PI * 120; // 753.98
+
+  function triggerPhaseCue(phase) {
+    const freqMap = {
+      inhale: 293.66,  // D4
+      inhale2: 329.63, // E4
+      hold: 392.0,     // G4
+      exhale: 220.0,   // A3
+      holdOut: 261.63  // C4
+    };
+    AudioEngine.playSingingBowl(freqMap[phase.type] || 261.63);
+    const phaseLabel = I18N[state.lang].phases[phase.type] || phase.type;
+    if (state.voiceEnabled) {
+      speakGentle(phaseLabel);
+    }
+  }
+
+  function updateStageVisuals() {
+    const tech = getTech();
+    const phase = tech.phases[state.phaseIdx] || tech.phases[0];
+    const progress = Math.min(1, state.elapsedSec / Math.max(1, state.totalSec));
+    const phaseRatio = Math.min(1, state.phaseElapsed / Math.max(0.1, phase.dur));
+
+    // Smooth organic easing for orb scale (0.78 -> 1.24)
+    const easeInOut = (x) => 0.5 - Math.cos(Math.PI * x) / 2;
+    let scale = 0.84;
+    if (state.running) {
+      if (phase.type === "inhale") {
+        scale = 0.78 + easeInOut(phaseRatio) * 0.42;
+      } else if (phase.type === "inhale2") {
+        scale = 1.16 + easeInOut(phaseRatio) * 0.12;
+      } else if (phase.type === "hold") {
+        scale = 1.20 + Math.sin(phaseRatio * Math.PI * 2) * 0.025;
+      } else if (phase.type === "exhale") {
+        scale = 1.22 - easeInOut(phaseRatio) * 0.44;
+      } else if (phase.type === "holdOut") {
+        scale = 0.78 + Math.sin(phaseRatio * Math.PI) * 0.02;
+      }
+    }
+
+    el.orbCore.style.transform = `scale(${scale.toFixed(4)})`;
+    el.orbRipple1.style.transform = `scale(${(scale * 1.12).toFixed(4)})`;
+    el.orbRipple1.style.opacity = state.running ? (0.45 + (scale - 0.78) * 0.9).toFixed(3) : "0.5";
+    el.orbRipple2.style.transform = `scale(${(scale * 1.04).toFixed(4)}) rotate(${(state.elapsedSec * 4).toFixed(1)}deg)`;
+
+    // Progress SVG ring
+    el.progressArc.style.strokeDashoffset = (ARC_CIRCUMFERENCE * (1 - progress)).toFixed(2);
+    el.sessionTimer.textContent = formatTime(state.totalSec - state.elapsedSec);
+
+    // Phase labels
+    if (!state.running && !state.paused) {
+      el.orbPhase.textContent = t("breathe");
+      el.orbSec.textContent = t("tapToBegin");
+      el.cycleBadge.textContent = `${t("cycleWord")} 0 · ${t("ready")}`;
+    } else if (state.paused) {
+      el.orbPhase.textContent = t("paused");
+      el.orbSec.textContent = formatTime(state.totalSec - state.elapsedSec);
+      el.cycleBadge.textContent = `${t("cycleWord")} ${state.cycles + 1} · ${t("paused")}`;
+    } else {
+      const rem = Math.max(0.1, phase.dur - state.phaseElapsed);
+      el.orbPhase.textContent = I18N[state.lang].phases[phase.type] || phase.type;
+      el.orbSec.textContent = rem.toFixed(1) + "s";
+      el.cycleBadge.textContent = `${t("cycleWord")} ${state.cycles + 1} · ${tech.name[state.lang]}`;
+    }
+
+    // Guided script stage (4 quarters of session)
+    const stageIdx = Math.min(3, Math.floor(progress * 4));
+    const lines = getActiveScriptLines();
+    const stageName = I18N[state.lang].stages[stageIdx];
+    const moodName = getMood().name[state.lang];
+    el.cueStepLabel.textContent = `${stageName} · ${moodName}`;
+    el.cueText.textContent = lines[stageIdx] || lines[0];
+
+    if (state.running && stageIdx !== state.lastSpokenStage) {
+      state.lastSpokenStage = stageIdx;
+    }
+  }
+
+  function tick(ts) {
+    if (!state.running) return;
+    if (!state.lastFrameTs) state.lastFrameTs = ts;
+    const dt = Math.min(0.2, (ts - state.lastFrameTs) / 1000);
+    state.lastFrameTs = ts;
+
+    state.elapsedSec += dt;
+    state.phaseElapsed += dt;
+
+    if (state.elapsedSec >= state.totalSec) {
+      completeSession();
+      return;
+    }
+
+    const tech = getTech();
+    const curPhase = tech.phases[state.phaseIdx];
+    if (state.phaseElapsed >= curPhase.dur) {
+      state.phaseElapsed -= curPhase.dur;
+      state.phaseIdx = (state.phaseIdx + 1) % tech.phases.length;
+      if (state.phaseIdx === 0) state.cycles += 1;
+      triggerPhaseCue(tech.phases[state.phaseIdx]);
+    }
+
+    updateStageVisuals();
+    state.rafId = requestAnimationFrame(tick);
+  }
+
+  function startSession() {
+    if (state.previewingAudio) {
+      state.previewingAudio = false;
+    }
+    if (!state.paused) {
+      state.totalSec = state.durationMin * 60;
+      state.elapsedSec = 0;
+      state.phaseIdx = 0;
+      state.phaseElapsed = 0;
+      state.cycles = 0;
+      state.lastSpokenStage = -1;
+    }
+    state.running = true;
+    state.paused = false;
+    state.lastFrameTs = 0;
+
+    AudioEngine.startAmbient();
+    triggerPhaseCue(getTech().phases[state.phaseIdx]);
+    updatePlayButtons();
+    updateStageVisuals();
+    state.rafId = requestAnimationFrame(tick);
+  }
+
+  function pauseSession() {
+    state.running = false;
+    state.paused = true;
+    cancelAnimationFrame(state.rafId);
+    AudioEngine.stopAmbient();
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    updatePlayButtons();
+    updateStageVisuals();
+  }
+
+  function resetSession() {
+    state.running = false;
+    state.paused = false;
+    state.previewingAudio = false;
+    cancelAnimationFrame(state.rafId);
+    state.totalSec = state.durationMin * 60;
+    state.elapsedSec = 0;
+    state.phaseIdx = 0;
+    state.phaseElapsed = 0;
+    state.cycles = 0;
+    state.lastSpokenStage = -1;
+    AudioEngine.stopAmbient();
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    updatePlayButtons();
+    updateStageVisuals();
+  }
+
+  function completeSession() {
+    state.running = false;
+    state.paused = false;
+    cancelAnimationFrame(state.rafId);
+    state.elapsedSec = state.totalSec;
+    updateStageVisuals();
+    el.orbPhase.textContent = t("completed");
+    el.orbSec.textContent = "✦";
+    AudioEngine.playSingingBowl(329.63);
+    setTimeout(() => AudioEngine.stopAmbient(), 1600);
+    updatePlayButtons();
+
+    // Open reflection form automatically
+    openReflectionForm(true);
+  }
+
+  function updatePlayButtons() {
+    if (state.running) {
+      el.playIcon.textContent = "❚❚";
+      el.playLabel.textContent = t("pauseSession");
+    } else if (state.paused) {
+      el.playIcon.textContent = "▶";
+      el.playLabel.textContent = t("resumeSession");
+    } else {
+      el.playIcon.textContent = "▶";
+      el.playLabel.textContent = t("startSession");
+    }
+    el.btnMute.setAttribute("aria-pressed", String(state.muted));
+    el.muteIcon.textContent = state.muted ? "🔇" : "🔊";
+    el.muteLabel.textContent = state.muted ? t("soundOff") : t("soundOn");
+  }
+
+  /* ==================== RENDER UI COMPONENTS ==================== */
+  function renderMoods() {
+    el.moodRow.innerHTML = "";
+    MOODS.forEach((m) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "mood-btn";
+      btn.setAttribute("aria-pressed", String(m.id === state.moodId));
+      btn.innerHTML = `
+        <span class="mood-icon" aria-hidden="true">${m.icon}</span>
+        <span class="mood-name">${m.name[state.lang]}</span>
+        <span class="mood-sub">${m.sub[state.lang]}</span>
+      `;
+      btn.addEventListener("click", () => {
+        state.moodId = m.id;
+        state.techId = m.tech;
+        state.durationMin = m.dur;
+        state.customScript = null;
+        el.intentionInput.value = m.intention[state.lang];
+        resetSession();
+        renderAll();
+      });
+      el.moodRow.appendChild(btn);
+    });
+  }
+
+  function renderTechniques() {
+    el.techGrid.innerHTML = "";
+    TECHNIQUES.forEach((tech) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tech-card";
+      btn.setAttribute("aria-pressed", String(tech.id === state.techId));
+      btn.innerHTML = `
+        <div class="tech-top">
+          <span class="tech-name">${tech.name[state.lang]}</span>
+          <span class="tech-ratio">${tech.ratio}</span>
+        </div>
+        <div class="tech-desc">${tech.desc[state.lang]}</div>
+      `;
+      btn.addEventListener("click", () => {
+        state.techId = tech.id;
+        resetSession();
+        renderTechniques();
+        updateStageVisuals();
+      });
+      el.techGrid.appendChild(btn);
+    });
+  }
+
+  function renderDurationChips() {
+    el.durationChips.querySelectorAll(".chip").forEach((chip) => {
+      const m = Number(chip.dataset.min);
+      chip.setAttribute("aria-pressed", String(m === state.durationMin));
+    });
+  }
+
+  function renderReflectTags() {
+    el.reflectTags.innerHTML = "";
+    I18N[state.lang].tags.forEach((label, idx) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "tag-btn";
+      btn.textContent = label;
+      btn.setAttribute("aria-pressed", String(idx === state.selectedTagIdx));
+      btn.addEventListener("click", () => {
+        state.selectedTagIdx = idx;
+        renderReflectTags();
+      });
+      el.reflectTags.appendChild(btn);
+    });
+  }
+
+  function loadLogs() {
+    try {
+      const raw = localStorage.getItem(STORAGE_LOGS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          state.logs = parsed;
+          return;
+        }
+      }
+    } catch (_) {}
+    state.logs = DEMO_LOGS.map((x) => ({ ...x }));
+    saveLogs();
+  }
+
+  function saveLogs() {
+    try {
+      localStorage.setItem(STORAGE_LOGS, JSON.stringify(state.logs));
+    } catch (_) {}
+  }
+
+  function computeStreak(logs) {
+    if (!logs.length) return 0;
+    const days = new Set(logs.map((l) => new Date(l.ts).toISOString().slice(0, 10)));
+    let streak = 0;
+    const d = new Date();
+    for (let i = 0; i < 365; i++) {
+      const key = d.toISOString().slice(0, 10);
+      if (days.has(key)) {
+        streak++;
+      } else if (i > 0) {
+        break;
+      }
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function renderLogs() {
+    el.statSessions.textContent = String(state.logs.length);
+    const totalMin = state.logs.reduce((acc, l) => acc + (Number(l.min) || 0), 0);
+    el.statMinutes.textContent = String(totalMin);
+    el.statStreak.textContent = String(computeStreak(state.logs));
+
+    el.logList.innerHTML = "";
+    if (!state.logs.length) {
+      const empty = document.createElement("div");
+      empty.style.cssText = "font-size:13px;color:var(--muted);padding:10px 4px;text-align:center";
+      empty.textContent = state.lang === "fr" ? "Aucune réflexion enregistrée pour l’instant." : "No reflections logged yet.";
+      el.logList.appendChild(empty);
+      return;
+    }
+
+    const sorted = [...state.logs].sort((a, b) => b.ts - a.ts);
+    sorted.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "log-item";
+      const dateStr = new Date(item.ts).toLocaleDateString(state.lang === "fr" ? "fr-FR" : "en-US", {
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+      const tagLabel = I18N[state.lang].tags[item.tagIdx] || I18N[state.lang].tags[0];
+      const techObj = TECHNIQUES.find((x) => x.id === item.tech);
+      const techLabel = techObj ? techObj.name[state.lang] : item.tech;
+
+      const top = document.createElement("div");
+      top.className = "log-top";
+      top.innerHTML = `
+        <span><span class="log-tag">${tagLabel}</span> · ${item.min}m · ${techLabel}</span>
+        <span style="display:inline-flex;align-items:center;gap:4px">
+          <span>${dateStr}</span>
+        </span>
+      `;
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "log-del";
+      del.title = "Delete";
+      del.textContent = "×";
+      del.addEventListener("click", () => {
+        state.logs = state.logs.filter((x) => x.id !== item.id);
+        saveLogs();
+        renderLogs();
+      });
+      top.lastElementChild.appendChild(del);
+
+      const txt = document.createElement("div");
+      txt.className = "log-text";
+      txt.textContent = item.text;
+
+      div.appendChild(top);
+      div.appendChild(txt);
+      el.logList.appendChild(div);
+    });
+  }
+
+  function openReflectionForm(fromCompletion = false) {
+    el.reflectHeading.textContent = fromCompletion ? t("reflectComplete") : t("reflectPrompt");
+    el.reflectForm.hidden = false;
+    el.reflectText.focus();
+  }
+
+  function applyI18n() {
+    document.documentElement.lang = state.lang;
+    el.btnLangEn.setAttribute("aria-pressed", String(state.lang === "en"));
+    el.btnLangFr.setAttribute("aria-pressed", String(state.lang === "fr"));
+
+    document.querySelectorAll("[data-i18n]").forEach((node) => {
+      const key = node.getAttribute("data-i18n");
+      if (I18N[state.lang][key]) node.textContent = I18N[state.lang][key];
+    });
+
+    el.intentionInput.placeholder = t("intentionPh");
+    el.reflectText.placeholder = t("reflectPh");
+    el.stressorInput.placeholder = t("aiStressorPh");
+    el.aiKeyInput.placeholder = t("aiKeyPh");
+
+    el.activeScriptTag.textContent = !state.customScript
+      ? t("scriptBuiltIn")
+      : state.customScript.source === "ai"
+      ? t("scriptCustomAi")
+      : t("scriptCustomLocal");
+  }
+
+  function renderAll() {
+    applyI18n();
+    renderMoods();
+    renderTechniques();
+    renderDurationChips();
+    renderReflectTags();
+    renderLogs();
+    updatePlayButtons();
+    updateAudioIndicator();
+    updateStageVisuals();
+  }
+
+  /* ==================== SLIDER STYLING ==================== */
+  function bindSlider(inputEl, valEl, key) {
+    const sync = () => {
+      const v = Number(inputEl.value);
+      state.vols[key] = v;
+      valEl.textContent = v + "%";
+      inputEl.style.setProperty("--val", v + "%");
+      AudioEngine.updateVolumes();
+    };
+    inputEl.addEventListener("input", sync);
+    sync();
+  }
+
+  /* ==================== BYOK AI & OFFLINE SCRIPT CRAFTER ==================== */
+  function loadByok() {
+    try {
+      const raw = localStorage.getItem(STORAGE_BYOK);
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d.provider) el.aiProvider.value = d.provider;
+        if (d.key) el.aiKeyInput.value = d.key;
+        el.aiStatusDot.classList.toggle("connected", Boolean(d.key));
+      }
+    } catch (_) {}
+  }
+
+  function saveByok() {
+    const payload = {
+      provider: el.aiProvider.value,
+      key: el.aiKeyInput.value.trim()
+    };
+    try {
+      localStorage.setItem(STORAGE_BYOK, JSON.stringify(payload));
+    } catch (_) {}
+    el.aiStatusDot.classList.toggle("connected", Boolean(payload.key));
+  }
+
+  function setAiMsg(text, type) {
+    el.aiStatusMsg.textContent = text;
+    el.aiStatusMsg.className = "status-msg " + type;
+    el.aiStatusMsg.hidden = false;
+  }
+
+  function craftOfflineScript(stressor) {
+    const s = stressor.toLowerCase();
+    let recTech = "coherent";
+    if (/meet|call|present|pitch|réunion|appel|stress|anxi|nerv|deadline|urgent/.test(s)) recTech = "box";
+    if (/sleep|night|insomn|sommeil|nuit|tired|fatig/.test(s)) recTech = "478";
+    if (/overwhelm|tense|shoulder|tight|burn|surcharg|tendu|épaule/.test(s)) recTech = "sigh";
+
+    const cleanTopic = stressor.trim().replace(/[.!?]+$/, "").slice(0, 72);
+    const lines =
+      state.lang === "fr"
+        ? [
+            `Reconnaissez ce qui vous pèse (« ${cleanTopic} ») sans chercher à le résoudre cette minute.`,
+            "Relâchez les épaules et la mâchoire ; laissez le souffle ralentir le rythme cardiaque.",
+            "Chaque expiration crée un centimètre d’espace calme autour de cette pression.",
+            "Revenez lucide et apaisé — une seule étape claire suffira pour la suite."
+          ]
+        : [
+            `Acknowledge what is on your plate (“${cleanTopic}”) without needing to fix it this minute.`,
+            "Unclench your jaw and drop your shoulders; let the breath steady your nervous system.",
+            "Each unhurried exhale creates a little more quiet room around the pressure.",
+            "Return clear-headed and grounded — one calm next step is enough."
+          ];
+    return { tech: recTech, lines };
+  }
+
+  async function craftWithByokAi(stressor, provider, apiKey) {
+    const langName = state.lang === "fr" ? "French" : "English";
+    const systemPrompt =
+      `You are ZenFlow, a calm, minimalist workday mindfulness coach. ` +
+      `Respond ONLY with valid JSON: {"tech":"box"|"478"|"sigh"|"coherent","lines":["line1","line2","line3","line4"]}. ` +
+      `Each line must be 1 calm, grounded sentence (max 18 words) in ${langName} for the 4 stages: Opening, Settling, Deepening, Returning.`;
+    const userPrompt = `Current workday stressor: ${stressor}`;
+
+    let rawText = "";
+    if (provider === "gemini") {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: systemPrompt + "\n\n" + userPrompt }] }],
+          generationConfig: { responseMimeType: "application/json" }
+        })
+      });
+      if (!res.ok) throw new Error(`Gemini HTTP ${res.status}`);
+      const data = await res.json();
+      rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    } else if (provider === "openai") {
+      const res = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          response_format: { type: "json_object" },
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt }
+          ]
+        })
+      });
+      if (!res.ok) throw new Error(`OpenAI HTTP ${res.status}`);
+      const data = await res.json();
+      rawText = data?.choices?.[0]?.message?.content || "";
+    } else {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-3-5-haiku-latest",
+          max_tokens: 320,
+          system: systemPrompt,
+          messages: [{ role: "user", content: userPrompt }]
+        })
+      });
+      if (!res.ok) throw new Error(`Anthropic HTTP ${res.status}`);
+      const data = await res.json();
+      rawText = data?.content?.[0]?.text || "";
+    }
+
+    const match = rawText.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error("Could not parse JSON response");
+    const parsed = JSON.parse(match[0]);
+    if (!Array.isArray(parsed.lines) || parsed.lines.length < 4) {
+      throw new Error("Invalid script structure");
+    }
+    const validTech = TECHNIQUES.some((x) => x.id === parsed.tech) ? parsed.tech : "box";
+    return { tech: validTech, lines: parsed.lines.slice(0, 4).map(String) };
+  }
+
+  /* ==================== EVENT LISTENERS ==================== */
+  el.btnLangEn.addEventListener("click", () => {
+    state.lang = "en";
+    if (!el.intentionInput.dataset.edited) el.intentionInput.value = getMood().intention.en;
+    renderAll();
+  });
+  el.btnLangFr.addEventListener("click", () => {
+    state.lang = "fr";
+    if (!el.intentionInput.dataset.edited) el.intentionInput.value = getMood().intention.fr;
+    renderAll();
+  });
+
+  el.intentionInput.addEventListener("input", () => {
+    el.intentionInput.dataset.edited = "1";
+  });
+
+  el.btnDownloadHtml.addEventListener("click", () => {
+    const html = "<!doctype html>\n" + document.documentElement.outerHTML;
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "day-09-zenflow.html";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast(t("toastDownloaded"));
+  });
+
+  const togglePlay = () => (state.running ? pauseSession() : startSession());
+  el.btnPlayPause.addEventListener("click", togglePlay);
+  el.orbShell.addEventListener("click", togglePlay);
+  el.orbShell.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      togglePlay();
+    }
+  });
+
+  el.btnReset.addEventListener("click", resetSession);
+
+  el.btnMute.addEventListener("click", () => {
+    state.muted = !state.muted;
+    AudioEngine.updateVolumes();
+    updatePlayButtons();
+    updateAudioIndicator();
+  });
+
+  el.durationChips.addEventListener("click", (e) => {
+    const chip = e.target.closest(".chip");
+    if (!chip) return;
+    state.durationMin = Number(chip.dataset.min);
+    resetSession();
+    renderDurationChips();
+    updateStageVisuals();
+  });
+
+  bindSlider(el.volBowl, el.valBowl, "bowl");
+  bindSlider(el.volDrone, el.valDrone, "drone");
+  bindSlider(el.volRain, el.valRain, "rain");
+  bindSlider(el.volChimes, el.valChimes, "chimes");
+
+  el.btnTestBowl.addEventListener("click", () => {
+    if (state.muted) {
+      state.muted = false;
+      updatePlayButtons();
+    }
+    AudioEngine.playSingingBowl(293.66, Math.max(45, state.vols.bowl));
+  });
+
+  el.btnPreviewSound.addEventListener("click", () => {
+    if (state.running) return;
+    if (state.previewingAudio) {
+      state.previewingAudio = false;
+      AudioEngine.stopAmbient();
+    } else {
+      if (state.muted) {
+        state.muted = false;
+        updatePlayButtons();
+      }
+      state.previewingAudio = true;
+      AudioEngine.startAmbient();
+      AudioEngine.playSingingBowl(261.63);
+    }
+    updateAudioIndicator();
+  });
+
+  el.toggleVoice.addEventListener("change", () => {
+    state.voiceEnabled = el.toggleVoice.checked;
+    if (state.voiceEnabled) {
+      speakGentle(state.lang === "fr" ? "Guidage vocal activé" : "Voice cues enabled");
+    } else if ("speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+    }
+  });
+
+  /* Reflection Journal Events */
+  el.btnToggleReflect.addEventListener("click", () => {
+    if (el.reflectForm.hidden) {
+      openReflectionForm(false);
+    } else {
+      el.reflectForm.hidden = true;
+    }
+  });
+  el.btnCancelReflect.addEventListener("click", () => {
+    el.reflectForm.hidden = true;
+  });
+  el.reflectForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const text = el.reflectText.value.trim();
+    if (!text) return;
+    state.logs.unshift({
+      id: "log-" + Date.now(),
+      ts: Date.now(),
+      min: state.durationMin,
+      tech: state.techId,
+      mood: state.moodId,
+      tagIdx: state.selectedTagIdx,
+      text
+    });
+    saveLogs();
+    el.reflectText.value = "";
+    el.reflectForm.hidden = true;
+    renderLogs();
+    showToast(t("toastSaved"));
+  });
+
+  el.btnExportJson.addEventListener("click", () => {
+    const payload = {
+      app: "ZenFlow · Day 9",
+      exportedAt: new Date().toISOString(),
+      logs: state.logs
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "zenflow-reflections.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast(t("toastExported"));
+  });
+
+  el.btnImportJson.addEventListener("click", () => el.importFileInput.click());
+  el.importFileInput.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        const arr = Array.isArray(parsed) ? parsed : parsed.logs;
+        if (!Array.isArray(arr)) throw new Error("Invalid");
+        state.logs = arr.filter((x) => x && typeof x.text === "string").map((x, i) => ({
+          id: x.id || "imp-" + Date.now() + "-" + i,
+          ts: Number(x.ts) || Date.now(),
+          min: Number(x.min) || 2,
+          tech: x.tech || "box",
+          mood: x.mood || "pre-meeting",
+          tagIdx: Number(x.tagIdx) || 0,
+          text: x.text
+        }));
+        saveLogs();
+        renderLogs();
+        showToast(t("toastImported"));
+      } catch (_) {
+        showToast(t("toastInvalidJson"));
+      }
+      el.importFileInput.value = "";
+    };
+    reader.readAsText(file);
+  });
+
+  el.btnResetDemo.addEventListener("click", () => {
+    state.logs = DEMO_LOGS.map((x) => ({ ...x }));
+    saveLogs();
+    renderLogs();
+    showToast(t("toastReset"));
+  });
+
+  /* BYOK AI Modal Events */
+  el.btnOpenAi.addEventListener("click", () => {
+    el.aiStatusMsg.hidden = true;
+    el.aiModal.hidden = false;
+    el.stressorInput.focus();
+  });
+  const closeAiModal = () => { el.aiModal.hidden = true; };
+  el.btnCloseAi.addEventListener("click", closeAiModal);
+  el.aiModal.addEventListener("click", (e) => {
+    if (e.target === el.aiModal) closeAiModal();
+  });
+  el.aiProvider.addEventListener("change", saveByok);
+  el.aiKeyInput.addEventListener("change", saveByok);
+
+  el.btnClearKey.addEventListener("click", () => {
+    el.aiKeyInput.value = "";
+    saveByok();
+    showToast(t("toastKeyCleared"));
+  });
+
+  el.btnCraftOffline.addEventListener("click", () => {
+    const stressor = el.stressorInput.value.trim();
+    if (!stressor) {
+      setAiMsg(t("errNoStressor"), "err");
+      return;
+    }
+    const crafted = craftOfflineScript(stressor);
+    state.techId = crafted.tech;
+    state.customScript = { source: "local", lines: crafted.lines };
+    el.intentionInput.value = stressor.slice(0, 110);
+    el.intentionInput.dataset.edited = "1";
+    resetSession();
+    renderAll();
+    closeAiModal();
+    showToast(t("toastLocalCrafted"));
+  });
+
+  el.btnCraftAi.addEventListener("click", async () => {
+    const stressor = el.stressorInput.value.trim();
+    const key = el.aiKeyInput.value.trim();
+    const provider = el.aiProvider.value;
+    if (!stressor) {
+      setAiMsg(t("errNoStressor"), "err");
+      return;
+    }
+    if (!key) {
+      setAiMsg(t("errNoKey"), "err");
+      return;
+    }
+    saveByok();
+    el.btnCraftAi.disabled = true;
+    setAiMsg(state.lang === "fr" ? "Création de votre script guidé…" : "Crafting your custom guided script…", "ok");
+    try {
+      const result = await craftWithByokAi(stressor, provider, key);
+      state.techId = result.tech;
+      state.customScript = { source: "ai", lines: result.lines };
+      el.intentionInput.value = stressor.slice(0, 110);
+      el.intentionInput.dataset.edited = "1";
+      resetSession();
+      renderAll();
+      closeAiModal();
+      showToast(t("toastAiCrafted"));
+    } catch (err) {
+      setAiMsg((state.lang === "fr" ? "Erreur API : " : "API error: ") + (err?.message || "Request failed"), "err");
+    } finally {
+      el.btnCraftAi.disabled = false;
+    }
+  });
+
+  /* Keyboard Shortcuts */
+  document.addEventListener("keydown", (e) => {
+    const tag = (e.target && e.target.tagName) || "";
+    if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+    if (!el.aiModal.hidden) {
+      if (e.key === "Escape") closeAiModal();
+      return;
+    }
+    if (e.code === "Space") {
+      e.preventDefault();
+      togglePlay();
+    } else if (e.key === "r" || e.key === "R") {
+      resetSession();
+    } else if (e.key === "m" || e.key === "M") {
+      el.btnMute.click();
+    }
+  });
+
+  /* ==================== INIT ==================== */
+  loadLogs();
+  loadByok();
+  el.intentionInput.value = getMood().intention[state.lang];
+  renderAll();
+})();
+</script>
+</body>
+</html>

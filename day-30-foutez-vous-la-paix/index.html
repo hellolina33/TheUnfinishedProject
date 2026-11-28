@@ -1,0 +1,1427 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foutez-vous la Paix — Day 30/30 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #FAF6EE;
+      --surface: #FFFDF8;
+      --surface-alt: #F2EBD9;
+      --ink: #231E18;
+      --ink-muted: #6C6255;
+      --border: #E5DAC6;
+      --accent: #B97B23;
+      --accent-soft: #FFF1B8;
+      --highlight: #FFE98A;
+      --highlight-hover: #FFF3C4;
+      --topbar: #0E1638;
+      --font-size: 19px;
+      --radius: 16px;
+    }
+
+    body[data-theme="sepia"] {
+      --bg: #F0E4CE;
+      --surface: #F7EEDC;
+      --surface-alt: #E5D4B7;
+      --ink: #33261B;
+      --ink-muted: #705B45;
+      --border: #D9C5A3;
+      --accent: #9E5E1E;
+      --accent-soft: #F6DFAD;
+      --highlight: #F2D27A;
+      --highlight-hover: #F5E1A4;
+    }
+
+    body[data-theme="night"] {
+      --bg: #151412;
+      --surface: #1D1B18;
+      --surface-alt: #272420;
+      --ink: #EAE2D3;
+      --ink-muted: #A49987;
+      --border: #332F29;
+      --accent: #E8B949;
+      --accent-soft: rgba(232, 185, 73, 0.16);
+      --highlight: rgba(232, 185, 73, 0.28);
+      --highlight-hover: rgba(232, 185, 73, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      transition: background 0.25s ease, color 0.25s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Reading Progress Bar */
+    .progress-track {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3.5px;
+      background: transparent;
+      z-index: 95;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #E8B949, #D97E2A);
+      transition: width 0.12s ease-out;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar);
+      color: #F4F6FF;
+      font-size: 13px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .challenge-bar a { color: #FFFFFF; text-decoration: none; font-weight: 600; }
+    .challenge-bar a:hover { text-decoration: underline; }
+    .bar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .bar-dot { opacity: 0.45; }
+    .bar-author { opacity: 0.85; font-weight: 400 !important; }
+    .bar-actions { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255,255,255,0.1);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .bar-btn:hover { background: rgba(255,255,255,0.2); }
+    .bar-btn.active { background: #FFE36E; color: #181624; border-color: #FFE36E; }
+
+    /* Reader Toolbar */
+    .reader-toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: color-mix(in srgb, var(--bg) 90%, transparent);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .tb-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tb-btn {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 13px;
+      font-size: 12.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: border-color 0.16s, background 0.16s;
+    }
+    .tb-btn:hover { border-color: var(--accent); }
+    .tb-btn.active { background: var(--accent); color: #FFFFFF; border-color: var(--accent); }
+    .tb-pill {
+      display: inline-flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 2px;
+    }
+    .tb-pill button {
+      border: none;
+      background: transparent;
+      color: var(--ink-muted);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .tb-pill button.active {
+      background: var(--ink);
+      color: var(--bg);
+    }
+    .badge-count {
+      background: var(--accent);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    /* Main Literary Layout */
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 20px 80px;
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: 40px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; gap: 22px; padding-top: 20px; }
+    }
+
+    /* Chapter Sidebar */
+    .toc-card {
+      position: sticky;
+      top: 72px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+    @media (max-width: 900px) {
+      .toc-card { position: static; }
+    }
+    .book-mini-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+    .book-mini-sub {
+      font-size: 12px;
+      color: var(--ink-muted);
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .toc-item button {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 10px;
+      color: var(--ink-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      gap: 8px;
+      align-items: baseline;
+      transition: background 0.15s, color 0.15s;
+    }
+    .toc-item button:hover {
+      background: var(--surface-alt);
+      color: var(--ink);
+    }
+    .toc-item button.active {
+      background: var(--accent-soft);
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .toc-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* Reading Column */
+    .reading-col {
+      max-width: 680px;
+      width: 100%;
+    }
+    .chapter-eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .chapter-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: clamp(30px, 4.5vw, 44px);
+      font-weight: 500;
+      line-height: 1.14;
+      letter-spacing: -0.015em;
+      margin-bottom: 12px;
+    }
+    .chapter-epigraph {
+      font-family: 'Newsreader', Georgia, serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--ink-muted);
+      padding-left: 16px;
+      border-left: 2.5px solid var(--accent);
+      margin: 18px 0 28px;
+    }
+    .hint-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--ink-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 12px;
+      margin-bottom: 24px;
+    }
+
+    /* Paragraphs with Highlighting */
+    .prose {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: var(--font-size);
+      line-height: 1.78;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .para-wrap {
+      position: relative;
+      padding: 8px 12px;
+      margin: 0 -12px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.18s ease;
+    }
+    .para-wrap:hover {
+      background: var(--highlight-hover);
+    }
+    .para-wrap.saved {
+      background: var(--highlight);
+    }
+    .para-tag {
+      display: inline-block;
+      margin-left: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent);
+      vertical-align: middle;
+      opacity: 0;
+      transition: opacity 0.16s;
+    }
+    .para-wrap:hover .para-tag,
+    .para-wrap.saved .para-tag {
+      opacity: 1;
+    }
+
+    /* Pause Invitation Card */
+    .pause-invite {
+      margin-top: 34px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .pause-invite h3 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .pause-invite p {
+      font-size: 13.5px;
+      color: var(--ink-muted);
+    }
+
+    /* Chapter Footer Nav */
+    .chapter-nav {
+      margin-top: 28px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.16s, transform 0.12s;
+    }
+    .nav-btn:hover:not(:disabled) { border-color: var(--accent); transform: translateY(-1px); }
+    .nav-btn:disabled { opacity: 0.4; cursor: default; }
+    .nav-btn.primary {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+
+    /* Honest Unfinished */
+    .unfinished {
+      margin-top: 44px;
+      background: var(--surface-alt);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+    }
+    .unfinished h2 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+    .unfinished ul {
+      padding-left: 20px;
+      font-size: 13.5px;
+      color: var(--ink-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    /* Slide-over Carnet Drawer */
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 14, 12, 0.48);
+      display: none;
+      justify-content: flex-end;
+      z-index: 100;
+    }
+    .drawer-backdrop.open { display: flex; }
+    .drawer {
+      width: min(440px, 100%);
+      background: var(--bg);
+      color: var(--ink);
+      height: 100%;
+      padding: 22px;
+      overflow-y: auto;
+      border-left: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .drawer-head h2 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 24px;
+    }
+    .close-btn {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      width: 34px;
+      height: 34px;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    .quote-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .quote-text {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 16px;
+      line-height: 1.55;
+    }
+    .quote-meta {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      font-weight: 600;
+    }
+    .quote-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Modals (Breathing Pause & Quote Card PNG) */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 14, 12, 0.62);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 110;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      max-width: 560px;
+      width: 100%;
+      padding: 26px;
+      max-height: 92vh;
+      overflow-y: auto;
+      text-align: center;
+    }
+    .modal h2 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+    .modal-sub {
+      font-size: 13.5px;
+      color: var(--ink-muted);
+      margin-bottom: 18px;
+    }
+
+    /* Breathing Orb */
+    .breath-stage {
+      height: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 10px 0 18px;
+    }
+    .breath-ring {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFE36E 0%, #E8B949 70%, rgba(232,185,73,0.18) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #231E18;
+      font-weight: 700;
+      transition: transform 4s ease-in-out;
+      box-shadow: 0 0 40px rgba(232, 185, 73, 0.35);
+    }
+    .breath-phase {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 20px;
+    }
+    .breath-timer {
+      font-size: 13px;
+      opacity: 0.78;
+      margin-top: 2px;
+    }
+
+    /* Quote Card Preview Canvas */
+    .card-preview-wrap {
+      margin: 12px auto 16px;
+      max-width: 340px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+    .card-preview-wrap canvas {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .style-swatches {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 130;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body data-theme="cream">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- Challenge Top Bar -->
+  <header class="challenge-bar">
+    <div class="bar-left">
+      <a href="/">The Unfinished 30 · Day 30/30</a>
+      <span class="bar-dot">•</span>
+      <a class="bar-author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="bar-actions">
+      <button class="bar-btn" id="langEn" type="button">EN</button>
+      <button class="bar-btn active" id="langFr" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button" data-i18n="downloadHtml">Télécharger HTML</button>
+    </div>
+  </header>
+
+  <!-- Reader Toolbar -->
+  <div class="reader-toolbar">
+    <div class="tb-group">
+      <div class="tb-pill" role="group" aria-label="Theme">
+        <button type="button" class="theme-btn active" data-theme="cream" data-i18n="thCream">Crème</button>
+        <button type="button" class="theme-btn" data-theme="sepia" data-i18n="thSepia">Sépia</button>
+        <button type="button" class="theme-btn" data-theme="night" data-i18n="thNight">Nuit</button>
+      </div>
+      <div class="tb-pill" role="group" aria-label="Font size">
+        <button type="button" id="fontDown">A-</button>
+        <button type="button" id="fontUp">A+</button>
+      </div>
+    </div>
+    <div class="tb-group">
+      <button type="button" class="tb-btn" id="openBreathBtn" data-i18n="btnBreath">Pause Respiration (60s)</button>
+      <button type="button" class="tb-btn" id="openCarnetBtn">
+        <span data-i18n="btnCarnet">Carnet de Paix</span>
+        <span class="badge-count" id="carnetCount">0</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Book Shell -->
+  <main class="shell">
+    <!-- Chapter Navigation -->
+    <aside class="toc-card">
+      <div class="book-mini-title" data-i18n="bookTitle">Foutez-vous la Paix</div>
+      <div class="book-mini-sub" data-i18n="bookMeta">Salah Khenissi · Édition Numérique · Jour 30/30</div>
+      <ul class="toc-list" id="tocList"></ul>
+    </aside>
+
+    <!-- Reading Column -->
+    <article class="reading-col">
+      <div class="chapter-eyebrow" id="chEyebrow">CHAPITRE 01 / 06</div>
+      <h1 class="chapter-title" id="chTitle"></h1>
+      <blockquote class="chapter-epigraph" id="chEpigraph"></blockquote>
+
+      <div class="hint-pill" data-i18n="highlightHint">
+        Cliquez sur n’importe quel passage pour le surligner et l’ajouter à votre Carnet de Paix.
+      </div>
+
+      <div class="prose" id="chProse"></div>
+
+      <div class="pause-invite">
+        <div>
+          <h3 data-i18n="pauseTitle">Avant de tourner la page</h3>
+          <p data-i18n="pauseDesc">Accordez-vous 60 secondes de respiration calme pour laisser décanter ce chapitre.</p>
+        </div>
+        <button type="button" class="tb-btn active" id="chapterBreathBtn" data-i18n="pauseCta">Respirer 60 secondes</button>
+      </div>
+
+      <nav class="chapter-nav">
+        <button type="button" class="nav-btn" id="prevChBtn" data-i18n="btnPrev">← Chapitre précédent</button>
+        <button type="button" class="nav-btn primary" id="nextChBtn" data-i18n="btnNext">Chapitre suivant →</button>
+      </nav>
+
+      <section class="unfinished">
+        <h2 data-i18n="unfTitle">Ce qui reste inachevé</h2>
+        <ul>
+          <li data-i18n="unf1">Ceci est une édition numérique concise en 6 chapitres thématiques — pas l’intégralité paginée d’un ouvrage imprimé.</li>
+          <li data-i18n="unf2">Les surlignages du Carnet de Paix vivent uniquement dans votre navigateur (localStorage), sans synchronisation cloud.</li>
+          <li data-i18n="unf3">Pas de narration audio ni d’export ePub pour l’instant — juste un texte calme, une respiration, et vos citations en PNG.</li>
+        </ul>
+      </section>
+    </article>
+  </main>
+
+  <!-- Carnet de Paix Drawer -->
+  <div class="drawer-backdrop" id="carnetDrawer">
+    <div class="drawer" role="dialog" aria-modal="true">
+      <div class="drawer-head">
+        <h2 data-i18n="carnetTitle">Carnet de Paix</h2>
+        <button type="button" class="close-btn" id="closeCarnetBtn" aria-label="Close">×</button>
+      </div>
+      <p style="font-size:13px;color:var(--ink-muted);" data-i18n="carnetSub">
+        Vos passages enregistrés localement. Transformez n’importe quelle phrase en carte PNG partageable.
+      </p>
+      <div id="carnetList" style="display:flex;flex-direction:column;gap:12px;"></div>
+    </div>
+  </div>
+
+  <!-- 60-Second Breathing Pause Modal -->
+  <div class="modal-backdrop" id="breathModal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2 data-i18n="breathTitle">Pause Respiration · 60 secondes</h2>
+      <p class="modal-sub" data-i18n="breathSub">Inspirez doucement 4s · Retenez 4s · Expirez longuement 6s.</p>
+      <div class="breath-stage">
+        <div class="breath-ring" id="breathRing">
+          <div class="breath-phase" id="breathPhase">Prêt</div>
+          <div class="breath-timer" id="breathTimer">01:00</div>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+        <button type="button" class="nav-btn primary" id="breathToggleBtn" data-i18n="breathStart">Commencer</button>
+        <button type="button" class="nav-btn" id="breathCloseBtn" data-i18n="btnClose">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shareable Quote Card PNG Modal -->
+  <div class="modal-backdrop" id="quoteModal">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2 data-i18n="quoteModalTitle">Carte Citation PNG</h2>
+      <p class="modal-sub" data-i18n="quoteModalSub">Choisissez une ambiance et téléchargez votre passage en haute résolution.</p>
+      <div class="style-swatches">
+        <button type="button" class="tb-btn card-style-btn active" data-style="cream" data-i18n="thCream">Crème</button>
+        <button type="button" class="tb-btn card-style-btn" data-style="night" data-i18n="stNight">Nuit Dorée</button>
+        <button type="button" class="tb-btn card-style-btn" data-style="sepia" data-i18n="thSepia">Sépia</button>
+        <button type="button" class="tb-btn card-style-btn" data-style="lemon" data-i18n="stLemon">Citron Doux</button>
+      </div>
+      <div class="card-preview-wrap">
+        <canvas id="quoteCanvas" width="1080" height="1350"></canvas>
+      </div>
+      <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+        <button type="button" class="nav-btn primary" id="downloadQuotePngBtn" data-i18n="btnDownloadPng">Télécharger PNG</button>
+        <button type="button" class="nav-btn" id="closeQuoteBtn" data-i18n="btnClose">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'u30_day30_paix_v1';
+
+      const CHAPTERS = [
+        {
+          id: 'ch1',
+          num: '01',
+          fr: {
+            title: 'Le bruit de la performance',
+            epigraph: 'On ne s’épuise pas parce qu’on fait trop. On s’épuise parce qu’on se juge sans jamais fermer l’onglet.',
+            paragraphs: [
+              'Il existe une fatigue étrange qui ne disparaît pas après huit heures de sommeil. C’est la fatigue d’être constamment en représentation devant un jury imaginaire : celui des gens qui « avancent plus vite », qui « optimisent leurs matinées », qui transforment chaque heure libre en projet rentable.',
+              'Nous avons fini par confondre la valeur d’une journée avec la longueur d’une liste cochée. Dès qu’un moment reste vide, une petite voix anxieuse s’empresse de le remplir d’une culpabilité polie : tu devrais lire, tu devrais coder, tu devrais rattraper ton retard.',
+              'Mais quel retard ? Personne n’a signé de contrat stipulant que votre vie devait ressembler à un tableau de bord trimestriel. Le bruit de la performance s’arrête à la seconde où vous réalisez que la paix n’est pas une récompense après l’effort : c’est le terrain sur lequel l’effort devient juste.'
+            ]
+          },
+          en: {
+            title: 'The Noise of Performance',
+            epigraph: 'We do not burn out simply from doing too much. We burn out from judging ourselves without ever closing the tab.',
+            paragraphs: [
+              'There is a strange kind of exhaustion that eight hours of sleep never quite cures. It is the fatigue of performing for an imaginary jury: the people who seem to move faster, optimize their mornings, and turn every quiet hour into a monetizable project.',
+              'Somewhere along the way, we confused the worth of a day with the length of a checklist. The moment an afternoon opens up, a polite little voice rushes in with guilt: you should be reading, shipping, catching up.',
+              'Catching up to what? Nobody signed a contract stating your life had to look like a quarterly dashboard. The noise of performance quiets the instant you realize peace is not a prize handed out after the race—it is the ground that makes meaningful work possible.'
+            ]
+          }
+        },
+        {
+          id: 'ch2',
+          num: '02',
+          fr: {
+            title: 'Le piège de l’inachevé',
+            epigraph: 'Ce qui reste inachevé n’est pas un échec moral ; c’est souvent la preuve que vous avez osé commencer.',
+            paragraphs: [
+              'Nous traînons tous un cimetière discret de carnets ouverts à la page quatre, de dépôts Git oubliés et de résolutions abandonnées en février. Longtemps, j’ai regardé ces brouillons comme des preuves de faiblesse.',
+              'Puis j’ai compris que le perfectionnisme est un saboteur déguisé en exigence. Il murmure : « Si ce n’est pas impeccable, ne le montre pas. » Et sous prétexte de respecter votre travail, il vous empêche de respirer — et d’exister.',
+              'Accepter l’inachevé, ce n’est pas bâcler. C’est reconnaître qu’un être humain vivant laisse toujours des bords imparfaits. Un prototype imparfait qui aide une seule personne aujourd’hui vaut mille chefs-d’œuvre prisonniers d’un dossier local.'
+            ]
+          },
+          en: {
+            title: 'The Trap of the Unfinished',
+            epigraph: 'What remains unfinished is not a moral failure; it is often proof that you dared to begin.',
+            paragraphs: [
+              'We all carry a quiet graveyard of notebooks abandoned on page four, forgotten repositories, and February resolutions. For years, I looked at those drafts as evidence of a character flaw.',
+              'Then I noticed that perfectionism is a saboteur dressed up as high standards. It whispers: "If it is not flawless, do not show it." Under the disguise of caring deeply, it quietly suffocates your momentum.',
+              'Making peace with the unfinished is not about being careless. It is accepting that a living human leaves rough edges. An imperfect prototype that delights one person today is worth a thousand masterpieces locked in a private folder.'
+            ]
+          }
+        },
+        {
+          id: 'ch3',
+          num: '03',
+          fr: {
+            title: 'Dire non sans s’excuser',
+            epigraph: 'Un « non » clair et doux protège bien mieux vos relations qu’un « oui » rempli de ressentiment.',
+            paragraphs: [
+              'Dire oui par automatisme est une politesse qui coûte cher. On accepte une réunion inutile, un projet qui ne nous ressemble pas, une attente qui n’est pas la nôtre — et l’on paie la facture en irritation silencieuse deux semaines plus tard.',
+              'Nous croyons souvent qu’un refus exige un dossier justificatif de trois paragraphes. En réalité, plus vous vous justifiez, plus vous invitez l’autre à négocier vos limites.',
+              'Essayez cette phrase simple : « Merci d’avoir pensé à moi, je ne peux pas m’y consacrer cette fois-ci. » Sans roman, sans culpabilité. Votre énergie n’est pas un bien public illimité ; la protéger est un acte de respect envers ce à quoi vous choisirez vraiment de dire oui.'
+            ]
+          },
+          en: {
+            title: 'Saying No Without Apologizing',
+            epigraph: 'A clear, gentle "no" protects your relationships far better than a resentful "yes".',
+            paragraphs: [
+              'Saying yes on autopilot is an expensive form of politeness. We accept a pointless meeting, a project that does not fit, an expectation that was never ours—and pay the bill in quiet resentment two weeks later.',
+              'We often believe a refusal requires a three-paragraph legal brief. In practice, the more excuses you pile on, the more you invite others to negotiate your boundaries.',
+              'Try a simpler sentence: "Thank you for thinking of me—I cannot take this on right now." No drama, no guilt. Your energy is not an infinite public utility; protecting it honors the few things you truly choose to say yes to.'
+            ]
+          }
+        },
+        {
+          id: 'ch4',
+          num: '04',
+          fr: {
+            title: 'La règle du assez bien',
+            epigraph: 'Les vingt derniers pour cent de polissage dévorent quatre-vingts pour cent de votre joie.',
+            paragraphs: [
+              'Il existe un point d’équilibre magique dans tout ce que nous créons : le moment où l’essentiel est là, sincère, utile et vivant. Passé ce point, nous n’améliorons plus l’œuvre — nous essayons seulement de nous blinder contre la critique.',
+              'La règle du « assez bien » n’est pas un hymne à la médiocrité. C’est une boussole de lucidité. Elle demande : est-ce que cet effort supplémentaire sert vraiment le lecteur, l’utilisateur, l’ami — ou seulement mon anxiété ?',
+              'Quand vous choisissez de publier à 85 % plutôt que de polir indéfiniment jusqu’à l’épuisement, vous découvrez quelque chose d’inattendu : les gens n’aiment pas la perfection lisse. Ils aiment la chaleur d’une main humaine.'
+            ]
+          },
+          en: {
+            title: 'The Rule of Good Enough',
+            epigraph: 'The last twenty percent of polishing quietly devours eighty percent of your joy.',
+            paragraphs: [
+              'There is a magical tipping point in everything we make: the moment the core is honest, useful, and alive. Past that point, we are rarely improving the work—we are mostly armoring ourselves against imaginary criticism.',
+              'The rule of "good enough" is not a defense of mediocrity. It is a compass for clarity. It asks: does this extra hour genuinely serve the reader, the user, the friend—or only my anxiety?',
+              'When you choose to ship at 85% instead of polishing into exhaustion, you discover something relieving: people do not connect with sterile perfection. They connect with the warmth of a human hand.'
+            ]
+          }
+        },
+        {
+          id: 'ch5',
+          num: '05',
+          fr: {
+            title: 'Reprendre son temps',
+            epigraph: 'Un café bu sans écran répare parfois plus de choses qu’une semaine entière d’optimisation.',
+            paragraphs: [
+              'Regardez votre dernière semaine : combien de minutes avez-vous passées à ne rien produire, ne rien consommer, ne rien prouver ? Notre attention est devenue la matière première la plus convoitée de la planète, et nous la cédons gratuitement à chaque notification.',
+              'Reprendre son temps commence par de minuscules rébellions : marcher dix minutes sans podcast, regarder la lumière changer sur un mur, laisser une conversation respirer sans consulter l’heure.',
+              'Le temps ne vous appartient pas quand il est rempli ; il vous appartient quand vous êtes vraiment présent dedans. Foutez-vous la paix pendant vingt minutes aujourd’hui. Le monde continuera de tourner sans votre vigilance permanente.'
+            ]
+          },
+          en: {
+            title: 'Reclaiming Your Time',
+            epigraph: 'One cup of coffee drunk without a screen sometimes repairs more than a full week of optimization.',
+            paragraphs: [
+              'Look back at your last week: how many minutes did you spend producing nothing, consuming nothing, proving nothing? Human attention has become the most aggressively mined resource on earth, and we hand it over for free at every ping.',
+              'Reclaiming your time starts with tiny rebellions: walking ten minutes without a podcast, watching afternoon light shift across a wall, letting a conversation breathe without glancing at a clock.',
+              'Time does not belong to you when it is packed full; it belongs to you when you are actually awake inside it. Leave yourself alone for twenty minutes today. The world will keep spinning without your constant supervision.'
+            ]
+          }
+        },
+        {
+          id: 'ch6',
+          num: '06',
+          fr: {
+            title: 'Épilogue : Jour 30/30',
+            epigraph: 'Trente jours, trente prototypes inachevés — et une seule leçon qui reste : avancer léger.',
+            paragraphs: [
+              'Nous y voilà. Jour 30 sur 30. Trente idées sorties du tiroir, imparfaites, vivantes, parfois bricolées tard le soir, mais réelles. Si ce défi m’a appris une chose, c’est que la créativité n’attend pas que vous soyez prêt : elle attend que vous desserriez l’étau.',
+              'Vous n’avez pas besoin de tout finir aujourd’hui. Vous n’avez pas besoin d’avoir toutes les réponses avant de poser la première pierre. Faites un pas honnête, partagez-le avec le sourire, puis fermez l’ordinateur.',
+              'Merci d’avoir lu jusqu’ici. Maintenant, fermez cet onglet quand vous le voudrez, respirez un grand coup — et foutez-vous vraiment la paix.'
+            ]
+          },
+          en: {
+            title: 'Epilogue: Day 30/30',
+            epigraph: 'Thirty days, thirty unfinished prototypes—and one lesson that stays: travel light.',
+            paragraphs: [
+              'Here we are. Day 30 of 30. Thirty ideas pulled out of the drawer—imperfect, alive, sometimes cobbled together late at night, yet real. If this challenge taught me anything, it is that creativity does not wait for you to feel ready; it waits for you to loosen your grip.',
+              'You do not need to finish everything today. You do not need every answer before laying the first stone. Take one honest step, share it with a smile, and close the laptop.',
+              'Thank you for reading this far. Whenever you are ready, close this tab, take a deep breath—and truly give yourself some peace.'
+            ]
+          }
+        }
+      ];
+
+      const I18N = {
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          thCream: 'Crème',
+          thSepia: 'Sépia',
+          thNight: 'Nuit',
+          stNight: 'Nuit Dorée',
+          stLemon: 'Citron Doux',
+          btnBreath: 'Pause Respiration (60s)',
+          btnCarnet: 'Carnet de Paix',
+          bookTitle: 'Foutez-vous la Paix',
+          bookMeta: 'Salah Khenissi · Édition Numérique · Jour 30/30',
+          highlightHint: 'Cliquez sur n’importe quel passage pour le surligner et l’ajouter à votre Carnet de Paix.',
+          pauseTitle: 'Avant de tourner la page',
+          pauseDesc: 'Accordez-vous 60 secondes de respiration calme pour laisser décanter ce chapitre.',
+          pauseCta: 'Respirer 60 secondes',
+          btnPrev: '← Chapitre précédent',
+          btnNext: 'Chapitre suivant →',
+          unfTitle: 'Ce qui reste inachevé',
+          unf1: 'Ceci est une édition numérique concise en 6 chapitres thématiques — pas l’intégralité paginée d’un ouvrage imprimé.',
+          unf2: 'Les surlignages du Carnet de Paix vivent uniquement dans votre navigateur (localStorage), sans synchronisation cloud.',
+          unf3: 'Pas de narration audio ni d’export ePub pour l’instant — juste un texte calme, une respiration, et vos citations en PNG.',
+          carnetTitle: 'Carnet de Paix',
+          carnetSub: 'Vos passages enregistrés localement. Transformez n’importe quelle phrase en carte PNG partageable.',
+          breathTitle: 'Pause Respiration · 60 secondes',
+          breathSub: 'Inspirez doucement 4s · Retenez 4s · Expirez longuement 6s.',
+          breathStart: 'Commencer',
+          breathPause: 'Pause',
+          breathDone: 'Paix retrouvée',
+          breathInhale: 'Inspirez...',
+          breathHold: 'Retenez...',
+          breathExhale: 'Expirez...',
+          breathReady: 'Prêt',
+          btnClose: 'Fermer',
+          quoteModalTitle: 'Carte Citation PNG',
+          quoteModalSub: 'Choisissez une ambiance et téléchargez votre passage en haute résolution.',
+          btnDownloadPng: 'Télécharger PNG',
+          tagSaved: '★ Dans votre Carnet',
+          tagClick: '+ Surligner',
+          btnMakeCard: 'Carte PNG',
+          btnCopy: 'Copier',
+          btnRemove: 'Retirer',
+          emptyCarnet: 'Votre carnet est vide. Cliquez sur un paragraphe dans le texte pour le conserver ici.',
+          toastSaved: 'Ajouté au Carnet de Paix',
+          toastRemoved: 'Retiré du Carnet de Paix',
+          toastCopied: 'Passage copié dans le presse-papiers',
+          toastPng: 'Carte Citation PNG téléchargée !',
+          chapterLabel: 'CHAPITRE {n} / 06'
+        },
+        en: {
+          downloadHtml: 'Download HTML',
+          thCream: 'Cream',
+          thSepia: 'Sepia',
+          thNight: 'Night',
+          stNight: 'Golden Night',
+          stLemon: 'Soft Lemon',
+          btnBreath: 'Breathing Pause (60s)',
+          btnCarnet: 'Peace Notebook',
+          bookTitle: 'Foutez-vous la Paix',
+          bookMeta: 'Salah Khenissi · Digital Edition · Day 30/30',
+          highlightHint: 'Click any passage to highlight it and save it into your personal Peace Notebook.',
+          pauseTitle: 'Before turning the page',
+          pauseDesc: 'Take 60 quiet seconds of paced breathing to let this chapter settle.',
+          pauseCta: 'Breathe for 60 seconds',
+          btnPrev: '← Previous chapter',
+          btnNext: 'Next chapter →',
+          unfTitle: "What's still unfinished",
+          unf1: 'This is a concise 6-chapter thematic digital edition rather than a full print-length paginated book.',
+          unf2: 'Peace Notebook highlights live locally in your browser (localStorage) with no cloud sync.',
+          unf3: 'No audio narration or ePub export yet — just calm prose, a breathing pause, and shareable PNG quote cards.',
+          carnetTitle: 'Peace Notebook',
+          carnetSub: 'Your locally saved passages. Turn any sentence into a shareable high-res PNG quote card.',
+          breathTitle: 'Breathing Pause · 60 seconds',
+          breathSub: 'Inhale gently 4s · Hold 4s · Exhale slowly 6s.',
+          breathStart: 'Begin',
+          breathPause: 'Pause',
+          breathDone: 'Calm restored',
+          breathInhale: 'Inhale...',
+          breathHold: 'Hold...',
+          breathExhale: 'Exhale...',
+          breathReady: 'Ready',
+          btnClose: 'Close',
+          quoteModalTitle: 'Shareable Quote Card PNG',
+          quoteModalSub: 'Pick a mood and download your highlighted passage in high resolution.',
+          btnDownloadPng: 'Download PNG',
+          tagSaved: '★ Saved in Notebook',
+          tagClick: '+ Highlight',
+          btnMakeCard: 'Quote Card PNG',
+          btnCopy: 'Copy',
+          btnRemove: 'Remove',
+          emptyCarnet: 'Your notebook is empty. Click any paragraph in the book to save it here.',
+          toastSaved: 'Saved to Peace Notebook',
+          toastRemoved: 'Removed from Peace Notebook',
+          toastCopied: 'Passage copied to clipboard',
+          toastPng: 'Quote Card PNG downloaded!',
+          chapterLabel: 'CHAPTER {n} / 06'
+        }
+      };
+
+      const FONT_SIZES = [16, 19, 22, 25];
+
+      let state = {
+        lang: 'fr',
+        theme: 'cream',
+        fontIdx: 1,
+        chapterIdx: 0,
+        savedIds: ['ch1:2', 'ch4:2'] // Preloaded thoughtful starter highlights
+      };
+
+      let activeCardQuote = null;
+      let activeCardStyle = 'cream';
+
+      function t(key, vars) {
+        let s = (I18N[state.lang] && I18N[state.lang][key]) || I18N.fr[key] || key;
+        if (vars) Object.keys(vars).forEach(k => { s = s.replace('{' + k + '}', vars[k]); });
+        return s;
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const p = JSON.parse(raw);
+            if (p && typeof p.chapterIdx === 'number') {
+              state = { ...state, ...p };
+              if (!Array.isArray(state.savedIds)) state.savedIds = [];
+            }
+          }
+        } catch (e) {}
+      }
+
+      function saveState() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => el.classList.remove('show'), 2300);
+      }
+
+      function applyThemeAndFont() {
+        document.body.setAttribute('data-theme', state.theme);
+        document.documentElement.style.setProperty('--font-size', FONT_SIZES[state.fontIdx] + 'px');
+        document.querySelectorAll('.theme-btn').forEach(b => {
+          b.classList.toggle('active', b.dataset.theme === state.theme);
+        });
+      }
+
+      function renderToc() {
+        const list = document.getElementById('tocList');
+        list.innerHTML = CHAPTERS.map((ch, i) => `
+          <li class="toc-item">
+            <button type="button" class="${i === state.chapterIdx ? 'active' : ''}" data-idx="${i}">
+              <span class="toc-num">${ch.num}</span>
+              <span>${ch[state.lang].title}</span>
+            </button>
+          </li>
+        `).join('');
+
+        list.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.chapterIdx = Number(btn.dataset.idx);
+            saveState();
+            renderChapter();
+            renderToc();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        });
+      }
+
+      function renderChapter() {
+        const ch = CHAPTERS[state.chapterIdx];
+        const copy = ch[state.lang];
+        document.getElementById('chEyebrow').textContent = t('chapterLabel', { n: ch.num });
+        document.getElementById('chTitle').textContent = copy.title;
+        document.getElementById('chEpigraph').textContent = '« ' + copy.epigraph + ' »';
+
+        const prose = document.getElementById('chProse');
+        prose.innerHTML = copy.paragraphs.map((text, idx) => {
+          const pid = ch.id + ':' + idx;
+          const isSaved = state.savedIds.includes(pid);
+          return `
+            <p class="para-wrap${isSaved ? ' saved' : ''}" data-pid="${pid}">
+              ${text}
+              <span class="para-tag">${isSaved ? t('tagSaved') : t('tagClick')}</span>
+            </p>
+          `;
+        }).join('');
+
+        prose.querySelectorAll('.para-wrap').forEach(p => {
+          p.addEventListener('click', () => {
+            const pid = p.dataset.pid;
+            if (state.savedIds.includes(pid)) {
+              state.savedIds = state.savedIds.filter(x => x !== pid);
+              showToast(t('toastRemoved'));
+            } else {
+              state.savedIds.unshift(pid);
+              showToast(t('toastSaved'));
+            }
+            saveState();
+            renderChapter();
+            renderCarnet();
+          });
+        });
+
+        document.getElementById('prevChBtn').disabled = state.chapterIdx === 0;
+        document.getElementById('nextChBtn').disabled = state.chapterIdx === CHAPTERS.length - 1;
+        updateProgressBar();
+      }
+
+      function resolvePassage(pid) {
+        const [chId, idxStr] = pid.split(':');
+        const chIdx = CHAPTERS.findIndex(c => c.id === chId);
+        if (chIdx < 0) return null;
+        const ch = CHAPTERS[chIdx];
+        const pIdx = Number(idxStr);
+        const text = ch[state.lang].paragraphs[pIdx];
+        if (!text) return null;
+        return { pid, chIdx, num: ch.num, chapterTitle: ch[state.lang].title, text };
+      }
+
+      function renderCarnet() {
+        const items = state.savedIds.map(resolvePassage).filter(Boolean);
+        document.getElementById('carnetCount').textContent = items.length;
+        const list = document.getElementById('carnetList');
+
+        if (!items.length) {
+          list.innerHTML = `<p style="font-size:14px;color:var(--ink-muted);padding:16px 0;">${t('emptyCarnet')}</p>`;
+          return;
+        }
+
+        list.innerHTML = items.map(item => `
+          <div class="quote-item">
+            <div class="quote-text">“${item.text}”</div>
+            <div class="quote-meta">${item.num}. ${item.chapterTitle}</div>
+            <div class="quote-actions">
+              <button type="button" class="tb-btn active make-card-btn" data-pid="${item.pid}">${t('btnMakeCard')}</button>
+              <button type="button" class="tb-btn copy-btn" data-pid="${item.pid}">${t('btnCopy')}</button>
+              <button type="button" class="tb-btn del-btn" data-pid="${item.pid}">${t('btnRemove')}</button>
+            </div>
+          </div>
+        `).join('');
+
+        list.querySelectorAll('.make-card-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const item = resolvePassage(btn.dataset.pid);
+            if (item) openQuoteCardModal(item);
+          });
+        });
+
+        list.querySelectorAll('.copy-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const item = resolvePassage(btn.dataset.pid);
+            if (item && navigator.clipboard) {
+              navigator.clipboard.writeText(`“${item.text}” — Salah Khenissi, Foutez-vous la Paix`);
+              showToast(t('toastCopied'));
+            }
+          });
+        });
+
+        list.querySelectorAll('.del-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.savedIds = state.savedIds.filter(x => x !== btn.dataset.pid);
+            saveState();
+            renderChapter();
+            renderCarnet();
+          });
+        });
+      }
+
+      // ---- Shareable Quote Card PNG Generator ----
+      const CARD_THEMES = {
+        cream: { bg: '#FAF6EE', border: '#E4D8C1', ink: '#231E18', muted: '#7A6D5C', accent: '#C2852E' },
+        night: { bg: '#161513', border: '#38332B', ink: '#F2EAD9', muted: '#A99C88', accent: '#E8B949' },
+        sepia: { bg: '#EFE3CE', border: '#D4BFA0', ink: '#33261B', muted: '#755E47', accent: '#A6621E' },
+        lemon: { bg: '#FFE885', border: '#181624', ink: '#181624', muted: '#4A4336', accent: '#181624' }
+      };
+
+      function openQuoteCardModal(item) {
+        activeCardQuote = item;
+        document.getElementById('quoteModal').classList.add('open');
+        drawQuoteCard();
+      }
+
+      function drawQuoteCard() {
+        if (!activeCardQuote) return;
+        const canvas = document.getElementById('quoteCanvas');
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width, h = canvas.height;
+        const th = CARD_THEMES[activeCardStyle] || CARD_THEMES.cream;
+
+        // Background
+        ctx.fillStyle = th.bg;
+        ctx.fillRect(0, 0, w, h);
+
+        // Subtle editorial frame
+        ctx.strokeStyle = th.border;
+        ctx.lineWidth = 4;
+        ctx.strokeRect(56, 56, w - 112, h - 112);
+
+        // Top eyebrow
+        ctx.fillStyle = th.accent;
+        ctx.font = '700 26px "DM Sans", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('THE UNFINISHED 30 · DAY 30/30', w / 2, 136);
+
+        // Decorative opening quote mark
+        ctx.fillStyle = th.accent;
+        ctx.font = '400 130px "Newsreader", Georgia, serif';
+        ctx.fillText('“', w / 2, 275);
+
+        // Wrapped Quote Text
+        ctx.fillStyle = th.ink;
+        const text = activeCardQuote.text;
+        const fontSize = text.length > 220 ? 44 : 52;
+        ctx.font = '400 ' + fontSize + 'px "Newsreader", Georgia, serif';
+        const lines = wrapCanvasText(ctx, text, w - 210);
+        const lineH = fontSize * 1.48;
+        const startY = Math.max(340, (h - lines.length * lineH) / 2 + 20);
+        lines.forEach((line, i) => {
+          ctx.fillText(line, w / 2, startY + i * lineH);
+        });
+
+        // Divider line
+        ctx.strokeStyle = th.accent;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(w / 2 - 60, h - 250);
+        ctx.lineTo(w / 2 + 60, h - 250);
+        ctx.stroke();
+
+        // Book & Chapter signature
+        ctx.fillStyle = th.ink;
+        ctx.font = 'italic 36px "Newsreader", Georgia, serif';
+        ctx.fillText('Foutez-vous la Paix', w / 2, h - 190);
+
+        ctx.fillStyle = th.muted;
+        ctx.font = '600 24px "DM Sans", sans-serif';
+        ctx.fillText('Salah Khenissi · ' + activeCardQuote.num + '. ' + activeCardQuote.chapterTitle, w / 2, h - 135);
+      }
+
+      function wrapCanvasText(ctx, text, maxW) {
+        const words = text.split(/\s+/);
+        const lines = [];
+        let cur = '';
+        words.forEach(w => {
+          const test = cur ? cur + ' ' + w : w;
+          if (ctx.measureText(test).width > maxW && cur) {
+            lines.push(cur);
+            cur = w;
+          } else {
+            cur = test;
+          }
+        });
+        if (cur) lines.push(cur);
+        return lines;
+      }
+
+      // ---- 60-Second Breathing Pause ----
+      let breathInterval = null;
+      let breathRemaining = 60;
+      let breathElapsed = 0;
+
+      function updateBreathUI() {
+        const mins = String(Math.floor(breathRemaining / 60)).padStart(2, '0');
+        const secs = String(breathRemaining % 60).padStart(2, '0');
+        document.getElementById('breathTimer').textContent = mins + ':' + secs;
+        const ring = document.getElementById('breathRing');
+        const phaseEl = document.getElementById('breathPhase');
+
+        if (!breathInterval) {
+          ring.style.transform = 'scale(1)';
+          phaseEl.textContent = breathRemaining === 0 ? t('breathDone') : t('breathReady');
+          return;
+        }
+        const cycle = breathElapsed % 14; // 4s inhale, 4s hold, 6s exhale
+        if (cycle < 4) {
+          phaseEl.textContent = t('breathInhale');
+          ring.style.transition = 'transform 4s ease-in-out';
+          ring.style.transform = 'scale(1.42)';
+        } else if (cycle < 8) {
+          phaseEl.textContent = t('breathHold');
+          ring.style.transition = 'transform 0.6s ease';
+          ring.style.transform = 'scale(1.42)';
+        } else {
+          phaseEl.textContent = t('breathExhale');
+          ring.style.transition = 'transform 6s ease-in-out';
+          ring.style.transform = 'scale(0.95)';
+        }
+      }
+
+      function stopBreathing() {
+        clearInterval(breathInterval);
+        breathInterval = null;
+        document.getElementById('breathToggleBtn').textContent = t('breathStart');
+        updateBreathUI();
+      }
+
+      function toggleBreathing() {
+        if (breathInterval) {
+          stopBreathing();
+          return;
+        }
+        if (breathRemaining <= 0) {
+          breathRemaining = 60;
+          breathElapsed = 0;
+        }
+        document.getElementById('breathToggleBtn').textContent = t('breathPause');
+        breathInterval = setInterval(() => {
+          breathElapsed++;
+          breathRemaining--;
+          if (breathRemaining <= 0) {
+            breathRemaining = 0;
+            stopBreathing();
+          } else {
+            updateBreathUI();
+          }
+        }, 1000);
+        updateBreathUI();
+      }
+
+      function updateProgressBar() {
+        const docH = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollRatio = docH > 0 ? Math.min(1, Math.max(0, window.scrollY / docH)) : 1;
+        const overall = ((state.chapterIdx + scrollRatio) / CHAPTERS.length) * 100;
+        document.getElementById('progressFill').style.width = overall.toFixed(1) + '%';
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = state.lang;
+        document.getElementById('langEn').classList.toggle('active', state.lang === 'en');
+        document.getElementById('langFr').classList.toggle('active', state.lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.getAttribute('data-i18n');
+          if (I18N[state.lang][k]) el.textContent = I18N[state.lang][k];
+        });
+        renderToc();
+        renderChapter();
+        renderCarnet();
+        updateBreathUI();
+      }
+
+      function bindEvents() {
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.theme = btn.dataset.theme;
+            saveState();
+            applyThemeAndFont();
+          });
+        });
+
+        document.getElementById('fontDown').addEventListener('click', () => {
+          state.fontIdx = Math.max(0, state.fontIdx - 1);
+          saveState();
+          applyThemeAndFont();
+        });
+        document.getElementById('fontUp').addEventListener('click', () => {
+          state.fontIdx = Math.min(FONT_SIZES.length - 1, state.fontIdx + 1);
+          saveState();
+          applyThemeAndFont();
+        });
+
+        document.getElementById('prevChBtn').addEventListener('click', () => {
+          if (state.chapterIdx > 0) {
+            state.chapterIdx--;
+            saveState();
+            renderChapter();
+            renderToc();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+        document.getElementById('nextChBtn').addEventListener('click', () => {
+          if (state.chapterIdx < CHAPTERS.length - 1) {
+            state.chapterIdx++;
+            saveState();
+            renderChapter();
+            renderToc();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+
+        // Carnet Drawer
+        const drawer = document.getElementById('carnetDrawer');
+        document.getElementById('openCarnetBtn').addEventListener('click', () => drawer.classList.add('open'));
+        document.getElementById('closeCarnetBtn').addEventListener('click', () => drawer.classList.remove('open'));
+        drawer.addEventListener('click', e => { if (e.target === drawer) drawer.classList.remove('open'); });
+
+        // Breathing Modal
+        const breathModal = document.getElementById('breathModal');
+        const openBreath = () => {
+          breathRemaining = 60;
+          breathElapsed = 0;
+          stopBreathing();
+          breathModal.classList.add('open');
+        };
+        document.getElementById('openBreathBtn').addEventListener('click', openBreath);
+        document.getElementById('chapterBreathBtn').addEventListener('click', openBreath);
+        document.getElementById('breathToggleBtn').addEventListener('click', toggleBreathing);
+        document.getElementById('breathCloseBtn').addEventListener('click', () => {
+          stopBreathing();
+          breathModal.classList.remove('open');
+        });
+        breathModal.addEventListener('click', e => {
+          if (e.target === breathModal) { stopBreathing(); breathModal.classList.remove('open'); }
+        });
+
+        // Quote Card Modal
+        const quoteModal = document.getElementById('quoteModal');
+        document.querySelectorAll('.card-style-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activeCardStyle = btn.dataset.style;
+            document.querySelectorAll('.card-style-btn').forEach(b => b.classList.toggle('active', b === btn));
+            drawQuoteCard();
+          });
+        });
+        document.getElementById('downloadQuotePngBtn').addEventListener('click', () => {
+          const canvas = document.getElementById('quoteCanvas');
+          const a = document.createElement('a');
+          a.download = 'foutez-vous-la-paix-quote.png';
+          a.href = canvas.toDataURL('image/png');
+          a.click();
+          showToast(t('toastPng'));
+        });
+        document.getElementById('closeQuoteBtn').addEventListener('click', () => quoteModal.classList.remove('open'));
+        quoteModal.addEventListener('click', e => { if (e.target === quoteModal) quoteModal.classList.remove('open'); });
+
+        window.addEventListener('scroll', updateProgressBar, { passive: true });
+
+        document.getElementById('langEn').addEventListener('click', () => { state.lang = 'en'; saveState(); applyLanguage(); });
+        document.getElementById('langFr').addEventListener('click', () => { state.lang = 'fr'; saveState(); applyLanguage(); });
+
+        document.getElementById('downloadHtmlBtn').addEventListener('click', () => {
+          const blob = new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'day-30-foutez-vous-la-paix.html';
+          a.click();
+          URL.revokeObjectURL(url);
+        });
+      }
+
+      loadState();
+      applyThemeAndFont();
+      bindEvents();
+      applyLanguage();
+    })();
+  </script>
+</body>
+</html>

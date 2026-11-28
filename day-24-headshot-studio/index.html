@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 24 · Headshot Studio — The Unfinished 30</title>
+  <meta name="description" content="Soft UI photo studio to turn any selfie into a crisp, LinkedIn-ready professional headshot in your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f5f2fa;
+      --surface: #ffffff;
+      --surface-2: #f1ecf9;
+      --ink: #1d1829;
+      --muted: #675e7b;
+      --border: rgba(29, 24, 41, 0.09);
+      --border-strong: rgba(29, 24, 41, 0.18);
+      --accent: #6e56cf;
+      --accent-soft: rgba(110, 86, 207, 0.12);
+      --ok: #1b9e68;
+      --radius: 20px;
+      --shadow-soft: 0 14px 34px rgba(45, 30, 84, 0.08), 0 2px 6px rgba(45, 30, 84, 0.04);
+      --topbar-bg: #131020;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background:
+        radial-gradient(850px 480px at 8% -10%, rgba(216, 198, 250, 0.55), transparent 60%),
+        radial-gradient(700px 420px at 95% 10%, rgba(255, 214, 176, 0.34), transparent 60%),
+        var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar-bg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .challenge-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .challenge-bar a {
+      color: #f7f4fc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .challenge-bar a:hover { opacity: 0.78; }
+    .challenge-bar .sep { color: rgba(255, 255, 255, 0.3); }
+    .challenge-bar .author { color: #bfb5d6; font-weight: 500; }
+    .challenge-bar-right { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255, 255, 255, 0.09);
+      color: #f7f4fc;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .bar-btn:hover { background: rgba(255, 255, 255, 0.18); }
+
+    .container {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 18px 56px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    h1 {
+      font-size: clamp(30px, 4.2vw, 44px);
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+      font-weight: 800;
+    }
+    h1 em {
+      font-family: 'Fraunces', Georgia, serif;
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+    }
+    .hero-sub {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 570px;
+      margin-top: 6px;
+    }
+    .privacy-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(27, 158, 104, 0.1);
+      border: 1px solid rgba(27, 158, 104, 0.25);
+      color: #13734b;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    /* Main Grid */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(330px, 0.95fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    /* Preview Stage */
+    .stage-card {
+      position: sticky;
+      top: 62px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .stage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .pill-tabs {
+      display: inline-flex;
+      background: var(--surface-2);
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+    .pill-tab {
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pill-tab.active {
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(29, 24, 41, 0.08);
+    }
+
+    .canvas-stage {
+      background:
+        radial-gradient(circle at 50% 45%, #ffffff 0%, #ede7f7 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    #studioCanvas {
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 1 / 1;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+      border-radius: 14px;
+    }
+    #studioCanvas:active { cursor: grabbing; }
+    .drag-hint {
+      font-size: 12px;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .stage-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 13.5px;
+      border-radius: 12px;
+      padding: 10px 15px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-2);
+      color: var(--ink);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform 0.12s, background 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { background: #e6def5; }
+    .btn:active { transform: scale(0.98); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6e56cf, #573fc2);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: 0 8px 20px rgba(110, 86, 207, 0.28);
+      flex: 1;
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #7c65d9, #654dd1);
+    }
+
+    .status-line {
+      font-size: 12.5px;
+      color: var(--ok);
+      font-weight: 600;
+      min-height: 18px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Controls Column */
+    .controls-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .sec-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .dropzone {
+      border: 1.5px dashed var(--border-strong);
+      border-radius: 14px;
+      padding: 15px;
+      text-align: center;
+      background: #faf8fe;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .dropzone p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .upload-btns {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .preset-btn {
+      background: var(--surface-2);
+      border: 1.5px solid transparent;
+      border-radius: 12px;
+      padding: 10px 8px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { background: #e9e1f7; }
+    .preset-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .preset-dot {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.9);
+      box-shadow: 0 2px 6px rgba(29, 24, 41, 0.16);
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 11px;
+    }
+    .slider-row:last-child { margin-bottom: 0; }
+    .slider-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .slider-head strong {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--ink);
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Ring Colors */
+    .ring-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .ring-swatch {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2.5px solid transparent;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+      transition: transform 0.12s;
+    }
+    .ring-swatch:hover { transform: scale(1.08); }
+    .ring-swatch.active {
+      border-color: var(--ink);
+      transform: scale(1.1);
+    }
+    .ring-swatch.none {
+      background: repeating-linear-gradient(45deg, #f1ecf9, #f1ecf9 5px, #d8cfe8 5px, #d8cfe8 10px);
+    }
+
+    /* AI Prompt + BYOK Panel */
+    .ai-box {
+      background: linear-gradient(180deg, #faf7ff 0%, #f3eefc 100%);
+      border: 1px solid rgba(110, 86, 207, 0.22);
+    }
+    .ai-selects {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    select, input[type="password"], input[type="text"], textarea {
+      width: 100%;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--ink);
+      outline: none;
+    }
+    select:focus, input:focus, textarea:focus { border-color: var(--accent); }
+    .prompt-preview {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.5;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--muted);
+      margin-bottom: 10px;
+      max-height: 110px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .byok-details {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border);
+    }
+    .byok-details summary {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      user-select: none;
+    }
+    .byok-body {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .byok-row {
+      display: flex;
+      gap: 6px;
+    }
+    .byok-output {
+      font-size: 12.5px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px;
+      color: var(--ink);
+      display: none;
+      white-space: pre-wrap;
+    }
+    .byok-output.visible { display: block; }
+
+    /* Honest Unfinished */
+    .unfinished {
+      margin-top: 32px;
+      background: rgba(29, 24, 41, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+    }
+    .unfinished h2 {
+      font-size: 16px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .unfinished ul {
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 14px;
+      display: grid;
+      gap: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .studio-grid { grid-template-columns: 1fr; }
+      .stage-card { position: static; }
+    }
+    @media (max-width: 480px) {
+      .preset-grid { grid-template-columns: repeat(2, 1fr); }
+      .ai-selects { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="challenge-bar">
+    <div class="challenge-bar-left">
+      <a href="/">The Unfinished 30 · Day 24/30</a>
+      <span class="sep">·</span>
+      <a class="author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="challenge-bar-right">
+      <button class="bar-btn" id="langBtn" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button">↓ <span data-i18n="downloadHtml">Download HTML</span></button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow" data-i18n="eyebrow">SOFT UI LINKEDIN PHOTO STUDIO</div>
+        <h1>Headshot <em>Studio</em></h1>
+        <p class="hero-sub" data-i18n="subtitle">Turn any selfie into a crisp, LinkedIn-ready 1024×1024 headshot with studio color grading, circular framing, brand rings, and optional AI prompt crafting.</p>
+      </div>
+      <div class="privacy-pill">
+        <span>🔒</span>
+        <span data-i18n="privacy">100% client-side Canvas · Photos never leave your browser</span>
+      </div>
+    </section>
+
+    <div class="studio-grid">
+      <!-- Live Canvas Preview -->
+      <section class="card stage-card">
+        <div class="stage-top">
+          <div class="pill-tabs" id="shapeTabs">
+            <button class="pill-tab active" data-shape="circle" type="button" data-i18n="shapeCircle">Circle (LinkedIn)</button>
+            <button class="pill-tab" data-shape="square" type="button" data-i18n="shapeSquare">Square (1:1)</button>
+          </div>
+          <button class="btn" id="guidesBtn" type="button" style="padding:6px 11px;font-size:12px;">⊞ <span data-i18n="guides">Guides</span></button>
+        </div>
+
+        <div class="canvas-stage">
+          <canvas id="studioCanvas" width="720" height="720"></canvas>
+          <span class="drag-hint" data-i18n="dragHint">Drag photo to reposition · Scroll or slide to zoom</span>
+        </div>
+
+        <div class="stage-actions">
+          <button class="btn" id="resetFrameBtn" type="button">↺ <span data-i18n="resetFrame">Reset</span></button>
+          <button class="btn btn-primary" id="exportPngBtn" type="button">↓ <span data-i18n="exportPng">Download High-Res PNG (1024×1024)</span></button>
+        </div>
+        <div class="status-line" id="statusLine"></div>
+      </section>
+
+      <!-- Controls -->
+      <aside class="controls-stack">
+        <!-- Upload -->
+        <div class="card">
+          <div class="sec-title"><span data-i18n="secPhoto">1. Source Photo</span></div>
+          <div class="dropzone" id="dropzone">
+            <p data-i18n="dropHint">Drop a selfie or portrait (JPG, PNG, WebP) — or test with the demo portrait.</p>
+            <div class="upload-btns">
+              <button class="btn" id="uploadBtn" type="button">📷 <span data-i18n="uploadPhoto">Upload Photo</span></button>
+              <button class="btn" id="demoPortraitBtn" type="button">✦ <span data-i18n="loadDemo">Load Demo Portrait</span></button>
+            </div>
+            <input type="file" id="photoInput" accept="image/*" hidden />
+          </div>
+        </div>
+
+        <!-- 6 Studio Presets -->
+        <div class="card">
+          <div class="sec-title"><span data-i18n="secPresets">2. Studio Lighting Presets</span></div>
+          <div class="preset-grid" id="presetGrid">
+            <button class="preset-btn active" data-preset="execWarm" type="button">
+              <span class="preset-dot" style="background:linear-gradient(135deg,#f7d7b5,#c9895b);"></span>
+              <span data-i18n="pExecWarm">Executive Warm</span>
+            </button>
+            <button class="preset-btn" data-preset="cleanStudio" type="button">
+              <span class="preset-dot" style="background:linear-gradient(135deg,#f6f8fc,#a9c1e8);"></span>
+              <span data-i18n="pCleanStudio">Clean Studio</span>
+            </button>
+            <button class="preset-btn" data-preset="editorialBW" type="button">
+              <span class="preset-dot" style="background:linear-gradient(135deg,#e4e4e7,#27272a);"></span>
+              <span data-i18n="pEditorialBW">Editorial B&amp;W</span>
+            </button>
+            <button class="preset-btn" data-preset="bangkokGold" type="button">
+              <span class="preset-dot" style="background:linear-gradient(135deg,#ffe29f,#ff9a5a);"></span>
+              <span data-i18n="pBangkokGold">Bangkok Golden</span>
+            </button>
+            <button class="preset-btn" data-preset="crispDay" type="button">
+              <span class="preset-dot" style="background:linear-gradient(135deg,#dff6ff,#69b6f0);"></span>
+              <span data-i18n="pCrispDay">Crisp Daylight</span>
+            </button>
+            <button class="preset-btn" data-preset="softContrast" type="button">
+              <span class="preset-dot" style="background:linear-gradient(135deg,#efe6fb,#9d83d6);"></span>
+              <span data-i18n="pSoftContrast">Soft Contrast</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Framing & Fine Adjustments -->
+        <div class="card">
+          <div class="sec-title"><span data-i18n="secAdjust">3. Framing &amp; Tone</span></div>
+          <div class="slider-row">
+            <div class="slider-head"><span data-i18n="lblZoom">Zoom</span><strong id="zoomVal">112%</strong></div>
+            <input type="range" id="zoomSlider" min="100" max="240" step="1" value="112" />
+          </div>
+          <div class="slider-row">
+            <div class="slider-head"><span data-i18n="lblExposure">Exposure</span><strong id="expVal">+4%</strong></div>
+            <input type="range" id="expSlider" min="-35" max="40" step="1" value="4" />
+          </div>
+          <div class="slider-row">
+            <div class="slider-head"><span data-i18n="lblContrast">Contrast</span><strong id="conVal">+8%</strong></div>
+            <input type="range" id="conSlider" min="-30" max="45" step="1" value="8" />
+          </div>
+          <div class="slider-row">
+            <div class="slider-head"><span data-i18n="lblWarmth">Warmth</span><strong id="warmVal">+14</strong></div>
+            <input type="range" id="warmSlider" min="-40" max="50" step="1" value="14" />
+          </div>
+          <div class="slider-row">
+            <div class="slider-head"><span data-i18n="lblVignette">Clarity / Vignette</span><strong id="vigVal">24%</strong></div>
+            <input type="range" id="vigSlider" min="0" max="75" step="1" value="24" />
+          </div>
+        </div>
+
+        <!-- Brand Ring Border -->
+        <div class="card">
+          <div class="sec-title"><span data-i18n="secRing">4. LinkedIn Avatar Ring</span></div>
+          <div class="ring-row" id="ringRow">
+            <button class="ring-swatch none" data-ring="none" type="button" title="None"></button>
+            <button class="ring-swatch active" data-ring="#6e56cf" style="background:#6e56cf;" type="button" title="Royal Lilac"></button>
+            <button class="ring-swatch" data-ring="#e6a82e" style="background:#e6a82e;" type="button" title="Warm Gold"></button>
+            <button class="ring-swatch" data-ring="#1b9e68" style="background:#1b9e68;" type="button" title="Emerald"></button>
+            <button class="ring-swatch" data-ring="#1b3b6f" style="background:#1b3b6f;" type="button" title="Executive Navy"></button>
+            <button class="ring-swatch" data-ring="#e86f51" style="background:#e86f51;" type="button" title="Sunset Coral"></button>
+          </div>
+          <div class="slider-row">
+            <div class="slider-head"><span data-i18n="lblRingWidth">Ring Thickness</span><strong id="ringWVal">22 px</strong></div>
+            <input type="range" id="ringWSlider" min="8" max="44" step="2" value="22" />
+          </div>
+        </div>
+
+        <!-- Pro AI Prompt & Optional BYOK Gemini -->
+        <div class="card ai-box">
+          <div class="sec-title"><span data-i18n="secAi">5. Generative Backdrop Prompt (Optional)</span></div>
+          <div class="ai-selects">
+            <select id="backdropSelect">
+              <option value="minimal studio warm gray">Minimal Studio Gray</option>
+              <option value="sunlit modern architectural office with soft bokeh">Modern Office Bokeh</option>
+              <option value="golden hour rooftop terrace overlooking Bangkok skyline">Bangkok Golden Hour</option>
+              <option value="deep executive navy backdrop with rim lighting">Executive Navy Studio</option>
+            </select>
+            <select id="outfitSelect">
+              <option value="tailored charcoal blazer over crisp white crewneck">Smart Casual Blazer</option>
+              <option value="minimalist dark linen overshirt">Creative Founder</option>
+              <option value="classic navy suit and open-collar shirt">Executive Classic</option>
+              <option value="textured oatmeal knit sweater">Warm Editorial</option>
+            </select>
+          </div>
+          <div class="prompt-preview" id="promptPreview"></div>
+          <button class="btn" id="copyPromptBtn" type="button" style="width:100%;">📋 <span data-i18n="copyPrompt">Copy Pro AI Prompt</span></button>
+
+          <details class="byok-details">
+            <summary data-i18n="byokSummary">✨ Optional BYOK Gemini Art-Director (Direct Browser Call)</summary>
+            <div class="byok-body">
+              <div class="byok-row">
+                <input type="password" id="geminiKeyInput" placeholder="AIza... (stored only in localStorage)" />
+                <button class="btn" id="clearKeyBtn" type="button" style="padding:8px 10px;font-size:12px;" data-i18n="clear">Clear</button>
+              </div>
+              <input type="text" id="roleInput" placeholder="Your role (e.g. Product Designer in Bangkok)" />
+              <button class="btn btn-primary" id="runGeminiBtn" type="button" style="padding:9px 12px;font-size:13px;" data-i18n="askGemini">Enhance Prompt with Gemini</button>
+              <div class="byok-output" id="geminiOutput"></div>
+            </div>
+          </details>
+        </div>
+      </aside>
+    </div>
+
+    <section class="unfinished">
+      <h2 data-i18n="unfinishedTitle">What's still unfinished</h2>
+      <ul>
+        <li data-i18n="unfin1">True automatic background removal/matting in-browser requires a ~40 MB ONNX segmentation model; this prototype focuses on fast studio lighting, color grading, framing, and brand rings, plus a copyable AI prompt for generative background swaps.</li>
+        <li data-i18n="unfin2">No automatic face-center detection yet — drag the canvas directly to position your eyes on the upper third line.</li>
+        <li data-i18n="unfin3">BYOK Gemini enhancement calls the text endpoint (gemini-2.0-flash) to craft a bespoke photography prompt &amp; LinkedIn tagline rather than editing pixels directly.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    const I18N = {
+      en: {
+        downloadHtml: "Download HTML",
+        eyebrow: "SOFT UI LINKEDIN PHOTO STUDIO",
+        subtitle: "Turn any selfie into a crisp, LinkedIn-ready 1024×1024 headshot with studio color grading, circular framing, brand rings, and optional AI prompt crafting.",
+        privacy: "100% client-side Canvas · Photos never leave your browser",
+        shapeCircle: "Circle (LinkedIn)",
+        shapeSquare: "Square (1:1)",
+        guides: "Guides",
+        dragHint: "Drag photo to reposition · Scroll or slide to zoom",
+        resetFrame: "Reset",
+        exportPng: "Download High-Res PNG (1024×1024)",
+        secPhoto: "1. Source Photo",
+        dropHint: "Drop a selfie or portrait (JPG, PNG, WebP) — or test with the demo portrait.",
+        uploadPhoto: "Upload Photo",
+        loadDemo: "Load Demo Portrait",
+        secPresets: "2. Studio Lighting Presets",
+        pExecWarm: "Executive Warm",
+        pCleanStudio: "Clean Studio",
+        pEditorialBW: "Editorial B&W",
+        pBangkokGold: "Bangkok Golden",
+        pCrispDay: "Crisp Daylight",
+        pSoftContrast: "Soft Contrast",
+        secAdjust: "3. Framing & Tone",
+        lblZoom: "Zoom",
+        lblExposure: "Exposure",
+        lblContrast: "Contrast",
+        lblWarmth: "Warmth",
+        lblVignette: "Clarity / Vignette",
+        secRing: "4. LinkedIn Avatar Ring",
+        lblRingWidth: "Ring Thickness",
+        secAi: "5. Generative Backdrop Prompt (Optional)",
+        copyPrompt: "Copy Pro AI Prompt",
+        byokSummary: "✨ Optional BYOK Gemini Art-Director (Direct Browser Call)",
+        clear: "Clear",
+        askGemini: "Enhance Prompt with Gemini",
+        unfinishedTitle: "What's still unfinished",
+        unfin1: "True automatic background removal/matting in-browser requires a ~40 MB ONNX segmentation model; this prototype focuses on fast studio lighting, color grading, framing, and brand rings, plus a copyable AI prompt for generative background swaps.",
+        unfin2: "No automatic face-center detection yet — drag the canvas directly to position your eyes on the upper third line.",
+        unfin3: "BYOK Gemini enhancement calls the text endpoint (gemini-2.0-flash) to craft a bespoke photography prompt & LinkedIn tagline rather than editing pixels directly.",
+        statusExported: "Exported 1024×1024 headshot-studio-1024.png!",
+        statusDemoLoaded: "Demo studio portrait loaded — try presets & drag to pan.",
+        statusPhotoLoaded: "Photo loaded locally · Drag to frame & export.",
+        statusCopied: "Pro AI prompt copied to clipboard!",
+        statusNeedKey: "Paste a Gemini API key first (stays only in your browser).",
+        statusGeminiCalling: "Calling Gemini directly from your browser…"
+      },
+      fr: {
+        downloadHtml: "Télécharger HTML",
+        eyebrow: "STUDIO PORTRAIT LINKEDIN SOFT UI",
+        subtitle: "Transformez n'importe quel selfie en portrait LinkedIn 1024×1024 net avec étalonnage studio, recadrage circulaire, anneau de marque et prompt IA.",
+        privacy: "100% Canvas local · Vos photos ne quittent jamais le navigateur",
+        shapeCircle: "Cercle (LinkedIn)",
+        shapeSquare: "Carré (1:1)",
+        guides: "Grille",
+        dragHint: "Glissez la photo pour cadrer · Molette ou curseur pour zoomer",
+        resetFrame: "Réinitialiser",
+        exportPng: "Télécharger PNG HD (1024×1024)",
+        secPhoto: "1. Photo Source",
+        dropHint: "Déposez un selfie ou portrait (JPG, PNG, WebP) — ou testez avec le portrait démo.",
+        uploadPhoto: "Importer une photo",
+        loadDemo: "Charger Portrait Démo",
+        secPresets: "2. Préréglages Lumière Studio",
+        pExecWarm: "Chaleur Exécutive",
+        pCleanStudio: "Studio Pur",
+        pEditorialBW: "N&B Éditorial",
+        pBangkokGold: "Or de Bangkok",
+        pCrispDay: "Jour Net",
+        pSoftContrast: "Contraste Doux",
+        secAdjust: "3. Cadrage & Lumière",
+        lblZoom: "Zoom",
+        lblExposure: "Exposition",
+        lblContrast: "Contraste",
+        lblWarmth: "Chaleur",
+        lblVignette: "Clarté / Vignettage",
+        secRing: "4. Anneau Avatar LinkedIn",
+        lblRingWidth: "Épaisseur de l'anneau",
+        secAi: "5. Prompt Fond Génératif (Optionnel)",
+        copyPrompt: "Copier le Prompt IA Pro",
+        byokSummary: "✨ Directeur Artistique Gemini BYOK (Appel direct navigateur)",
+        clear: "Effacer",
+        askGemini: "Affiner le prompt avec Gemini",
+        unfinishedTitle: "Ce qui reste inachevé",
+        unfin1: "Le détourage automatique de l'arrière-plan nécessiterait un modèle ONNX (~40 Mo) ; ce prototype privilégie l'étalonnage studio instantané, le cadrage et un prompt IA prêt à copier.",
+        unfin2: "Pas encore de centrage automatique du visage — glissez directement sur le canvas pour aligner les yeux sur le tiers supérieur.",
+        unfin3: "L'option BYOK Gemini appelle gemini-2.0-flash pour générer une direction artistique photo et un titre LinkedIn, sans retoucher les pixels directement.",
+        statusExported: "Portrait 1024×1024 exporté (headshot-studio-1024.png) !",
+        statusDemoLoaded: "Portrait démo chargé — testez les filtres et glissez pour cadrer.",
+        statusPhotoLoaded: "Photo chargée localement · Prête à recadrer et exporter.",
+        statusCopied: "Prompt IA Pro copié dans le presse-papiers !",
+        statusNeedKey: "Collez d'abord une clé API Gemini (stockée uniquement en local).",
+        statusGeminiCalling: "Appel direct à Gemini depuis votre navigateur…"
+      }
+    };
+
+    const PRESETS = {
+      execWarm:     { exp: 4,  con: 8,  warm: 14, vig: 24, sat: 104, bw: false },
+      cleanStudio:  { exp: 10, con: 6,  warm: -6, vig: 12, sat: 98,  bw: false },
+      editorialBW:  { exp: 2,  con: 24, warm: 0,  vig: 34, sat: 0,   bw: true  },
+      bangkokGold:  { exp: 6,  con: 10, warm: 28, vig: 26, sat: 112, bw: false },
+      crispDay:     { exp: 8,  con: 12, warm: -14, vig: 10, sat: 106, bw: false },
+      softContrast: { exp: 5,  con: -6, warm: 6,  vig: 28, sat: 92,  bw: false }
+    };
+
+    const state = {
+      lang: "en",
+      shape: "circle",
+      showGuides: false,
+      preset: "execWarm",
+      zoom: 1.12,
+      panX: 0,
+      panY: 0,
+      exp: 4,
+      con: 8,
+      warm: 14,
+      vig: 24,
+      sat: 104,
+      bw: false,
+      ringColor: "#6e56cf",
+      ringWidth: 22
+    };
+
+    let sourceImage = null; // HTMLImageElement or HTMLCanvasElement
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+    let startPanX = 0;
+    let startPanY = 0;
+
+    const canvas = document.getElementById("studioCanvas");
+    const ctx = canvas.getContext("2d");
+    const statusLine = document.getElementById("statusLine");
+
+    function t(key) {
+      return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+    }
+
+    function setStatus(msg) {
+      statusLine.textContent = msg;
+    }
+
+    // Generate a clean, high-resolution illustrated studio portrait onto an offscreen canvas
+    function createDemoPortraitCanvas() {
+      const c = document.createElement("canvas");
+      c.width = 1024;
+      c.height = 1024;
+      const g = c.getContext("2d");
+
+      // Soft studio backdrop gradient
+      const bg = g.createRadialGradient(512, 360, 60, 512, 512, 680);
+      bg.addColorStop(0, "#f2eef9");
+      bg.addColorStop(0.55, "#d8d1ea");
+      bg.addColorStop(1, "#a79ec4");
+      g.fillStyle = bg;
+      g.fillRect(0, 0, 1024, 1024);
+
+      // Subtle architectural window light beam
+      g.save();
+      g.fillStyle = "rgba(255, 250, 240, 0.24)";
+      g.beginPath();
+      g.moveTo(140, 0);
+      g.lineTo(560, 0);
+      g.lineTo(940, 1024);
+      g.lineTo(440, 1024);
+      g.closePath();
+      g.fill();
+      g.restore();
+
+      // Shoulders / Tailored Blazer
+      const blazerGrad = g.createLinearGradient(220, 620, 800, 1024);
+      blazerGrad.addColorStop(0, "#2f334a");
+      blazerGrad.addColorStop(1, "#1b1d2e");
+      g.fillStyle = blazerGrad;
+      g.beginPath();
+      g.moveTo(160, 1024);
+      g.bezierCurveTo(185, 760, 310, 685, 512, 685);
+      g.bezierCurveTo(714, 685, 839, 760, 864, 1024);
+      g.closePath();
+      g.fill();
+
+      // Crisp crewneck shirt
+      g.fillStyle = "#fbf9f5";
+      g.beginPath();
+      g.moveTo(418, 692);
+      g.quadraticCurveTo(512, 835, 606, 692);
+      g.quadraticCurveTo(512, 725, 418, 692);
+      g.closePath();
+      g.fill();
+
+      // Blazer lapels
+      g.fillStyle = "#222638";
+      g.beginPath();
+      g.moveTo(415, 690);
+      g.lineTo(492, 855);
+      g.lineTo(368, 795);
+      g.closePath();
+      g.fill();
+
+      g.beginPath();
+      g.moveTo(609, 690);
+      g.lineTo(532, 855);
+      g.lineTo(656, 795);
+      g.closePath();
+      g.fill();
+
+      // Neck with soft studio shadow
+      const neckGrad = g.createLinearGradient(448, 560, 576, 710);
+      neckGrad.addColorStop(0, "#df9f79");
+      neckGrad.addColorStop(1, "#f2ba96");
+      g.fillStyle = neckGrad;
+      g.beginPath();
+      g.roundRect(454, 575, 116, 152, 48);
+      g.fill();
+
+      // Ears
+      g.fillStyle = "#eba982";
+      g.beginPath();
+      g.ellipse(362, 468, 26, 44, -0.1, 0, Math.PI * 2);
+      g.fill();
+      g.beginPath();
+      g.ellipse(662, 468, 26, 44, 0.1, 0, Math.PI * 2);
+      g.fill();
+
+      // Head
+      const faceGrad = g.createRadialGradient(480, 410, 30, 512, 460, 195);
+      faceGrad.addColorStop(0, "#fad1b3");
+      faceGrad.addColorStop(0.7, "#eeb38c");
+      faceGrad.addColorStop(1, "#d9946d");
+      g.fillStyle = faceGrad;
+      g.beginPath();
+      g.ellipse(512, 460, 154, 186, 0, 0, Math.PI * 2);
+      g.fill();
+
+      // Soft Hair Silhouette
+      const hairGrad = g.createLinearGradient(360, 230, 680, 440);
+      hairGrad.addColorStop(0, "#2c2335");
+      hairGrad.addColorStop(1, "#18131f");
+      g.fillStyle = hairGrad;
+      g.beginPath();
+      g.moveTo(356, 445);
+      g.bezierCurveTo(340, 315, 415, 240, 520, 244);
+      g.bezierCurveTo(628, 248, 686, 322, 668, 445);
+      g.bezierCurveTo(646, 376, 598, 344, 518, 346);
+      g.bezierCurveTo(435, 348, 386, 378, 356, 445);
+      g.closePath();
+      g.fill();
+
+      // Eyebrows
+      g.strokeStyle = "#261e2e";
+      g.lineWidth = 11;
+      g.lineCap = "round";
+      g.beginPath();
+      g.moveTo(418, 424);
+      g.quadraticCurveTo(452, 410, 484, 422);
+      g.stroke();
+      g.beginPath();
+      g.moveTo(540, 422);
+      g.quadraticCurveTo(572, 410, 606, 424);
+      g.stroke();
+
+      // Eyes with studio catchlights
+      [452, 572].forEach((ex) => {
+        g.fillStyle = "#1f1926";
+        g.beginPath();
+        g.ellipse(ex, 456, 15, 16, 0, 0, Math.PI * 2);
+        g.fill();
+        g.fillStyle = "#ffffff";
+        g.beginPath();
+        g.arc(ex - 5, 450, 5, 0, Math.PI * 2);
+        g.fill();
+      });
+
+      // Nose bridge highlight
+      g.strokeStyle = "rgba(182, 114, 78, 0.55)";
+      g.lineWidth = 7;
+      g.beginPath();
+      g.moveTo(512, 452);
+      g.quadraticCurveTo(524, 496, 508, 510);
+      g.stroke();
+
+      // Confident friendly smile
+      g.strokeStyle = "#69352b";
+      g.lineWidth = 9;
+      g.beginPath();
+      g.moveTo(466, 548);
+      g.quadraticCurveTo(512, 582, 558, 548);
+      g.stroke();
+
+      // Subtle cheek warmth
+      g.fillStyle = "rgba(232, 120, 102, 0.14)";
+      g.beginPath();
+      g.ellipse(422, 506, 32, 18, 0, 0, Math.PI * 2);
+      g.fill();
+      g.beginPath();
+      g.ellipse(602, 506, 32, 18, 0, 0, Math.PI * 2);
+      g.fill();
+
+      return c;
+    }
+
+    function renderToCanvas(targetCanvas, includeGuides) {
+      const size = targetCanvas.width;
+      const g = targetCanvas.getContext("2d");
+      g.clearRect(0, 0, size, size);
+
+      const scaleFactor = size / 1024;
+      const ringW = state.ringColor !== "none" ? state.ringWidth * scaleFactor : 0;
+      const isCircle = state.shape === "circle";
+
+      g.save();
+      if (isCircle) {
+        g.beginPath();
+        g.arc(size / 2, size / 2, size / 2 - (ringW > 0 ? ringW * 0.45 : 0), 0, Math.PI * 2);
+        g.clip();
+      }
+
+      // Draw photo with CSS-style canvas filters
+      if (sourceImage) {
+        const iw = sourceImage.naturalWidth || sourceImage.width;
+        const ih = sourceImage.naturalHeight || sourceImage.height;
+        const baseScale = Math.max(size / iw, size / ih);
+        const drawW = iw * baseScale * state.zoom;
+        const drawH = ih * baseScale * state.zoom;
+        const dx = (size - drawW) / 2 + state.panX * scaleFactor;
+        const dy = (size - drawH) / 2 + state.panY * scaleFactor;
+
+        const brightness = 100 + state.exp;
+        const contrast = 100 + state.con;
+        const saturate = state.bw ? 0 : state.sat;
+        g.filter = `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`;
+        g.drawImage(sourceImage, dx, dy, drawW, drawH);
+        g.filter = "none";
+      }
+
+      // Warmth / Cool studio color grading overlay
+      if (!state.bw && state.warm !== 0) {
+        g.save();
+        if (state.warm > 0) {
+          g.globalCompositeOperation = "soft-light";
+          g.fillStyle = `rgba(255, 178, 102, ${(state.warm / 50) * 0.42})`;
+        } else {
+          g.globalCompositeOperation = "soft-light";
+          g.fillStyle = `rgba(110, 175, 255, ${(Math.abs(state.warm) / 40) * 0.38})`;
+        }
+        g.fillRect(0, 0, size, size);
+        g.restore();
+      }
+
+      // Clarity / Studio Vignette
+      if (state.vig > 0) {
+        const vigGrad = g.createRadialGradient(
+          size / 2, size * 0.46, size * 0.24,
+          size / 2, size / 2, size * 0.66
+        );
+        vigGrad.addColorStop(0, "rgba(0,0,0,0)");
+        vigGrad.addColorStop(1, `rgba(16, 12, 24, ${(state.vig / 75) * 0.56})`);
+        g.fillStyle = vigGrad;
+        g.fillRect(0, 0, size, size);
+      }
+
+      // Optional Rule-of-Thirds Guides (preview only)
+      if (includeGuides && state.showGuides) {
+        g.strokeStyle = "rgba(255, 255, 255, 0.55)";
+        g.lineWidth = Math.max(1.5, size * 0.002);
+        g.setLineDash([8, 6]);
+        [1 / 3, 2 / 3].forEach((f) => {
+          g.beginPath();
+          g.moveTo(size * f, 0);
+          g.lineTo(size * f, size);
+          g.stroke();
+          g.beginPath();
+          g.moveTo(0, size * f);
+          g.lineTo(size, size * f);
+          g.stroke();
+        });
+        g.setLineDash([]);
+      }
+
+      g.restore();
+
+      // Optional Brand Ring Border
+      if (ringW > 0) {
+        g.save();
+        g.strokeStyle = state.ringColor;
+        g.lineWidth = ringW;
+        if (isCircle) {
+          g.beginPath();
+          g.arc(size / 2, size / 2, size / 2 - ringW / 2, 0, Math.PI * 2);
+          g.stroke();
+        } else {
+          g.strokeRect(ringW / 2, ringW / 2, size - ringW, size - ringW);
+        }
+        g.restore();
+      }
+    }
+
+    function renderPreview() {
+      renderToCanvas(canvas, true);
+    }
+
+    function syncSlidersFromState() {
+      document.getElementById("zoomSlider").value = Math.round(state.zoom * 100);
+      document.getElementById("zoomVal").textContent = Math.round(state.zoom * 100) + "%";
+      document.getElementById("expSlider").value = state.exp;
+      document.getElementById("expVal").textContent = (state.exp > 0 ? "+" : "") + state.exp + "%";
+      document.getElementById("conSlider").value = state.con;
+      document.getElementById("conVal").textContent = (state.con > 0 ? "+" : "") + state.con + "%";
+      document.getElementById("warmSlider").value = state.warm;
+      document.getElementById("warmVal").textContent = (state.warm > 0 ? "+" : "") + state.warm;
+      document.getElementById("vigSlider").value = state.vig;
+      document.getElementById("vigVal").textContent = state.vig + "%";
+      document.getElementById("ringWSlider").value = state.ringWidth;
+      document.getElementById("ringWVal").textContent = state.ringWidth + " px";
+    }
+
+    function applyPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+      state.preset = key;
+      state.exp = p.exp;
+      state.con = p.con;
+      state.warm = p.warm;
+      state.vig = p.vig;
+      state.sat = p.sat;
+      state.bw = p.bw;
+      document.querySelectorAll("#presetGrid .preset-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.preset === key);
+      });
+      syncSlidersFromState();
+      renderPreview();
+      updatePromptPreview();
+    }
+
+    function loadDemoPortrait() {
+      sourceImage = createDemoPortraitCanvas();
+      state.panX = 0;
+      state.panY = 0;
+      state.zoom = 1.08;
+      syncSlidersFromState();
+      renderPreview();
+      setStatus(t("statusDemoLoaded"));
+    }
+
+    function loadPhotoFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          sourceImage = img;
+          state.panX = 0;
+          state.panY = 0;
+          state.zoom = 1.12;
+          syncSlidersFromState();
+          renderPreview();
+          setStatus(t("statusPhotoLoaded"));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function exportHighResPng() {
+      const out = document.createElement("canvas");
+      out.width = 1024;
+      out.height = 1024;
+      renderToCanvas(out, false);
+      const url = out.toDataURL("image/png");
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "headshot-studio-1024.png";
+      a.click();
+      setStatus(t("statusExported"));
+    }
+
+    function buildProPrompt() {
+      const backdrop = document.getElementById("backdropSelect").value;
+      const outfit = document.getElementById("outfitSelect").value;
+      const lightingMap = {
+        execWarm: "warm key light with gentle softbox fill and subtle rim separation",
+        cleanStudio: "even high-key softbox studio lighting with clean catchlights",
+        editorialBW: "high-contrast black and white editorial portrait lighting, crisp micro-contrast",
+        bangkokGold: "warm golden-hour natural sunlight with rich amber rim glow",
+        crispDay: "bright natural northern window daylight, clean true-to-life skin tones",
+        softContrast: "diffused low-contrast editorial lighting with airy pastel highlights"
+      };
+      const lighting = lightingMap[state.preset] || lightingMap.execWarm;
+      return `Professional LinkedIn headshot portrait of the person in the reference photo, preserving exact facial identity and natural expression. Wearing ${outfit}. Set against a ${backdrop}. Shot on 85mm f/1.8 prime lens, shallow depth of field, ${lighting}, authentic skin texture, zero plastic retouching, centered head-and-shoulders composition.`;
+    }
+
+    function updatePromptPreview() {
+      document.getElementById("promptPreview").textContent = buildProPrompt();
+    }
+
+    async function enhanceWithGemini() {
+      const keyInput = document.getElementById("geminiKeyInput");
+      const key = keyInput.value.trim();
+      const outEl = document.getElementById("geminiOutput");
+      if (!key) {
+        outEl.classList.add("visible");
+        outEl.textContent = t("statusNeedKey");
+        return;
+      }
+      localStorage.setItem("day24_gemini_key", key);
+      outEl.classList.add("visible");
+      outEl.textContent = t("statusGeminiCalling");
+
+      const role = document.getElementById("roleInput").value.trim() || "Creative Technologist";
+      const basePrompt = buildProPrompt();
+      const userText = `You are a portrait photographer and LinkedIn brand coach. Refine this headshot generation prompt for a ${role}, and suggest 1 crisp LinkedIn headline that pairs with the vibe. Keep it concise (under 110 words).\n\nBase prompt:\n${basePrompt}`;
+
+      try {
+        const res = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: userText }] }]
+            })
+          }
+        );
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error((data.error && data.error.message) || "API error " + res.status);
+        }
+        const text =
+          (data.candidates &&
+            data.candidates[0] &&
+            data.candidates[0].content &&
+            data.candidates[0].content.parts &&
+            data.candidates[0].content.parts[0] &&
+            data.candidates[0].content.parts[0].text) ||
+          "No response returned.";
+        outEl.textContent = text.trim();
+      } catch (err) {
+        outEl.textContent = "Error: " + err.message;
+      }
+    }
+
+    function applyTranslations() {
+      document.documentElement.lang = state.lang;
+      document.getElementById("langBtn").textContent = state.lang === "en" ? "FR" : "EN";
+      document.querySelectorAll("[data-i18n]").forEach((el) => {
+        el.textContent = t(el.getAttribute("data-i18n"));
+      });
+    }
+
+    // Canvas Drag-to-Pan & Wheel Zoom
+    canvas.addEventListener("pointerdown", (e) => {
+      isDragging = true;
+      canvas.setPointerCapture(e.pointerId);
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      startPanX = state.panX;
+      startPanY = state.panY;
+    });
+    canvas.addEventListener("pointermove", (e) => {
+      if (!isDragging) return;
+      const rect = canvas.getBoundingClientRect();
+      const factor = 1024 / rect.width;
+      state.panX = startPanX + (e.clientX - dragStartX) * factor;
+      state.panY = startPanY + (e.clientY - dragStartY) * factor;
+      renderPreview();
+    });
+    canvas.addEventListener("pointerup", () => { isDragging = false; });
+    canvas.addEventListener("pointercancel", () => { isDragging = false; });
+    canvas.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const delta = e.deltaY < 0 ? 0.05 : -0.05;
+      state.zoom = Math.max(1.0, Math.min(2.4, state.zoom + delta));
+      syncSlidersFromState();
+      renderPreview();
+    }, { passive: false });
+
+    // UI Events
+    document.getElementById("uploadBtn").addEventListener("click", () => {
+      document.getElementById("photoInput").click();
+    });
+    document.getElementById("photoInput").addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) loadPhotoFile(e.target.files[0]);
+    });
+    document.getElementById("demoPortraitBtn").addEventListener("click", loadDemoPortrait);
+
+    const dropzone = document.getElementById("dropzone");
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("dragover");
+    });
+    dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragover"));
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("dragover");
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        loadPhotoFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    document.querySelectorAll("#shapeTabs .pill-tab").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#shapeTabs .pill-tab").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.shape = btn.dataset.shape;
+        renderPreview();
+      });
+    });
+
+    document.getElementById("guidesBtn").addEventListener("click", () => {
+      state.showGuides = !state.showGuides;
+      renderPreview();
+    });
+
+    document.getElementById("resetFrameBtn").addEventListener("click", () => {
+      state.panX = 0;
+      state.panY = 0;
+      state.zoom = 1.12;
+      applyPreset("execWarm");
+    });
+
+    document.getElementById("exportPngBtn").addEventListener("click", exportHighResPng);
+
+    document.querySelectorAll("#presetGrid .preset-btn").forEach((btn) => {
+      btn.addEventListener("click", () => applyPreset(btn.dataset.preset));
+    });
+
+    document.getElementById("zoomSlider").addEventListener("input", (e) => {
+      state.zoom = Number(e.target.value) / 100;
+      document.getElementById("zoomVal").textContent = e.target.value + "%";
+      renderPreview();
+    });
+    document.getElementById("expSlider").addEventListener("input", (e) => {
+      state.exp = Number(e.target.value);
+      document.getElementById("expVal").textContent = (state.exp > 0 ? "+" : "") + state.exp + "%";
+      renderPreview();
+    });
+    document.getElementById("conSlider").addEventListener("input", (e) => {
+      state.con = Number(e.target.value);
+      document.getElementById("conVal").textContent = (state.con > 0 ? "+" : "") + state.con + "%";
+      renderPreview();
+    });
+    document.getElementById("warmSlider").addEventListener("input", (e) => {
+      state.warm = Number(e.target.value);
+      document.getElementById("warmVal").textContent = (state.warm > 0 ? "+" : "") + state.warm;
+      renderPreview();
+    });
+    document.getElementById("vigSlider").addEventListener("input", (e) => {
+      state.vig = Number(e.target.value);
+      document.getElementById("vigVal").textContent = state.vig + "%";
+      renderPreview();
+    });
+
+    document.querySelectorAll("#ringRow .ring-swatch").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#ringRow .ring-swatch").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.ringColor = btn.dataset.ring;
+        renderPreview();
+      });
+    });
+
+    document.getElementById("ringWSlider").addEventListener("input", (e) => {
+      state.ringWidth = Number(e.target.value);
+      document.getElementById("ringWVal").textContent = state.ringWidth + " px";
+      renderPreview();
+    });
+
+    document.getElementById("backdropSelect").addEventListener("change", updatePromptPreview);
+    document.getElementById("outfitSelect").addEventListener("change", updatePromptPreview);
+
+    document.getElementById("copyPromptBtn").addEventListener("click", async () => {
+      const txt = buildProPrompt();
+      try {
+        await navigator.clipboard.writeText(txt);
+        setStatus(t("statusCopied"));
+      } catch (_) {
+        setStatus(t("statusCopied"));
+      }
+    });
+
+    const savedKey = localStorage.getItem("day24_gemini_key");
+    if (savedKey) document.getElementById("geminiKeyInput").value = savedKey;
+
+    document.getElementById("clearKeyBtn").addEventListener("click", () => {
+      localStorage.removeItem("day24_gemini_key");
+      document.getElementById("geminiKeyInput").value = "";
+      document.getElementById("geminiOutput").classList.remove("visible");
+    });
+    document.getElementById("runGeminiBtn").addEventListener("click", enhanceWithGemini);
+
+    document.getElementById("langBtn").addEventListener("click", () => {
+      state.lang = state.lang === "en" ? "fr" : "en";
+      applyTranslations();
+    });
+
+    document.getElementById("downloadHtmlBtn").addEventListener("click", () => {
+      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "day-24-headshot-studio.html";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 3000);
+    });
+
+    // Init with demo portrait ready immediately
+    applyTranslations();
+    loadDemoPortrait();
+    updatePromptPreview();
+  </script>
+</body>
+</html>

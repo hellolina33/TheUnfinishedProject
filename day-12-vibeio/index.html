@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VibeIO · Day 12/30 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0D0F16;
+      --surface: #151926;
+      --surface-2: #1C2133;
+      --border: #282F47;
+      --border-strong: #394364;
+      --ink: #F1F5F9;
+      --ink-muted: #94A3B8;
+      --peach: #FFB894;
+      --coral: #FF7B54;
+      --coral-dark: #E8623B;
+      --tag-edit: #60A5FA;
+      --tag-audio: #C084FC;
+      --tag-text: #FBBF24;
+      --tag-bug: #F87171;
+      --tag-approved: #34D399;
+      --radius: 14px;
+      --font-display: 'Syne', system-ui, sans-serif;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Challenge Top Bar */
+    .u30-bar {
+      background: #080A10;
+      color: #E2E8F0;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .u30-bar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .u30-bar a { color: #FFFFFF; text-decoration: none; font-weight: 600; }
+    .u30-bar a:hover { opacity: 0.85; text-decoration: underline; }
+    .u30-sep { opacity: 0.35; }
+    .u30-bar-right { display: flex; align-items: center; gap: 8px; }
+    .u30-pill {
+      display: inline-flex;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      padding: 2px;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .u30-lang-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .u30-lang-btn.active { background: #FFFFFF; color: #080A10; }
+    .u30-dl-btn {
+      background: rgba(255, 184, 148, 0.14);
+      color: var(--peach);
+      border: 1px solid rgba(255, 184, 148, 0.35);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .u30-dl-btn:hover { background: var(--peach); color: #080A10; }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 22px 20px 60px;
+    }
+
+    /* Header */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+    .hero h1 span { color: var(--peach); }
+    .hero-sub {
+      color: var(--ink-muted);
+      font-size: 13.5px;
+      margin-top: 2px;
+    }
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 8px 13px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-peach { background: var(--coral); color: #FFFFFF; }
+    .btn-peach:hover { background: var(--coral-dark); }
+    .btn-ghost { background: var(--surface-2); color: var(--ink); border-color: var(--border); }
+    .btn-ghost:hover { border-color: var(--peach); color: var(--peach); }
+    .btn-sm { padding: 5px 10px; font-size: 11.5px; border-radius: 8px; }
+
+    /* Main Workspace Grid */
+    .workspace {
+      display: grid;
+      grid-template-columns: 1.45fr 0.85fr;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 26px;
+    }
+    @media (max-width: 960px) {
+      .workspace { grid-template-columns: 1fr; }
+    }
+
+    /* Player Panel */
+    .player-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .stage-wrap {
+      position: relative;
+      background: #05060A;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .stage-wrap.dragover {
+      outline: 3px dashed var(--peach);
+      outline-offset: -8px;
+    }
+    #videoEl, #demoCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: contain;
+    }
+    .stage-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(8, 10, 16, 0.78);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.14);
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--peach);
+      pointer-events: none;
+    }
+    .stage-hint {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: rgba(8, 10, 16, 0.72);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 3px 9px;
+      border-radius: 8px;
+      font-size: 11px;
+      color: var(--ink-muted);
+      pointer-events: none;
+    }
+
+    /* Timeline & Controls */
+    .controls-wrap {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .timeline-container {
+      position: relative;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+    .timeline-track {
+      position: relative;
+      width: 100%;
+      height: 8px;
+      background: var(--surface-2);
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+    .timeline-progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, var(--coral), var(--peach));
+      border-radius: 999px;
+      width: 0%;
+      pointer-events: none;
+    }
+    .timeline-playhead {
+      position: absolute;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      background: #FFFFFF;
+      border: 2.5px solid var(--coral);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.45);
+    }
+    .timeline-marker {
+      position: absolute;
+      top: -13px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      border: 1.5px solid #0D0F16;
+      cursor: pointer;
+      z-index: 4;
+      transition: transform 0.12s;
+    }
+    .timeline-marker:hover { transform: translateX(-50%) scale(1.45); z-index: 8; }
+    .timeline-marker.resolved { opacity: 0.4; }
+
+    .transport-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .transport-left, .transport-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .timecode {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--peach);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 8px;
+    }
+
+    /* Composer */
+    .composer {
+      border-top: 1px solid var(--border);
+      padding: 14px 16px 16px;
+      background: #121622;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .composer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .composer-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .input, .select {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      color: var(--ink);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 11px;
+      outline: none;
+    }
+    .input:focus, .select:focus { border-color: var(--peach); }
+    .composer-input { flex: 1; min-width: 180px; }
+
+    /* Comments Sidebar */
+    .comments-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      max-height: 690px;
+      overflow: hidden;
+    }
+    .comments-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .comments-title {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .filter-bar {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: #121622;
+    }
+    .filter-chip {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      color: var(--ink-muted);
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      background: var(--peach);
+      color: #0D0F16;
+      border-color: var(--peach);
+    }
+
+    .comments-list {
+      padding: 12px 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .comment-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.15s, opacity 0.15s;
+    }
+    .comment-item:hover { border-color: var(--border-strong); }
+    .comment-item.active-near { border-color: var(--peach); box-shadow: 0 0 0 2px rgba(255,184,148,0.18); }
+    .comment-item.resolved { opacity: 0.55; }
+    .comment-item.resolved .comment-text { text-decoration: line-through; }
+
+    .comment-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .comment-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .tc-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      background: rgba(255, 184, 148, 0.15);
+      color: var(--peach);
+      border: 1px solid rgba(255, 184, 148, 0.35);
+      cursor: pointer;
+    }
+    .tc-pill:hover { background: var(--peach); color: #0D0F16; }
+    .tag-pill {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 2px 7px;
+      border-radius: 999px;
+      color: #0D0F16;
+    }
+    .comment-author { font-size: 11.5px; font-weight: 600; color: var(--ink-muted); }
+    .comment-text { font-size: 13px; color: var(--ink); word-break: break-word; }
+
+    .comment-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .check-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--ink-muted);
+      cursor: pointer;
+    }
+    .del-btn {
+      background: transparent;
+      border: none;
+      color: #64748B;
+      cursor: pointer;
+      font-size: 15px;
+      line-height: 1;
+      padding: 2px 4px;
+    }
+    .del-btn:hover { color: var(--tag-bug); }
+
+    .export-footer {
+      padding: 12px 14px;
+      border-top: 1px solid var(--border);
+      background: #121622;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Unfinished */
+    .unfinished {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px dashed rgba(245, 158, 11, 0.45);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      color: #FDE68A;
+    }
+    .unfinished h3 { font-size: 14.5px; font-weight: 800; margin-bottom: 8px; }
+    .unfinished ul { padding-left: 18px; font-size: 13px; color: #FCD34D; display: flex; flex-direction: column; gap: 4px; }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: var(--peach);
+      color: #0D0F16;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.45);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 200;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Challenge Bar -->
+  <header class="u30-bar">
+    <div class="u30-bar-left">
+      <a href="/">The Unfinished 30 · Day 12/30</a>
+      <span class="u30-sep">·</span>
+      <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="u30-bar-right">
+      <div class="u30-pill" role="group" aria-label="Language">
+        <button class="u30-lang-btn active" data-lang="en" id="btnLangEn">EN</button>
+        <button class="u30-lang-btn" data-lang="fr" id="btnLangFr">FR</button>
+      </div>
+      <button class="u30-dl-btn" id="btnDownloadHtml">
+        <span>⬇</span>
+        <span data-i18n="downloadHtml">Download HTML</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>Vibe<span>IO</span></h1>
+        <p class="hero-sub" data-i18n="subtitle">Minimalist local Frame.io alternative. Drop any video or run the built-in demo reel, pin timestamped notes, and export your review.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-peach" id="btnPickVideo">🎬 <span data-i18n="loadLocalBtn">Open Local Video</span></button>
+        <input type="file" id="videoFileInput" accept="video/mp4,video/webm,video/quicktime,video/*" style="display:none" />
+        <button class="btn btn-ghost" id="btnLoadDemo">✨ <span data-i18n="loadDemoBtn">Load Demo Video</span></button>
+        <button class="btn btn-ghost" id="btnImportJson">📂 <span data-i18n="importJson">Import JSON</span></button>
+        <input type="file" id="jsonFileInput" accept="application/json,.json" style="display:none" />
+      </div>
+    </section>
+
+    <section class="workspace">
+      <!-- Left: Video Stage + Timeline + Comment Composer -->
+      <div class="player-card">
+        <div class="stage-wrap" id="stageWrap">
+          <video id="videoEl" playsinline style="display:none"></video>
+          <canvas id="demoCanvas" width="960" height="540"></canvas>
+          <div class="stage-badge" id="mediaBadge">DEMO REEL · 24.0s</div>
+          <div class="stage-hint" data-i18n="dropHint">Drop MP4 / WebM / MOV here · Space to Play</div>
+        </div>
+
+        <div class="controls-wrap">
+          <!-- Scrubber Timeline with Markers -->
+          <div class="timeline-container" id="timelineContainer">
+            <div class="timeline-track" id="timelineTrack">
+              <div class="timeline-progress" id="timelineProgress"></div>
+              <div class="timeline-playhead" id="timelinePlayhead"></div>
+              <div id="markersLayer"></div>
+            </div>
+          </div>
+
+          <div class="transport-row">
+            <div class="transport-left">
+              <button class="btn btn-peach btn-sm" id="btnPlayPause">▶ Play</button>
+              <button class="btn btn-ghost btn-sm" id="btnStepBack">-1s</button>
+              <button class="btn btn-ghost btn-sm" id="btnStepFwd">+1s</button>
+              <button class="btn btn-ghost btn-sm" id="btnSpeed">1.0x</button>
+            </div>
+            <div class="transport-right">
+              <div class="timecode" id="timecodeDisplay">00:00.0 / 00:24.0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pin Comment Composer -->
+        <form class="composer" id="commentForm">
+          <div class="composer-top">
+            <span style="font-size:12px;font-weight:700;color:var(--peach);">
+              📌 <span data-i18n="pinAtLabel">Pin comment at</span> <span class="tc-pill" id="composerTc">00:00.0</span>
+            </span>
+            <input type="text" id="authorInput" class="input" style="padding:4px 9px;font-size:12px;width:140px;" value="Salah" data-i18n-placeholder="authorPlaceholder" />
+          </div>
+          <div class="composer-row">
+            <select id="tagSelect" class="select">
+              <option value="Edit">Edit</option>
+              <option value="Audio">Audio</option>
+              <option value="Text">Text</option>
+              <option value="Bug">Bug</option>
+              <option value="Approved">Approved</option>
+            </select>
+            <input type="text" id="commentInput" class="input composer-input" data-i18n-placeholder="commentPlaceholder" placeholder="Write timestamped feedback..." required />
+            <button type="submit" class="btn btn-peach" data-i18n="pinBtn">Pin Comment</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Right: Comments Sidebar -->
+      <aside class="comments-card">
+        <div class="comments-head">
+          <div class="comments-title">💬 <span data-i18n="commentsTitle">Review Notes</span> (<span id="commentCount">0</span>)</div>
+          <button class="btn btn-ghost btn-sm" id="btnResetDemoNotes" data-i18n="resetNotes">Reset Demo</button>
+        </div>
+
+        <div class="filter-bar" id="statusFilterBar">
+          <button class="filter-chip active" data-status="all" data-i18n="fAll">All</button>
+          <button class="filter-chip" data-status="open" data-i18n="fOpen">Open</button>
+          <button class="filter-chip" data-status="resolved" data-i18n="fResolved">Resolved</button>
+          <select id="tagFilterSelect" class="select" style="padding:3px 8px;font-size:11px;margin-left:auto;">
+            <option value="all">All tags</option>
+            <option value="Edit">Edit</option>
+            <option value="Audio">Audio</option>
+            <option value="Text">Text</option>
+            <option value="Bug">Bug</option>
+            <option value="Approved">Approved</option>
+          </select>
+        </div>
+
+        <div class="comments-list" id="commentsList"></div>
+
+        <div class="export-footer">
+          <button class="btn btn-ghost btn-sm" id="btnExportMd" style="flex:1;">⬇ Markdown</button>
+          <button class="btn btn-ghost btn-sm" id="btnExportCsv" style="flex:1;">⬇ CSV</button>
+          <button class="btn btn-ghost btn-sm" id="btnExportJson" style="flex:1;">⬇ JSON</button>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Honest What's Unfinished -->
+    <section class="unfinished">
+      <h3>🚧 <span data-i18n="unfinishedTitle">What's unfinished</span></h3>
+      <ul>
+        <li data-i18n="unf1">No cloud storage or multiplayer live sync — videos stay 100% on your machine, and review sessions are shared by exporting/importing JSON or Markdown.</li>
+        <li data-i18n="unf2">On-frame drawing annotations (arrows/circles directly over video pixels) aren't built yet; feedback is anchored to timestamps and category tags.</li>
+        <li data-i18n="unf3">Browser codec support varies for `.mov` files (HEVC/ProRes); standard H.264 `.mp4` and `.webm` work reliably everywhere.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'u30_day12_vibeio_v1';
+      const TAG_COLORS = {
+        Edit: '#60A5FA',
+        Audio: '#C084FC',
+        Text: '#FBBF24',
+        Bug: '#F87171',
+        Approved: '#34D399'
+      };
+
+      const DEMO_COMMENTS = [
+        { id: 'c1', time: 2.2, tag: 'Text', author: 'Lina', text: 'Bump the title font size slightly so it reads on mobile.', resolved: false },
+        { id: 'c2', time: 7.8, tag: 'Edit', author: 'Salah', text: 'Trim 0.5s of dead air right before the dashboard transition.', resolved: false },
+        { id: 'c3', time: 14.5, tag: 'Audio', author: 'Marc', text: 'Background synth dips a bit loud here — duck by -3dB.', resolved: false },
+        { id: 'c4', time: 20.4, tag: 'Approved', author: 'Lina', text: 'Final CTA card pacing looks super crisp!', resolved: true }
+      ];
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          subtitle: 'Minimalist local Frame.io alternative. Drop any video or run the built-in demo reel, pin timestamped notes, and export your review.',
+          loadLocalBtn: 'Open Local Video',
+          loadDemoBtn: 'Load Demo Video',
+          importJson: 'Import JSON',
+          dropHint: 'Drop MP4 / WebM / MOV here · Space to Play',
+          pinAtLabel: 'Pin comment at',
+          authorPlaceholder: 'Your name',
+          commentPlaceholder: 'Write timestamped feedback...',
+          pinBtn: 'Pin Comment',
+          commentsTitle: 'Review Notes',
+          resetNotes: 'Reset Demo',
+          fAll: 'All',
+          fOpen: 'Open',
+          fResolved: 'Resolved',
+          unfinishedTitle: "What's unfinished",
+          unf1: "No cloud storage or multiplayer live sync — videos stay 100% on your machine, and review sessions are shared by exporting/importing JSON or Markdown.",
+          unf2: "On-frame drawing annotations (arrows/circles directly over video pixels) aren't built yet; feedback is anchored to timestamps and category tags.",
+          unf3: "Browser codec support varies for .mov files (HEVC/ProRes); standard H.264 .mp4 and .webm work reliably everywhere.",
+          play: '▶ Play',
+          pause: '⏸ Pause',
+          resolvedLbl: 'Resolved',
+          emptyNotes: 'No comments match this filter. Pin your first note below the player!',
+          pinnedToast: 'Comment pinned!',
+          importedToast: 'Review session imported!',
+          exportedToast: 'Exported review file!',
+          videoLoadedToast: 'Local video loaded!'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          subtitle: 'Alternative minimaliste et locale à Frame.io. Déposez une vidéo ou lancez la démo, épinglez des retours horodatés et exportez vos notes.',
+          loadLocalBtn: 'Ouvrir une Vidéo',
+          loadDemoBtn: 'Vidéo Démo',
+          importJson: 'Importer JSON',
+          dropHint: 'Glissez MP4 / WebM / MOV ici · Espace = Lecture',
+          pinAtLabel: 'Épingler à',
+          authorPlaceholder: 'Votre prénom',
+          commentPlaceholder: 'Écrivez votre retour horodaté...',
+          pinBtn: 'Épingler',
+          commentsTitle: 'Notes de Revue',
+          resetNotes: 'Réinitialiser',
+          fAll: 'Tous',
+          fOpen: 'Ouverts',
+          fResolved: 'Résolus',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          unf1: "Pas de cloud ni de synchronisation temps réel — vos vidéos restent 100% locales et les sessions se partagent par export/import JSON ou Markdown.",
+          unf2: "Le dessin directement sur l'image vidéo (flèches/cercles) n'est pas encore implémenté ; les retours sont ancrés aux timecodes et tags.",
+          unf3: "La prise en charge des fichiers .mov dépend des codecs du navigateur ; les .mp4 (H.264) et .webm fonctionnent partout.",
+          play: '▶ Lire',
+          pause: '⏸ Pause',
+          resolvedLbl: 'Résolu',
+          emptyNotes: 'Aucune note pour ce filtre. Épinglez votre premier commentaire sous le lecteur !',
+          pinnedToast: 'Commentaire épinglé !',
+          importedToast: 'Session importée !',
+          exportedToast: 'Fichier exporté !',
+          videoLoadedToast: 'Vidéo locale chargée !'
+        }
+      };
+
+      let lang = 'en';
+      let mode = 'demo'; // 'demo' | 'video'
+      let mediaName = 'demo-launch-cut.mp4';
+      let demoDuration = 24.0;
+      let demoTime = 0;
+      let demoPlaying = false;
+      let playbackRate = 1.0;
+      let lastRaf = null;
+      let statusFilter = 'all';
+      let tagFilter = 'all';
+      let comments = loadComments();
+      let videoObjUrl = null;
+
+      const videoEl = document.getElementById('videoEl');
+      const demoCanvas = document.getElementById('demoCanvas');
+      const ctx = demoCanvas.getContext('2d');
+
+      function t(key) {
+        return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => el.classList.remove('show'), 2400);
+      }
+
+      function loadComments() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed.comments)) return parsed.comments;
+          }
+        } catch (e) {}
+        return JSON.parse(JSON.stringify(DEMO_COMMENTS));
+      }
+
+      function saveComments() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ mediaName, comments }));
+        } catch (e) {}
+      }
+
+      function getCurrentTime() {
+        return mode === 'video' ? (videoEl.currentTime || 0) : demoTime;
+      }
+
+      function getDuration() {
+        return mode === 'video' ? (videoEl.duration || 1) : demoDuration;
+      }
+
+      function isPlaying() {
+        return mode === 'video' ? !videoEl.paused : demoPlaying;
+      }
+
+      function seekTo(sec) {
+        const dur = getDuration();
+        const clamped = Math.max(0, Math.min(dur, sec));
+        if (mode === 'video') {
+          videoEl.currentTime = clamped;
+        } else {
+          demoTime = clamped;
+          drawDemoFrame(demoTime);
+        }
+        updateTimelineUI();
+      }
+
+      function togglePlay() {
+        if (mode === 'video') {
+          if (videoEl.paused) videoEl.play();
+          else videoEl.pause();
+        } else {
+          demoPlaying = !demoPlaying;
+          if (demoPlaying && demoTime >= demoDuration - 0.05) demoTime = 0;
+          lastRaf = performance.now();
+        }
+        updatePlayButton();
+      }
+
+      function fmtTc(sec) {
+        const s = Math.max(0, sec || 0);
+        const m = Math.floor(s / 60);
+        const rem = Math.floor(s % 60);
+        const tenths = Math.floor((s % 1) * 10);
+        return `${String(m).padStart(2, '0')}:${String(rem).padStart(2, '0')}.${tenths}`;
+      }
+
+      function updatePlayButton() {
+        document.getElementById('btnPlayPause').textContent = isPlaying() ? t('pause') : t('play');
+      }
+
+      function updateTimelineUI() {
+        const cur = getCurrentTime();
+        const dur = getDuration();
+        const pct = dur > 0 ? (cur / dur) * 100 : 0;
+        document.getElementById('timelineProgress').style.width = `${pct}%`;
+        document.getElementById('timelinePlayhead').style.left = `${pct}%`;
+        document.getElementById('timecodeDisplay').textContent = `${fmtTc(cur)} / ${fmtTc(dur)}`;
+        document.getElementById('composerTc').textContent = fmtTc(cur);
+
+        // Highlight comments within 1.2s of playhead
+        document.querySelectorAll('.comment-item').forEach((el) => {
+          const ct = parseFloat(el.getAttribute('data-time'));
+          el.classList.toggle('active-near', Math.abs(ct - cur) <= 1.2);
+        });
+      }
+
+      function drawDemoFrame(timeSec) {
+        const w = demoCanvas.width;
+        const h = demoCanvas.height;
+        const scene = Math.min(3, Math.floor(timeSec / 6));
+        const localT = (timeSec % 6) / 6;
+
+        // Animated cinematic background per scene
+        const palettes = [
+          ['#111827', '#1E293B', '#FFB894'],
+          ['#0F172A', '#1E1B4B', '#60A5FA'],
+          ['#18181B', '#312E81', '#C084FC'],
+          ['#0B132B', '#1C2541', '#34D399']
+        ];
+        const [c1, c2, accent] = palettes[scene];
+        const grad = ctx.createLinearGradient(0, 0, w, h);
+        grad.addColorStop(0, c1);
+        grad.addColorStop(1, c2);
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+
+        // Subtle animated grid
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+        ctx.lineWidth = 1;
+        const offset = (timeSec * 30) % 48;
+        for (let x = offset; x < w; x += 48) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+        }
+        for (let y = offset; y < h; y += 48) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+
+        // Floating orb
+        const orbX = w * 0.72 + Math.sin(timeSec * 1.4) * 55;
+        const orbY = h * 0.42 + Math.cos(timeSec * 1.1) * 35;
+        ctx.fillStyle = accent;
+        ctx.globalAlpha = 0.22;
+        ctx.beginPath(); ctx.arc(orbX, orbY, 120, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = 1;
+
+        // Scene copy
+        const titles = [
+          ['SCENE 01 · INTRO TITLE', 'The Unfinished 30 — Launch Cut'],
+          ['SCENE 02 · PRODUCT WALKTHROUGH', 'Zero-Upload Local Video Review'],
+          ['SCENE 03 · AUDIO & MIXING', 'Waveform Sync & Stakeholder Notes'],
+          ['SCENE 04 · FINAL CALL TO ACTION', 'Export Markdown, CSV & JSON']
+        ];
+        const [kicker, headline] = titles[scene];
+        const slideX = 72 + Math.min(1, localT * 5) * 12;
+
+        ctx.fillStyle = accent;
+        ctx.font = '700 18px "JetBrains Mono", monospace';
+        ctx.fillText(kicker, slideX, 200);
+
+        ctx.fillStyle = '#F8FAFC';
+        ctx.font = '800 42px "Syne", sans-serif';
+        ctx.fillText(headline, slideX, 258);
+
+        // Animated audio bars at bottom
+        const barCount = 32;
+        const barW = 14;
+        for (let i = 0; i < barCount; i++) {
+          const amp = 14 + Math.abs(Math.sin(timeSec * 5 + i * 0.45)) * 46;
+          ctx.fillStyle = i % 3 === 0 ? accent : 'rgba(241,245,249,0.28)';
+          ctx.fillRect(84 + i * (barW + 8), h - 90 - amp, barW, amp);
+        }
+
+        // Frame counter overlay
+        const frameNum = Math.floor(timeSec * 30);
+        ctx.fillStyle = 'rgba(255,255,255,0.65)';
+        ctx.font = '600 15px "JetBrains Mono", monospace';
+        ctx.fillText(`TC ${fmtTc(timeSec)}  |  FRM ${String(frameNum).padStart(4, '0')}  |  30fps`, 84, h - 36);
+      }
+
+      function renderMarkers() {
+        const layer = document.getElementById('markersLayer');
+        layer.innerHTML = '';
+        const dur = getDuration();
+        comments.forEach((c) => {
+          const pct = Math.max(0, Math.min(100, (c.time / dur) * 100));
+          const m = document.createElement('div');
+          m.className = 'timeline-marker' + (c.resolved ? ' resolved' : '');
+          m.style.left = `${pct}%`;
+          m.style.background = TAG_COLORS[c.tag] || '#FFB894';
+          m.title = `${fmtTc(c.time)} [${c.tag}] ${c.author}: ${c.text}`;
+          m.addEventListener('click', (e) => {
+            e.stopPropagation();
+            seekTo(c.time);
+          });
+          layer.appendChild(m);
+        });
+      }
+
+      function renderComments() {
+        const list = document.getElementById('commentsList');
+        const filtered = comments
+          .filter((c) => {
+            if (statusFilter === 'open' && c.resolved) return false;
+            if (statusFilter === 'resolved' && !c.resolved) return false;
+            if (tagFilter !== 'all' && c.tag !== tagFilter) return false;
+            return true;
+          })
+          .sort((a, b) => a.time - b.time);
+
+        document.getElementById('commentCount').textContent = String(filtered.length);
+        list.innerHTML = '';
+
+        if (filtered.length === 0) {
+          list.innerHTML = `<div style="text-align:center;color:var(--ink-muted);font-size:12.5px;padding:28px 10px;">${escapeHtml(t('emptyNotes'))}</div>`;
+          renderMarkers();
+          return;
+        }
+
+        filtered.forEach((c) => {
+          const item = document.createElement('div');
+          item.className = 'comment-item' + (c.resolved ? ' resolved' : '');
+          item.setAttribute('data-time', String(c.time));
+          const tagBg = TAG_COLORS[c.tag] || '#FFB894';
+
+          item.innerHTML = `
+            <div class="comment-top">
+              <div class="comment-left">
+                <button type="button" class="tc-pill" title="Jump to timestamp">${fmtTc(c.time)}</button>
+                <span class="tag-pill" style="background:${tagBg}">${escapeHtml(c.tag)}</span>
+                <span class="comment-author">${escapeHtml(c.author)}</span>
+              </div>
+              <div class="comment-actions">
+                <label class="check-label">
+                  <input type="checkbox" ${c.resolved ? 'checked' : ''} />
+                  <span>${escapeHtml(t('resolvedLbl'))}</span>
+                </label>
+                <button type="button" class="del-btn" title="Delete">&times;</button>
+              </div>
+            </div>
+            <div class="comment-text">${escapeHtml(c.text)}</div>
+          `;
+
+          item.querySelector('.tc-pill').addEventListener('click', () => seekTo(c.time));
+          item.querySelector('input[type="checkbox"]').addEventListener('change', (e) => {
+            c.resolved = e.target.checked;
+            saveComments();
+            renderComments();
+          });
+          item.querySelector('.del-btn').addEventListener('click', () => {
+            comments = comments.filter(x => x.id !== c.id);
+            saveComments();
+            renderComments();
+          });
+
+          list.appendChild(item);
+        });
+
+        renderMarkers();
+        updateTimelineUI();
+      }
+
+      function loadLocalVideo(file) {
+        if (!file) return;
+        if (videoObjUrl) URL.revokeObjectURL(videoObjUrl);
+        videoObjUrl = URL.createObjectURL(file);
+        mode = 'video';
+        demoPlaying = false;
+        mediaName = file.name;
+        demoCanvas.style.display = 'none';
+        videoEl.style.display = 'block';
+        videoEl.src = videoObjUrl;
+        videoEl.playbackRate = playbackRate;
+        videoEl.load();
+        document.getElementById('mediaBadge').textContent = `LOCAL · ${file.name}`;
+        updatePlayButton();
+        showToast(t('videoLoadedToast'));
+      }
+
+      function switchToDemo() {
+        mode = 'demo';
+        videoEl.pause();
+        videoEl.style.display = 'none';
+        demoCanvas.style.display = 'block';
+        mediaName = 'demo-launch-cut.mp4';
+        demoTime = 0;
+        demoPlaying = true;
+        lastRaf = performance.now();
+        document.getElementById('mediaBadge').textContent = 'DEMO REEL · 24.0s';
+        drawDemoFrame(0);
+        updatePlayButton();
+        renderMarkers();
+        updateTimelineUI();
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function downloadFile(content, filename, mime) {
+        const blob = new Blob([content], { type: mime });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast(t('exportedToast'));
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = lang;
+        document.getElementById('btnLangEn').classList.toggle('active', lang === 'en');
+        document.getElementById('btnLangFr').classList.toggle('active', lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          el.textContent = t(el.getAttribute('data-i18n'));
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+          el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+        });
+        updatePlayButton();
+        renderComments();
+      }
+
+      // Animation loop for demo canvas & smooth UI updates
+      function tick(now) {
+        if (mode === 'demo' && demoPlaying) {
+          if (lastRaf !== null) {
+            const dt = (now - lastRaf) / 1000;
+            demoTime += dt * playbackRate;
+            if (demoTime >= demoDuration) {
+              demoTime = 0; // loop smoothly
+            }
+          }
+          lastRaf = now;
+          drawDemoFrame(demoTime);
+          updateTimelineUI();
+        } else {
+          lastRaf = now;
+          if (mode === 'video' && !videoEl.paused) {
+            updateTimelineUI();
+          }
+        }
+        requestAnimationFrame(tick);
+      }
+
+      // Events
+      document.getElementById('btnLangEn').addEventListener('click', () => { lang = 'en'; applyLanguage(); });
+      document.getElementById('btnLangFr').addEventListener('click', () => { lang = 'fr'; applyLanguage(); });
+
+      document.getElementById('btnPlayPause').addEventListener('click', togglePlay);
+      document.getElementById('btnStepBack').addEventListener('click', () => seekTo(getCurrentTime() - 1));
+      document.getElementById('btnStepFwd').addEventListener('click', () => seekTo(getCurrentTime() + 1));
+
+      const speeds = [0.5, 1.0, 1.5, 2.0];
+      document.getElementById('btnSpeed').addEventListener('click', () => {
+        const nextIdx = (speeds.indexOf(playbackRate) + 1) % speeds.length;
+        playbackRate = speeds[nextIdx];
+        videoEl.playbackRate = playbackRate;
+        document.getElementById('btnSpeed').textContent = `${playbackRate.toFixed(1)}x`;
+      });
+
+      // Timeline click / scrub
+      const timelineContainer = document.getElementById('timelineContainer');
+      let scrubbing = false;
+      function scrubFromEvent(e) {
+        const rect = document.getElementById('timelineTrack').getBoundingClientRect();
+        const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+        seekTo(ratio * getDuration());
+      }
+      timelineContainer.addEventListener('mousedown', (e) => { scrubbing = true; scrubFromEvent(e); });
+      window.addEventListener('mousemove', (e) => { if (scrubbing) scrubFromEvent(e); });
+      window.addEventListener('mouseup', () => { scrubbing = false; });
+
+      // Video events
+      videoEl.addEventListener('loadedmetadata', () => { renderMarkers(); updateTimelineUI(); });
+      videoEl.addEventListener('play', updatePlayButton);
+      videoEl.addEventListener('pause', updatePlayButton);
+      videoEl.addEventListener('timeupdate', updateTimelineUI);
+
+      // Drag & drop video onto stage
+      const stageWrap = document.getElementById('stageWrap');
+      stageWrap.addEventListener('dragover', (e) => { e.preventDefault(); stageWrap.classList.add('dragover'); });
+      stageWrap.addEventListener('dragleave', () => stageWrap.classList.remove('dragover'));
+      stageWrap.addEventListener('drop', (e) => {
+        e.preventDefault();
+        stageWrap.classList.remove('dragover');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          loadLocalVideo(e.dataTransfer.files[0]);
+        }
+      });
+
+      document.getElementById('btnPickVideo').addEventListener('click', () => document.getElementById('videoFileInput').click());
+      document.getElementById('videoFileInput').addEventListener('change', (e) => {
+        if (e.target.files[0]) loadLocalVideo(e.target.files[0]);
+        e.target.value = '';
+      });
+      document.getElementById('btnLoadDemo').addEventListener('click', switchToDemo);
+
+      // Pin comment form
+      document.getElementById('commentForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const textEl = document.getElementById('commentInput');
+        const text = textEl.value.trim();
+        if (!text) return;
+        const author = document.getElementById('authorInput').value.trim() || 'Reviewer';
+        const tag = document.getElementById('tagSelect').value;
+        comments.push({
+          id: 'c' + Date.now(),
+          time: Number(getCurrentTime().toFixed(1)),
+          tag,
+          author,
+          text,
+          resolved: false
+        });
+        textEl.value = '';
+        saveComments();
+        renderComments();
+        showToast(t('pinnedToast'));
+      });
+
+      // Filters
+      document.querySelectorAll('#statusFilterBar .filter-chip').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          statusFilter = btn.getAttribute('data-status');
+          document.querySelectorAll('#statusFilterBar .filter-chip').forEach(b => b.classList.toggle('active', b === btn));
+          renderComments();
+        });
+      });
+      document.getElementById('tagFilterSelect').addEventListener('change', (e) => {
+        tagFilter = e.target.value;
+        renderComments();
+      });
+
+      document.getElementById('btnResetDemoNotes').addEventListener('click', () => {
+        comments = JSON.parse(JSON.stringify(DEMO_COMMENTS));
+        saveComments();
+        renderComments();
+      });
+
+      // Exports & JSON Import
+      document.getElementById('btnExportMd').addEventListener('click', () => {
+        const sorted = [...comments].sort((a, b) => a.time - b.time);
+        const lines = [`# VibeIO Review · ${mediaName}`, ''];
+        sorted.forEach((c) => {
+          lines.push(`- [${c.resolved ? 'x' : ' '}] **${fmtTc(c.time)}** \`${c.tag}\` _(${c.author})_: ${c.text}`);
+        });
+        downloadFile(lines.join('\n'), 'vibeio-review.md', 'text/markdown;charset=utf-8');
+      });
+
+      document.getElementById('btnExportCsv').addEventListener('click', () => {
+        const sorted = [...comments].sort((a, b) => a.time - b.time);
+        const esc = (v) => `"${String(v).replace(/"/g, '""')}"`;
+        const rows = [['Timecode', 'Seconds', 'Tag', 'Author', 'Status', 'Comment'].join(',')];
+        sorted.forEach((c) => {
+          rows.push([fmtTc(c.time), c.time, c.tag, c.author, c.resolved ? 'Resolved' : 'Open', c.text].map(esc).join(','));
+        });
+        downloadFile(rows.join('\n'), 'vibeio-review.csv', 'text/csv;charset=utf-8');
+      });
+
+      document.getElementById('btnExportJson').addEventListener('click', () => {
+        const payload = JSON.stringify({ app: 'VibeIO', mediaName, exportedAt: new Date().toISOString(), comments }, null, 2);
+        downloadFile(payload, 'vibeio-session.json', 'application/json;charset=utf-8');
+      });
+
+      document.getElementById('btnImportJson').addEventListener('click', () => document.getElementById('jsonFileInput').click());
+      document.getElementById('jsonFileInput').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        try {
+          const parsed = JSON.parse(await file.text());
+          if (Array.isArray(parsed.comments)) {
+            comments = parsed.comments;
+            saveComments();
+            renderComments();
+            showToast(t('importedToast'));
+          }
+        } catch (err) {
+          showToast('Invalid JSON file');
+        }
+        e.target.value = '';
+      });
+
+      // Spacebar play/pause shortcut
+      window.addEventListener('keydown', (e) => {
+        const tag = (e.target && e.target.tagName) || '';
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+        if (e.code === 'Space') {
+          e.preventDefault();
+          togglePlay();
+        } else if (e.code === 'ArrowLeft') {
+          seekTo(getCurrentTime() - 1);
+        } else if (e.code === 'ArrowRight') {
+          seekTo(getCurrentTime() + 1);
+        }
+      });
+
+      document.getElementById('btnDownloadHtml').addEventListener('click', () => {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'day-12-vibeio.html';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      // Init
+      drawDemoFrame(0);
+      applyLanguage();
+      requestAnimationFrame(tick);
+    })();
+  </script>
+</body>
+</html>

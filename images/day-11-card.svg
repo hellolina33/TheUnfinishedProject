@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#D8C6FA"/>
+  <circle cx="195" cy="180" r="135" fill="#E9DDFD"/>
+  <circle cx="1485" cy="785" r="180" fill="#E9DDFD"/>
+
+  <!-- Curved Connector Pipes -->
+  <path d="M475 430 C565 430 565 320 655 320" fill="none" stroke="#17141F" stroke-width="14" stroke-linecap="round"/>
+  <path d="M475 430 C565 430 565 320 655 320" fill="none" stroke="#FFE15D" stroke-width="6" stroke-dasharray="14 12" stroke-linecap="round"/>
+
+  <path d="M475 510 C565 510 565 620 655 620" fill="none" stroke="#17141F" stroke-width="14" stroke-linecap="round"/>
+  <path d="M475 510 C565 510 565 620 655 620" fill="none" stroke="#3FD0A0" stroke-width="6" stroke-dasharray="14 12" stroke-linecap="round"/>
+
+  <path d="M1015 320 C1105 320 1105 445 1195 445" fill="none" stroke="#17141F" stroke-width="14" stroke-linecap="round"/>
+  <path d="M1015 620 C1105 620 1105 495 1195 495" fill="none" stroke="#17141F" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Left Input PDF Node -->
+  <g transform="rotate(-3 315 470)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="165" y="290" width="300" height="360" rx="44"/>
+    </g>
+    <rect x="165" y="290" width="300" height="360" rx="44" fill="#FFFFFF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M165 365 H465" stroke="#17141F" stroke-width="8"/>
+    <rect x="165" y="290" width="300" height="75" rx="44" fill="#A9D6FF" stroke="#17141F" stroke-width="8"/>
+    <rect x="165" y="335" width="300" height="30" fill="#A9D6FF" stroke="none"/>
+    <line x1="165" y1="365" x2="465" y2="365" stroke="#17141F" stroke-width="8"/>
+    <!-- Document icon inside -->
+    <rect x="235" y="405" width="160" height="195" rx="20" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+    <line x1="270" y1="455" x2="360" y2="455" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="270" y1="495" x2="360" y2="495" stroke="#17141F" stroke-width="10" stroke-linecap="round"/>
+    <line x1="270" y1="535" x2="330" y2="535" stroke="#FF8F6B" stroke-width="10" stroke-linecap="round"/>
+    <!-- Port dot -->
+    <circle cx="465" cy="470" r="20" fill="#FFE15D" stroke="#17141F" stroke-width="7"/>
+  </g>
+
+  <!-- Top Middle Node: Watermark / Stamp -->
+  <g transform="rotate(2 835 320)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="655" y="205" width="360" height="230" rx="40"/>
+    </g>
+    <rect x="655" y="205" width="360" height="230" rx="40" fill="#FFFDF7" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="690" y="245" width="120" height="34" rx="17" fill="#FFB8DE" stroke="#17141F" stroke-width="6"/>
+    <rect x="830" y="245" width="150" height="34" rx="17" fill="#FFE15D" stroke="#17141F" stroke-width="6"/>
+    <rect x="690" y="305" width="290" height="90" rx="22" fill="#F3ECFF" stroke="#17141F" stroke-width="6"/>
+    <line x1="730" y1="365" x2="940" y2="335" stroke="#7C3AED" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="655" cy="320" r="18" fill="#A9D6FF" stroke="#17141F" stroke-width="7"/>
+    <circle cx="1015" cy="320" r="18" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+  </g>
+
+  <!-- Bottom Middle Node: Rotate / Split -->
+  <g transform="rotate(-2 835 620)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="655" y="505" width="360" height="230" rx="40"/>
+    </g>
+    <rect x="655" y="505" width="360" height="230" rx="40" fill="#FFFDF7" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <circle cx="765" cy="620" r="62" fill="#9CF0C7" stroke="#17141F" stroke-width="7"/>
+    <path d="M765 582 A38 38 0 1 1 732 638" fill="none" stroke="#17141F" stroke-width="9" stroke-linecap="round"/>
+    <polygon points="755,568 784,582 758,598" fill="#17141F"/>
+    <rect x="855" y="572" width="120" height="36" rx="14" fill="#FFE15D" stroke="#17141F" stroke-width="6"/>
+    <rect x="855" y="628" width="95" height="36" rx="14" fill="#A9D6FF" stroke="#17141F" stroke-width="6"/>
+    <circle cx="655" cy="620" r="18" fill="#A9D6FF" stroke="#17141F" stroke-width="7"/>
+    <circle cx="1015" cy="620" r="18" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+  </g>
+
+  <!-- Right Output PDF Node -->
+  <g transform="rotate(3 1355 470)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1195" y="295" width="315" height="350" rx="44"/>
+    </g>
+    <rect x="1195" y="295" width="315" height="350" rx="44" fill="#3FD0A0" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <rect x="1235" y="340" width="235" height="260" rx="28" fill="#FFFFFF" stroke="#17141F" stroke-width="8"/>
+    <!-- Checkmark badge -->
+    <circle cx="1352" cy="450" r="56" fill="#FFE15D" stroke="#17141F" stroke-width="8"/>
+    <path d="M1325 452 L1344 472 L1382 430" fill="none" stroke="#17141F" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- Cute smile -->
+    <path d="M1325 545 Q1352 570 1379 545" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="1195" cy="470" r="20" fill="#FFE15D" stroke="#17141F" stroke-width="7"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M565 130 Q565 168 603 168 Q565 168 565 206 Q565 168 527 168 Q565 168 565 130Z" fill="#FFE15D" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1145 140 Q1145 174 1179 174 Q1145 174 1145 208 Q1145 174 1111 174 Q1145 174 1145 140Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1125 785 Q1125 815 1155 815 Q1125 815 1125 845 Q1125 815 1095 815 Q1125 815 1125 785Z" fill="#3FD0A0" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

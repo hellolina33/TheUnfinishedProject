@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <!-- Pastel mint/sage background -->
+  <rect width="1672" height="941" fill="#3FD0A0"/>
+  <circle cx="210" cy="180" r="165" fill="#6BE0B8"/>
+  <circle cx="1470" cy="790" r="210" fill="#6BE0B8"/>
+  <circle cx="1380" cy="160" r="95" fill="#2DBB8C" opacity="0.45"/>
+
+  <!-- Calm water wave bands along the bottom -->
+  <path d="M-20 755 Q 240 705 510 755 T 1040 755 T 1570 755 T 1720 755 L 1720 960 L -20 960 Z" fill="#29B587"/>
+  <path d="M-20 820 Q 260 778 550 820 T 1130 820 T 1710 820 L 1710 960 L -20 960 Z" fill="#1F9E75"/>
+
+  <!-- Breathing Orb Card / Concentric Serenity Ripples (Left-Center) -->
+  <g transform="translate(0, 0)">
+    <!-- Soft offset drop shadow for outer breathing ring -->
+    <circle cx="624" cy="466" r="300" fill="#17141F" opacity="0.16"/>
+    <!-- Outer breathing ring -->
+    <circle cx="610" cy="450" r="300" fill="#D9FAEE" stroke="#17141F" stroke-width="8"/>
+    <!-- Middle breathing ring -->
+    <circle cx="610" cy="450" r="228" fill="#9AF0D1" stroke="#17141F" stroke-width="8"/>
+    <!-- Inner glowing orb -->
+    <circle cx="610" cy="450" r="154" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+    <!-- Warm golden core halo -->
+    <circle cx="610" cy="450" r="102" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Peaceful closed-eyes face on the orb -->
+    <path d="M558 442 Q 574 424 590 442" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M630 442 Q 646 424 662 442" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="552" cy="464" r="12" fill="#FFB8DE"/>
+    <circle cx="668" cy="464" r="12" fill="#FFB8DE"/>
+    <path d="M590 472 Q 610 492 630 472" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- Dashed breath-pace arc accent -->
+    <circle cx="610" cy="450" r="264" fill="none" stroke="#17141F" stroke-width="6" stroke-dasharray="18 22" stroke-linecap="round" opacity="0.35"/>
+  </g>
+
+  <!-- Stylized Lotus Bloom on the Water (Bottom Left-Center) -->
+  <g transform="translate(150, 560)">
+    <!-- Shadow -->
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F">
+      <ellipse cx="180" cy="212" rx="145" ry="30"/>
+      <path d="M180 48 C 228 108 232 178 180 206 C 128 178 132 108 180 48 Z"/>
+    </g>
+    <!-- Lily pad -->
+    <ellipse cx="180" cy="212" rx="148" ry="30" fill="#1F9E75" stroke="#17141F" stroke-width="8"/>
+    <!-- Outer left petal -->
+    <path d="M174 204 C 95 204 54 150 64 102 C 114 104 156 142 174 204 Z" fill="#FFB8DE" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Outer right petal -->
+    <path d="M186 204 C 265 204 306 150 296 102 C 246 104 204 142 186 204 Z" fill="#FFB8DE" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Inner left petal -->
+    <path d="M176 204 C 118 186 98 118 122 68 C 164 88 182 140 176 204 Z" fill="#FFD4EB" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Inner right petal -->
+    <path d="M184 204 C 242 186 262 118 238 68 C 196 88 178 140 184 204 Z" fill="#FFD4EB" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Center petal -->
+    <path d="M180 44 C 226 102 228 176 180 206 C 132 176 134 102 180 44 Z" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Tactile Singing Bowl & Sound Waves (Right) -->
+  <g transform="rotate(4 1230 570)">
+    <!-- Cushion shadow -->
+    <ellipse cx="1244" cy="708" rx="186" ry="36" fill="#17141F" opacity="0.16"/>
+    <!-- Cushion -->
+    <rect x="1065" y="656" width="330" height="58" rx="29" fill="#FF8F6B" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Mallet resting at an angle -->
+    <g transform="rotate(-24 1370 500)">
+      <rect x="1310" y="370" width="36" height="190" rx="18" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+      <rect x="1302" y="346" width="52" height="54" rx="22" fill="#FF8F6B" stroke="#17141F" stroke-width="8"/>
+    </g>
+
+    <!-- Bowl shadow -->
+    <path d="M1044 504 H1444 C1444 624 1368 684 1244 684 C1120 684 1044 624 1044 504 Z" fill="#17141F" opacity="0.16"/>
+    <!-- Singing Bowl body -->
+    <path d="M1030 490 H1430 C1430 612 1354 672 1230 672 C1106 672 1030 612 1030 490 Z" fill="#FFD84D" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Rim highlight -->
+    <ellipse cx="1230" cy="490" rx="200" ry="30" fill="#FFE88A" stroke="#17141F" stroke-width="8"/>
+    <ellipse cx="1230" cy="490" rx="158" ry="16" fill="#E8B400" stroke="#17141F" stroke-width="6"/>
+    <!-- Decorative band -->
+    <path d="M1066 566 Q 1230 604 1394 566" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- Floating acoustic chime waves above bowl -->
+    <path d="M1154 398 Q 1230 356 1306 398" fill="none" stroke="#FFF8EA" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1154 398 Q 1230 356 1306 398" fill="none" stroke="#17141F" stroke-width="4" stroke-linecap="round" opacity="0.2"/>
+    <path d="M1116 346 Q 1230 288 1344 346" fill="none" stroke="#FFF8EA" stroke-width="10" stroke-linecap="round"/>
+    <path d="M1170 296 Q 1230 264 1290 296" fill="none" stroke="#FFD84D" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <!-- Floating botanical leaf accent (Top Left) -->
+  <g transform="rotate(-18 225 250)">
+    <path d="M148 256 C 188 186 274 176 312 222 C 282 288 198 300 148 256 Z" fill="#17141F" opacity="0.16" transform="translate(10 12)"/>
+    <path d="M148 256 C 188 186 274 176 312 222 C 282 288 198 300 148 256 Z" fill="#9AF0D1" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M158 252 Q 228 242 296 226" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- Playful Sparkles -->
+  <path d="M1010 116 Q1010 158 1052 158 Q1010 158 1010 200 Q1010 158 968 158 Q1010 158 1010 116Z" fill="#FFD84D" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1518 240 Q1518 274 1552 274 Q1518 274 1518 308 Q1518 274 1484 274 Q1518 274 1518 240Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M970 760 Q970 790 1000 790 Q970 790 970 820 Q970 790 940 790 Q970 790 970 760Z" fill="#FFF8EA" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <circle cx="290" cy="430" r="14" fill="#FFF8EA" stroke="#17141F" stroke-width="5"/>
+  <circle cx="1450" cy="420" r="12" fill="#FFD84D" stroke="#17141F" stroke-width="5"/>
+</svg>

@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <!-- Peach pastel background -->
+  <rect width="1672" height="941" fill="#FFB894"/>
+  <circle cx="215" cy="185" r="145" fill="#FFD3BD"/>
+  <circle cx="1490" cy="790" r="190" fill="#FFD3BD"/>
+  <circle cx="1430" cy="180" r="90" fill="#FFC9AD"/>
+
+  <!-- Motion speed arcs around wheel -->
+  <path d="M 335 305 A 315 315 0 0 1 560 155" fill="none" stroke="#FFF8EA" stroke-width="14" stroke-linecap="round"/>
+  <path d="M 960 220 A 320 320 0 0 1 1075 435" fill="none" stroke="#FFD84D" stroke-width="14" stroke-linecap="round"/>
+  <path d="M 310 580 A 320 320 0 0 1 285 435" fill="none" stroke="#FF6B57" stroke-width="14" stroke-linecap="round"/>
+
+  <!-- Main Hamster Wheel (left-center) -->
+  <g transform="translate(680 485)">
+    <!-- Drop shadow -->
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <circle cx="0" cy="0" r="295"/>
+      <rect x="-200" y="290" width="400" height="44" rx="22"/>
+    </g>
+
+    <!-- Stand legs -->
+    <path d="M -145 300 L -35 20 L 35 20 L 145 300" fill="none" stroke="#17141F" stroke-width="24" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="-200" y="286" width="400" height="46" rx="23" fill="#FF8F6B" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Wheel Outer & Inner Ring -->
+    <circle cx="0" cy="0" r="295" fill="#FFF8EA" stroke="#17141F" stroke-width="10"/>
+    <circle cx="0" cy="0" r="245" fill="#FFF2DB" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Wheel Spokes -->
+    <g stroke="#17141F" stroke-width="8" stroke-linecap="round">
+      <line x1="0" y1="-245" x2="0" y2="245"/>
+      <line x1="-245" y1="0" x2="245" y2="0"/>
+      <line x1="-173" y1="-173" x2="173" y2="173"/>
+      <line x1="-173" y1="173" x2="173" y2="-173"/>
+    </g>
+
+    <!-- Center hub -->
+    <circle cx="0" cy="0" r="36" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Determined Little Hamster Running Inside Bottom of Wheel -->
+    <g transform="translate(15 112)">
+      <!-- Tail -->
+      <circle cx="-102" cy="18" r="16" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+      <!-- Running back leg -->
+      <ellipse cx="-62" cy="64" rx="28" ry="15" transform="rotate(-22 -62 64)" fill="#F7C59F" stroke="#17141F" stroke-width="7"/>
+      <!-- Body -->
+      <ellipse cx="-10" cy="18" rx="95" ry="66" fill="#F29E5B" stroke="#17141F" stroke-width="8"/>
+      <!-- Cream belly -->
+      <ellipse cx="4" cy="40" rx="68" ry="38" fill="#FFF8EA"/>
+      <!-- Ears -->
+      <circle cx="38" cy="-42" r="22" fill="#F29E5B" stroke="#17141F" stroke-width="8"/>
+      <circle cx="38" cy="-42" r="10" fill="#FFB8DE"/>
+      <circle cx="84" cy="-34" r="20" fill="#F29E5B" stroke="#17141F" stroke-width="8"/>
+      <circle cx="84" cy="-34" r="9" fill="#FFB8DE"/>
+      <!-- Headband (steroids / overdrive vibe) -->
+      <path d="M 16 -22 Q 62 -36 102 -8" fill="none" stroke="#FF5A47" stroke-width="14" stroke-linecap="round"/>
+      <path d="M 16 -22 Q 62 -36 102 -8" fill="none" stroke="#17141F" stroke-width="4" stroke-linecap="round"/>
+      <!-- Headband tails flying behind -->
+      <path d="M 16 -22 L -32 -42 L -20 -18 Z" fill="#FF5A47" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+      <!-- Eyes (determined) -->
+      <circle cx="68" cy="2" r="10" fill="#17141F"/>
+      <circle cx="71" cy="-2" r="3" fill="#FFFFFF"/>
+      <!-- Chubby cheek + nose -->
+      <circle cx="96" cy="14" r="11" fill="#FF8F6B"/>
+      <ellipse cx="52" cy="20" rx="14" ry="9" fill="#FFB8DE"/>
+      <!-- Running front paw -->
+      <ellipse cx="52" cy="66" rx="28" ry="15" transform="rotate(18 52 66)" fill="#F7C59F" stroke="#17141F" stroke-width="7"/>
+    </g>
+  </g>
+
+  <!-- RPM Speedometer Gauge Card on right -->
+  <g transform="rotate(7 1310 470)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1145" y="275" width="330" height="390" rx="48"/>
+    </g>
+    <rect x="1145" y="275" width="330" height="390" rx="48" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Speedometer semicircle arcs -->
+    <path d="M 1205 495 A 105 105 0 0 1 1272 396" fill="none" stroke="#3FD0A0" stroke-width="26" stroke-linecap="round"/>
+    <path d="M 1286 392 A 105 105 0 0 1 1368 408" fill="none" stroke="#FFD84D" stroke-width="26" stroke-linecap="round"/>
+    <path d="M 1380 418 A 105 105 0 0 1 1415 495" fill="none" stroke="#FF5A47" stroke-width="26" stroke-linecap="round"/>
+
+    <!-- Needle pointing to Redline -->
+    <line x1="1310" y1="498" x2="1392" y2="432" stroke="#17141F" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="1310" cy="498" r="22" fill="#FF5A47" stroke="#17141F" stroke-width="8"/>
+
+    <!-- Decorative bars below gauge -->
+    <rect x="1205" y="556" width="210" height="20" rx="10" fill="#17141F"/>
+    <rect x="1245" y="594" width="130" height="18" rx="9" fill="#FF8F6B"/>
+  </g>
+
+  <!-- Playful sparkles -->
+  <path d="M1110 105 Q1110 144 1149 144 Q1110 144 1110 183 Q1110 144 1071 144 Q1110 144 1110 105Z" fill="#FFD84D" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M1540 245 Q1540 280 1575 280 Q1540 280 1540 315 Q1540 280 1505 280 Q1540 280 1540 245Z" fill="#FFF8EA" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M1085 815 Q1085 848 1118 848 Q1085 848 1085 881 Q1085 848 1052 848 Q1085 848 1085 815Z" fill="#3FD0A0" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M168 640 Q168 672 200 672 Q168 672 168 704 Q168 672 136 672 Q168 672 168 640Z" fill="#FFB8DE" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+</svg>

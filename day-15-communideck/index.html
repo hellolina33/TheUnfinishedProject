@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CommuniDeck — Day 15 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F7F9FC;
+      --surface: #FFFFFF;
+      --surface-soft: #EEF4FB;
+      --ink: #111827;
+      --ink-muted: #526075;
+      --border: #DCE5F0;
+      --border-strong: #B9CAE0;
+      --sky: #A9D6FF;
+      --accent: #1D6FE2;
+      --accent-dark: #1555B0;
+      --accent-soft: #E8F3FF;
+      --emergency: #DC2626;
+      --emergency-soft: #FEE2E2;
+      --gold: #F59E0B;
+      --topbar: #0E1638;
+      --radius: 16px;
+      --shadow-sm: 0 2px 6px rgba(17, 24, 39, 0.05);
+      --shadow-md: 0 12px 28px rgba(17, 24, 39, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar);
+      color: #F8FAFC;
+      font-size: 13px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .challenge-bar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .challenge-bar a { color: #F8FAFC; text-decoration: none; font-weight: 600; }
+    .challenge-bar a:hover { text-decoration: underline; }
+    .challenge-bar .muted-link { color: #94A3B8; font-weight: 400; }
+    .challenge-bar-right { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255,255,255,0.1);
+      color: #F8FAFC;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .bar-btn:hover { background: rgba(255,255,255,0.18); }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 26px 18px 64px;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--sky);
+      color: #0B2545;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 4px 11px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+      font-size: clamp(28px, 4.2vw, 42px);
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+    }
+    .hero-sub {
+      color: var(--ink-muted);
+      font-size: 15px;
+      margin-top: 6px;
+      max-width: 580px;
+    }
+    .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--ink);
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--surface-soft); }
+    .btn-primary {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .btn-primary:hover { background: var(--accent-dark); }
+    .btn-sm { padding: 6px 11px; font-size: 12.5px; border-radius: 8px; }
+
+    /* Language Selector Strip */
+    .lang-strip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .strip-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .strip-label {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--ink-muted);
+    }
+    .slow-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      cursor: pointer;
+    }
+    .slow-toggle input { accent-color: var(--accent); cursor: pointer; }
+
+    .lang-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .lang-pill {
+      padding: 8px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+    .lang-pill:hover { border-color: var(--accent); background: var(--accent-soft); }
+    .lang-pill.active {
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+
+    /* Filter & Search Bar */
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .cat-pills {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+    .cat-pill {
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .cat-pill:hover { border-color: var(--accent); color: var(--ink); }
+    .cat-pill.active {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .cat-pill.emergency.active {
+      background: var(--emergency);
+      border-color: var(--emergency);
+    }
+
+    .search-input {
+      padding: 8px 13px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13.5px;
+      min-width: 210px;
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .search-input:focus { outline: none; border-color: var(--accent); }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+      gap: 14px;
+    }
+
+    .phrase-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      cursor: pointer;
+      transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease;
+      position: relative;
+    }
+    .phrase-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--accent);
+    }
+    .phrase-card.is-emergency {
+      border-color: #FECACA;
+      background: #FFFDFD;
+    }
+    .phrase-card.is-emergency:hover { border-color: var(--emergency); }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .card-visual {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    .is-emergency .card-visual { background: var(--emergency-soft); }
+
+    .card-top-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cat-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--ink-muted);
+    }
+    .is-emergency .cat-badge { background: var(--emergency-soft); color: var(--emergency); }
+
+    .star-btn {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #CBD5E1;
+      line-height: 1;
+      padding: 2px;
+      transition: transform 0.12s ease, color 0.12s ease;
+    }
+    .star-btn:hover { transform: scale(1.15); }
+    .star-btn.starred { color: var(--gold); }
+
+    .card-native {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--ink);
+      word-break: break-word;
+    }
+    .card-phonetic {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: var(--accent-dark);
+      margin-top: 4px;
+    }
+    .card-meaning {
+      font-size: 14.5px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .card-act-btn {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--ink);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .card-act-btn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-dark); }
+    .card-act-btn.show-big {
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+    .card-act-btn.show-big:hover { background: #1F2937; color: #FFFFFF; }
+    .card-del-btn {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #FECACA;
+      background: #FEF2F2;
+      color: #B91C1C;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Fullscreen Show Card Modal */
+    .show-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0B1220;
+      color: #FFFFFF;
+      z-index: 1500;
+      display: none;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .show-overlay.open { display: flex; }
+    .show-overlay.emergency-mode { background: #7F1D1D; }
+
+    .show-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .show-badge {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--sky);
+    }
+    .show-close {
+      background: rgba(255,255,255,0.14);
+      color: #FFFFFF;
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 12px;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .show-close:hover { background: rgba(255,255,255,0.24); }
+
+    .show-center {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 24px 8px;
+      gap: 18px;
+    }
+    .show-emoji {
+      font-size: clamp(64px, 12vw, 108px);
+      line-height: 1;
+    }
+    .show-native {
+      font-size: clamp(36px, 8vw, 78px);
+      font-weight: 800;
+      line-height: 1.18;
+      color: #FFFFFF;
+      word-break: break-word;
+    }
+    .show-phonetic {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(18px, 3vw, 28px);
+      color: #A9D6FF;
+    }
+    .show-meaning {
+      font-size: clamp(16px, 2.4vw, 22px);
+      color: rgba(255,255,255,0.8);
+      max-width: 640px;
+    }
+    .show-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .show-speak-btn {
+      background: var(--sky);
+      color: #0B1220;
+      border: none;
+      border-radius: 999px;
+      padding: 13px 26px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .show-speak-btn:hover { background: #C7E4FF; }
+
+    /* Custom Card Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 22, 56, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1600;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      padding: 22px 24px;
+      box-shadow: var(--shadow-md);
+    }
+    .modal-box h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      margin-bottom: 14px;
+    }
+    .form-field { margin-bottom: 12px; }
+    .form-field label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      margin-bottom: 4px;
+    }
+    .form-field input, .form-field select {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1px solid var(--border-strong);
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    .form-row { display: grid; grid-template-columns: 90px 1fr; gap: 10px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--ink-muted);
+      background: var(--surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+    }
+
+    /* Unfinished Section */
+    .unfinished-box {
+      margin-top: 38px;
+      padding: 20px 22px;
+      background: var(--surface-soft);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+    }
+    .unfinished-box h3 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .unfinished-box ul {
+      padding-left: 18px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 2000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Print Pocket Cheat-Sheet */
+    @media print {
+      .challenge-bar, .hero-actions, .lang-strip, .filter-bar, .card-actions, .star-btn, .unfinished-box, .show-overlay, .modal-backdrop {
+        display: none !important;
+      }
+      body { background: #FFFFFF; }
+      .container { max-width: 100%; padding: 0; }
+      .cards-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .phrase-card { box-shadow: none; break-inside: avoid; padding: 12px; border-color: #94A3B8; }
+      .card-native { font-size: 18px; }
+      .card-visual { width: 36px; height: 36px; font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="challenge-bar">
+    <div class="challenge-bar-left">
+      <a href="/">The Unfinished 30 · Day 15/30</a>
+      <span style="opacity:0.4">|</span>
+      <a class="muted-link" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="challenge-bar-right">
+      <button class="bar-btn" id="langToggle" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button" data-i18n="downloadHtml">Download HTML</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow" data-i18n="eyebrow">Visual Travel Phrasebook · Works Offline</div>
+        <h1>CommuniDeck</h1>
+        <p class="hero-sub" data-i18n="subtitle">Tap-to-show fullscreen flashcards and instant voice pronunciation to overcome language barriers at restaurants, taxis, hotels, and pharmacies.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-primary" id="openCustomBtn" type="button">+ <span data-i18n="addCustom">Custom Card</span></button>
+        <button class="btn" id="printSheetBtn" type="button">🖨 <span data-i18n="printPocket">Print Pocket Sheet</span></button>
+      </div>
+    </section>
+
+    <!-- Target Language Strip -->
+    <section class="lang-strip">
+      <div class="strip-top">
+        <span class="strip-label" data-i18n="targetLangLabel">Destination Language</span>
+        <label class="slow-toggle">
+          <input type="checkbox" id="slowSpeechCheck" />
+          <span data-i18n="slowSpeech">Slow pronunciation (0.75x)</span>
+        </label>
+      </div>
+      <div class="lang-pills" id="targetLangPills"></div>
+    </section>
+
+    <!-- Category & Search Bar -->
+    <section class="filter-bar">
+      <div class="cat-pills" id="categoryPills"></div>
+      <input type="search" id="searchInput" class="search-input" placeholder="Search phrases..." />
+    </section>
+
+    <!-- Cards Grid -->
+    <section class="cards-grid" id="cardsGrid"></section>
+
+    <!-- Honest Unfinished Section -->
+    <section class="unfinished-box">
+      <h3 data-i18n="unfinishedTitle">What's still unfinished</h3>
+      <ul>
+        <li data-i18n="unfinished1">Voice playback uses your device's built-in SpeechSynthesis voices — some OSes do not ship Thai or Arabic voices offline unless downloaded in system settings.</li>
+        <li data-i18n="unfinished2">Custom cards are stored for the currently selected language only and are not auto-translated across all 6 languages.</li>
+        <li data-i18n="unfinished3">No two-way speech-to-text reply capture yet — CommuniDeck is built for clear one-way showing and speaking.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- Fullscreen Show Card Overlay -->
+  <div class="show-overlay" id="showOverlay" role="dialog" aria-modal="true" aria-label="Fullscreen Show Card">
+    <div class="show-top">
+      <span class="show-badge" id="showBadge">RESTAURANT</span>
+      <button class="show-close" id="showCloseBtn" type="button">✕ <span data-i18n="close">Close</span></button>
+    </div>
+    <div class="show-center">
+      <div class="show-emoji" id="showEmoji">🥜</div>
+      <div class="show-native" id="showNative"></div>
+      <div class="show-phonetic" id="showPhonetic"></div>
+      <div class="show-meaning" id="showMeaning"></div>
+      <div class="show-controls">
+        <button class="show-close" id="showPrevBtn" type="button">←</button>
+        <button class="show-speak-btn" id="showSpeakBtn" type="button">🔊 <span data-i18n="speakAloud">Speak Aloud</span></button>
+        <button class="show-close" id="showNextBtn" type="button">→</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Custom Card Modal -->
+  <div class="modal-backdrop" id="customModal" role="dialog" aria-modal="true" aria-label="Create custom flashcard">
+    <div class="modal-box">
+      <h3 data-i18n="customModalTitle">Create Custom Card</h3>
+      <div class="form-row">
+        <div class="form-field">
+          <label for="cIcon" data-i18n="fieldIcon">Icon</label>
+          <input id="cIcon" type="text" value="💬" maxlength="4" />
+        </div>
+        <div class="form-field">
+          <label for="cCat" data-i18n="fieldCategory">Category</label>
+          <select id="cCat">
+            <option value="food">Restaurant &amp; Allergies</option>
+            <option value="taxi">Taxi &amp; Directions</option>
+            <option value="hotel">Hotel</option>
+            <option value="health">Pharmacy &amp; Health</option>
+            <option value="shop">Shopping</option>
+            <option value="emergency">Emergency</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-field">
+        <label for="cMeaning" data-i18n="fieldMeaning">Meaning (English or French)</label>
+        <input id="cMeaning" type="text" placeholder="e.g. No dairy / lactose intolerant" />
+      </div>
+      <div class="form-field">
+        <label for="cNative" data-i18n="fieldNative">Phrase in Target Language</label>
+        <input id="cNative" type="text" placeholder="e.g. ไม่ใส่นม / 乳製品なし" />
+      </div>
+      <div class="form-field">
+        <label for="cPhonetic" data-i18n="fieldPhonetic">Pronunciation Guide (optional)</label>
+        <input id="cPhonetic" type="text" placeholder="e.g. Mai sai nom" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-sm" id="cancelCustomBtn" type="button" data-i18n="cancel">Cancel</button>
+        <button class="btn btn-sm btn-primary" id="saveCustomBtn" type="button" data-i18n="saveCard">Save Card</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'u30_day15_communideck_v1';
+
+      const TARGET_LANGS = [
+        { code: 'th', label: 'ไทย · Thai', bcp47: 'th-TH', rtl: false },
+        { code: 'ja', label: '日本語 · Japanese', bcp47: 'ja-JP', rtl: false },
+        { code: 'es', label: 'Español · Spanish', bcp47: 'es-ES', rtl: false },
+        { code: 'fr', label: 'Français · French', bcp47: 'fr-FR', rtl: false },
+        { code: 'en', label: 'English', bcp47: 'en-US', rtl: false },
+        { code: 'ar', label: 'العربية · Arabic', bcp47: 'ar-SA', rtl: true }
+      ];
+
+      const CATEGORIES = [
+        { id: 'all', en: 'All', fr: 'Tout' },
+        { id: 'fav', en: '★ Favorites', fr: '★ Favoris' },
+        { id: 'food', en: '🍜 Restaurant & Allergies', fr: '🍜 Resto & Allergies' },
+        { id: 'taxi', en: '🚕 Taxi & Directions', fr: '🚕 Taxi & Trajets' },
+        { id: 'hotel', en: '🏨 Hotel', fr: '🏨 Hôtel' },
+        { id: 'health', en: '💊 Pharmacy & Health', fr: '💊 Pharmacie & Santé' },
+        { id: 'shop', en: '🛍 Shopping', fr: '🛍 Shopping' },
+        { id: 'emergency', en: '🚨 Emergency', fr: '🚨 Urgences' }
+      ];
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          eyebrow: 'Visual Travel Phrasebook · Works Offline',
+          subtitle: 'Tap-to-show fullscreen flashcards and instant voice pronunciation to overcome language barriers at restaurants, taxis, hotels, and pharmacies.',
+          addCustom: 'Custom Card',
+          printPocket: 'Print Pocket Sheet',
+          targetLangLabel: 'Destination Language',
+          slowSpeech: 'Slow pronunciation (0.75x)',
+          searchPlaceholder: 'Search phrases...',
+          speakAloud: 'Speak',
+          showBig: 'Show Card',
+          close: 'Close',
+          customModalTitle: 'Create Custom Card',
+          fieldIcon: 'Icon',
+          fieldCategory: 'Category',
+          fieldMeaning: 'Meaning (English or French)',
+          fieldNative: 'Phrase in Target Language',
+          fieldPhonetic: 'Pronunciation Guide (optional)',
+          cancel: 'Cancel',
+          saveCard: 'Save Card',
+          emptyFavs: 'No favorite cards yet. Tap the ★ on any card to pin it here.',
+          emptySearch: 'No phrases match your search.',
+          noSpeech: 'Speech synthesis is not supported in this browser.',
+          cardAdded: 'Custom card added!',
+          unfinishedTitle: "What's still unfinished",
+          unfinished1: "Voice playback uses your device's built-in SpeechSynthesis voices — some OSes do not ship Thai or Arabic voices offline unless downloaded in system settings.",
+          unfinished2: 'Custom cards are stored for the currently selected language only and are not auto-translated across all 6 languages.',
+          unfinished3: 'No two-way speech-to-text reply capture yet — CommuniDeck is built for clear one-way showing and speaking.'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          eyebrow: 'Guide de Voyage Visuel · Hors-ligne',
+          subtitle: 'Cartes plein écran à montrer et prononciation vocale instantanée pour franchir la barrière de la langue au restaurant, en taxi, à l’hôtel ou en pharmacie.',
+          addCustom: 'Carte perso',
+          printPocket: 'Imprimer fiche poche',
+          targetLangLabel: 'Langue de destination',
+          slowSpeech: 'Prononciation lente (0,75x)',
+          searchPlaceholder: 'Rechercher une phrase...',
+          speakAloud: 'Écouter',
+          showBig: 'Afficher',
+          close: 'Fermer',
+          customModalTitle: 'Créer une carte personnalisée',
+          fieldIcon: 'Icône',
+          fieldCategory: 'Catégorie',
+          fieldMeaning: 'Sens (Français ou Anglais)',
+          fieldNative: 'Phrase dans la langue cible',
+          fieldPhonetic: 'Prononciation (optionnel)',
+          cancel: 'Annuler',
+          saveCard: 'Enregistrer',
+          emptyFavs: 'Aucun favori pour l’instant. Appuyez sur ★ sur une carte pour l’épingler.',
+          emptySearch: 'Aucune phrase ne correspond à votre recherche.',
+          noSpeech: 'La synthèse vocale n’est pas prise en charge par ce navigateur.',
+          cardAdded: 'Carte personnalisée ajoutée !',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          unfinished1: 'La lecture vocale utilise les voix système de votre appareil — certains OS n’incluent pas les voix thaï ou arabe hors-ligne sans téléchargement préalable.',
+          unfinished2: 'Les cartes personnalisées sont enregistrées pour la langue sélectionnée uniquement, sans traduction automatique.',
+          unfinished3: 'Pas encore de capture vocale bidirectionnelle — CommuniDeck reste centré sur l’affichage clair et la lecture.'
+        }
+      };
+
+      const PHRASES = [
+        // Restaurant & Allergies
+        {
+          id: 'p1', cat: 'food', icon: '🥜',
+          en: 'No peanuts — I have a nut allergy',
+          fr: 'Sans arachides — je suis allergique aux noix',
+          t: {
+            th: ['ไม่ใส่ถั่ว ผม/ฉันแพ้ถั่ว', 'Mai sai tua, phom/chan pae tua'],
+            ja: ['ピーナッツなし。ナッツアレルギーがあります', 'Pīnattsu nashi. Nattsu arerugī ga arimasu'],
+            es: ['Sin cacahuetes — tengo alergia a los frutos secos', 'Seen kah-kah-WEH-tehs'],
+            fr: ['Sans arachides — je suis allergique aux noix', 'Sahnz ah-rah-sheed'],
+            en: ['No peanuts — I have a nut allergy', 'No PEE-nuts, nut AL-er-jee'],
+            ar: ['بدون فول سوداني — لدي حساسية من المكسرات', 'Bidoon fool soodani — ladayya hasasiyya min al-mukassarat']
+          }
+        },
+        {
+          id: 'p2', cat: 'food', icon: '🌶️',
+          en: 'Not spicy, please',
+          fr: 'Pas épicé, s’il vous plaît',
+          t: {
+            th: ['ไม่เผ็ดครับ / ค่ะ', 'Mai phet khrap / kha'],
+            ja: ['辛くしないでください', 'Karaku shinaide kudasai'],
+            es: ['Sin picante, por favor', 'Seen pee-KAHN-teh por fah-VOR'],
+            fr: ['Pas épicé, s’il vous plaît', 'Pah eh-pee-say seel voo pleh'],
+            en: ['Not spicy, please', 'Not SPY-see pleez'],
+            ar: ['بدون فلفل حار من فضلك', 'Bidoon filfil harr min fadlak']
+          }
+        },
+        {
+          id: 'p3', cat: 'food', icon: '🥗',
+          en: 'Vegetarian — no meat or fish',
+          fr: 'Végétarien — sans viande ni poisson',
+          t: {
+            th: ['มังสวิรัติ ไม่กินเนื้อสัตว์และปลา', 'Mangsawirat, mai kin nuea sat lae pla'],
+            ja: ['ベジタリアンです。肉と魚は食べません', 'Bejitarian desu. Niku to sakana wa tabemasen'],
+            es: ['Vegetariano — sin carne ni pescado', 'Beh-heh-tah-RYAH-noh'],
+            fr: ['Végétarien — sans viande ni poisson', 'Veh-jeh-tah-ryehn'],
+            en: ['Vegetarian — no meat or fish', 'Veh-jeh-TAIR-ee-an'],
+            ar: ['نباتي — بدون لحم أو سمك', 'Nabati — bidoon lahm aw samak']
+          }
+        },
+        {
+          id: 'p4', cat: 'food', icon: '💧',
+          en: 'Still water, please',
+          fr: 'De l’eau plate, s’il vous plaît',
+          t: {
+            th: ['ขอน้ำเปล่าครับ / ค่ะ', 'Kho nam plao khrap / kha'],
+            ja: ['お水をください', 'Omizu o kudasai'],
+            es: ['Agua sin gas, por favor', 'AH-gwah seen gahs por fah-VOR'],
+            fr: ['De l’eau plate, s’il vous plaît', 'Duh loh plaht seel voo pleh'],
+            en: ['Still water, please', 'Stil WAW-ter pleez'],
+            ar: ['ماء عادي من فضلك', 'Maa aadi min fadlak']
+          }
+        },
+        {
+          id: 'p5', cat: 'food', icon: '🧾',
+          en: 'The check / bill, please',
+          fr: 'L’addition, s’il vous plaît',
+          t: {
+            th: ['เก็บเงินด้วยครับ / ค่ะ', 'Kep ngoen duai khrap / kha'],
+            ja: ['お会計をお願いします', 'Okaikei o onegaishimasu'],
+            es: ['La cuenta, por favor', 'Lah KWEHN-tah por fah-VOR'],
+            fr: ['L’addition, s’il vous plaît', 'Lah-dee-syohn seel voo pleh'],
+            en: ['The check, please', 'Thuh chek pleez'],
+            ar: ['الحساب من فضلك', 'Al-hisab min fadlak']
+          }
+        },
+
+        // Taxi & Directions
+        {
+          id: 'p6', cat: 'taxi', icon: '📍',
+          en: 'Please take me to this address',
+          fr: 'Emmenez-moi à cette adresse, s’il vous plaît',
+          t: {
+            th: ['กรุณาไปส่งที่อยู่นี้ครับ / ค่ะ', 'Karuna pai song thi yu ni khrap / kha'],
+            ja: ['この住所までお願いします', 'Kono jūsho made onegaishimasu'],
+            es: ['Lléveme a esta dirección, por favor', 'YEH-beh-meh ah EHS-tah dee-rehk-SYOHN'],
+            fr: ['Emmenez-moi à cette adresse, s’il vous plaît', 'Ahm-nay mwah ah set ah-dress'],
+            en: ['Please take me to this address', 'Pleez tayk mee too this AD-ress'],
+            ar: ['خذني إلى هذا العنوان من فضلك', 'Khudhni ila hadha al-unwan min fadlak']
+          }
+        },
+        {
+          id: 'p7', cat: 'taxi', icon: '🚕',
+          en: 'Please turn on the meter',
+          fr: 'Veuillez mettre le compteur',
+          t: {
+            th: ['กรุณาเปิดมิเตอร์ด้วยครับ / ค่ะ', 'Karuna poet mitoe duai khrap / kha'],
+            ja: ['メーターをお願いします', 'Mētā o onegaishimasu'],
+            es: ['Ponga el taxímetro, por favor', 'POHN-gah ehl tahk-SEE-meh-troh'],
+            fr: ['Veuillez mettre le compteur, s’il vous plaît', 'Vuh-yay met-truh luh kohn-tur'],
+            en: ['Please turn on the meter', 'Pleez turn on thuh MEE-ter'],
+            ar: ['شغّل العداد من فضلك', 'Shaghghil al-addad min fadlak']
+          }
+        },
+        {
+          id: 'p8', cat: 'taxi', icon: '🛑',
+          en: 'Stop here, please',
+          fr: 'Arrêtez-vous ici, s’il vous plaît',
+          t: {
+            th: ['จอดตรงนี้ครับ / ค่ะ', 'Chot trong ni khrap / kha'],
+            ja: ['ここで止めてください', 'Koko de tomete kudasai'],
+            es: ['Pare aquí, por favor', 'PAH-reh ah-KEE por fah-VOR'],
+            fr: ['Arrêtez-vous ici, s’il vous plaît', 'Ah-reh-tay voo ee-see'],
+            en: ['Stop here, please', 'Stop heer pleez'],
+            ar: ['توقف هنا من فضلك', 'Tawaqqaf huna min fadlak']
+          }
+        },
+        {
+          id: 'p9', cat: 'taxi', icon: '🚆',
+          en: 'Where is the train / metro station?',
+          fr: 'Où est la gare / station de métro ?',
+          t: {
+            th: ['สถานีรถไฟฟ้าอยู่ที่ไหนครับ / ค่ะ', 'Sathani rotfaifa yu thi nai'],
+            ja: ['駅はどこですか？', 'Eki wa doko desu ka?'],
+            es: ['¿Dónde está la estación de tren / metro?', 'DOHN-deh ehs-TAH lah ehs-tah-SYOHN?'],
+            fr: ['Où est la station de métro ?', 'Oo eh lah stah-syohn duh meh-troh?'],
+            en: ['Where is the train station?', 'Wair iz thuh trayn STAY-shun?'],
+            ar: ['أين محطة القطار أو المترو؟', 'Ayna mahattat al-qitar aw al-metro?']
+          }
+        },
+
+        // Hotel
+        {
+          id: 'p10', cat: 'hotel', icon: '🛎️',
+          en: 'I have a reservation',
+          fr: 'J’ai une réservation',
+          t: {
+            th: ['ฉันได้จองห้องพักไว้ครับ / ค่ะ', 'Chan dai chong hong phak wai'],
+            ja: ['予約しています', 'Yoyaku shite imasu'],
+            es: ['Tengo una reserva', 'TEHN-goh OO-nah reh-SEHR-bah'],
+            fr: ['J’ai une réservation', 'Zhay oon reh-zehr-vah-syohn'],
+            en: ['I have a reservation', 'Eye hav ah rez-er-VAY-shun'],
+            ar: ['لدي حجز مسبق', 'Ladayya hajz musbaq']
+          }
+        },
+        {
+          id: 'p11', cat: 'hotel', icon: '📶',
+          en: 'What is the Wi-Fi password?',
+          fr: 'Quel est le mot de passe Wi-Fi ?',
+          t: {
+            th: ['รหัสไวไฟคืออะไรครับ / ค่ะ', 'Rahat wai-fai khue arai'],
+            ja: ['Wi-Fiのパスワードは何ですか？', 'Waifai no pasuwādo wa nan desu ka?'],
+            es: ['¿Cuál es la contraseña del Wi-Fi?', 'Kwahl ehs lah kohn-trah-SEH-nyah?'],
+            fr: ['Quel est le mot de passe Wi-Fi ?', 'Kel eh luh moh duh pahss wee-fee?'],
+            en: ['What is the Wi-Fi password?', 'Wot iz thuh WY-fy PASS-wurd?'],
+            ar: ['ما هي كلمة مرور الواي فاي؟', 'Ma hiya kalimat muroor al-waifai?']
+          }
+        },
+        {
+          id: 'p12', cat: 'hotel', icon: '🧳',
+          en: 'Can you store my luggage?',
+          fr: 'Pouvez-vous garder mes bagages ?',
+          t: {
+            th: ['ฝากกระเป๋าได้ไหมครับ / ค่ะ', 'Fak krapao dai mai khrap / kha'],
+            ja: ['荷物を預かってもらえますか？', 'Nimotsu o azukatte moraemasu ka?'],
+            es: ['¿Puede guardar mi equipaje?', 'PWEH-deh gwahr-DAHR mee eh-kee-PAH-heh?'],
+            fr: ['Pouvez-vous garder mes bagages ?', 'Poo-vay voo gar-day may bah-gahj?'],
+            en: ['Can you store my luggage?', 'Kan yoo stor my LUG-ij?'],
+            ar: ['هل يمكنك حفظ أمتعتي؟', 'Hal yumkinuka hifz amtiati?']
+          }
+        },
+
+        // Pharmacy & Health
+        {
+          id: 'p13', cat: 'health', icon: '💊',
+          en: 'Where is the nearest pharmacy?',
+          fr: 'Où est la pharmacie la plus proche ?',
+          t: {
+            th: ['ร้านขายยาที่ใกล้ที่สุดอยู่ที่ไหน', 'Ran khai ya thi klai thi sut yu thi nai'],
+            ja: ['一番近い薬局はどこですか？', 'Ichiban chikai yakkyoku wa doko desu ka?'],
+            es: ['¿Dónde está la farmacia más cercana?', 'DOHN-deh ehs-TAH lah fahr-MAH-syah?'],
+            fr: ['Où est la pharmacie la plus proche ?', 'Oo eh lah far-mah-see lah ploo prosh?'],
+            en: ['Where is the nearest pharmacy?', 'Wair iz thuh NEER-est FAR-mah-see?'],
+            ar: ['أين أقرب صيدلية؟', 'Ayna aqrab saydaliyya?']
+          }
+        },
+        {
+          id: 'p14', cat: 'health', icon: '🤒',
+          en: 'I have a fever and headache',
+          fr: 'J’ai de la fièvre et mal à la tête',
+          t: {
+            th: ['ฉันมีไข้และปวดหัว', 'Chan mi khai lae puat hua'],
+            ja: ['熱と頭痛があります', 'Netsu to zutsū ga arimasu'],
+            es: ['Tengo fiebre y dolor de cabeza', 'TEHN-goh FYEH-breh ee doh-LOHR deh kah-BEH-sah'],
+            fr: ['J’ai de la fièvre et mal à la tête', 'Zhay duh lah fyev-ruh eh mahl ah lah tet'],
+            en: ['I have a fever and headache', 'Eye hav ah FEE-ver and HED-ayk'],
+            ar: ['لدي حمى وصداع', 'Ladayya humma wa sudaa']
+          }
+        },
+        {
+          id: 'p15', cat: 'health', icon: '⚠️',
+          en: 'I am allergic to penicillin',
+          fr: 'Je suis allergique à la pénicilline',
+          t: {
+            th: ['ฉันแพ้ยาเพนิซิลลิน', 'Chan pae ya phenisillin'],
+            ja: ['ペニシリンにアレルギーがあります', 'Penishirin ni arerugī ga arimasu'],
+            es: ['Soy alérgico/a a la penicilina', 'Soy ah-LEHR-hee-koh ah lah peh-nee-see-LEE-nah'],
+            fr: ['Je suis allergique à la pénicilline', 'Zhuh swee ah-lehr-jeek ah lah peh-nee-see-leen'],
+            en: ['I am allergic to penicillin', 'Eye am ah-LER-jik too pen-ih-SIL-in'],
+            ar: ['لدي حساسية من البنسلين', 'Ladayya hasasiyya min al-binisilin']
+          }
+        },
+
+        // Shopping
+        {
+          id: 'p16', cat: 'shop', icon: '🏷️',
+          en: 'How much does this cost?',
+          fr: 'Combien coûte ceci ?',
+          t: {
+            th: ['อันนี้ราคาเท่าไหร่ครับ / ค่ะ', 'An ni rakha thao rai khrap / kha'],
+            ja: ['これはいくらですか？', 'Kore wa ikura desu ka?'],
+            es: ['¿Cuánto cuesta esto?', 'KWAHN-toh KWEHS-tah EHS-toh?'],
+            fr: ['Combien coûte ceci ?', 'Kohm-byehn koot suh-see?'],
+            en: ['How much does this cost?', 'How much duz this kost?'],
+            ar: ['بكم هذا؟', 'Bikam hadha?']
+          }
+        },
+        {
+          id: 'p17', cat: 'shop', icon: '💳',
+          en: 'Can I pay by credit card?',
+          fr: 'Puis-je payer par carte bancaire ?',
+          t: {
+            th: ['จ่ายด้วยบัตรเครดิตได้ไหมครับ / ค่ะ', 'Chai duai bat khredit dai mai'],
+            ja: ['クレジットカードで払えますか？', 'Kurejitto kādo de haraemasu ka?'],
+            es: ['¿Puedo pagar con tarjeta?', 'PWEH-doh pah-GAHR kohn tahr-HEH-tah?'],
+            fr: ['Puis-je payer par carte ?', 'Pwee-zhuh peh-yay par kart?'],
+            en: ['Can I pay by credit card?', 'Kan eye pay by KRED-it kard?'],
+            ar: ['هل يمكنني الدفع بالبطاقة؟', 'Hal yumkinuni al-dafa bil-bitaqa?']
+          }
+        },
+        {
+          id: 'p18', cat: 'shop', icon: '👀',
+          en: 'Just looking, thank you',
+          fr: 'Je regarde seulement, merci',
+          t: {
+            th: ['ขอดูก่อนนะครับ / ค่ะ ขอบคุณ', 'Kho du kon na khrap / kha, khopkhun'],
+            ja: ['見ているだけです。ありがとう', 'Mite iru dake desu. Arigatō'],
+            es: ['Solo estoy mirando, gracias', 'SOH-loh ehs-TOY mee-RAHN-doh, GRAH-syahs'],
+            fr: ['Je regarde seulement, merci', 'Zhuh ruh-gard suhl-mahn, mehr-see'],
+            en: ['Just looking, thank you', 'Just LOOK-ing, thank yoo'],
+            ar: ['أتفرج فقط، شكراً', 'Atafarraj faqat, shukran']
+          }
+        },
+
+        // Emergency
+        {
+          id: 'p19', cat: 'emergency', icon: '🏥',
+          en: 'I need a doctor / hospital urgently',
+          fr: 'J’ai besoin d’un médecin / hôpital d’urgence',
+          t: {
+            th: ['ฉันต้องการหมอ / ไปโรงพยาบาลด่วน', 'Chan tongkan mo / pai rongphayaban duan'],
+            ja: ['医者／病院が必要です！', 'Isha / byōin ga hitsuyō desu!'],
+            es: ['Necesito un médico / hospital urgente', 'Neh-seh-SEE-toh oon MEH-dee-koh'],
+            fr: ['J’ai besoin d’un médecin d’urgence', 'Zhay buh-zwan duhn meh-dsan door-jahnss'],
+            en: ['I need a doctor / hospital urgently', 'Eye need ah DOK-ter UR-jent-lee'],
+            ar: ['أحتاج إلى طبيب أو مستشفى بشكل عاجل', 'Ahtaju ila tabeeb aw mustashfa bishakl aajil']
+          }
+        },
+        {
+          id: 'p20', cat: 'emergency', icon: '🚓',
+          en: 'Please call the police!',
+          fr: 'Appelez la police, s’il vous plaît !',
+          t: {
+            th: ['ช่วยเรียกตำรวจด้วย!', 'Chuai riak tamruat duai!'],
+            ja: ['警察を呼んでください！', 'Keisatsu o yonde kudasai!'],
+            es: ['¡Llame a la policía, por favor!', 'YAH-meh ah lah poh-lee-SEE-ah!'],
+            fr: ['Appelez la police, s’il vous plaît !', 'Ah-play lah poh-leess!'],
+            en: ['Please call the police!', 'Pleez kawl thuh poh-LEES!'],
+            ar: ['اتصل بالشرطة من فضلك!', 'Ittasil bish-shurta min fadlak!']
+          }
+        },
+        {
+          id: 'p21', cat: 'emergency', icon: '🛂',
+          en: 'I lost my passport',
+          fr: 'J’ai perdu mon passeport',
+          t: {
+            th: ['หนังสือเดินทางของฉันหาย', 'Nangsue doen-thang khong chan hai'],
+            ja: ['パスポートをなくしました', 'Pasupōto o nakushimashita'],
+            es: ['Perdí mi pasaporte', 'Pehr-DEE mee pah-sah-POHR-teh'],
+            fr: ['J’ai perdu mon passeport', 'Zhay pehr-doo mohn pahss-por'],
+            en: ['I lost my passport', 'Eye lost my PASS-port'],
+            ar: ['أضعت جواز سفري', 'Adatu jawaz safari']
+          }
+        }
+      ];
+
+      let state = {
+        uiLang: 'en',
+        targetLang: 'th',
+        category: 'all',
+        search: '',
+        slow: false,
+        favorites: ['p1', 'p6', 'p19'],
+        customCards: []
+      };
+
+      let filteredCards = [];
+      let showIdx = 0;
+
+      function t(key) {
+        return (I18N[state.uiLang] && I18N[state.uiLang][key]) || I18N.en[key] || key;
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => el.classList.remove('show'), 2200);
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            uiLang: state.uiLang,
+            targetLang: state.targetLang,
+            slow: state.slow,
+            favorites: state.favorites,
+            customCards: state.customCards
+          }));
+        } catch (e) {}
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            state = { ...state, ...parsed };
+          }
+        } catch (e) {}
+      }
+
+      function getTargetLangObj() {
+        return TARGET_LANGS.find(l => l.code === state.targetLang) || TARGET_LANGS[0];
+      }
+
+      function getAllCardsForLang() {
+        const builtIn = PHRASES.map(p => ({
+          id: p.id,
+          cat: p.cat,
+          icon: p.icon,
+          meaning: p[state.uiLang] || p.en,
+          meaningEn: p.en,
+          meaningFr: p.fr,
+          native: p.t[state.targetLang][0],
+          phonetic: p.t[state.targetLang][1],
+          custom: false
+        }));
+        const custom = state.customCards
+          .filter(c => c.targetLang === state.targetLang)
+          .map(c => ({
+            id: c.id,
+            cat: c.cat,
+            icon: c.icon || '💬',
+            meaning: c.meaning,
+            meaningEn: c.meaning,
+            meaningFr: c.meaning,
+            native: c.native,
+            phonetic: c.phonetic || '',
+            custom: true
+          }));
+        return [...custom, ...builtIn];
+      }
+
+      function speakPhrase(text) {
+        if (!('speechSynthesis' in window)) {
+          showToast(t('noSpeech'));
+          return;
+        }
+        window.speechSynthesis.cancel();
+        const langObj = getTargetLangObj();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = langObj.bcp47;
+        utter.rate = state.slow ? 0.72 : 0.96;
+        const voices = window.speechSynthesis.getVoices() || [];
+        const match = voices.find(v => v.lang.toLowerCase().startsWith(state.targetLang));
+        if (match) utter.voice = match;
+        window.speechSynthesis.speak(utter);
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+
+      function getCatLabel(catId) {
+        const c = CATEGORIES.find(x => x.id === catId);
+        if (!c) return catId;
+        return (c[state.uiLang] || c.en).replace(/^[^\s]+\s/, '');
+      }
+
+      function applyI18n() {
+        document.documentElement.lang = state.uiLang;
+        document.getElementById('langToggle').textContent = state.uiLang === 'en' ? 'FR' : 'EN';
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (key) el.textContent = t(key);
+        });
+        document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+        document.getElementById('slowSpeechCheck').checked = !!state.slow;
+      }
+
+      function renderLangPills() {
+        const wrap = document.getElementById('targetLangPills');
+        wrap.innerHTML = '';
+        TARGET_LANGS.forEach(l => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'lang-pill' + (l.code === state.targetLang ? ' active' : '');
+          btn.textContent = l.label;
+          btn.addEventListener('click', () => {
+            state.targetLang = l.code;
+            saveState();
+            renderAll();
+          });
+          wrap.appendChild(btn);
+        });
+      }
+
+      function renderCategoryPills() {
+        const wrap = document.getElementById('categoryPills');
+        wrap.innerHTML = '';
+        CATEGORIES.forEach(c => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'cat-pill' + (c.id === 'emergency' ? ' emergency' : '') + (c.id === state.category ? ' active' : '');
+          btn.textContent = c[state.uiLang] || c.en;
+          btn.addEventListener('click', () => {
+            state.category = c.id;
+            renderCategoryPills();
+            renderCards();
+          });
+          wrap.appendChild(btn);
+        });
+      }
+
+      function renderCards() {
+        const grid = document.getElementById('cardsGrid');
+        const all = getAllCardsForLang();
+        const q = state.search.trim().toLowerCase();
+        const langObj = getTargetLangObj();
+
+        filteredCards = all.filter(c => {
+          if (state.category === 'fav' && !state.favorites.includes(c.id)) return false;
+          if (state.category !== 'all' && state.category !== 'fav' && c.cat !== state.category) return false;
+          if (q) {
+            const hay = `${c.meaningEn} ${c.meaningFr} ${c.native} ${c.phonetic}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        grid.innerHTML = '';
+        if (!filteredCards.length) {
+          grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">${state.category === 'fav' ? t('emptyFavs') : t('emptySearch')}</div>`;
+          return;
+        }
+
+        filteredCards.forEach((card, idx) => {
+          const isFav = state.favorites.includes(card.id);
+          const el = document.createElement('article');
+          el.className = 'phrase-card' + (card.cat === 'emergency' ? ' is-emergency' : '');
+          el.innerHTML = `
+            <div>
+              <div class="card-top">
+                <div class="card-visual" aria-hidden="true">${escapeHtml(card.icon)}</div>
+                <div class="card-top-right">
+                  <span class="cat-badge">${escapeHtml(getCatLabel(card.cat))}</span>
+                  <button type="button" class="star-btn ${isFav ? 'starred' : ''}" aria-label="Toggle favorite">${isFav ? '★' : '☆'}</button>
+                </div>
+              </div>
+              <div style="margin-top:14px;">
+                <div class="card-native" dir="${langObj.rtl ? 'rtl' : 'ltr'}">${escapeHtml(card.native)}</div>
+                ${card.phonetic ? `<div class="card-phonetic">${escapeHtml(card.phonetic)}</div>` : ''}
+                <div class="card-meaning">${escapeHtml(card.meaning)}</div>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button type="button" class="card-act-btn speak-btn">🔊 ${t('speakAloud')}</button>
+              <button type="button" class="card-act-btn show-big expand-btn">⤢ ${t('showBig')}</button>
+              ${card.custom ? '<button type="button" class="card-del-btn del-btn" title="Delete">✕</button>' : ''}
+            </div>
+          `;
+
+          el.addEventListener('click', e => {
+            if (e.target.closest('button')) return;
+            openShowCard(idx);
+          });
+          el.querySelector('.star-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            if (state.favorites.includes(card.id)) {
+              state.favorites = state.favorites.filter(x => x !== card.id);
+            } else {
+              state.favorites.push(card.id);
+            }
+            saveState();
+            renderCards();
+          });
+          el.querySelector('.speak-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            speakPhrase(card.native);
+          });
+          el.querySelector('.expand-btn').addEventListener('click', e => {
+            e.stopPropagation();
+            openShowCard(idx);
+          });
+          const delBtn = el.querySelector('.del-btn');
+          if (delBtn) {
+            delBtn.addEventListener('click', e => {
+              e.stopPropagation();
+              state.customCards = state.customCards.filter(x => x.id !== card.id);
+              saveState();
+              renderCards();
+            });
+          }
+
+          grid.appendChild(el);
+        });
+      }
+
+      // Fullscreen Show Card
+      function openShowCard(idx) {
+        if (!filteredCards.length) return;
+        showIdx = Math.max(0, Math.min(idx, filteredCards.length - 1));
+        renderShowCard();
+        document.getElementById('showOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeShowCard() {
+        document.getElementById('showOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+      }
+
+      function renderShowCard() {
+        const card = filteredCards[showIdx];
+        if (!card) return;
+        const langObj = getTargetLangObj();
+        const overlay = document.getElementById('showOverlay');
+        overlay.classList.toggle('emergency-mode', card.cat === 'emergency');
+        document.getElementById('showBadge').textContent = `${getCatLabel(card.cat)} · ${showIdx + 1} / ${filteredCards.length}`;
+        document.getElementById('showEmoji').textContent = card.icon;
+        const nativeEl = document.getElementById('showNative');
+        nativeEl.textContent = card.native;
+        nativeEl.dir = langObj.rtl ? 'rtl' : 'ltr';
+        document.getElementById('showPhonetic').textContent = card.phonetic || '';
+        document.getElementById('showMeaning').textContent = card.meaning;
+      }
+
+      function renderAll() {
+        applyI18n();
+        renderLangPills();
+        renderCategoryPills();
+        renderCards();
+      }
+
+      // Wire events
+      document.getElementById('langToggle').addEventListener('click', () => {
+        state.uiLang = state.uiLang === 'en' ? 'fr' : 'en';
+        saveState();
+        renderAll();
+      });
+
+      document.getElementById('downloadHtmlBtn').addEventListener('click', () => {
+        const blob = new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'communideck-day15.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('slowSpeechCheck').addEventListener('change', e => {
+        state.slow = e.target.checked;
+        saveState();
+      });
+
+      document.getElementById('searchInput').addEventListener('input', e => {
+        state.search = e.target.value;
+        renderCards();
+      });
+
+      document.getElementById('printSheetBtn').addEventListener('click', () => window.print());
+
+      document.getElementById('showCloseBtn').addEventListener('click', closeShowCard);
+      document.getElementById('showSpeakBtn').addEventListener('click', () => {
+        const card = filteredCards[showIdx];
+        if (card) speakPhrase(card.native);
+      });
+      document.getElementById('showPrevBtn').addEventListener('click', () => {
+        if (!filteredCards.length) return;
+        showIdx = (showIdx - 1 + filteredCards.length) % filteredCards.length;
+        renderShowCard();
+      });
+      document.getElementById('showNextBtn').addEventListener('click', () => {
+        if (!filteredCards.length) return;
+        showIdx = (showIdx + 1) % filteredCards.length;
+        renderShowCard();
+      });
+
+      document.addEventListener('keydown', e => {
+        if (!document.getElementById('showOverlay').classList.contains('open')) return;
+        if (e.key === 'Escape') closeShowCard();
+        else if (e.key === 'ArrowRight') { showIdx = (showIdx + 1) % filteredCards.length; renderShowCard(); }
+        else if (e.key === 'ArrowLeft') { showIdx = (showIdx - 1 + filteredCards.length) % filteredCards.length; renderShowCard(); }
+      });
+
+      // Custom Card Modal
+      const customModal = document.getElementById('customModal');
+      document.getElementById('openCustomBtn').addEventListener('click', () => {
+        customModal.classList.add('open');
+      });
+      document.getElementById('cancelCustomBtn').addEventListener('click', () => {
+        customModal.classList.remove('open');
+      });
+      document.getElementById('saveCustomBtn').addEventListener('click', () => {
+        const meaning = document.getElementById('cMeaning').value.trim();
+        const native = document.getElementById('cNative').value.trim();
+        if (!meaning || !native) return;
+        const card = {
+          id: 'cust_' + Date.now(),
+          targetLang: state.targetLang,
+          icon: document.getElementById('cIcon').value.trim() || '💬',
+          cat: document.getElementById('cCat').value,
+          meaning,
+          native,
+          phonetic: document.getElementById('cPhonetic').value.trim()
+        };
+        state.customCards.unshift(card);
+        saveState();
+        document.getElementById('cMeaning').value = '';
+        document.getElementById('cNative').value = '';
+        document.getElementById('cPhonetic').value = '';
+        customModal.classList.remove('open');
+        renderCards();
+        showToast(t('cardAdded'));
+      });
+
+      loadState();
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

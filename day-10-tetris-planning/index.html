@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TetrisPlanning · Day 10/30 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #F5F7FB;
+      --surface: #FFFFFF;
+      --surface-soft: #EEF2F9;
+      --ink: #0E1638;
+      --ink-muted: #55607A;
+      --border: #DCE3F0;
+      --border-strong: #C5D0E6;
+      --sky: #A9D6FF;
+      --lemon: #FFE15D;
+      --work-bg: #10B981;
+      --work-soft: #D1FAE5;
+      --work-ink: #065F46;
+      --stretch-bg: #F59E0B;
+      --stretch-soft: #FEF3C7;
+      --stretch-ink: #92400E;
+      --sleep-bg: #CBD5E1;
+      --sleep-soft: #E2E8F0;
+      --sleep-ink: #475569;
+      --accent: #2563EB;
+      --accent-dark: #1D4ED8;
+      --danger: #EF4444;
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(14, 22, 56, 0.06);
+      --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .u30-bar {
+      background: #0E1638;
+      color: #E2E8F0;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .u30-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .u30-bar a {
+      color: #FFFFFF;
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.15s;
+    }
+    .u30-bar a:hover { opacity: 0.8; text-decoration: underline; }
+    .u30-sep { opacity: 0.4; }
+    .u30-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .u30-pill {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 2px;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .u30-lang-btn {
+      background: transparent;
+      border: none;
+      color: #CBD5E1;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .u30-lang-btn.active {
+      background: #FFFFFF;
+      color: #0E1638;
+    }
+    .u30-dl-btn {
+      background: rgba(169, 214, 255, 0.16);
+      color: #A9D6FF;
+      border: 1px solid rgba(169, 214, 255, 0.35);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .u30-dl-btn:hover {
+      background: #A9D6FF;
+      color: #0E1638;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    /* Header */
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #E0F0FF;
+      color: #0B4A8B;
+      border: 1px solid #B5DBFF;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+      letter-spacing: 0.02em;
+    }
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+      font-weight: 400;
+      line-height: 1.05;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+    }
+    .hero h1 span {
+      background: linear-gradient(120deg, #A9D6FF 0%, #FFE15D 100%);
+      padding: 0 10px;
+      border-radius: 10px;
+      font-style: italic;
+    }
+    .hero p {
+      color: var(--ink-muted);
+      max-width: 600px;
+      margin-top: 8px;
+      font-size: 15px;
+    }
+
+    .hero-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .control-group label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+    }
+    .input, .select {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input:focus, .select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 10px;
+      padding: 9px 14px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary {
+      background: var(--ink);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover { background: #1E2959; transform: translateY(-1px); }
+    .btn-accent {
+      background: var(--accent);
+      color: #FFFFFF;
+    }
+    .btn-accent:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn-soft {
+      background: var(--surface);
+      color: var(--ink);
+      border-color: var(--border);
+    }
+    .btn-soft:hover { background: var(--surface-soft); border-color: var(--border-strong); }
+    .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
+
+    /* Golden Overlap Strip */
+    .golden-panel {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .golden-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .golden-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      background: #FAFBFD;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+    }
+    .golden-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      background: #FFFFFF;
+    }
+    .golden-card.active {
+      border-color: #EAB308;
+      background: #FEFCE8;
+      box-shadow: 0 6px 18px rgba(234, 179, 8, 0.18);
+    }
+    .golden-rank {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .rank-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #FEF08A;
+      color: #854D0E;
+    }
+    .rank-badge.perfect {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+    .golden-time {
+      font-family: var(--font-mono);
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .golden-meta {
+      font-size: 12px;
+      color: var(--ink-muted);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Tetris Grid Card */
+    .grid-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    .grid-toolbar {
+      padding: 14px 20px;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: #FAFBFD;
+    }
+    .legend {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      display: inline-block;
+      border: 1.5px solid rgba(14,22,56,0.18);
+    }
+    .swatch.work { background: var(--work-bg); }
+    .swatch.stretch { background: var(--stretch-bg); }
+    .swatch.sleep { background: var(--sleep-bg); }
+    .swatch.golden { background: var(--lemon); border-color: #CA8A04; }
+
+    .tetris-scroll {
+      overflow-x: auto;
+      padding: 16px 20px 20px;
+    }
+    .tetris-table {
+      min-width: 960px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tetris-row {
+      display: grid;
+      grid-template-columns: 230px repeat(24, minmax(28px, 1fr));
+      gap: 4px;
+      align-items: center;
+    }
+    .tetris-header-row {
+      margin-bottom: 4px;
+    }
+    .hour-head {
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-muted);
+      padding: 6px 2px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.12s;
+      user-select: none;
+    }
+    .hour-head:hover {
+      background: var(--surface-soft);
+      color: var(--ink);
+    }
+    .hour-head.golden-col {
+      background: #FEF9C3;
+      color: #854D0E;
+    }
+    .hour-head.selected-col {
+      background: var(--ink);
+      color: #FFFFFF;
+    }
+
+    .member-cell {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-right: 10px;
+    }
+    .member-info {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 0;
+    }
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      color: #0E1638;
+      border: 2px solid #0E1638;
+      flex-shrink: 0;
+    }
+    .member-text {
+      min-width: 0;
+    }
+    .member-name {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .member-city {
+      font-size: 11px;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .remove-btn {
+      background: transparent;
+      border: none;
+      color: #94A3B8;
+      cursor: pointer;
+      font-size: 15px;
+      padding: 4px;
+      border-radius: 6px;
+      line-height: 1;
+    }
+    .remove-btn:hover { background: #FEE2E2; color: var(--danger); }
+
+    .t-block {
+      height: 40px;
+      border-radius: 7px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.1s, box-shadow 0.1s;
+      user-select: none;
+      border: 1.5px solid transparent;
+    }
+    .t-block:hover {
+      transform: translateY(-2px);
+      z-index: 3;
+      box-shadow: 0 4px 10px rgba(14,22,56,0.14);
+    }
+    .t-block.work {
+      background: var(--work-bg);
+      color: #FFFFFF;
+      border-color: #059669;
+    }
+    .t-block.stretch {
+      background: var(--stretch-soft);
+      color: var(--stretch-ink);
+      border-color: #FCD34D;
+    }
+    .t-block.sleep {
+      background: var(--sleep-soft);
+      color: var(--sleep-ink);
+      border-color: #CBD5E1;
+      opacity: 0.72;
+    }
+    .t-block.selected-col {
+      outline: 2.5px solid var(--ink);
+      outline-offset: 1px;
+      z-index: 4;
+      opacity: 1;
+    }
+    .t-block.in-duration {
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.75);
+    }
+    .t-day-tag {
+      font-size: 8px;
+      opacity: 0.85;
+      line-height: 1;
+      margin-top: 1px;
+    }
+
+    /* Score Bar Row */
+    .score-cell {
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Lower Two-Column Layout */
+    .lower-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    @media (max-width: 900px) {
+      .lower-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    /* Teammate Config List */
+    .member-editor-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .member-editor-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: #FAFBFD;
+    }
+    .window-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .window-select {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 8px;
+      border-radius: 8px;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      color: var(--ink);
+    }
+    .add-form {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr auto;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1.5px dashed var(--border);
+    }
+    @media (max-width: 560px) {
+      .add-form { grid-template-columns: 1fr; }
+    }
+
+    /* Inspector / Invite Panel */
+    .inspector-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .slot-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 14px 0 18px;
+    }
+    .slot-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #FAFBFD;
+      border: 1.5px solid var(--border);
+      gap: 10px;
+    }
+    .slot-status {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    .slot-status.work { background: var(--work-soft); color: var(--work-ink); }
+    .slot-status.stretch { background: var(--stretch-soft); color: var(--stretch-ink); }
+    .slot-status.sleep { background: var(--sleep-soft); color: var(--sleep-ink); }
+    .slot-time-mono {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .invite-fields {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .export-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .export-actions .btn { flex: 1; }
+
+    /* Unfinished Section */
+    .unfinished {
+      background: #FFFBEB;
+      border: 1.5px dashed #F59E0B;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      color: #78350F;
+    }
+    .unfinished h3 {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .unfinished ul {
+      padding-left: 18px;
+      font-size: 13.5px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(14,22,56,0.28);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 200;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Challenge Bar -->
+  <header class="u30-bar">
+    <div class="u30-bar-left">
+      <a href="/">The Unfinished 30 · Day 10/30</a>
+      <span class="u30-sep">·</span>
+      <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="u30-bar-right">
+      <div class="u30-pill" role="group" aria-label="Language">
+        <button class="u30-lang-btn active" data-lang="en" id="btnLangEn">EN</button>
+        <button class="u30-lang-btn" data-lang="fr" id="btnLangFr">FR</button>
+      </div>
+      <button class="u30-dl-btn" id="btnDownloadHtml">
+        <span>⬇</span>
+        <span data-i18n="downloadHtml">Download HTML</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero -->
+    <section class="hero">
+      <div>
+        <div class="hero-badge">🧱 <span data-i18n="badge">Team Timezone Tetris</span></div>
+        <h1>Tetris<span>Planning</span></h1>
+        <p data-i18n="subtitle">Stack your global team's working hours like Tetris blocks. Spot the golden overlap in 3 seconds, inspect local times, and export an instant calendar invite.</p>
+      </div>
+      <div class="hero-controls">
+        <div class="control-group">
+          <label for="refTzSelect" data-i18n="anchorLabel">Grid Anchor</label>
+          <select id="refTzSelect" class="select"></select>
+        </div>
+        <div class="control-group">
+          <label for="meetingDate" data-i18n="dateLabel">Meeting Date</label>
+          <input type="date" id="meetingDate" class="input" />
+        </div>
+        <div class="control-group">
+          <label for="durationSelect" data-i18n="durationLabel">Duration</label>
+          <select id="durationSelect" class="select">
+            <option value="30">30 min</option>
+            <option value="60" selected>60 min</option>
+            <option value="90">90 min</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ranked Golden Overlap Slots -->
+    <section class="golden-panel">
+      <div class="section-head">
+        <div class="section-title">✨ <span data-i18n="goldenTitle">Ranked Golden Overlap Slots</span></div>
+        <button class="btn btn-soft btn-sm" id="btnResetDemo" data-i18n="resetDemo">Reset 4-person Demo</button>
+      </div>
+      <div class="golden-cards" id="goldenCards"></div>
+    </section>
+
+    <!-- 24h Tetris Grid -->
+    <section class="grid-card">
+      <div class="grid-toolbar">
+        <div class="section-title">🗓 <span data-i18n="gridTitle">24-Hour Team Tetris Grid</span></div>
+        <div class="legend">
+          <span class="legend-item"><span class="swatch work"></span><span data-i18n="legWork">Work hours</span></span>
+          <span class="legend-item"><span class="swatch stretch"></span><span data-i18n="legStretch">Comfort / Stretch (±2h)</span></span>
+          <span class="legend-item"><span class="swatch sleep"></span><span data-i18n="legSleep">Sleep / Off</span></span>
+          <span class="legend-item"><span class="swatch golden"></span><span data-i18n="legGolden">Top Slot</span></span>
+        </div>
+      </div>
+      <div class="tetris-scroll">
+        <div class="tetris-table" id="tetrisTable"></div>
+      </div>
+    </section>
+
+    <!-- Lower Grid: Team Editor + Selected Slot Inspector & Export -->
+    <section class="lower-grid">
+      <!-- Team & Work Windows -->
+      <div class="card">
+        <div class="section-head">
+          <div class="section-title">👥 <span data-i18n="teamTitle">Team &amp; Working Windows</span></div>
+        </div>
+        <div class="member-editor-list" id="memberEditorList"></div>
+        <form class="add-form" id="addMemberForm">
+          <input type="text" id="newName" class="input" data-i18n-placeholder="namePlaceholder" placeholder="Teammate name (e.g. Kenji)" required />
+          <select id="newCity" class="select"></select>
+          <button type="submit" class="btn btn-primary">+ <span data-i18n="addBtn">Add</span></button>
+        </form>
+      </div>
+
+      <!-- Selected Slot Inspector & Export -->
+      <div class="card">
+        <div class="inspector-header">
+          <div class="section-title">🎯 <span data-i18n="inspectorTitle">Selected Slot Inspector</span></div>
+          <span class="rank-badge" id="selectedScoreBadge"></span>
+        </div>
+        <div class="invite-fields">
+          <input type="text" id="meetingTitle" class="input" value="Weekly Product Sync" data-i18n-placeholder="meetingPlaceholder" />
+          <div class="slot-time-mono" id="selectedAnchorTime" style="align-self:center;padding:0 6px;"></div>
+        </div>
+        <div class="slot-list" id="slotInspectorList"></div>
+        <div class="export-actions">
+          <button class="btn btn-soft" id="btnCopySummary">📋 <span data-i18n="copySummary">Copy Invite Summary</span></button>
+          <button class="btn btn-accent" id="btnDownloadIcs">📅 <span data-i18n="downloadIcs">Download .ics</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Honest What's Unfinished -->
+    <section class="unfinished">
+      <h3>🚧 <span data-i18n="unfinishedTitle">What's unfinished</span></h3>
+      <ul>
+        <li data-i18n="unf1">Half-hour timezone offsets (like India UTC+5:30) snap to the nearest hour column in the 24h Tetris grid, though exact local times are still shown in the inspector.</li>
+        <li data-i18n="unf2">No live Google Calendar / Outlook free-busy sync — this prototype schedules purely around each teammate's working window rather than individual busy blocks.</li>
+        <li data-i18n="unf3">Shareable URL state encoding isn't wired up yet; changes persist locally in your browser's localStorage.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'u30_day10_tetrisplanning_v1';
+
+      const CITIES = [
+        { label: 'Bangkok (ICT)', tz: 'Asia/Bangkok', city: 'Bangkok' },
+        { label: 'Paris (CET/CEST)', tz: 'Europe/Paris', city: 'Paris' },
+        { label: 'London (GMT/BST)', tz: 'Europe/London', city: 'London' },
+        { label: 'New York (EST/EDT)', tz: 'America/New_York', city: 'New York' },
+        { label: 'San Francisco (PST/PDT)', tz: 'America/Los_Angeles', city: 'San Francisco' },
+        { label: 'Chicago (CST/CDT)', tz: 'America/Chicago', city: 'Chicago' },
+        { label: 'Toronto (EST/EDT)', tz: 'America/Toronto', city: 'Toronto' },
+        { label: 'São Paulo (BRT)', tz: 'America/Sao_Paulo', city: 'São Paulo' },
+        { label: 'Lisbon (WET/WEST)', tz: 'Europe/Lisbon', city: 'Lisbon' },
+        { label: 'Berlin (CET/CEST)', tz: 'Europe/Berlin', city: 'Berlin' },
+        { label: 'Cairo (EET)', tz: 'Africa/Cairo', city: 'Cairo' },
+        { label: 'Lagos (WAT)', tz: 'Africa/Lagos', city: 'Lagos' },
+        { label: 'Dubai (GST)', tz: 'Asia/Dubai', city: 'Dubai' },
+        { label: 'Mumbai (IST)', tz: 'Asia/Kolkata', city: 'Mumbai' },
+        { label: 'Singapore (SGT)', tz: 'Asia/Singapore', city: 'Singapore' },
+        { label: 'Tokyo (JST)', tz: 'Asia/Tokyo', city: 'Tokyo' },
+        { label: 'Seoul (KST)', tz: 'Asia/Seoul', city: 'Seoul' },
+        { label: 'Sydney (AEST/AEDT)', tz: 'Australia/Sydney', city: 'Sydney' },
+        { label: 'Auckland (NZST/NZDT)', tz: 'Pacific/Auckland', city: 'Auckland' },
+        { label: 'Mexico City (CST)', tz: 'America/Mexico_City', city: 'Mexico City' },
+        { label: 'UTC (Universal)', tz: 'UTC', city: 'UTC' }
+      ];
+
+      const AVATAR_COLORS = ['#A9D6FF', '#FFE15D', '#FFB8DE', '#9CF0C7', '#D8C6FA', '#FFB894'];
+
+      const DEFAULT_TEAM = [
+        { id: 'm1', name: 'Niran', city: 'Bangkok', tz: 'Asia/Bangkok', start: 9, end: 18, color: '#FFE15D' },
+        { id: 'm2', name: 'Camille', city: 'Paris', tz: 'Europe/Paris', start: 9, end: 18, color: '#A9D6FF' },
+        { id: 'm3', name: 'Oliver', city: 'London', tz: 'Europe/London', start: 9, end: 18, color: '#9CF0C7' },
+        { id: 'm4', name: 'Maya', city: 'New York', tz: 'America/New_York', start: 9, end: 18, color: '#FFB8DE' }
+      ];
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          badge: 'Team Timezone Tetris',
+          subtitle: "Stack your global team's working hours like Tetris blocks. Spot the golden overlap in 3 seconds, inspect local times, and export an instant calendar invite.",
+          anchorLabel: 'Grid Anchor',
+          dateLabel: 'Meeting Date',
+          durationLabel: 'Duration',
+          goldenTitle: 'Ranked Golden Overlap Slots',
+          resetDemo: 'Reset 4-person Demo',
+          gridTitle: '24-Hour Team Tetris Grid',
+          legWork: 'Work hours',
+          legStretch: 'Comfort / Stretch (±2h)',
+          legSleep: 'Sleep / Off',
+          legGolden: 'Top Slot',
+          teamTitle: 'Team & Working Windows',
+          namePlaceholder: 'Teammate name (e.g. Kenji)',
+          addBtn: 'Add',
+          inspectorTitle: 'Selected Slot Inspector',
+          meetingPlaceholder: 'Meeting title',
+          copySummary: 'Copy Invite Summary',
+          downloadIcs: 'Download .ics',
+          unfinishedTitle: "What's unfinished",
+          unf1: "Half-hour timezone offsets (like India UTC+5:30) snap to the nearest hour column in the 24h Tetris grid, though exact local times are still shown in the inspector.",
+          unf2: "No live Google Calendar / Outlook free-busy sync — this prototype schedules purely around each teammate's working window rather than individual busy blocks.",
+          unf3: "Shareable URL state encoding isn't wired up yet; changes persist locally in your browser's localStorage.",
+          statusWork: 'Work',
+          statusStretch: 'Stretch',
+          statusSleep: 'Sleep',
+          perfectSlot: 'Golden Overlap',
+          bestCompromise: 'Best Compromise',
+          inWork: 'in work',
+          stretched: 'stretched',
+          asleep: 'asleep',
+          copiedToast: 'Meeting summary copied to clipboard!',
+          icsToast: 'Calendar .ics file downloaded!',
+          resetToast: 'Reset to 4-person international team.',
+          addedToast: 'Teammate added!',
+          minOneToast: 'Keep at least 1 teammate on the board.',
+          scoreRowLabel: 'Fit Score'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          badge: 'Tetris des Fuseaux Horaires',
+          subtitle: "Empilez les horaires de votre équipe internationale comme des blocs Tetris. Repérez le créneau idéal en 3 secondes et exportez une invitation calendrier.",
+          anchorLabel: 'Fuseau de référence',
+          dateLabel: 'Date de réunion',
+          durationLabel: 'Durée',
+          goldenTitle: 'Meilleurs Créneaux Communs',
+          resetDemo: 'Réinitialiser la démo',
+          gridTitle: 'Grille Tetris 24 Heures',
+          legWork: 'Heures de bureau',
+          legStretch: 'Flexible (±2h)',
+          legSleep: 'Nuit / Hors horaire',
+          legGolden: 'Top créneau',
+          teamTitle: 'Équipe & Plages Horaires',
+          namePlaceholder: 'Prénom (ex. Kenji)',
+          addBtn: 'Ajouter',
+          inspectorTitle: 'Détail du Créneau Sélectionné',
+          meetingPlaceholder: 'Titre de la réunion',
+          copySummary: 'Copier le résumé',
+          downloadIcs: 'Télécharger .ics',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          unf1: "Les fuseaux à demi-heure (ex. Inde UTC+5:30) s'alignent sur l'heure la plus proche dans la grille 24h, mais l'heure exacte reste affichée dans l'inspecteur.",
+          unf2: "Pas de synchronisation en direct avec Google Calendar ou Outlook — l'outil s'appuie uniquement sur les plages de travail configurées.",
+          unf3: "Pas encore de partage par lien URL encodé ; vos modifications sont sauvegardées localement dans le navigateur.",
+          statusWork: 'Bureau',
+          statusStretch: 'Flexible',
+          statusSleep: 'Nuit',
+          perfectSlot: 'Créneau en Or',
+          bestCompromise: 'Meilleur Compromis',
+          inWork: 'au bureau',
+          stretched: 'flexibles',
+          asleep: 'endormis',
+          copiedToast: 'Résumé de réunion copié !',
+          icsToast: 'Fichier calendrier .ics téléchargé !',
+          resetToast: 'Équipe démo (4 personnes) restaurée.',
+          addedToast: 'Membre ajouté !',
+          minOneToast: 'Gardez au moins 1 personne dans la grille.',
+          scoreRowLabel: 'Score'
+        }
+      };
+
+      let state = loadState();
+
+      function todayISO() {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed.team) && parsed.team.length > 0) {
+              return {
+                lang: parsed.lang || 'en',
+                refTz: parsed.refTz || 'Europe/Paris',
+                date: parsed.date || todayISO(),
+                duration: parsed.duration || 60,
+                selectedHour: typeof parsed.selectedHour === 'number' ? parsed.selectedHour : 14,
+                meetingTitle: parsed.meetingTitle || 'Weekly Product Sync',
+                team: parsed.team
+              };
+            }
+          }
+        } catch (e) {}
+        return {
+          lang: 'en',
+          refTz: 'Europe/Paris',
+          date: todayISO(),
+          duration: 60,
+          selectedHour: 14,
+          meetingTitle: 'Weekly Product Sync',
+          team: JSON.parse(JSON.stringify(DEFAULT_TEAM))
+        };
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (e) {}
+      }
+
+      function t(key) {
+        return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => el.classList.remove('show'), 2600);
+      }
+
+      // Compute UTC timestamp for a given date (YYYY-MM-DD) and hour (0-23) in a given IANA timezone
+      function getUtcDateForTzHour(dateStr, hour, tz) {
+        const [y, m, d] = dateStr.split('-').map(Number);
+        // Start with naive UTC guess
+        const guess = new Date(Date.UTC(y, m - 1, d, hour, 0, 0));
+        const parts = getTzParts(guess, tz);
+        // Compute difference between desired wall time and formatted wall time
+        const desiredMs = Date.UTC(y, m - 1, d, hour, 0, 0);
+        const actualMs = Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute, 0);
+        const diff = desiredMs - actualMs;
+        return new Date(guess.getTime() + diff);
+      }
+
+      function getTzParts(dateObj, tz) {
+        const dtf = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        });
+        const parts = {};
+        for (const p of dtf.formatToParts(dateObj)) {
+          if (p.type !== 'literal') parts[p.type] = parseInt(p.value, 10);
+        }
+        if (parts.hour === 24) parts.hour = 0;
+        return parts;
+      }
+
+      function getTzShortName(dateObj, tz) {
+        try {
+          const str = new Intl.DateTimeFormat('en-US', {
+            timeZone: tz,
+            timeZoneName: 'short'
+          }).format(dateObj);
+          const idx = str.lastIndexOf(' ');
+          return idx > -1 ? str.slice(idx + 1) : tz;
+        } catch (e) {
+          return tz;
+        }
+      }
+
+      function classifyHour(localHourFloat, start, end) {
+        // Normalize into [0, 24)
+        const h = ((localHourFloat % 24) + 24) % 24;
+        if (h >= start && h < end) return 'work';
+        // Stretch: within 2 hours before start or 2 hours after end (and not deep night 0-5)
+        const beforeDiff = ((start - h) + 24) % 24;
+        const afterDiff = ((h - end) + 24) % 24;
+        if ((beforeDiff > 0 && beforeDiff <= 2) || (afterDiff >= 0 && afterDiff < 2)) {
+          return 'stretch';
+        }
+        return 'sleep';
+      }
+
+      function evaluateHour(anchorHour) {
+        const utcDate = getUtcDateForTzHour(state.date, anchorHour, state.refTz);
+        const refParts = getTzParts(utcDate, state.refTz);
+        const refDayVal = Date.UTC(refParts.year, refParts.month - 1, refParts.day);
+
+        let workCount = 0;
+        let stretchCount = 0;
+        let sleepCount = 0;
+        let score = 0;
+        const details = [];
+
+        for (const m of state.team) {
+          const mp = getTzParts(utcDate, m.tz);
+          const mDayVal = Date.UTC(mp.year, mp.month - 1, mp.day);
+          const dayDelta = Math.round((mDayVal - refDayVal) / 86400000);
+          const localFloat = mp.hour + mp.minute / 60;
+          const status = classifyHour(localFloat, m.start, m.end);
+
+          if (status === 'work') { workCount++; score += 3; }
+          else if (status === 'stretch') { stretchCount++; score += 1; }
+          else { sleepCount++; score -= 5; }
+
+          details.push({
+            member: m,
+            hour: mp.hour,
+            minute: mp.minute,
+            dayDelta,
+            status,
+            tzShort: getTzShortName(utcDate, m.tz)
+          });
+        }
+
+        return {
+          anchorHour,
+          utcDate,
+          workCount,
+          stretchCount,
+          sleepCount,
+          score,
+          details
+        };
+      }
+
+      function fmtTime(h, m) {
+        return `${String(h).padStart(2, '0')}:${String(m || 0).padStart(2, '0')}`;
+      }
+
+      function fmtRange(utcStart, durationMin, tz) {
+        const p1 = getTzParts(utcStart, tz);
+        const utcEnd = new Date(utcStart.getTime() + durationMin * 60000);
+        const p2 = getTzParts(utcEnd, tz);
+        return `${fmtTime(p1.hour, p1.minute)}–${fmtTime(p2.hour, p2.minute)}`;
+      }
+
+      function populateDropdowns() {
+        const refSel = document.getElementById('refTzSelect');
+        const newCitySel = document.getElementById('newCity');
+        refSel.innerHTML = '';
+        newCitySel.innerHTML = '';
+        CITIES.forEach((c) => {
+          const opt1 = document.createElement('option');
+          opt1.value = c.tz;
+          opt1.textContent = c.label;
+          if (c.tz === state.refTz) opt1.selected = true;
+          refSel.appendChild(opt1);
+
+          const opt2 = document.createElement('option');
+          opt2.value = c.tz;
+          opt2.textContent = c.label;
+          newCitySel.appendChild(opt2);
+        });
+        newCitySel.value = 'Asia/Tokyo';
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = state.lang;
+        document.getElementById('btnLangEn').classList.toggle('active', state.lang === 'en');
+        document.getElementById('btnLangFr').classList.toggle('active', state.lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          const key = el.getAttribute('data-i18n');
+          el.textContent = t(key);
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          el.placeholder = t(key);
+        });
+      }
+
+      function render() {
+        applyLanguage();
+        document.getElementById('meetingDate').value = state.date;
+        document.getElementById('durationSelect').value = String(state.duration);
+        document.getElementById('meetingTitle').value = state.meetingTitle;
+        document.getElementById('refTzSelect').value = state.refTz;
+
+        // Evaluate all 24 hours
+        const hoursEval = [];
+        for (let h = 0; h < 24; h++) {
+          hoursEval.push(evaluateHour(h));
+        }
+
+        // Rank best slots
+        const ranked = [...hoursEval].sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          if (a.sleepCount !== b.sleepCount) return a.sleepCount - b.sleepCount;
+          if (b.workCount !== a.workCount) return b.workCount - a.workCount;
+          return Math.abs(a.anchorHour - 14) - Math.abs(b.anchorHour - 14);
+        });
+
+        const top3 = ranked.slice(0, 3);
+        const topHourSet = new Set(top3.map(x => x.anchorHour));
+        const bestScore = ranked[0].score;
+
+        // Render Golden Cards
+        const goldenWrap = document.getElementById('goldenCards');
+        goldenWrap.innerHTML = '';
+        top3.forEach((slot, idx) => {
+          const card = document.createElement('div');
+          card.className = 'golden-card' + (slot.anchorHour === state.selectedHour ? ' active' : '');
+          const isPerfect = slot.sleepCount === 0 && slot.stretchCount === 0;
+          const badgeText = isPerfect ? `#${idx + 1} · ${t('perfectSlot')}` : `#${idx + 1} · ${t('bestCompromise')}`;
+          const refShort = getTzShortName(slot.utcDate, state.refTz);
+          const rangeStr = fmtRange(slot.utcDate, state.duration, state.refTz);
+
+          card.innerHTML = `
+            <div class="golden-rank">
+              <span class="rank-badge ${isPerfect ? 'perfect' : ''}">${badgeText}</span>
+              <span style="font-size:11px;font-weight:700;color:var(--ink-muted);">${refShort}</span>
+            </div>
+            <div class="golden-time">${rangeStr}</div>
+            <div class="golden-meta">
+              <span>🟢 ${slot.workCount} ${t('inWork')}</span>
+              <span>🟡 ${slot.stretchCount} ${t('stretched')}</span>
+              <span>🌙 ${slot.sleepCount} ${t('asleep')}</span>
+            </div>
+          `;
+          card.addEventListener('click', () => {
+            state.selectedHour = slot.anchorHour;
+            saveState();
+            render();
+          });
+          goldenWrap.appendChild(card);
+        });
+
+        // Render Tetris Grid
+        const table = document.getElementById('tetrisTable');
+        table.innerHTML = '';
+
+        // Header Row
+        const headerRow = document.createElement('div');
+        headerRow.className = 'tetris-row tetris-header-row';
+        const refCityObj = CITIES.find(c => c.tz === state.refTz);
+        headerRow.innerHTML = `<div style="font-size:11px;font-weight:800;color:var(--ink-muted);text-transform:uppercase;letter-spacing:0.05em;">${refCityObj ? refCityObj.city : state.refTz}</div>`;
+        for (let h = 0; h < 24; h++) {
+          const cell = document.createElement('div');
+          cell.className = 'hour-head' +
+            (topHourSet.has(h) ? ' golden-col' : '') +
+            (h === state.selectedHour ? ' selected-col' : '');
+          cell.textContent = String(h).padStart(2, '0');
+          cell.title = `${String(h).padStart(2, '0')}:00`;
+          cell.addEventListener('click', () => {
+            state.selectedHour = h;
+            saveState();
+            render();
+          });
+          headerRow.appendChild(cell);
+        }
+        table.appendChild(headerRow);
+
+        // Teammate Rows
+        state.team.forEach((m, mIdx) => {
+          const row = document.createElement('div');
+          row.className = 'tetris-row';
+
+          const infoCell = document.createElement('div');
+          infoCell.className = 'member-cell';
+          const sampleDetail = hoursEval[state.selectedHour].details[mIdx];
+          infoCell.innerHTML = `
+            <div class="member-info">
+              <div class="avatar" style="background:${m.color}">${escapeHtml(m.name.slice(0, 2).toUpperCase())}</div>
+              <div class="member-text">
+                <div class="member-name">${escapeHtml(m.name)}</div>
+                <div class="member-city">${escapeHtml(m.city)} · ${sampleDetail.tzShort}</div>
+              </div>
+            </div>
+            <button class="remove-btn" title="Remove" aria-label="Remove">&times;</button>
+          `;
+          infoCell.querySelector('.remove-btn').addEventListener('click', () => {
+            if (state.team.length <= 1) {
+              showToast(t('minOneToast'));
+              return;
+            }
+            state.team.splice(mIdx, 1);
+            saveState();
+            render();
+          });
+          row.appendChild(infoCell);
+
+          for (let h = 0; h < 24; h++) {
+            const d = hoursEval[h].details[mIdx];
+            const blk = document.createElement('div');
+            const isSelected = h === state.selectedHour;
+            const isSecondHour = state.duration === 90 && h === (state.selectedHour + 1) % 24;
+            blk.className = `t-block ${d.status}${isSelected ? ' selected-col' : ''}${isSecondHour ? ' in-duration' : ''}`;
+            const dayTag = d.dayDelta === 1 ? '+1d' : d.dayDelta === -1 ? '-1d' : '';
+            blk.innerHTML = `<span>${String(d.hour).padStart(2, '0')}</span>${dayTag ? `<span class="t-day-tag">${dayTag}</span>` : ''}`;
+            blk.title = `${m.name} (${m.city}): ${fmtTime(d.hour, d.minute)} (${t('status' + cap(d.status))})`;
+            blk.addEventListener('click', () => {
+              state.selectedHour = h;
+              saveState();
+              render();
+            });
+            row.appendChild(blk);
+          }
+
+          table.appendChild(row);
+        });
+
+        // Score Summary Row
+        const scoreRow = document.createElement('div');
+        scoreRow.className = 'tetris-row';
+        scoreRow.innerHTML = `<div style="font-size:11px;font-weight:700;color:var(--ink-muted);">${t('scoreRowLabel')}</div>`;
+        for (let h = 0; h < 24; h++) {
+          const ev = hoursEval[h];
+          const sc = document.createElement('div');
+          sc.className = 'score-cell';
+          const isBest = ev.score === bestScore;
+          if (isBest) {
+            sc.style.background = '#FEF08A';
+            sc.style.color = '#854D0E';
+            sc.textContent = '★';
+          } else if (ev.sleepCount === 0) {
+            sc.style.background = '#D1FAE5';
+            sc.style.color = '#065F46';
+            sc.textContent = `${ev.workCount}/${state.team.length}`;
+          } else {
+            sc.style.background = '#F1F5F9';
+            sc.style.color = '#64748B';
+            sc.textContent = `${ev.workCount}`;
+          }
+          sc.addEventListener('click', () => {
+            state.selectedHour = h;
+            saveState();
+            render();
+          });
+          scoreRow.appendChild(sc);
+        }
+        table.appendChild(scoreRow);
+
+        // Render Teammate Work Window Editors
+        const editorList = document.getElementById('memberEditorList');
+        editorList.innerHTML = '';
+        state.team.forEach((m) => {
+          const item = document.createElement('div');
+          item.className = 'member-editor-row';
+          item.innerHTML = `
+            <div class="member-info">
+              <div class="avatar" style="background:${m.color};width:28px;height:28px;font-size:11px;">${escapeHtml(m.name.slice(0, 2).toUpperCase())}</div>
+              <div>
+                <div class="member-name">${escapeHtml(m.name)}</div>
+                <div class="member-city">${escapeHtml(m.city)}</div>
+              </div>
+            </div>
+            <div class="window-controls">
+              <select class="window-select start-sel" aria-label="Start hour"></select>
+              <span style="font-size:12px;color:var(--ink-muted);font-weight:700;">→</span>
+              <select class="window-select end-sel" aria-label="End hour"></select>
+            </div>
+          `;
+          const startSel = item.querySelector('.start-sel');
+          const endSel = item.querySelector('.end-sel');
+          for (let hr = 5; hr <= 15; hr++) {
+            const o = document.createElement('option');
+            o.value = hr;
+            o.textContent = `${String(hr).padStart(2, '0')}:00`;
+            if (hr === m.start) o.selected = true;
+            startSel.appendChild(o);
+          }
+          for (let hr = 13; hr <= 23; hr++) {
+            const o = document.createElement('option');
+            o.value = hr;
+            o.textContent = `${String(hr).padStart(2, '0')}:00`;
+            if (hr === m.end) o.selected = true;
+            endSel.appendChild(o);
+          }
+          startSel.addEventListener('change', () => {
+            m.start = parseInt(startSel.value, 10);
+            if (m.end <= m.start) m.end = Math.min(23, m.start + 4);
+            saveState();
+            render();
+          });
+          endSel.addEventListener('change', () => {
+            m.end = parseInt(endSel.value, 10);
+            if (m.start >= m.end) m.start = Math.max(5, m.end - 4);
+            saveState();
+            render();
+          });
+          editorList.appendChild(item);
+        });
+
+        // Render Selected Slot Inspector
+        const selEval = hoursEval[state.selectedHour];
+        const isPerfectSel = selEval.sleepCount === 0 && selEval.stretchCount === 0;
+        const badgeEl = document.getElementById('selectedScoreBadge');
+        badgeEl.className = 'rank-badge' + (isPerfectSel ? ' perfect' : '');
+        badgeEl.textContent = isPerfectSel
+          ? `✨ ${t('perfectSlot')}`
+          : `🟢 ${selEval.workCount} · 🟡 ${selEval.stretchCount} · 🌙 ${selEval.sleepCount}`;
+
+        const refShort = getTzShortName(selEval.utcDate, state.refTz);
+        document.getElementById('selectedAnchorTime').textContent =
+          `${fmtRange(selEval.utcDate, state.duration, state.refTz)} ${refShort}`;
+
+        const inspList = document.getElementById('slotInspectorList');
+        inspList.innerHTML = '';
+        selEval.details.forEach((d) => {
+          const row = document.createElement('div');
+          row.className = 'slot-item';
+          const rangeStr = fmtRange(selEval.utcDate, state.duration, d.member.tz);
+          const dayNote = d.dayDelta === 1 ? ' (+1d)' : d.dayDelta === -1 ? ' (-1d)' : '';
+          row.innerHTML = `
+            <div>
+              <div style="font-size:13px;font-weight:700;">${escapeHtml(d.member.name)} <span style="color:var(--ink-muted);font-weight:500;">· ${escapeHtml(d.member.city)}</span></div>
+              <div class="slot-time-mono">${rangeStr} ${d.tzShort}${dayNote}</div>
+            </div>
+            <span class="slot-status ${d.status}">${t('status' + cap(d.status))}</span>
+          `;
+          inspList.appendChild(row);
+        });
+      }
+
+      function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function buildInviteText() {
+        const ev = evaluateHour(state.selectedHour);
+        const title = state.meetingTitle.trim() || 'Team Sync';
+        const lines = [
+          `📅 ${title} (${state.date}, ${state.duration} min)`,
+          '────────────────────────'
+        ];
+        ev.details.forEach((d) => {
+          const range = fmtRange(ev.utcDate, state.duration, d.member.tz);
+          const dayNote = d.dayDelta === 1 ? ' (+1d)' : d.dayDelta === -1 ? ' (-1d)' : '';
+          lines.push(`• ${d.member.name} (${d.member.city}): ${range} ${d.tzShort}${dayNote}`);
+        });
+        lines.push('', 'Planned with TetrisPlanning · The Unfinished 30');
+        return lines.join('\n');
+      }
+
+      function downloadIcsFile() {
+        const ev = evaluateHour(state.selectedHour);
+        const start = ev.utcDate;
+        const end = new Date(start.getTime() + state.duration * 60000);
+        const fmtIcs = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+        const title = (state.meetingTitle.trim() || 'Team Sync').replace(/[\r\n,;]/g, ' ');
+        const desc = buildInviteText().replace(/\n/g, '\\n');
+        const ics = [
+          'BEGIN:VCALENDAR',
+          'VERSION:2.0',
+          'PRODID:-//TheUnfinished30//TetrisPlanning//EN',
+          'BEGIN:VEVENT',
+          `UID:tetrisplanning-${Date.now()}@unfinished30`,
+          `DTSTAMP:${fmtIcs(new Date())}`,
+          `DTSTART:${fmtIcs(start)}`,
+          `DTEND:${fmtIcs(end)}`,
+          `SUMMARY:${title}`,
+          `DESCRIPTION:${desc}`,
+          'END:VEVENT',
+          'END:VCALENDAR'
+        ].join('\r\n');
+
+        const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `tetris-meeting-${state.date}.ics`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast(t('icsToast'));
+      }
+
+      // Event Listeners
+      document.getElementById('btnLangEn').addEventListener('click', () => { state.lang = 'en'; saveState(); render(); });
+      document.getElementById('btnLangFr').addEventListener('click', () => { state.lang = 'fr'; saveState(); render(); });
+
+      document.getElementById('refTzSelect').addEventListener('change', (e) => {
+        state.refTz = e.target.value;
+        saveState();
+        render();
+      });
+      document.getElementById('meetingDate').addEventListener('change', (e) => {
+        if (e.target.value) {
+          state.date = e.target.value;
+          saveState();
+          render();
+        }
+      });
+      document.getElementById('durationSelect').addEventListener('change', (e) => {
+        state.duration = parseInt(e.target.value, 10);
+        saveState();
+        render();
+      });
+      document.getElementById('meetingTitle').addEventListener('input', (e) => {
+        state.meetingTitle = e.target.value;
+        saveState();
+      });
+
+      document.getElementById('addMemberForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('newName');
+        const tz = document.getElementById('newCity').value;
+        const cityObj = CITIES.find(c => c.tz === tz) || { city: tz };
+        const name = nameInput.value.trim();
+        if (!name) return;
+        state.team.push({
+          id: 'm' + Date.now(),
+          name,
+          city: cityObj.city,
+          tz,
+          start: 9,
+          end: 18,
+          color: AVATAR_COLORS[state.team.length % AVATAR_COLORS.length]
+        });
+        nameInput.value = '';
+        saveState();
+        render();
+        showToast(t('addedToast'));
+      });
+
+      document.getElementById('btnResetDemo').addEventListener('click', () => {
+        state.team = JSON.parse(JSON.stringify(DEFAULT_TEAM));
+        state.refTz = 'Europe/Paris';
+        state.selectedHour = 14;
+        saveState();
+        render();
+        showToast(t('resetToast'));
+      });
+
+      document.getElementById('btnCopySummary').addEventListener('click', async () => {
+        const text = buildInviteText();
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast(t('copiedToast'));
+        } catch (err) {
+          const ta = document.createElement('textarea');
+          ta.value = text;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          ta.remove();
+          showToast(t('copiedToast'));
+        }
+      });
+
+      document.getElementById('btnDownloadIcs').addEventListener('click', downloadIcsFile);
+
+      document.getElementById('btnDownloadHtml').addEventListener('click', () => {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'day-10-tetris-planning.html';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      populateDropdowns();
+      render();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,1628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HabitQuest — Day 21 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bar-bg: #0E1638;
+      --bg: #EEF6FF;
+      --parchment: #FFFDF8;
+      --card: #FFFFFF;
+      --ink: #171B2A;
+      --muted: #5A647B;
+      --sky: #A9D6FF;
+      --sky-deep: #2B7DE9;
+      --emerald: #10B981;
+      --emerald-soft: #DCFCE7;
+      --gold: #F59E0B;
+      --gold-soft: #FEF3C7;
+      --shield: #7C3AED;
+      --shield-soft: #EDE9FE;
+      --coral: #EF4444;
+      --border: #D9E4F2;
+      --shadow: 0 14px 34px rgba(23, 27, 42, 0.07);
+      --serif: 'Fraunces', Georgia, serif;
+      --sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--sans);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(169, 214, 255, 0.55), transparent 40%),
+        radial-gradient(circle at 90% 85%, rgba(196, 181, 253, 0.3), transparent 40%),
+        var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--bar-bg);
+      color: #E8ECF8;
+      padding: 10px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .challenge-bar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .challenge-brand { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .challenge-brand a { color: #FFFFFF; text-decoration: none; font-weight: 600; }
+    .challenge-brand a:hover { color: var(--sky); }
+    .challenge-brand .sep { opacity: 0.4; }
+    .challenge-brand .author { color: #B6C2E2; font-weight: 500; }
+    .challenge-actions { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: #F4F7FF;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .bar-btn:hover { background: rgba(255, 255, 255, 0.16); }
+    .lang-pill span.active { color: var(--sky); }
+
+    /* Shell */
+    .shell {
+      max-width: 1120px;
+      margin: 26px auto 60px;
+      padding: 0 18px;
+    }
+
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      color: var(--sky-deep);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-size: clamp(32px, 4.5vw, 44px);
+      line-height: 1.06;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 15px;
+      max-width: 560px;
+      margin-top: 5px;
+    }
+    .hero-tools {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 9px 14px;
+      border: 1.5px solid var(--border);
+      background: #FFFFFF;
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform 0.12s, background 0.15s, border-color 0.15s;
+    }
+    .btn:hover { background: #F7FAFF; border-color: #B4C9E4; }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+    .btn-primary:hover { background: #262C42; border-color: #262C42; }
+    .btn-shield {
+      background: var(--shield-soft);
+      color: #5B21B6;
+      border-color: #C4B5FD;
+    }
+    .btn-shield:hover { background: #DDD6FE; }
+    .btn-shield.active {
+      background: var(--shield);
+      color: #FFFFFF;
+      border-color: var(--shield);
+    }
+    .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 9px; }
+
+    /* Main Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 350px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--parchment);
+      border: 1.5px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .card + .card { margin-top: 18px; }
+
+    /* Character Card */
+    .char-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .crest-btn {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: linear-gradient(145deg, #FFE899, #F59E0B);
+      border: 2.5px solid var(--ink);
+      display: grid;
+      place-items: center;
+      font-size: 30px;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 4px 0 var(--ink);
+      transition: transform 0.12s;
+    }
+    .crest-btn:active { transform: translateY(2px); }
+    .char-meta { min-width: 0; flex: 1; }
+    .hero-name-input {
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      border: none;
+      background: transparent;
+      width: 100%;
+      padding: 2px 4px;
+      border-radius: 8px;
+    }
+    .hero-name-input:hover, .hero-name-input:focus {
+      background: #F1F5FB;
+      outline: none;
+    }
+    .class-row {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 2px;
+      flex-wrap: wrap;
+    }
+    .level-pill {
+      background: var(--ink);
+      color: #FFFFFF;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    .class-pill {
+      background: var(--sky);
+      color: #102A4C;
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    /* XP Bar */
+    .xp-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .xp-track {
+      height: 14px;
+      background: #E5EDF7;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1.5px solid #C9D8EC;
+      margin-bottom: 14px;
+    }
+    .xp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #10B981, #34D399);
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .stat-box {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 10px 12px;
+    }
+    .stat-box span {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+    }
+    .stat-box strong {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    /* Rest Day Shield Box */
+    .shield-panel {
+      background: var(--shield-soft);
+      border: 1.5px solid #C4B5FD;
+      border-radius: 16px;
+      padding: 13px 14px;
+    }
+    .shield-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .shield-head strong {
+      font-size: 13.5px;
+      color: #4C1D95;
+    }
+    .shield-count {
+      font-size: 12px;
+      font-weight: 800;
+      color: #6D28D9;
+      background: #FFFFFF;
+      padding: 2px 9px;
+      border-radius: 999px;
+    }
+    .shield-panel p {
+      font-size: 12px;
+      color: #5B4B8A;
+      margin-bottom: 10px;
+    }
+
+    /* Guild Coach Card */
+    .coach-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .coach-head h3 { font-size: 15px; font-weight: 800; }
+    .coach-bubble {
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 13.5px;
+      color: #2B3347;
+      line-height: 1.55;
+      margin-bottom: 12px;
+    }
+    .coach-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Right Column: Quests */
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .section-head h2 {
+      font-family: var(--serif);
+      font-size: 23px;
+      font-weight: 700;
+    }
+    .today-pill {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      padding: 4px 11px;
+      border-radius: 999px;
+    }
+
+    .quest-list {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .quest-item {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 13px 15px;
+      transition: transform 0.14s, border-color 0.18s, background 0.18s;
+    }
+    .quest-item:hover { border-color: #9DC3EE; }
+    .quest-item.done {
+      background: #F1FDF6;
+      border-color: #86EFAC;
+    }
+    .quest-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+    }
+    .quest-check {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      border: 2px solid #9CB0CC;
+      background: #FFFFFF;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      color: #FFFFFF;
+      font-weight: 800;
+      font-size: 15px;
+      transition: all 0.18s;
+    }
+    .quest-item.done .quest-check {
+      background: var(--emerald);
+      border-color: var(--emerald);
+      transform: scale(1.06);
+    }
+    .quest-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .quest-item.done .quest-title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+    .quest-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .xp-tag {
+      font-size: 11.5px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    .xp-small { background: #E0F2FE; color: #0369A1; }
+    .xp-medium { background: var(--gold-soft); color: #B45309; }
+    .xp-boss { background: #FCE7F3; color: #BE185D; }
+
+    .icon-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      padding: 5px 7px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .icon-btn:hover { background: #F1F5FB; color: var(--ink); }
+
+    /* Add / Edit Quest Form */
+    .quest-form {
+      display: grid;
+      grid-template-columns: 1fr 140px auto;
+      gap: 8px;
+      padding-top: 14px;
+      border-top: 1.5px dashed var(--border);
+    }
+    .quest-form input, .quest-form select {
+      font-family: var(--sans);
+      font-size: 13.5px;
+      padding: 9px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      background: #FFFFFF;
+      color: var(--ink);
+    }
+    .quest-form input:focus, .quest-form select:focus {
+      outline: none;
+      border-color: var(--sky-deep);
+    }
+
+    /* 1-Line Daily Log */
+    .log-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .log-row input {
+      flex: 1;
+      font-family: var(--sans);
+      font-size: 13.5px;
+      padding: 10px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: #FFFFFF;
+      color: var(--ink);
+    }
+    .log-row input:focus { outline: none; border-color: var(--sky-deep); }
+    .recent-logs {
+      display: grid;
+      gap: 6px;
+    }
+    .log-entry {
+      display: flex;
+      gap: 10px;
+      font-size: 12.5px;
+      color: var(--muted);
+      background: #FFFFFF;
+      border: 1px solid #E5EDF7;
+      border-radius: 10px;
+      padding: 7px 11px;
+    }
+    .log-entry strong { color: var(--ink); flex-shrink: 0; }
+
+    /* 28-Day Heatmap */
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(14, 1fr);
+      gap: 7px;
+      margin: 12px 0;
+    }
+    .heat-cell {
+      aspect-ratio: 1;
+      border-radius: 9px;
+      border: 1.5px solid #D9E4F2;
+      background: #FFFFFF;
+      display: grid;
+      place-items: center;
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--muted);
+      position: relative;
+      cursor: default;
+      transition: transform 0.12s;
+    }
+    .heat-cell:hover { transform: scale(1.1); z-index: 5; }
+    .heat-cell.lv1 { background: #BBF7D0; border-color: #4ADE80; color: #14532D; }
+    .heat-cell.lv2 { background: #34D399; border-color: #059669; color: #FFFFFF; }
+    .heat-cell.lv3 { background: #059669; border-color: #065F46; color: #FFFFFF; }
+    .heat-cell.shield { background: #C4B5FD; border-color: #7C3AED; color: #3B0764; }
+    .heat-cell.today { box-shadow: 0 0 0 2.5px var(--ink); }
+
+    .heat-legend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .legend-items { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .legend-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.16);
+      display: inline-block;
+    }
+
+    /* Floating XP Celebration */
+    .xp-pop {
+      position: fixed;
+      pointer-events: none;
+      font-weight: 800;
+      font-size: 15px;
+      color: #059669;
+      background: #DCFCE7;
+      border: 1.5px solid #10B981;
+      padding: 3px 10px;
+      border-radius: 999px;
+      z-index: 100;
+      animation: xpFloat 0.9s ease-out forwards;
+    }
+    @keyframes xpFloat {
+      0% { opacity: 1; transform: translate(-50%, 0) scale(0.85); }
+      30% { opacity: 1; transform: translate(-50%, -18px) scale(1.08); }
+      100% { opacity: 0; transform: translate(-50%, -56px) scale(0.95); }
+    }
+    .confetti-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99;
+      animation: confettiBurst 0.7s ease-out forwards;
+    }
+    @keyframes confettiBurst {
+      0% { opacity: 1; transform: translate(0, 0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0.3); }
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 22, 56, 0.56);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 80;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal {
+      background: #FFFFFF;
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      max-width: 450px;
+      width: 100%;
+      padding: 22px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+    .modal h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+    .modal p { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
+    .field input, .field select {
+      width: 100%;
+      font-family: var(--sans);
+      font-size: 13.5px;
+      padding: 9px 11px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+    }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+
+    /* Unfinished */
+    .unfinished {
+      margin-top: 28px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      padding: 20px 22px;
+    }
+    .unfinished h2 {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .unfinished ul {
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13.5px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 90;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 880px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 560px) {
+      .quest-form { grid-template-columns: 1fr; }
+      .heatmap-grid { grid-template-columns: repeat(7, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="challenge-bar">
+    <div class="challenge-bar-inner">
+      <div class="challenge-brand">
+        <a href="/">The Unfinished 30 · Day 21/30</a>
+        <span class="sep">·</span>
+        <a class="author" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener noreferrer">by Salah Khenissi</a>
+      </div>
+      <div class="challenge-actions">
+        <button id="langToggle" class="bar-btn lang-pill" type="button" aria-label="Toggle language">
+          <span id="langEn" class="active">EN</span> / <span id="langFr">FR</span>
+        </button>
+        <button id="downloadHtmlBtn" class="bar-btn" type="button" data-i18n="downloadHtml">Download HTML</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div>
+        <div class="eyebrow" data-i18n="eyebrow">Guilt-Free Minimalist RPG Habit Tracker</div>
+        <h1 data-i18n="title">HabitQuest</h1>
+        <p class="subtitle" data-i18n="subtitle">Turn 3–5 daily habits into rewarding quests, level up your character class, and use Rest Day Shields so real life never wipes your progress.</p>
+      </div>
+      <div class="hero-tools">
+        <button id="soundToggle" class="btn btn-sm" type="button">🔔 Chime: ON</button>
+        <button id="exportJsonBtn" class="btn btn-sm" type="button" data-i18n="backupJson">Backup JSON</button>
+        <label class="btn btn-sm" style="cursor:pointer;">
+          <span data-i18n="restoreJson">Restore JSON</span>
+          <input id="importJsonInput" type="file" accept=".json,application/json" hidden />
+        </label>
+        <button id="resetDemoBtn" class="btn btn-sm" type="button" data-i18n="resetDemo">Reset Demo</button>
+      </div>
+    </section>
+
+    <section class="grid">
+      <!-- Left Column: Character Card + Guild Coach -->
+      <div>
+        <div class="card">
+          <div class="char-top">
+            <button id="crestBtn" class="crest-btn" type="button" title="Change crest">🧭</button>
+            <div class="char-meta">
+              <input id="heroNameInput" class="hero-name-input" type="text" value="Maker One" aria-label="Hero name" />
+              <div class="class-row">
+                <span id="levelPill" class="level-pill">LVL 4</span>
+                <span id="classPill" class="class-pill">Builder</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="xp-header">
+            <span id="xpLabel">XP Progress</span>
+            <span id="xpNumbers">45 / 150 XP</span>
+          </div>
+          <div class="xp-track">
+            <div id="xpFill" class="xp-fill"></div>
+          </div>
+
+          <div class="stat-row">
+            <div class="stat-box">
+              <span data-i18n="totalXp">Total XP</span>
+              <strong id="totalXpVal">0</strong>
+            </div>
+            <div class="stat-box">
+              <span data-i18n="momentum14">14-Day Momentum</span>
+              <strong id="momentumVal">0 / 14</strong>
+            </div>
+          </div>
+
+          <div class="shield-panel">
+            <div class="shield-head">
+              <strong data-i18n="shieldTitle">🛡️ Rest Day Shield</strong>
+              <span id="shieldCountBadge" class="shield-count">2 left</span>
+            </div>
+            <p data-i18n="shieldDesc">Need a quiet recovery day? Activate a shield for today so your momentum stays protected without guilt. Earn +1 shield every 5 active days.</p>
+            <button id="shieldBtn" class="btn btn-shield btn-sm" type="button" style="width:100%;" data-i18n="activateShield">Use Rest Shield for Today</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="coach-head">
+            <h3 data-i18n="coachTitle">🦉 Guild Coach Reflection</h3>
+            <button id="byokBtn" class="btn btn-sm" type="button" data-i18n="byokBtn">✨ BYOK AI</button>
+          </div>
+          <div id="coachBubble" class="coach-bubble"></div>
+          <div class="coach-actions">
+            <button id="refreshCoachBtn" class="btn btn-sm" type="button" data-i18n="refreshCoach">New Local Reflection</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Quests + Daily Log + 28-Day Heatmap -->
+      <div>
+        <div class="card">
+          <div class="section-head">
+            <h2 data-i18n="questsHeading">Today's Quests</h2>
+            <span id="todayDatePill" class="today-pill">Today</span>
+          </div>
+
+          <div id="questList" class="quest-list"></div>
+
+          <form id="questForm" class="quest-form">
+            <input id="questTitleInput" type="text" placeholder="Add a small daily quest..." required />
+            <select id="questWeightSelect" aria-label="XP weight">
+              <option value="small">Small (+15 XP)</option>
+              <option value="medium" selected>Medium (+25 XP)</option>
+              <option value="boss">Boss (+40 XP)</option>
+            </select>
+            <button id="questSubmitBtn" class="btn btn-primary" type="submit" data-i18n="addQuest">Add Quest</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="section-head" style="margin-bottom:10px;">
+            <h2 data-i18n="logHeading">1-Line Daily Log</h2>
+          </div>
+          <div class="log-row">
+            <input id="dailyLogInput" type="text" placeholder="One small win, lesson, or mood from today..." />
+            <button id="saveLogBtn" class="btn btn-primary" type="button" data-i18n="saveLog">Save</button>
+          </div>
+          <div id="recentLogs" class="recent-logs"></div>
+        </div>
+
+        <div class="card">
+          <div class="section-head" style="margin-bottom:6px;">
+            <h2 data-i18n="heatmapHeading">28-Day Momentum Map</h2>
+            <span id="heatmapSummary" class="today-pill">10 active days</span>
+          </div>
+          <div id="heatmapGrid" class="heatmap-grid"></div>
+          <div class="heat-legend">
+            <span data-i18n="heatHint">Hover any day to inspect XP & log</span>
+            <div class="legend-items">
+              <span class="legend-dot"><span class="legend-swatch" style="background:#FFFFFF;"></span><span data-i18n="legRest">Quiet</span></span>
+              <span class="legend-dot"><span class="legend-swatch" style="background:#BBF7D0;"></span>1+</span>
+              <span class="legend-dot"><span class="legend-swatch" style="background:#34D399;"></span>50%+</span>
+              <span class="legend-dot"><span class="legend-swatch" style="background:#059669;"></span>100%</span>
+              <span class="legend-dot"><span class="legend-swatch" style="background:#C4B5FD;"></span><span data-i18n="legShield">Shield</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="unfinished">
+      <h2 data-i18n="unfinishedTitle">What's unfinished</h2>
+      <ul>
+        <li data-i18n="u1">All quest history lives in your browser’s localStorage (no cloud sync or push reminders) — use Backup JSON occasionally if you switch devices.</li>
+        <li data-i18n="u2">No multi-week boss campaigns, custom weekday schedules (e.g., Mon/Wed/Fri only), or shared party quests yet.</li>
+        <li data-i18n="u3">The offline Guild Coach uses deterministic heuristics; connecting a BYOK Gemini/OpenAI/Anthropic key unlocks genuinely tailored reflections.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- BYOK Guild Coach Modal -->
+  <div id="aiModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="aiModalTitle">
+    <div class="modal">
+      <h3 id="aiModalTitle" data-i18n="modalTitle">BYOK AI Guild Coach</h3>
+      <p data-i18n="modalDesc">Connect your own API key to get a warm, personalized 3-sentence reflection based on your recent quests, rest shields, and daily logs. Stored strictly in localStorage.</p>
+      <div class="field">
+        <label for="aiProvider" data-i18n="lblProvider">Provider</label>
+        <select id="aiProvider">
+          <option value="gemini">Google Gemini (gemini-2.0-flash)</option>
+          <option value="openai">OpenAI (gpt-4o-mini)</option>
+          <option value="anthropic">Anthropic (claude-3-5-haiku-latest)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="aiKeyInput" data-i18n="lblApiKey">API Key (local browser only)</label>
+        <input id="aiKeyInput" type="password" placeholder="Paste your API key..." />
+      </div>
+      <div class="modal-actions">
+        <button id="clearKeyBtn" class="btn btn-sm" type="button" data-i18n="clearKey">Clear Key</button>
+        <button id="closeModalBtn" class="btn btn-sm" type="button" data-i18n="closeBtn">Close</button>
+        <button id="runCoachAiBtn" class="btn btn-sm btn-primary" type="button" data-i18n="askCoach">Ask Guild Coach</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'unfinished30_day21_habitquest_v1';
+      const AI_KEY_STORAGE = 'unfinished30_day21_byok_v1';
+      const CRESTS = ['🧭', '🪶', '🌱', '🏮', '🛡️', '⚡'];
+      const XP_MAP = { small: 15, medium: 25, boss: 40 };
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          eyebrow: 'Guilt-Free Minimalist RPG Habit Tracker',
+          title: 'HabitQuest',
+          subtitle: 'Turn 3–5 daily habits into rewarding quests, level up your character class, and use Rest Day Shields so real life never wipes your progress.',
+          backupJson: 'Backup JSON',
+          restoreJson: 'Restore JSON',
+          resetDemo: 'Reset Demo',
+          totalXp: 'Total XP',
+          momentum14: '14-Day Momentum',
+          shieldTitle: '🛡️ Rest Day Shield',
+          shieldDesc: 'Need a quiet recovery day? Activate a shield for today so your momentum stays protected without guilt. Earn +1 shield every 5 active days.',
+          activateShield: 'Use Rest Shield for Today',
+          shieldActiveBtn: '🛡️ Rest Shield Active Today (Undo)',
+          noShieldsLeft: 'No Shields Left (Complete 5 active days to earn +1)',
+          coachTitle: '🦉 Guild Coach Reflection',
+          byokBtn: '✨ BYOK AI',
+          refreshCoach: 'New Local Reflection',
+          questsHeading: "Today's Quests",
+          addQuest: 'Add Quest',
+          updateQuest: 'Save Quest',
+          questPlaceholder: 'Add a small daily quest...',
+          logHeading: '1-Line Daily Log',
+          logPlaceholder: 'One small win, lesson, or mood from today...',
+          saveLog: 'Save',
+          heatmapHeading: '28-Day Momentum Map',
+          heatHint: 'Hover any day to inspect XP & log',
+          legRest: 'Quiet',
+          legShield: 'Shield',
+          unfinishedTitle: "What's unfinished",
+          u1: 'All quest history lives in your browser’s localStorage (no cloud sync or push reminders) — use Backup JSON occasionally if you switch devices.',
+          u2: 'No multi-week boss campaigns, custom weekday schedules (e.g., Mon/Wed/Fri only), or shared party quests yet.',
+          u3: 'The offline Guild Coach uses deterministic heuristics; connecting a BYOK Gemini/OpenAI/Anthropic key unlocks genuinely tailored reflections.',
+          modalTitle: 'BYOK AI Guild Coach',
+          modalDesc: 'Connect your own API key to get a warm, personalized 3-sentence reflection based on your recent quests, rest shields, and daily logs. Stored strictly in localStorage.',
+          lblProvider: 'Provider',
+          lblApiKey: 'API Key (local browser only)',
+          clearKey: 'Clear Key',
+          closeBtn: 'Close',
+          askCoach: 'Ask Guild Coach',
+          thinking: 'Consulting Guild...',
+          chimeOn: '🔔 Chime: ON',
+          chimeOff: '🔕 Chime: OFF',
+          classes: { apprentice: 'Apprentice', builder: 'Builder', strategist: 'Strategist', sage: 'Sage' },
+          weights: { small: 'Small', medium: 'Medium', boss: 'Boss' },
+          leftSuffix: 'left',
+          activeDaysSuffix: 'active days',
+          toastSavedLog: 'Daily log saved!',
+          toastBackup: 'JSON backup downloaded!',
+          toastRestored: 'Quest journal restored!',
+          toastBadJson: 'Invalid backup file.',
+          toastReset: 'Demo journal restored.',
+          toastShieldOn: 'Rest Day Shield activated. Take a breather!',
+          toastShieldOff: 'Rest Day Shield removed for today.',
+          toastNoKey: 'Please enter an API key first.',
+          toastKeyCleared: 'API key cleared.',
+          toastAiErr: 'AI call failed. Showing local reflection instead.',
+          toastHtmlDown: 'Standalone HTML downloaded!'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          eyebrow: 'Tracker d’habitudes RPG minimaliste & sans culpabilité',
+          title: 'HabitQuest',
+          subtitle: 'Transformez 3 à 5 habitudes en quêtes motivantes, faites évoluer votre classe et utilisez des Boucliers Repos pour protéger votre élan.',
+          backupJson: 'Sauvegarde JSON',
+          restoreJson: 'Restaurer JSON',
+          resetDemo: 'Réinit. Démo',
+          totalXp: 'XP Total',
+          momentum14: 'Élan 14 jours',
+          shieldTitle: '🛡️ Bouclier Jour de Repos',
+          shieldDesc: 'Besoin d’une journée calme ? Activez un bouclier aujourd’hui pour protéger votre élan sans culpabilité. +1 bouclier tous les 5 jours actifs.',
+          activateShield: 'Activer le Bouclier aujourd’hui',
+          shieldActiveBtn: '🛡️ Bouclier actif aujourd’hui (Annuler)',
+          noShieldsLeft: 'Aucun bouclier dispo (+1 tous les 5 jours actifs)',
+          coachTitle: '🦉 Conseil du Coach de Guilde',
+          byokBtn: '✨ IA BYOK',
+          refreshCoach: 'Nouvelle réflexion locale',
+          questsHeading: 'Quêtes du jour',
+          addQuest: 'Ajouter',
+          updateQuest: 'Enregistrer',
+          questPlaceholder: 'Ajouter une petite quête quotidienne...',
+          logHeading: 'Journal en 1 ligne',
+          logPlaceholder: 'Une petite victoire, note ou humeur du jour...',
+          saveLog: 'Enregistrer',
+          heatmapHeading: 'Carte d’élan (28 jours)',
+          heatHint: 'Survolez un jour pour voir l’XP et la note',
+          legRest: 'Calme',
+          legShield: 'Bouclier',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          u1: 'Tout l’historique reste dans le localStorage de votre navigateur (pas de synchro cloud ni rappels push) — exportez en JSON de temps en temps.',
+          u2: 'Pas encore de campagnes multi-semaines, de jours personnalisés (ex: Lun/Mer/Ven) ni de quêtes en équipe.',
+          u3: 'Le Coach hors-ligne utilise des règles locales ; brancher votre propre clé Gemini/OpenAI/Anthropic débloque une réflexion vraiment personnalisée.',
+          modalTitle: 'Coach de Guilde IA (BYOK)',
+          modalDesc: 'Ajoutez votre propre clé API pour recevoir un retour bienveillant en 3 phrases basé sur vos quêtes, boucliers et notes. Stocké uniquement dans localStorage.',
+          lblProvider: 'Fournisseur',
+          lblApiKey: 'Clé API (navigateur local uniquement)',
+          clearKey: 'Effacer clé',
+          closeBtn: 'Fermer',
+          askCoach: 'Consulter le Coach',
+          thinking: 'Consultation...',
+          chimeOn: '🔔 Son : ON',
+          chimeOff: '🔕 Son : OFF',
+          classes: { apprentice: 'Apprenti', builder: 'Bâtisseur', strategist: 'Stratège', sage: 'Sage' },
+          weights: { small: 'Petit', medium: 'Moyen', boss: 'Boss' },
+          leftSuffix: 'dispo',
+          activeDaysSuffix: 'jours actifs',
+          toastSavedLog: 'Journal du jour enregistré !',
+          toastBackup: 'Sauvegarde JSON téléchargée !',
+          toastRestored: 'Journal restauré !',
+          toastBadJson: 'Fichier de sauvegarde invalide.',
+          toastReset: 'Journal démo réinitialisé.',
+          toastShieldOn: 'Bouclier Repos activé. Reposez-vous bien !',
+          toastShieldOff: 'Bouclier Repos retiré pour aujourd’hui.',
+          toastNoKey: 'Veuillez saisir une clé API.',
+          toastKeyCleared: 'Clé API supprimée.',
+          toastAiErr: 'Appel IA échoué. Réflexion locale affichée.',
+          toastHtmlDown: 'HTML autonome téléchargé !'
+        }
+      };
+
+      let lang = 'en';
+      let editingQuestId = null;
+      let coachVariant = 0;
+      let aiCoachMessage = null;
+      let state = null;
+      let chimeCtx = null;
+
+      const els = {
+        langToggle: document.getElementById('langToggle'),
+        langEn: document.getElementById('langEn'),
+        langFr: document.getElementById('langFr'),
+        downloadHtmlBtn: document.getElementById('downloadHtmlBtn'),
+        soundToggle: document.getElementById('soundToggle'),
+        exportJsonBtn: document.getElementById('exportJsonBtn'),
+        importJsonInput: document.getElementById('importJsonInput'),
+        resetDemoBtn: document.getElementById('resetDemoBtn'),
+        crestBtn: document.getElementById('crestBtn'),
+        heroNameInput: document.getElementById('heroNameInput'),
+        levelPill: document.getElementById('levelPill'),
+        classPill: document.getElementById('classPill'),
+        xpNumbers: document.getElementById('xpNumbers'),
+        xpFill: document.getElementById('xpFill'),
+        totalXpVal: document.getElementById('totalXpVal'),
+        momentumVal: document.getElementById('momentumVal'),
+        shieldCountBadge: document.getElementById('shieldCountBadge'),
+        shieldBtn: document.getElementById('shieldBtn'),
+        byokBtn: document.getElementById('byokBtn'),
+        coachBubble: document.getElementById('coachBubble'),
+        refreshCoachBtn: document.getElementById('refreshCoachBtn'),
+        todayDatePill: document.getElementById('todayDatePill'),
+        questList: document.getElementById('questList'),
+        questForm: document.getElementById('questForm'),
+        questTitleInput: document.getElementById('questTitleInput'),
+        questWeightSelect: document.getElementById('questWeightSelect'),
+        questSubmitBtn: document.getElementById('questSubmitBtn'),
+        dailyLogInput: document.getElementById('dailyLogInput'),
+        saveLogBtn: document.getElementById('saveLogBtn'),
+        recentLogs: document.getElementById('recentLogs'),
+        heatmapSummary: document.getElementById('heatmapSummary'),
+        heatmapGrid: document.getElementById('heatmapGrid'),
+        aiModal: document.getElementById('aiModal'),
+        aiProvider: document.getElementById('aiProvider'),
+        aiKeyInput: document.getElementById('aiKeyInput'),
+        clearKeyBtn: document.getElementById('clearKeyBtn'),
+        closeModalBtn: document.getElementById('closeModalBtn'),
+        runCoachAiBtn: document.getElementById('runCoachAiBtn'),
+        toast: document.getElementById('toast')
+      };
+
+      function t(k) { return (I18N[lang] && I18N[lang][k]) || I18N.en[k] || k; }
+      function esc(s) {
+        return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      function showToast(msg) {
+        els.toast.textContent = msg;
+        els.toast.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => els.toast.classList.remove('show'), 2400);
+      }
+
+      function dateKey(offsetDays = 0) {
+        const d = new Date();
+        d.setHours(12, 0, 0, 0);
+        d.setDate(d.getDate() + offsetDays);
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+
+      function createDefaultState() {
+        const history = {};
+        const samplePattern = [
+          { off: -13, ids: ['q1', 'q2', 'q3'], xp: 90, log: 'Started small and felt steady.' },
+          { off: -11, ids: ['q1', 'q2', 'q3', 'q4'], xp: 105, log: 'Full clear! Morning walk unlocked deep work.' },
+          { off: -10, ids: ['q1', 'q4'], xp: 55, log: 'Busy client day, kept the essentials.' },
+          { off: -8, shield: true, ids: [], xp: 0, log: 'Used Rest Shield — long family dinner.' },
+          { off: -7, ids: ['q1', 'q2', 'q3'], xp: 90, log: 'Back fresh after resting.' },
+          { off: -6, ids: ['q1', 'q2', 'q3', 'q4'], xp: 105, log: 'Read 14 pages before bed.' },
+          { off: -4, ids: ['q1', 'q2'], xp: 65, log: 'Walked in the rain, still glad I went.' },
+          { off: -3, ids: ['q1', 'q2', 'q3', 'q4'], xp: 105, log: 'Crisp focus sprint before noon.' },
+          { off: -2, ids: ['q2', 'q3', 'q4'], xp: 65, log: 'Lighter day, zero guilt.' },
+          { off: -1, ids: ['q1', 'q2', 'q3'], xp: 90, log: 'Shipped prototype and took a walk.' }
+        ];
+        samplePattern.forEach((p) => {
+          history[dateKey(p.off)] = {
+            done: p.ids,
+            xp: p.xp,
+            shield: !!p.shield,
+            log: p.log
+          };
+        });
+
+        return {
+          heroName: 'Salah',
+          crestIdx: 0,
+          soundOn: true,
+          quests: [
+            { id: 'q1', title: '20 min deep work', weight: 'boss' },
+            { id: 'q2', title: '15 min walk outside', weight: 'medium' },
+            { id: 'q3', title: 'Read 10 pages', weight: 'medium' },
+            { id: 'q4', title: 'No phone 30 min before bed', weight: 'small' }
+          ],
+          history
+        };
+      }
+
+      function saveState() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (_) {}
+      }
+
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && Array.isArray(parsed.quests) && parsed.history) {
+              state = parsed;
+              return;
+            }
+          }
+        } catch (_) {}
+        state = createDefaultState();
+        saveState();
+      }
+
+      function getTodayEntry() {
+        const key = dateKey(0);
+        if (!state.history[key]) {
+          state.history[key] = { done: [], xp: 0, shield: false, log: '' };
+        }
+        return state.history[key];
+      }
+
+      function calcStats() {
+        let totalXp = 0;
+        let activeDaysTotal = 0;
+        let shieldsUsed = 0;
+
+        Object.values(state.history).forEach((entry) => {
+          totalXp += Number(entry.xp || 0);
+          if ((entry.done && entry.done.length > 0)) activeDaysTotal++;
+          if (entry.shield) shieldsUsed++;
+        });
+
+        // Level curve: 120 XP per level initially, gently scaling
+        let level = 1;
+        let xpPool = totalXp;
+        let nextReq = 120;
+        while (xpPool >= nextReq) {
+          xpPool -= nextReq;
+          level++;
+          nextReq = 120 + (level - 1) * 35;
+        }
+
+        const classKey = level >= 10 ? 'sage' : level >= 6 ? 'strategist' : level >= 3 ? 'builder' : 'apprentice';
+        const shieldsEarned = 2 + Math.floor(activeDaysTotal / 5);
+        const shieldsLeft = Math.max(0, shieldsEarned - shieldsUsed);
+
+        // 14-day momentum (active OR shielded days in last 14 days)
+        let momentum14 = 0;
+        for (let i = -13; i <= 0; i++) {
+          const e = state.history[dateKey(i)];
+          if (e && ((e.done && e.done.length > 0) || e.shield)) momentum14++;
+        }
+
+        // 28-day active count
+        let active28 = 0;
+        for (let i = -27; i <= 0; i++) {
+          const e = state.history[dateKey(i)];
+          if (e && ((e.done && e.done.length > 0) || e.shield)) active28++;
+        }
+
+        return { totalXp, level, xpInLevel: xpPool, nextReq, classKey, shieldsLeft, momentum14, active28 };
+      }
+
+      // Gentle RPG chime via Web Audio
+      function playChime() {
+        if (!state.soundOn) return;
+        try {
+          const AC = window.AudioContext || window.webkitAudioContext;
+          if (!chimeCtx) chimeCtx = new AC();
+          const now = chimeCtx.currentTime;
+          [523.25, 659.25, 783.99].forEach((freq, idx) => {
+            const osc = chimeCtx.createOscillator();
+            const g = chimeCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+            g.gain.setValueAtTime(0.001, now + idx * 0.06);
+            g.gain.linearRampToValueAtTime(0.11, now + idx * 0.06 + 0.015);
+            g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.22);
+            osc.connect(g);
+            g.connect(chimeCtx.destination);
+            osc.start(now + idx * 0.06);
+            osc.stop(now + idx * 0.06 + 0.24);
+          });
+        } catch (_) {}
+      }
+
+      function spawnCelebration(x, y, xpVal) {
+        const pop = document.createElement('div');
+        pop.className = 'xp-pop';
+        pop.textContent = `+${xpVal} XP`;
+        pop.style.left = `${x}px`;
+        pop.style.top = `${y}px`;
+        document.body.appendChild(pop);
+        setTimeout(() => pop.remove(), 950);
+
+        const colors = ['#10B981', '#F59E0B', '#3B82F6', '#A78BFA', '#F472B6'];
+        for (let i = 0; i < 10; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'confetti-dot';
+          const angle = (Math.PI * 2 * i) / 10 + (Math.random() - 0.5) * 0.4;
+          const dist = 28 + Math.random() * 36;
+          dot.style.left = `${x}px`;
+          dot.style.top = `${y}px`;
+          dot.style.background = colors[i % colors.length];
+          dot.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+          dot.style.setProperty('--dy', `${Math.sin(angle) * dist - 14}px`);
+          document.body.appendChild(dot);
+          setTimeout(() => dot.remove(), 750);
+        }
+      }
+
+      function buildLocalCoachMessage(stats) {
+        const today = getTodayEntry();
+        const doneToday = today.done ? today.done.length : 0;
+        const totalQ = state.quests.length;
+        const cls = t('classes')[stats.classKey];
+
+        if (lang === 'fr') {
+          const msgs = [
+            today.shield
+              ? `Bien joué ${state.heroName} : activer un Bouclier Repos est une vraie décision de ${cls}. La récupération fait partie du jeu — reprenez avec une petite quête demain.`
+              : doneToday === totalQ && totalQ > 0
+                ? `Journée complète (${doneToday}/${totalQ}) ! Votre élan est à ${stats.momentum14}/14 jours. Profitez de la victoire sans rajouter de pression.`
+                : `Élan actuel : ${stats.momentum14}/14 jours en tant que ${cls} (Niv. ${stats.level}). Si l’énergie est basse aujourd’hui, validez juste une quête "Petit" (+15 XP) pour garder le rythme.`,
+            `Votre régularité bat la perfection : ${stats.active28} jours actifs sur les 4 dernières semaines. Gardez entre 3 et 5 quêtes max pour rester léger.`,
+            `Astuce de Guilde : notez une seule phrase dans votre journal du jour. C’est souvent ce petit rituel qui transforme une routine en vrai plaisir.`
+          ];
+          return msgs[coachVariant % msgs.length];
+        }
+
+        const msgs = [
+          today.shield
+            ? `Smart move, ${state.heroName}: using a Rest Day Shield is classic ${cls} wisdom. Recovery protects long-term consistency — pick one tiny quest tomorrow.`
+            : doneToday === totalQ && totalQ > 0
+              ? `Full quest clear (${doneToday}/${totalQ})! You're sitting at ${stats.momentum14}/14 momentum days. Celebrate the win and close the loop for tonight.`
+              : `Solid momentum (${stats.momentum14}/14 days) as a Level ${stats.level} ${cls}. If energy feels low today, just knock out one Small (+15 XP) quest to keep the flywheel turning.`,
+          `Consistency beats streaks: you've logged ${stats.active28} active or shielded days in the past 4 weeks. Keep your quest board to 3–5 habits so it always feels winnable.`,
+          `Guild tip: jot down a 1-line daily log before wrapping up. Looking back at tiny wins makes the next quiet week way easier to navigate.`
+        ];
+        return msgs[coachVariant % msgs.length];
+      }
+
+      function renderAll() {
+        const stats = calcStats();
+        const today = getTodayEntry();
+
+        // Character card
+        els.crestBtn.textContent = CRESTS[state.crestIdx % CRESTS.length];
+        els.heroNameInput.value = state.heroName;
+        els.levelPill.textContent = `LVL ${stats.level}`;
+        els.classPill.textContent = t('classes')[stats.classKey];
+        els.xpNumbers.textContent = `${stats.xpInLevel} / ${stats.nextReq} XP`;
+        els.xpFill.style.width = `${Math.min(100, Math.round((stats.xpInLevel / stats.nextReq) * 100))}%`;
+        els.totalXpVal.textContent = stats.totalXp;
+        els.momentumVal.textContent = `${stats.momentum14} / 14`;
+        els.shieldCountBadge.textContent = `${stats.shieldsLeft} ${t('leftSuffix')}`;
+
+        els.shieldBtn.classList.toggle('active', !!today.shield);
+        if (today.shield) {
+          els.shieldBtn.disabled = false;
+          els.shieldBtn.textContent = t('shieldActiveBtn');
+        } else if (stats.shieldsLeft <= 0) {
+          els.shieldBtn.disabled = true;
+          els.shieldBtn.textContent = t('noShieldsLeft');
+        } else {
+          els.shieldBtn.disabled = false;
+          els.shieldBtn.textContent = t('activateShield');
+        }
+
+        els.soundToggle.textContent = state.soundOn ? t('chimeOn') : t('chimeOff');
+        els.coachBubble.textContent = aiCoachMessage || buildLocalCoachMessage(stats);
+
+        // Today pill
+        const nowStr = new Date().toLocaleDateString(lang === 'fr' ? 'fr-FR' : 'en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+        els.todayDatePill.textContent = nowStr;
+
+        // Quests
+        els.questTitleInput.placeholder = t('questPlaceholder');
+        els.dailyLogInput.placeholder = t('logPlaceholder');
+        els.questSubmitBtn.textContent = editingQuestId ? t('updateQuest') : t('addQuest');
+
+        els.questList.innerHTML = state.quests.map((q) => {
+          const isDone = today.done.includes(q.id);
+          const xp = XP_MAP[q.weight] || 25;
+          const wLabel = t('weights')[q.weight] || q.weight;
+          return `
+            <div class="quest-item ${isDone ? 'done' : ''}" data-qid="${q.id}">
+              <div class="quest-left" data-action="toggle">
+                <div class="quest-check">${isDone ? '✓' : ''}</div>
+                <div class="quest-title">${esc(q.title)}</div>
+              </div>
+              <div class="quest-right">
+                <span class="xp-tag xp-${q.weight}">${esc(wLabel)} · +${xp} XP</span>
+                <button class="icon-btn" type="button" data-action="edit" title="Edit">✎</button>
+                <button class="icon-btn" type="button" data-action="delete" title="Delete">✕</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Daily log
+        if (document.activeElement !== els.dailyLogInput) {
+          els.dailyLogInput.value = today.log || '';
+        }
+        const logs = Object.entries(state.history)
+          .filter(([, v]) => v && v.log && v.log.trim())
+          .sort((a, b) => b[0].localeCompare(a[0]))
+          .slice(0, 4);
+        els.recentLogs.innerHTML = logs.map(([d, v]) => `
+          <div class="log-entry">
+            <strong>${esc(d.slice(5))}</strong>
+            <span>${esc(v.log)}</span>
+          </div>
+        `).join('');
+
+        // 28-Day Heatmap
+        els.heatmapSummary.textContent = `${stats.active28} ${t('activeDaysSuffix')}`;
+        const totalQ = Math.max(1, state.quests.length);
+        const cells = [];
+        for (let i = -27; i <= 0; i++) {
+          const dk = dateKey(i);
+          const entry = state.history[dk];
+          let cls = 'heat-cell';
+          let label = dk.slice(8);
+          let tip = `${dk} · 0 XP`;
+
+          if (entry && entry.shield) {
+            cls += ' shield';
+            label = '🛡️';
+            tip = `${dk} · Rest Day Shield${entry.log ? ' — ' + entry.log : ''}`;
+          } else if (entry && entry.done && entry.done.length > 0) {
+            const ratio = entry.done.length / totalQ;
+            cls += ratio >= 0.99 ? ' lv3' : ratio >= 0.5 ? ' lv2' : ' lv1';
+            tip = `${dk} · +${entry.xp || 0} XP (${entry.done.length} quests)${entry.log ? ' — ' + entry.log : ''}`;
+          }
+          if (i === 0) cls += ' today';
+          cells.push(`<div class="${cls}" title="${esc(tip)}">${label}</div>`);
+        }
+        els.heatmapGrid.innerHTML = cells.join('');
+      }
+
+      function applyI18n() {
+        document.documentElement.lang = lang;
+        els.langEn.classList.toggle('active', lang === 'en');
+        els.langFr.classList.toggle('active', lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach((node) => {
+          const k = node.getAttribute('data-i18n');
+          if (I18N[lang][k]) node.textContent = I18N[lang][k];
+        });
+        renderAll();
+      }
+
+      // Quest Toggle / Edit / Delete
+      els.questList.addEventListener('click', (e) => {
+        const item = e.target.closest('.quest-item');
+        if (!item) return;
+        const qid = item.dataset.qid;
+        const actionEl = e.target.closest('[data-action]');
+        const action = actionEl ? actionEl.dataset.action : 'toggle';
+        const quest = state.quests.find((q) => q.id === qid);
+        if (!quest) return;
+
+        if (action === 'toggle') {
+          const today = getTodayEntry();
+          const xpVal = XP_MAP[quest.weight] || 25;
+          const idx = today.done.indexOf(qid);
+          if (idx === -1) {
+            today.done.push(qid);
+            today.xp = (today.xp || 0) + xpVal;
+            today.shield = false; // completing a quest turns off rest shield
+            playChime();
+            const rect = item.getBoundingClientRect();
+            spawnCelebration(rect.left + rect.width * 0.5, rect.top + 12, xpVal);
+          } else {
+            today.done.splice(idx, 1);
+            today.xp = Math.max(0, (today.xp || 0) - xpVal);
+          }
+          aiCoachMessage = null;
+          saveState();
+          renderAll();
+        } else if (action === 'edit') {
+          editingQuestId = qid;
+          els.questTitleInput.value = quest.title;
+          els.questWeightSelect.value = quest.weight;
+          els.questTitleInput.focus();
+          renderAll();
+        } else if (action === 'delete') {
+          state.quests = state.quests.filter((q) => q.id !== qid);
+          if (editingQuestId === qid) editingQuestId = null;
+          saveState();
+          renderAll();
+        }
+      });
+
+      els.questForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = els.questTitleInput.value.trim();
+        const weight = els.questWeightSelect.value;
+        if (!title) return;
+
+        if (editingQuestId) {
+          const q = state.quests.find((x) => x.id === editingQuestId);
+          if (q) {
+            q.title = title;
+            q.weight = weight;
+          }
+          editingQuestId = null;
+        } else {
+          state.quests.push({ id: 'q_' + Date.now(), title, weight });
+        }
+        els.questTitleInput.value = '';
+        saveState();
+        renderAll();
+      });
+
+      // Hero Name, Crest, Rest Shield, Sound
+      els.heroNameInput.addEventListener('input', () => {
+        state.heroName = els.heroNameInput.value;
+        saveState();
+      });
+      els.crestBtn.addEventListener('click', () => {
+        state.crestIdx = (state.crestIdx + 1) % CRESTS.length;
+        saveState();
+        renderAll();
+      });
+      els.shieldBtn.addEventListener('click', () => {
+        const today = getTodayEntry();
+        today.shield = !today.shield;
+        aiCoachMessage = null;
+        saveState();
+        renderAll();
+        showToast(today.shield ? t('toastShieldOn') : t('toastShieldOff'));
+      });
+      els.soundToggle.addEventListener('click', () => {
+        state.soundOn = !state.soundOn;
+        saveState();
+        renderAll();
+      });
+
+      // Daily Log
+      function saveDailyLog() {
+        const today = getTodayEntry();
+        today.log = els.dailyLogInput.value.trim();
+        saveState();
+        renderAll();
+        showToast(t('toastSavedLog'));
+      }
+      els.saveLogBtn.addEventListener('click', saveDailyLog);
+      els.dailyLogInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') saveDailyLog();
+      });
+
+      // Local Coach Refresh
+      els.refreshCoachBtn.addEventListener('click', () => {
+        aiCoachMessage = null;
+        coachVariant++;
+        renderAll();
+      });
+
+      // BYOK AI Guild Coach
+      async function runCoachAi() {
+        const provider = els.aiProvider.value;
+        const apiKey = els.aiKeyInput.value.trim();
+        if (!apiKey) {
+          showToast(t('toastNoKey'));
+          return;
+        }
+        try { localStorage.setItem(AI_KEY_STORAGE, JSON.stringify({ provider, apiKey })); } catch (_) {}
+
+        els.runCoachAiBtn.disabled = true;
+        els.runCoachAiBtn.textContent = t('thinking');
+
+        const stats = calcStats();
+        const recent = [];
+        for (let i = -6; i <= 0; i++) {
+          const dk = dateKey(i);
+          const e = state.history[dk];
+          if (e) recent.push(`${dk}: ${e.shield ? 'REST SHIELD' : (e.done.length + ' quests, ' + e.xp + ' XP')}${e.log ? ' | log: ' + e.log : ''}`);
+        }
+        const prompt = `You are a warm, guilt-free RPG Guild Coach for ${state.heroName} (Level ${stats.level} ${stats.classKey}, ${stats.momentum14}/14 momentum days). Reply in ${lang === 'fr' ? 'French' : 'English'} in 3 short, encouraging sentences (no markdown). Give one gentle suggestion for tomorrow based on their quests (${state.quests.map((q) => q.title).join(', ')}) and recent 7 days:\n${recent.join('\n')}`;
+
+        try {
+          let text = '';
+          if (provider === 'gemini') {
+            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'Gemini error');
+            text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          } else if (provider === 'openai') {
+            const res = await fetch('https://api.openai.com/v1/chat/completions', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+              body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], temperature: 0.7 })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'OpenAI error');
+            text = data.choices?.[0]?.message?.content || '';
+          } else {
+            const res = await fetch('https://api.anthropic.com/v1/messages', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+              },
+              body: JSON.stringify({ model: 'claude-3-5-haiku-latest', max_tokens: 300, messages: [{ role: 'user', content: prompt }] })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error?.message || 'Anthropic error');
+            text = data.content?.[0]?.text || '';
+          }
+
+          aiCoachMessage = text.trim();
+          els.aiModal.classList.remove('open');
+          renderAll();
+        } catch (err) {
+          console.error(err);
+          showToast(t('toastAiErr'));
+        } finally {
+          els.runCoachAiBtn.disabled = false;
+          els.runCoachAiBtn.textContent = t('askCoach');
+        }
+      }
+
+      els.byokBtn.addEventListener('click', () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(AI_KEY_STORAGE) || 'null');
+          if (saved) {
+            els.aiProvider.value = saved.provider || 'gemini';
+            els.aiKeyInput.value = saved.apiKey || '';
+          }
+        } catch (_) {}
+        els.aiModal.classList.add('open');
+      });
+      els.closeModalBtn.addEventListener('click', () => els.aiModal.classList.remove('open'));
+      els.aiModal.addEventListener('click', (e) => { if (e.target === els.aiModal) els.aiModal.classList.remove('open'); });
+      els.clearKeyBtn.addEventListener('click', () => {
+        try { localStorage.removeItem(AI_KEY_STORAGE); } catch (_) {}
+        els.aiKeyInput.value = '';
+        showToast(t('toastKeyCleared'));
+      });
+      els.runCoachAiBtn.addEventListener('click', runCoachAi);
+
+      // JSON Backup / Restore / Reset
+      els.exportJsonBtn.addEventListener('click', () => {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `habitquest-backup-${dateKey(0)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(t('toastBackup'));
+      });
+
+      els.importJsonInput.addEventListener('change', async (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        try {
+          const parsed = JSON.parse(await file.text());
+          if (!parsed || !Array.isArray(parsed.quests) || !parsed.history) throw new Error('bad shape');
+          state = parsed;
+          aiCoachMessage = null;
+          saveState();
+          renderAll();
+          showToast(t('toastRestored'));
+        } catch (_) {
+          showToast(t('toastBadJson'));
+        }
+        els.importJsonInput.value = '';
+      });
+
+      els.resetDemoBtn.addEventListener('click', () => {
+        state = createDefaultState();
+        aiCoachMessage = null;
+        editingQuestId = null;
+        saveState();
+        renderAll();
+        showToast(t('toastReset'));
+      });
+
+      // Top bar: EN/FR & Download HTML
+      els.langToggle.addEventListener('click', () => {
+        lang = lang === 'en' ? 'fr' : 'en';
+        aiCoachMessage = null;
+        applyI18n();
+      });
+
+      els.downloadHtmlBtn.addEventListener('click', () => {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'day-21-habitquest.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        showToast(t('toastHtmlDown'));
+      });
+
+      loadState();
+      applyI18n();
+    })();
+  </script>
+</body>
+</html>

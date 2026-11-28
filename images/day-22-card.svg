@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#FFB8DE"/>
+  <circle cx="200" cy="165" r="130" fill="#FFD4EB"/>
+  <circle cx="1490" cy="795" r="180" fill="#FFD4EB"/>
+
+  <!-- Main Audiogram Card -->
+  <g transform="rotate(-3 720 475)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="230" y="135" width="880" height="670" rx="56"/>
+    </g>
+    <rect x="230" y="135" width="880" height="670" rx="56" fill="#1E192B" stroke="#17141F" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- Top pill header -->
+    <rect x="290" y="195" width="230" height="44" rx="22" fill="#FFD84D" stroke="#17141F" stroke-width="6"/>
+    <circle cx="322" cy="217" r="11" fill="#FF5D73" stroke="#17141F" stroke-width="4"/>
+    <rect x="352" y="210" width="132" height="14" rx="7" fill="#17141F"/>
+
+    <!-- Equalizer Bars -->
+    <rect x="300" y="425" width="44" height="145" rx="22" fill="#3FD0A0" stroke="#17141F" stroke-width="6"/>
+    <rect x="366" y="345" width="44" height="225" rx="22" fill="#A9D6FF" stroke="#17141F" stroke-width="6"/>
+    <rect x="432" y="290" width="44" height="280" rx="22" fill="#FFD84D" stroke="#17141F" stroke-width="6"/>
+    <rect x="498" y="375" width="44" height="195" rx="22" fill="#FF8F6B" stroke="#17141F" stroke-width="6"/>
+    <rect x="564" y="265" width="44" height="305" rx="22" fill="#FFB8DE" stroke="#17141F" stroke-width="6"/>
+    <rect x="630" y="320" width="44" height="250" rx="22" fill="#FFD84D" stroke="#17141F" stroke-width="6"/>
+    <rect x="696" y="395" width="44" height="175" rx="22" fill="#3FD0A0" stroke="#17141F" stroke-width="6"/>
+    <rect x="762" y="295" width="44" height="275" rx="22" fill="#A9D6FF" stroke="#17141F" stroke-width="6"/>
+    <rect x="828" y="365" width="44" height="205" rx="22" fill="#FF8F6B" stroke="#17141F" stroke-width="6"/>
+    <rect x="894" y="435" width="44" height="135" rx="22" fill="#FFB8DE" stroke="#17141F" stroke-width="6"/>
+    <rect x="960" y="385" width="44" height="185" rx="22" fill="#FFD84D" stroke="#17141F" stroke-width="6"/>
+
+    <!-- Bottom timeline bar -->
+    <rect x="290" y="640" width="760" height="26" rx="13" fill="#352E4A" stroke="#17141F" stroke-width="6"/>
+    <rect x="290" y="640" width="470" height="26" rx="13" fill="#FF8F6B" stroke="#17141F" stroke-width="6"/>
+    <circle cx="760" cy="653" r="24" fill="#FFF8EA" stroke="#17141F" stroke-width="7"/>
+
+    <!-- Caption bar blocks -->
+    <rect x="290" y="708" width="420" height="26" rx="13" fill="#FFF8EA"/>
+    <rect x="735" y="708" width="180" height="26" rx="13" fill="#FFD84D"/>
+  </g>
+
+  <!-- Floating Play / Export Badge on Right -->
+  <g transform="rotate(9 1310 470)">
+    <g transform="translate(12 14)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <circle cx="1310" cy="470" r="165"/>
+    </g>
+    <circle cx="1310" cy="470" r="165" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+    <circle cx="1310" cy="470" r="122" fill="#FFD84D" stroke="#17141F" stroke-width="8"/>
+    <path d="M1282 414 L1374 470 L1282 526 Z" fill="#17141F" stroke="#17141F" stroke-width="8" stroke-linejoin="round" stroke-linecap="round"/>
+  </g>
+
+  <!-- Floating Music Note -->
+  <g transform="rotate(-12 1350 205)">
+    <g transform="translate(8 10)" opacity="0.16" fill="#17141F">
+      <circle cx="1310" cy="245" r="34"/>
+      <circle cx="1405" cy="225" r="34"/>
+    </g>
+    <path d="M1336 240 V142 L1431 122 V220" fill="none" stroke="#17141F" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1310" cy="245" r="34" fill="#3FD0A0" stroke="#17141F" stroke-width="8"/>
+    <circle cx="1405" cy="225" r="34" fill="#A9D6FF" stroke="#17141F" stroke-width="8"/>
+  </g>
+
+  <!-- Playful Sparkles -->
+  <path d="M1185 88 Q1185 130 1227 130 Q1185 130 1185 172 Q1185 130 1143 130 Q1185 130 1185 88Z" fill="#FFD84D" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1535 310 Q1535 344 1569 344 Q1535 344 1535 378 Q1535 344 1501 344 Q1535 344 1535 310Z" fill="#FFF8EA" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M145 770 Q145 804 179 804 Q145 804 145 838 Q145 804 111 804 Q145 804 145 770Z" fill="#3FD0A0" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

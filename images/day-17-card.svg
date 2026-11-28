@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <!-- Lilac pastel background -->
+  <rect width="1672" height="941" fill="#D8C6FA"/>
+  <circle cx="200" cy="175" r="140" fill="#EAE0FF"/>
+  <circle cx="1495" cy="795" r="185" fill="#EAE0FF"/>
+  <circle cx="1460" cy="180" r="85" fill="#C7B2F5"/>
+
+  <!-- Main Kanban Pipeline Board (tilted -3 deg) -->
+  <g transform="rotate(-3 660 475)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="170" y="130" width="940" height="670" rx="54"/>
+    </g>
+    <rect x="170" y="130" width="940" height="670" rx="54" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Window header bar -->
+    <path d="M170 218 L1110 218 L1110 184 C1110 154 1086 130 1056 130 L224 130 C194 130 170 154 170 184 Z" fill="#17141F"/>
+    <circle cx="232" cy="174" r="14" fill="#FF8F6B"/>
+    <circle cx="278" cy="174" r="14" fill="#FFD84D"/>
+    <circle cx="324" cy="174" r="14" fill="#3FD0A0"/>
+
+    <!-- Column 1: Wishlist -->
+    <rect x="215" y="258" width="265" height="500" rx="30" fill="#F2ECFF" stroke="#17141F" stroke-width="7"/>
+    <rect x="242" y="286" width="130" height="24" rx="12" fill="#17141F"/>
+    <!-- Card 1A -->
+    <rect x="238" y="334" width="219" height="122" rx="22" fill="#FFFFFF" stroke="#17141F" stroke-width="7"/>
+    <rect x="262" y="362" width="128" height="18" rx="9" fill="#17141F"/>
+    <rect x="262" y="394" width="166" height="14" rx="7" fill="#D8C6FA"/>
+    <rect x="262" y="422" width="76" height="18" rx="9" fill="#FFD84D" stroke="#17141F" stroke-width="4"/>
+    <!-- Card 1B -->
+    <rect x="238" y="478" width="219" height="118" rx="22" fill="#FFFFFF" stroke="#17141F" stroke-width="7"/>
+    <rect x="262" y="506" width="144" height="18" rx="9" fill="#17141F"/>
+    <rect x="262" y="538" width="112" height="14" rx="7" fill="#A9D6FF"/>
+    <rect x="262" y="564" width="84" height="16" rx="8" fill="#FFB8DE" stroke="#17141F" stroke-width="4"/>
+
+    <!-- Column 2: Interview -->
+    <rect x="508" y="258" width="265" height="500" rx="30" fill="#E6F8F1" stroke="#17141F" stroke-width="7"/>
+    <rect x="535" y="286" width="150" height="24" rx="12" fill="#17141F"/>
+    <!-- Card 2A -->
+    <rect x="531" y="334" width="219" height="132" rx="22" fill="#FFD84D" stroke="#17141F" stroke-width="7"/>
+    <rect x="555" y="362" width="138" height="18" rx="9" fill="#17141F"/>
+    <rect x="555" y="394" width="160" height="14" rx="7" fill="#FFF8EA"/>
+    <circle cx="712" cy="434" r="16" fill="#FF8F6B" stroke="#17141F" stroke-width="5"/>
+    <!-- Card 2B -->
+    <rect x="531" y="490" width="219" height="122" rx="22" fill="#FFFFFF" stroke="#17141F" stroke-width="7"/>
+    <rect x="555" y="518" width="120" height="18" rx="9" fill="#17141F"/>
+    <rect x="555" y="550" width="155" height="14" rx="7" fill="#D8C6FA"/>
+    <rect x="555" y="578" width="90" height="18" rx="9" fill="#3FD0A0" stroke="#17141F" stroke-width="4"/>
+
+    <!-- Column 3: Offer -->
+    <rect x="801" y="258" width="265" height="500" rx="30" fill="#FFF0E6" stroke="#17141F" stroke-width="7"/>
+    <rect x="828" y="286" width="115" height="24" rx="12" fill="#17141F"/>
+    <!-- Highlight Offer Card -->
+    <rect x="824" y="334" width="219" height="168" rx="24" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+    <rect x="848" y="366" width="142" height="20" rx="10" fill="#17141F"/>
+    <rect x="848" y="400" width="162" height="14" rx="7" fill="#FFF8EA"/>
+    <circle cx="934" cy="456" r="26" fill="#FFF8EA" stroke="#17141F" stroke-width="6"/>
+    <path d="M920 456 L930 466 L950 444" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Floating Briefcase / Paper Plane Badge on right -->
+  <g transform="rotate(8 1350 490)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="1195" y="355" width="310" height="240" rx="44"/>
+    </g>
+    <!-- Handle -->
+    <path d="M1285 355 V315 C1285 292 1304 275 1326 275 H1374 C1396 275 1415 292 1415 315 V355" fill="none" stroke="#17141F" stroke-width="18" stroke-linecap="round"/>
+    <!-- Briefcase body -->
+    <rect x="1195" y="355" width="310" height="240" rx="44" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Flap -->
+    <path d="M1195 452 Q1350 510 1505 452 L1505 399 C1505 375 1485 355 1461 355 L1239 355 C1215 355 1195 375 1195 399 Z" fill="#FFD84D" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Clasp -->
+    <rect x="1322" y="452" width="56" height="44" rx="14" fill="#FFF8EA" stroke="#17141F" stroke-width="8"/>
+    <!-- Cute face -->
+    <circle cx="1272" cy="532" r="12" fill="#17141F"/>
+    <circle cx="1428" cy="532" r="12" fill="#17141F"/>
+    <path d="M1325 544 Q1350 568 1375 544" fill="none" stroke="#17141F" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- Paper plane swooping top right -->
+  <g transform="translate(1240 165) rotate(-14)">
+    <path d="M0 70 L170 10 L118 140 L82 92 Z" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M170 10 L82 92 L78 138 L108 106" fill="#A9D6FF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Playful sparkles -->
+  <path d="M1160 88 Q1160 126 1198 126 Q1160 126 1160 164 Q1160 126 1122 126 Q1160 126 1160 88Z" fill="#FFD84D" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M1558 310 Q1558 344 1592 344 Q1558 344 1558 378 Q1558 344 1524 344 Q1558 344 1558 310Z" fill="#3FD0A0" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M1152 818 Q1152 850 1184 850 Q1152 850 1152 882 Q1152 850 1120 850 Q1152 850 1152 818Z" fill="#FFB8DE" stroke="#17141F" stroke-width="6" stroke-linejoin="round"/>
+</svg>

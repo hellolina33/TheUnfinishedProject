@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDFBoard · Day 11/30 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <style>
+    :root {
+      --bg: #F5F2FC;
+      --dot: #D6CCF2;
+      --surface: #FFFFFF;
+      --surface-soft: #F9F7FE;
+      --ink: #17142B;
+      --ink-muted: #5B5778;
+      --border: #DDD6F3;
+      --border-strong: #C1B4EA;
+      --lilac: #D8C6FA;
+      --purple: #7C3AED;
+      --purple-dark: #6D28D9;
+      --purple-soft: #EDE9FE;
+      --emerald: #10B981;
+      --emerald-soft: #D1FAE5;
+      --amber: #F59E0B;
+      --amber-soft: #FEF3C7;
+      --danger: #EF4444;
+      --radius: 16px;
+      --shadow: 0 10px 28px rgba(23, 20, 43, 0.07);
+      --font-display: 'Space Grotesk', system-ui, sans-serif;
+      --font-sans: 'Inter', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      background-image: radial-gradient(var(--dot) 1.3px, transparent 1.3px);
+      background-size: 22px 22px;
+      color: var(--ink);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* Challenge Top Bar */
+    .u30-bar {
+      background: #0E1638;
+      color: #E2E8F0;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      font-size: 13px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .u30-bar-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .u30-bar a { color: #FFFFFF; text-decoration: none; font-weight: 600; }
+    .u30-bar a:hover { opacity: 0.85; text-decoration: underline; }
+    .u30-sep { opacity: 0.4; }
+    .u30-bar-right { display: flex; align-items: center; gap: 8px; }
+    .u30-pill {
+      display: inline-flex;
+      background: rgba(255,255,255,0.1);
+      border-radius: 999px;
+      padding: 2px;
+      border: 1px solid rgba(255,255,255,0.16);
+    }
+    .u30-lang-btn {
+      background: transparent;
+      border: none;
+      color: #CBD5E1;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+    .u30-lang-btn.active { background: #FFFFFF; color: #0E1638; }
+    .u30-dl-btn {
+      background: rgba(216, 198, 250, 0.16);
+      color: #D8C6FA;
+      border: 1px solid rgba(216, 198, 250, 0.4);
+      border-radius: 999px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .u30-dl-btn:hover { background: #D8C6FA; color: #0E1638; }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 26px 20px 64px;
+    }
+
+    /* Offline Banner */
+    .offline-banner {
+      display: none;
+      background: #FEF2F2;
+      border: 1.5px solid #FCA5A5;
+      color: #991B1B;
+      padding: 12px 16px;
+      border-radius: 12px;
+      margin-bottom: 18px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+    .offline-banner.show { display: block; }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--purple-soft);
+      color: var(--purple-dark);
+      border: 1px solid var(--border-strong);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 2.9rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    .hero h1 span {
+      color: var(--purple);
+    }
+    .hero p {
+      color: var(--ink-muted);
+      max-width: 600px;
+      font-size: 14.5px;
+      margin-top: 6px;
+    }
+
+    /* Presets Bar */
+    .presets-bar {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .presets-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .presets-label {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      margin-right: 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 8px 14px;
+      border: 1.5px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--purple); color: #FFFFFF; }
+    .btn-primary:hover { background: var(--purple-dark); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+    .btn-dark { background: var(--ink); color: #FFFFFF; }
+    .btn-dark:hover { background: #2A254B; }
+    .btn-soft { background: var(--surface-soft); color: var(--ink); border-color: var(--border); }
+    .btn-soft:hover { background: var(--purple-soft); border-color: var(--purple); color: var(--purple-dark); }
+    .btn-sm { padding: 5px 10px; font-size: 12px; border-radius: 8px; }
+
+    /* Pipeline Layout */
+    .board-grid {
+      display: grid;
+      grid-template-columns: 310px 1fr 290px;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 26px;
+    }
+    @media (max-width: 1020px) {
+      .board-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Node Card Base */
+    .node-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: border-color 0.2s, opacity 0.2s;
+      position: relative;
+    }
+    .node-card.bypassed {
+      opacity: 0.55;
+      border-style: dashed;
+    }
+    .node-card.running {
+      border-color: var(--amber);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.16);
+    }
+    .node-card.done {
+      border-color: var(--emerald);
+    }
+    .node-card.error {
+      border-color: var(--danger);
+    }
+
+    .node-head {
+      padding: 12px 15px;
+      background: var(--surface-soft);
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .node-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+    .node-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--purple);
+      flex-shrink: 0;
+    }
+    .node-dot.input { background: #3B82F6; }
+    .node-dot.output { background: var(--emerald); }
+    .node-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .node-body {
+      padding: 14px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .status-pill {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #EEF2FF;
+      color: #4338CA;
+      flex-shrink: 0;
+    }
+    .status-pill.running { background: var(--amber-soft); color: #92400E; }
+    .status-pill.done { background: var(--emerald-soft); color: #065F46; }
+    .status-pill.off { background: #E2E8F0; color: #64748B; }
+    .status-pill.error { background: #FEE2E2; color: #991B1B; }
+
+    /* Dropzone */
+    .dropzone {
+      border: 2px dashed var(--border-strong);
+      border-radius: 12px;
+      padding: 18px 12px;
+      text-align: center;
+      background: var(--surface-soft);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--purple);
+      background: var(--purple-soft);
+    }
+    .dropzone-icon { font-size: 24px; margin-bottom: 4px; }
+    .dropzone-text { font-size: 12.5px; font-weight: 600; color: var(--ink); }
+    .dropzone-sub { font-size: 11px; color: var(--ink-muted); margin-top: 2px; }
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--surface-soft);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .file-meta { min-width: 0; }
+    .file-name {
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-sub {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--ink-muted);
+    }
+    .icon-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--ink-muted);
+      border-radius: 6px;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+    .icon-btn:hover { background: var(--purple-soft); color: var(--purple-dark); border-color: var(--purple); }
+    .icon-btn.danger:hover { background: #FEE2E2; color: var(--danger); border-color: #FCA5A5; }
+
+    /* Middle Pipeline Column */
+    .pipeline-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .wire-connector {
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .wire-connector::before {
+      content: '';
+      width: 2.5px;
+      height: 100%;
+      background: repeating-linear-gradient(to bottom, var(--purple) 0 5px, transparent 5px 9px);
+    }
+    .wire-arrow {
+      position: absolute;
+      bottom: -2px;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--purple);
+    }
+
+    .node-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .toggle-btn {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #D1FAE5;
+      color: #065F46;
+      cursor: pointer;
+    }
+    .toggle-btn.off {
+      background: #E2E8F0;
+      color: #64748B;
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .field-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-muted);
+    }
+    .input, .select {
+      font-family: var(--font-sans);
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--ink);
+      background: #FFFFFF;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      outline: none;
+    }
+    .input:focus, .select:focus { border-color: var(--purple); }
+    .input-sm { width: 150px; }
+
+    .add-node-bar {
+      margin-top: 14px;
+      background: var(--surface);
+      border: 1.5px dashed var(--border-strong);
+      border-radius: 12px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    /* Output Log */
+    .log-box {
+      background: #17142B;
+      color: #E2E8F0;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      min-height: 110px;
+      max-height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .log-ok { color: #6EE7B7; }
+    .log-info { color: #C4B5FD; }
+    .log-err { color: #FCA5A5; }
+
+    /* Unfinished */
+    .unfinished {
+      background: #FFFBEB;
+      border: 1.5px dashed #F59E0B;
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      color: #78350F;
+    }
+    .unfinished h3 { font-size: 15px; font-weight: 800; margin-bottom: 8px; }
+    .unfinished ul { padding-left: 18px; font-size: 13.5px; display: flex; flex-direction: column; gap: 4px; }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      right: 22px;
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 11px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(23,20,43,0.28);
+      opacity: 0;
+      transform: translateY(10px);
+      pointer-events: none;
+      transition: all 0.2s;
+      z-index: 200;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Top Challenge Bar -->
+  <header class="u30-bar">
+    <div class="u30-bar-left">
+      <a href="/">The Unfinished 30 · Day 11/30</a>
+      <span class="u30-sep">·</span>
+      <a href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="u30-bar-right">
+      <div class="u30-pill" role="group" aria-label="Language">
+        <button class="u30-lang-btn active" data-lang="en" id="btnLangEn">EN</button>
+        <button class="u30-lang-btn" data-lang="fr" id="btnLangFr">FR</button>
+      </div>
+      <button class="u30-dl-btn" id="btnDownloadHtml">
+        <span>⬇</span>
+        <span data-i18n="downloadHtml">Download HTML</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="offline-banner" id="offlineBanner" data-i18n="offlineMsg">
+      ⚠️ pdf-lib could not load from CDN (you appear to be offline). Reconnect to the internet to run real PDF transformations locally in your browser.
+    </div>
+
+    <section class="hero">
+      <div>
+        <div class="hero-badge">⚡ <span data-i18n="badge">100% Local Visual PDF Pipeline</span></div>
+        <h1>PDF<span>Board</span></h1>
+        <p data-i18n="subtitle">Chain PDF transformations like a mini node studio — merge, split, rotate, watermark, and number pages directly in your browser. Zero uploads, zero servers.</p>
+      </div>
+    </section>
+
+    <!-- Presets -->
+    <section class="presets-bar">
+      <div class="presets-group">
+        <span class="presets-label" data-i18n="presetsLabel">Presets:</span>
+        <button class="btn btn-soft btn-sm" id="presetMerge">📎 <span data-i18n="preset1">Merge &amp; Number</span></button>
+        <button class="btn btn-soft btn-sm" id="presetWatermark">🛡️ <span data-i18n="preset2">Confidential Watermark</span></button>
+        <button class="btn btn-soft btn-sm" id="presetExtract">✂️ <span data-i18n="preset3">Extract &amp; Rotate</span></button>
+      </div>
+      <div class="presets-group">
+        <button class="btn btn-dark btn-sm" id="btnGenDemoQuick">✨ <span data-i18n="genDemoBtn">Generate Demo PDF</span></button>
+      </div>
+    </section>
+
+    <!-- 3-Column Node Studio -->
+    <section class="board-grid">
+      <!-- Column 1: Input Node -->
+      <div class="node-card" id="inputNodeCard">
+        <div class="node-head">
+          <div class="node-title-wrap">
+            <span class="node-dot input"></span>
+            <span class="node-title" data-i18n="inputNode">1. Input PDF(s)</span>
+          </div>
+          <span class="status-pill" id="inputStatus">0 files</span>
+        </div>
+        <div class="node-body">
+          <div class="dropzone" id="dropzone">
+            <div class="dropzone-icon">📄</div>
+            <div class="dropzone-text" data-i18n="dropText">Drop PDF files here or click</div>
+            <div class="dropzone-sub" data-i18n="dropSub">Processed 100% locally in memory</div>
+            <input type="file" id="fileInput" accept="application/pdf" multiple style="display:none" />
+          </div>
+          <button class="btn btn-soft btn-sm" id="btnGenDemo">✨ <span data-i18n="genDemoBtn">Generate Demo PDF</span></button>
+          <div class="file-list" id="fileList"></div>
+        </div>
+      </div>
+
+      <!-- Column 2: Transform Nodes Pipeline -->
+      <div class="pipeline-col">
+        <div id="nodesContainer"></div>
+        <div class="add-node-bar">
+          <span class="presets-label" data-i18n="addNodeLabel">+ Add Node:</span>
+          <button class="btn btn-soft btn-sm" data-add-node="merge" data-i18n="nodeMerge">Merge</button>
+          <button class="btn btn-soft btn-sm" data-add-node="split" data-i18n="nodeSplit">Split / Extract</button>
+          <button class="btn btn-soft btn-sm" data-add-node="rotate" data-i18n="nodeRotate">Rotate</button>
+          <button class="btn btn-soft btn-sm" data-add-node="watermark" data-i18n="nodeWatermark">Watermark</button>
+          <button class="btn btn-soft btn-sm" data-add-node="numbers" data-i18n="nodeNumbers">Page Numbers</button>
+        </div>
+      </div>
+
+      <!-- Column 3: Output / Run Node -->
+      <div class="node-card" id="outputNodeCard">
+        <div class="node-head">
+          <div class="node-title-wrap">
+            <span class="node-dot output"></span>
+            <span class="node-title" data-i18n="outputNode">Output &amp; Run</span>
+          </div>
+          <span class="status-pill" id="outputStatus">Idle</span>
+        </div>
+        <div class="node-body">
+          <div class="field-row">
+            <label class="field-label" for="outputFilename" data-i18n="fileNameLabel">Output Name</label>
+            <input type="text" id="outputFilename" class="input input-sm" value="pdfboard-output.pdf" />
+          </div>
+          <button class="btn btn-primary" id="btnRunPipeline" style="width:100%;padding:11px;">
+            ▶ <span data-i18n="runBtn">Run Pipeline &amp; Download</span>
+          </button>
+          <button class="btn btn-soft btn-sm" id="btnRedownload" style="display:none;width:100%;">
+            ⬇ <span data-i18n="redownloadBtn">Download Last Output Again</span>
+          </button>
+          <div class="log-box" id="logBox"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Honest What's Unfinished -->
+    <section class="unfinished">
+      <h3>🚧 <span data-i18n="unfinishedTitle">What's unfinished</span></h3>
+      <ul>
+        <li data-i18n="unf1">Linear pipeline only — branching/parallel wires (like splitting one PDF into two separate outputs simultaneously) aren't supported yet.</li>
+        <li data-i18n="unf2">No visual page thumbnail preview inside the canvas; you inspect page counts and download the resulting PDF directly.</li>
+        <li data-i18n="unf3">Relies on pdf-lib from jsDelivr CDN; password-protected/encrypted PDFs cannot be decrypted locally by this prototype.</li>
+      </ul>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          offlineMsg: '⚠️ pdf-lib could not load from CDN (you appear to be offline). Reconnect to the internet to run real PDF transformations locally in your browser.',
+          badge: '100% Local Visual PDF Pipeline',
+          subtitle: 'Chain PDF transformations like a mini node studio — merge, split, rotate, watermark, and number pages directly in your browser. Zero uploads, zero servers.',
+          presetsLabel: 'Presets:',
+          preset1: 'Merge & Number',
+          preset2: 'Confidential Watermark',
+          preset3: 'Extract & Rotate',
+          genDemoBtn: 'Generate Demo PDF',
+          inputNode: '1. Input PDF(s)',
+          dropText: 'Drop PDF files here or click',
+          dropSub: 'Processed 100% locally in memory',
+          addNodeLabel: '+ Add Node:',
+          nodeMerge: 'Merge PDFs',
+          nodeSplit: 'Split / Extract',
+          nodeRotate: 'Rotate Pages',
+          nodeWatermark: 'Diagonal Watermark',
+          nodeNumbers: 'Page Numbers',
+          outputNode: 'Output & Run',
+          fileNameLabel: 'Output Name',
+          runBtn: 'Run Pipeline & Download',
+          redownloadBtn: 'Download Last Output Again',
+          unfinishedTitle: "What's unfinished",
+          unf1: "Linear pipeline only — branching/parallel wires (like splitting one PDF into two separate outputs simultaneously) aren't supported yet.",
+          unf2: "No visual page thumbnail preview inside the canvas; you inspect page counts and download the resulting PDF directly.",
+          unf3: "Relies on pdf-lib from jsDelivr CDN; password-protected/encrypted PDFs cannot be decrypted locally by this prototype.",
+          lblRange: 'Page Range',
+          lblAngle: 'Angle',
+          lblApplyTo: 'Apply to',
+          lblText: 'Watermark Text',
+          lblOpacity: 'Opacity',
+          lblColor: 'Color',
+          lblPosition: 'Position',
+          lblFormat: 'Format',
+          mergeHint: 'Combines all loaded PDFs in order into a single document.',
+          optAll: 'All pages',
+          optOdd: 'Odd pages',
+          optEven: 'Even pages',
+          posBottomCenter: 'Bottom Center',
+          posBottomRight: 'Bottom Right',
+          posTopRight: 'Top Right',
+          needFileToast: 'Add a PDF or click "Generate Demo PDF" first!',
+          demoAddedToast: 'Demo PDF generated and loaded!',
+          pipelineDoneToast: 'Pipeline finished — PDF downloaded!',
+          readyLog: 'Ready. Load a PDF or click "Generate Demo PDF", then run the pipeline.'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          offlineMsg: '⚠️ pdf-lib n\'a pas pu se charger depuis le CDN (vous semblez hors-ligne). Reconnectez-vous pour exécuter le pipeline PDF dans le navigateur.',
+          badge: 'Pipeline PDF Visuel 100% Local',
+          subtitle: 'Chaînez vos transformations PDF comme un mini studio nodal — fusion, extraction, rotation, filigrane et numérotation directement dans votre navigateur. Zéro serveur.',
+          presetsLabel: 'Préréglages :',
+          preset1: 'Fusion & Numéros',
+          preset2: 'Filigrane Confidentiel',
+          preset3: 'Extraire & Pivoter',
+          genDemoBtn: 'Générer un PDF Démo',
+          inputNode: '1. PDF en Entrée',
+          dropText: 'Glissez des PDF ici ou cliquez',
+          dropSub: 'Traitement 100% local en mémoire',
+          addNodeLabel: '+ Ajouter :',
+          nodeMerge: 'Fusionner PDF',
+          nodeSplit: 'Extraire Pages',
+          nodeRotate: 'Pivoter Pages',
+          nodeWatermark: 'Filigrane Diagonal',
+          nodeNumbers: 'Numéros de Page',
+          outputNode: 'Sortie & Exécution',
+          fileNameLabel: 'Nom du fichier',
+          runBtn: 'Exécuter & Télécharger',
+          redownloadBtn: 'Re-télécharger le dernier PDF',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          unf1: "Pipeline linéaire uniquement — les branches parallèles (produire deux PDF distincts en un seul run) ne sont pas encore gérées.",
+          unf2: "Pas encore de miniatures visuelles des pages dans le canvas ; le résultat se télécharge directement.",
+          unf3: "Dépend de pdf-lib via CDN jsDelivr ; les PDF chiffrés par mot de passe ne sont pas déverrouillés.",
+          lblRange: 'Plage de pages',
+          lblAngle: 'Angle',
+          lblApplyTo: 'Appliquer à',
+          lblText: 'Texte du filigrane',
+          lblOpacity: 'Opacité',
+          lblColor: 'Couleur',
+          lblPosition: 'Position',
+          lblFormat: 'Format',
+          mergeHint: 'Assemble tous les PDF chargés dans l\'ordre en un seul document.',
+          optAll: 'Toutes les pages',
+          optOdd: 'Pages impaires',
+          optEven: 'Pages paires',
+          posBottomCenter: 'Bas Centre',
+          posBottomRight: 'Bas Droite',
+          posTopRight: 'Haut Droite',
+          needFileToast: 'Ajoutez un PDF ou cliquez sur "Générer un PDF Démo" !',
+          demoAddedToast: 'PDF de démonstration généré !',
+          pipelineDoneToast: 'Pipeline terminé — PDF téléchargé !',
+          readyLog: 'Prêt. Chargez un PDF ou générez une démo, puis lancez le pipeline.'
+        }
+      };
+
+      let lang = 'en';
+      let demoCounter = 0;
+      let loadedFiles = []; // { id, name, bytes: Uint8Array, pageCount, sizeKb }
+      let lastOutputUrl = null;
+      let lastOutputName = 'pdfboard-output.pdf';
+
+      let nodes = [
+        { id: 'n1', type: 'merge', enabled: true, status: 'idle', config: {} },
+        { id: 'n2', type: 'watermark', enabled: true, status: 'idle', config: { text: 'CONFIDENTIAL', opacity: 0.22, color: 'purple' } },
+        { id: 'n3', type: 'numbers', enabled: true, status: 'idle', config: { position: 'bottom-center', format: 'page-of' } }
+      ];
+
+      function t(key) {
+        return (I18N[lang] && I18N[lang][key]) || I18N.en[key] || key;
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._timer);
+        showToast._timer = setTimeout(() => el.classList.remove('show'), 2600);
+      }
+
+      function addLog(msg, cls = 'log-info') {
+        const box = document.getElementById('logBox');
+        const line = document.createElement('div');
+        line.className = cls;
+        line.textContent = `[${new Date().toLocaleTimeString([], { hour12: false })}] ${msg}`;
+        box.appendChild(line);
+        box.scrollTop = box.scrollHeight;
+      }
+
+      function clearLog() {
+        document.getElementById('logBox').innerHTML = '';
+      }
+
+      function checkPdfLib() {
+        const ok = typeof window.PDFLib !== 'undefined';
+        document.getElementById('offlineBanner').classList.toggle('show', !ok);
+        return ok;
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = lang;
+        document.getElementById('btnLangEn').classList.toggle('active', lang === 'en');
+        document.getElementById('btnLangFr').classList.toggle('active', lang === 'fr');
+        document.querySelectorAll('[data-i18n]').forEach((el) => {
+          el.textContent = t(el.getAttribute('data-i18n'));
+        });
+      }
+
+      function renderFiles() {
+        const list = document.getElementById('fileList');
+        const status = document.getElementById('inputStatus');
+        const totalPages = loadedFiles.reduce((acc, f) => acc + f.pageCount, 0);
+        status.textContent = `${loadedFiles.length} file${loadedFiles.length === 1 ? '' : 's'} · ${totalPages}p`;
+        status.className = 'status-pill' + (loadedFiles.length > 0 ? ' done' : '');
+
+        list.innerHTML = '';
+        loadedFiles.forEach((f, idx) => {
+          const item = document.createElement('div');
+          item.className = 'file-item';
+          item.innerHTML = `
+            <div class="file-meta">
+              <div class="file-name">${escapeHtml(f.name)}</div>
+              <div class="file-sub">${f.pageCount} pages · ${f.sizeKb} KB</div>
+            </div>
+            <button class="icon-btn danger" title="Remove">&times;</button>
+          `;
+          item.querySelector('button').addEventListener('click', () => {
+            loadedFiles.splice(idx, 1);
+            renderFiles();
+          });
+          list.appendChild(item);
+        });
+      }
+
+      function nodeTitleKey(type) {
+        return {
+          merge: 'nodeMerge',
+          split: 'nodeSplit',
+          rotate: 'nodeRotate',
+          watermark: 'nodeWatermark',
+          numbers: 'nodeNumbers'
+        }[type] || type;
+      }
+
+      function renderNodes() {
+        const container = document.getElementById('nodesContainer');
+        container.innerHTML = '';
+
+        nodes.forEach((node, idx) => {
+          if (idx > 0) {
+            const wire = document.createElement('div');
+            wire.className = 'wire-connector';
+            wire.innerHTML = '<div class="wire-arrow"></div>';
+            container.appendChild(wire);
+          }
+
+          const card = document.createElement('div');
+          card.className = 'node-card' +
+            (!node.enabled ? ' bypassed' : '') +
+            (node.status === 'running' ? ' running' : '') +
+            (node.status === 'done' ? ' done' : '') +
+            (node.status === 'error' ? ' error' : '');
+
+          const statusText = !node.enabled
+            ? 'BYPASS'
+            : node.status === 'running'
+              ? 'RUN...'
+              : node.status === 'done'
+                ? (node.statusNote || 'DONE')
+                : node.status === 'error'
+                  ? 'ERR'
+                  : 'READY';
+
+          const statusCls = !node.enabled ? 'off' : node.status;
+
+          card.innerHTML = `
+            <div class="node-head">
+              <div class="node-title-wrap">
+                <span class="node-dot"></span>
+                <span class="node-title">${escapeHtml(t(nodeTitleKey(node.type)))}</span>
+              </div>
+              <div class="node-controls">
+                <span class="status-pill ${statusCls}">${escapeHtml(statusText)}</span>
+                <button class="toggle-btn ${node.enabled ? '' : 'off'}" data-act="toggle">${node.enabled ? 'ON' : 'OFF'}</button>
+                <button class="icon-btn" data-act="up" title="Move up" ${idx === 0 ? 'disabled' : ''}>↑</button>
+                <button class="icon-btn" data-act="down" title="Move down" ${idx === nodes.length - 1 ? 'disabled' : ''}>↓</button>
+                <button class="icon-btn danger" data-act="del" title="Remove">&times;</button>
+              </div>
+            </div>
+            <div class="node-body"></div>
+          `;
+
+          card.querySelector('[data-act="toggle"]').addEventListener('click', () => {
+            node.enabled = !node.enabled;
+            node.status = 'idle';
+            renderNodes();
+          });
+          card.querySelector('[data-act="up"]').addEventListener('click', () => {
+            if (idx > 0) {
+              [nodes[idx - 1], nodes[idx]] = [nodes[idx], nodes[idx - 1]];
+              renderNodes();
+            }
+          });
+          card.querySelector('[data-act="down"]').addEventListener('click', () => {
+            if (idx < nodes.length - 1) {
+              [nodes[idx + 1], nodes[idx]] = [nodes[idx], nodes[idx + 1]];
+              renderNodes();
+            }
+          });
+          card.querySelector('[data-act="del"]').addEventListener('click', () => {
+            nodes.splice(idx, 1);
+            renderNodes();
+          });
+
+          const body = card.querySelector('.node-body');
+          buildNodeConfigUI(node, body);
+          container.appendChild(card);
+        });
+      }
+
+      function buildNodeConfigUI(node, body) {
+        if (node.type === 'merge') {
+          body.innerHTML = `<div style="font-size:12.5px;color:var(--ink-muted);">${escapeHtml(t('mergeHint'))}</div>`;
+        } else if (node.type === 'split') {
+          body.innerHTML = `
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblRange'))}</span>
+              <input type="text" class="input input-sm" value="${escapeHtml(node.config.range || '1-2')}" placeholder="e.g. 1-2, 4" />
+            </div>
+          `;
+          body.querySelector('input').addEventListener('input', (e) => {
+            node.config.range = e.target.value;
+          });
+        } else if (node.type === 'rotate') {
+          body.innerHTML = `
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblAngle'))}</span>
+              <select class="select angle-sel">
+                <option value="90" ${node.config.angle === 90 ? 'selected' : ''}>90° CW</option>
+                <option value="180" ${node.config.angle === 180 ? 'selected' : ''}>180°</option>
+                <option value="270" ${node.config.angle === 270 ? 'selected' : ''}>270° (90° CCW)</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblApplyTo'))}</span>
+              <select class="select scope-sel">
+                <option value="all" ${node.config.scope === 'all' ? 'selected' : ''}>${escapeHtml(t('optAll'))}</option>
+                <option value="odd" ${node.config.scope === 'odd' ? 'selected' : ''}>${escapeHtml(t('optOdd'))}</option>
+                <option value="even" ${node.config.scope === 'even' ? 'selected' : ''}>${escapeHtml(t('optEven'))}</option>
+              </select>
+            </div>
+          `;
+          body.querySelector('.angle-sel').addEventListener('change', (e) => {
+            node.config.angle = parseInt(e.target.value, 10);
+          });
+          body.querySelector('.scope-sel').addEventListener('change', (e) => {
+            node.config.scope = e.target.value;
+          });
+        } else if (node.type === 'watermark') {
+          body.innerHTML = `
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblText'))}</span>
+              <input type="text" class="input input-sm wm-text" value="${escapeHtml(node.config.text || 'CONFIDENTIAL')}" />
+            </div>
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblOpacity'))} (${Math.round((node.config.opacity || 0.22) * 100)}%)</span>
+              <input type="range" min="0.08" max="0.6" step="0.02" value="${node.config.opacity || 0.22}" class="wm-op" />
+            </div>
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblColor'))}</span>
+              <select class="select wm-col">
+                <option value="purple" ${node.config.color === 'purple' ? 'selected' : ''}>Purple</option>
+                <option value="red" ${node.config.color === 'red' ? 'selected' : ''}>Crimson Red</option>
+                <option value="slate" ${node.config.color === 'slate' ? 'selected' : ''}>Slate Gray</option>
+              </select>
+            </div>
+          `;
+          body.querySelector('.wm-text').addEventListener('input', (e) => { node.config.text = e.target.value; });
+          body.querySelector('.wm-op').addEventListener('input', (e) => {
+            node.config.opacity = parseFloat(e.target.value);
+            body.querySelectorAll('.field-label')[1].textContent = `${t('lblOpacity')} (${Math.round(node.config.opacity * 100)}%)`;
+          });
+          body.querySelector('.wm-col').addEventListener('change', (e) => { node.config.color = e.target.value; });
+        } else if (node.type === 'numbers') {
+          body.innerHTML = `
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblPosition'))}</span>
+              <select class="select num-pos">
+                <option value="bottom-center" ${node.config.position === 'bottom-center' ? 'selected' : ''}>${escapeHtml(t('posBottomCenter'))}</option>
+                <option value="bottom-right" ${node.config.position === 'bottom-right' ? 'selected' : ''}>${escapeHtml(t('posBottomRight'))}</option>
+                <option value="top-right" ${node.config.position === 'top-right' ? 'selected' : ''}>${escapeHtml(t('posTopRight'))}</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span class="field-label">${escapeHtml(t('lblFormat'))}</span>
+              <select class="select num-fmt">
+                <option value="page-of" ${node.config.format === 'page-of' ? 'selected' : ''}>Page 1 / N</option>
+                <option value="simple" ${node.config.format === 'simple' ? 'selected' : ''}>1</option>
+              </select>
+            </div>
+          `;
+          body.querySelector('.num-pos').addEventListener('change', (e) => { node.config.position = e.target.value; });
+          body.querySelector('.num-fmt').addEventListener('change', (e) => { node.config.format = e.target.value; });
+        }
+      }
+
+      async function handleFiles(fileListObj) {
+        if (!checkPdfLib()) return;
+        const { PDFDocument } = window.PDFLib;
+        for (const file of Array.from(fileListObj)) {
+          if (!file.name.toLowerCase().endsWith('.pdf') && file.type !== 'application/pdf') continue;
+          try {
+            const buf = await file.arrayBuffer();
+            const bytes = new Uint8Array(buf);
+            const doc = await PDFDocument.load(bytes);
+            loadedFiles.push({
+              id: 'f' + Date.now() + Math.random(),
+              name: file.name,
+              bytes,
+              pageCount: doc.getPageCount(),
+              sizeKb: Math.max(1, Math.round(bytes.length / 1024))
+            });
+            addLog(`Loaded ${file.name} (${doc.getPageCount()} pages)`, 'log-ok');
+          } catch (err) {
+            addLog(`Failed to read ${file.name}: ${err.message}`, 'log-err');
+          }
+        }
+        renderFiles();
+      }
+
+      async function generateDemoPdf() {
+        if (!checkPdfLib()) return;
+        const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+        demoCounter++;
+        const doc = await PDFDocument.create();
+        const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
+        const fontReg = await doc.embedFont(StandardFonts.Helvetica);
+
+        const topics = [
+          ['Q4 Product Roadmap', 'Executive Summary & Key Milestones'],
+          ['Architecture Overview', 'Local-First Browser Workflows with pdf-lib'],
+          ['Launch Checklist', 'Ship Small, Ship Honest, Iterate Fast']
+        ];
+
+        topics.forEach(([title, sub], idx) => {
+          const page = doc.addPage([595, 842]);
+          const { width, height } = page.getSize();
+          page.drawRectangle({ x: 40, y: height - 130, width: width - 80, height: 80, color: rgb(0.93, 0.91, 0.99) });
+          page.drawText(`PDFBoard Demo #${demoCounter} — Section ${idx + 1}`, {
+            x: 58, y: height - 76, size: 12, font: fontBold, color: rgb(0.48, 0.23, 0.93)
+          });
+          page.drawText(title, {
+            x: 58, y: height - 106, size: 22, font: fontBold, color: rgb(0.09, 0.08, 0.17)
+          });
+          page.drawText(sub, {
+            x: 58, y: height - 175, size: 14, font: fontReg, color: rgb(0.35, 0.34, 0.47)
+          });
+          page.drawText('This sample PDF was synthesized directly inside your browser using pdf-lib.', {
+            x: 58, y: height - 220, size: 11.5, font: fontReg, color: rgb(0.2, 0.2, 0.25)
+          });
+          page.drawText('Try chaining Split, Rotate, Watermark, and Page Numbers in the node canvas.', {
+            x: 58, y: height - 242, size: 11.5, font: fontReg, color: rgb(0.2, 0.2, 0.25)
+          });
+        });
+
+        const bytes = await doc.save();
+        const name = `demo-deck-${demoCounter}.pdf`;
+        loadedFiles.push({
+          id: 'demo' + Date.now(),
+          name,
+          bytes,
+          pageCount: doc.getPageCount(),
+          sizeKb: Math.max(1, Math.round(bytes.length / 1024))
+        });
+        renderFiles();
+        addLog(`Generated ${name} (3 pages)`, 'log-ok');
+        showToast(t('demoAddedToast'));
+      }
+
+      function parsePageRange(rangeStr, maxPages) {
+        const indices = [];
+        const parts = String(rangeStr || '').split(',');
+        for (const raw of parts) {
+          const p = raw.trim().toLowerCase();
+          if (!p) continue;
+          if (p.includes('-')) {
+            const [aRaw, bRaw] = p.split('-');
+            const a = Math.max(1, parseInt(aRaw, 10) || 1);
+            const b = bRaw === 'end' ? maxPages : Math.min(maxPages, parseInt(bRaw, 10) || maxPages);
+            for (let i = a; i <= b; i++) indices.push(i - 1);
+          } else {
+            const n = parseInt(p, 10);
+            if (!isNaN(n) && n >= 1 && n <= maxPages) indices.push(n - 1);
+          }
+        }
+        return indices.length > 0 ? indices : Array.from({ length: maxPages }, (_, i) => i);
+      }
+
+      async function runPipeline() {
+        if (!checkPdfLib()) return;
+        if (loadedFiles.length === 0) {
+          showToast(t('needFileToast'));
+          return;
+        }
+
+        const { PDFDocument, StandardFonts, rgb, degrees } = window.PDFLib;
+        const runBtn = document.getElementById('btnRunPipeline');
+        const outStatus = document.getElementById('outputStatus');
+        runBtn.disabled = true;
+        outStatus.textContent = 'RUNNING';
+        outStatus.className = 'status-pill running';
+        clearLog();
+        addLog('Starting PDFBoard pipeline...', 'log-info');
+
+        nodes.forEach(n => { n.status = 'idle'; n.statusNote = ''; });
+        renderNodes();
+
+        try {
+          // Initialize working PDF: if merge node is enabled later, we still start with first PDF or merged
+          let workingDoc = await PDFDocument.load(loadedFiles[0].bytes);
+          let hasMerged = false;
+
+          for (const node of nodes) {
+            if (!node.enabled) {
+              addLog(`Skipped [${node.type}] (bypassed)`, 'log-info');
+              continue;
+            }
+            node.status = 'running';
+            renderNodes();
+            await new Promise(r => setTimeout(r, 140));
+
+            if (node.type === 'merge') {
+              const merged = await PDFDocument.create();
+              for (const f of loadedFiles) {
+                const src = await PDFDocument.load(f.bytes);
+                const copied = await merged.copyPages(src, src.getPageIndices());
+                copied.forEach(p => merged.addPage(p));
+              }
+              workingDoc = merged;
+              hasMerged = true;
+              node.statusNote = `${workingDoc.getPageCount()}p`;
+              addLog(`Merged ${loadedFiles.length} file(s) → ${workingDoc.getPageCount()} pages`, 'log-ok');
+            } else if (node.type === 'split') {
+              const total = workingDoc.getPageCount();
+              const indices = parsePageRange(node.config.range, total);
+              const extracted = await PDFDocument.create();
+              const copied = await extracted.copyPages(workingDoc, indices);
+              copied.forEach(p => extracted.addPage(p));
+              workingDoc = extracted;
+              node.statusNote = `${workingDoc.getPageCount()}p`;
+              addLog(`Extracted range "${node.config.range}" → ${workingDoc.getPageCount()} pages`, 'log-ok');
+            } else if (node.type === 'rotate') {
+              const angle = node.config.angle || 90;
+              const scope = node.config.scope || 'all';
+              const pages = workingDoc.getPages();
+              let count = 0;
+              pages.forEach((p, idx) => {
+                const pageNum = idx + 1;
+                if (scope === 'odd' && pageNum % 2 === 0) return;
+                if (scope === 'even' && pageNum % 2 === 1) return;
+                const current = p.getRotation().angle;
+                p.setRotation(degrees((current + angle) % 360));
+                count++;
+              });
+              node.statusNote = `${count}p · ${angle}°`;
+              addLog(`Rotated ${count} page(s) by ${angle}°`, 'log-ok');
+            } else if (node.type === 'watermark') {
+              const text = (node.config.text || 'CONFIDENTIAL').trim();
+              const opacity = node.config.opacity || 0.22;
+              const colorMap = {
+                purple: rgb(0.48, 0.23, 0.93),
+                red: rgb(0.86, 0.15, 0.15),
+                slate: rgb(0.3, 0.35, 0.45)
+              };
+              const color = colorMap[node.config.color] || colorMap.purple;
+              const font = await workingDoc.embedFont(StandardFonts.HelveticaBold);
+              const pages = workingDoc.getPages();
+              pages.forEach((p) => {
+                const { width, height } = p.getSize();
+                const fontSize = Math.max(26, Math.min(58, width / Math.max(6, text.length * 0.85)));
+                p.drawText(text, {
+                  x: width * 0.18,
+                  y: height * 0.38,
+                  size: fontSize,
+                  font,
+                  color,
+                  opacity,
+                  rotate: degrees(35)
+                });
+              });
+              node.statusNote = `${pages.length}p`;
+              addLog(`Stamped watermark "${text}" on ${pages.length} page(s)`, 'log-ok');
+            } else if (node.type === 'numbers') {
+              const font = await workingDoc.embedFont(StandardFonts.Helvetica);
+              const pages = workingDoc.getPages();
+              const total = pages.length;
+              const pos = node.config.position || 'bottom-center';
+              const fmt = node.config.format || 'page-of';
+              pages.forEach((p, idx) => {
+                const { width, height } = p.getSize();
+                const label = fmt === 'simple' ? `${idx + 1}` : `Page ${idx + 1} / ${total}`;
+                const textWidth = font.widthOfTextAtSize(label, 10.5);
+                let x = (width - textWidth) / 2;
+                let y = 24;
+                if (pos === 'bottom-right') { x = width - textWidth - 32; y = 24; }
+                if (pos === 'top-right') { x = width - textWidth - 32; y = height - 30; }
+                p.drawText(label, { x, y, size: 10.5, font, color: rgb(0.32, 0.32, 0.42) });
+              });
+              node.statusNote = `1..${total}`;
+              addLog(`Added page numbers to ${total} page(s)`, 'log-ok');
+            }
+
+            node.status = 'done';
+            renderNodes();
+          }
+
+          if (!hasMerged && loadedFiles.length > 1) {
+            addLog('Note: Multiple PDFs loaded, only first was used (enable Merge node to combine all).', 'log-info');
+          }
+
+          const outBytes = await workingDoc.save();
+          const blob = new Blob([outBytes], { type: 'application/pdf' });
+          if (lastOutputUrl) URL.revokeObjectURL(lastOutputUrl);
+          lastOutputUrl = URL.createObjectURL(blob);
+          const rawName = (document.getElementById('outputFilename').value || 'pdfboard-output.pdf').trim();
+          lastOutputName = rawName.toLowerCase().endsWith('.pdf') ? rawName : rawName + '.pdf';
+
+          const a = document.createElement('a');
+          a.href = lastOutputUrl;
+          a.download = lastOutputName;
+          a.click();
+
+          const kb = Math.max(1, Math.round(outBytes.length / 1024));
+          outStatus.textContent = `${workingDoc.getPageCount()}p · ${kb} KB`;
+          outStatus.className = 'status-pill done';
+          document.getElementById('btnRedownload').style.display = 'inline-flex';
+          addLog(`Done! Exported ${lastOutputName} (${kb} KB)`, 'log-ok');
+          showToast(t('pipelineDoneToast'));
+        } catch (err) {
+          outStatus.textContent = 'ERROR';
+          outStatus.className = 'status-pill error';
+          addLog(`Pipeline error: ${err.message}`, 'log-err');
+        } finally {
+          runBtn.disabled = false;
+        }
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function loadPreset(name) {
+        if (name === 'merge') {
+          nodes = [
+            { id: 'p1', type: 'merge', enabled: true, status: 'idle', config: {} },
+            { id: 'p2', type: 'numbers', enabled: true, status: 'idle', config: { position: 'bottom-center', format: 'page-of' } }
+          ];
+        } else if (name === 'watermark') {
+          nodes = [
+            { id: 'p1', type: 'watermark', enabled: true, status: 'idle', config: { text: 'CONFIDENTIAL', opacity: 0.24, color: 'red' } },
+            { id: 'p2', type: 'numbers', enabled: true, status: 'idle', config: { position: 'bottom-right', format: 'page-of' } }
+          ];
+        } else if (name === 'extract') {
+          nodes = [
+            { id: 'p1', type: 'split', enabled: true, status: 'idle', config: { range: '1-2' } },
+            { id: 'p2', type: 'rotate', enabled: true, status: 'idle', config: { angle: 90, scope: 'all' } }
+          ];
+        }
+        renderNodes();
+      }
+
+      // Wire events
+      document.getElementById('btnLangEn').addEventListener('click', () => { lang = 'en'; applyLanguage(); renderNodes(); });
+      document.getElementById('btnLangFr').addEventListener('click', () => { lang = 'fr'; applyLanguage(); renderNodes(); });
+
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('fileInput');
+      dropzone.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length) handleFiles(e.target.files);
+        e.target.value = '';
+      });
+      dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+      dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+      dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+      });
+
+      document.getElementById('btnGenDemo').addEventListener('click', generateDemoPdf);
+      document.getElementById('btnGenDemoQuick').addEventListener('click', generateDemoPdf);
+
+      document.getElementById('presetMerge').addEventListener('click', () => loadPreset('merge'));
+      document.getElementById('presetWatermark').addEventListener('click', () => loadPreset('watermark'));
+      document.getElementById('presetExtract').addEventListener('click', () => loadPreset('extract'));
+
+      document.querySelectorAll('[data-add-node]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const type = btn.getAttribute('data-add-node');
+          const defaults = {
+            merge: {},
+            split: { range: '1-2' },
+            rotate: { angle: 90, scope: 'all' },
+            watermark: { text: 'DRAFT', opacity: 0.22, color: 'purple' },
+            numbers: { position: 'bottom-center', format: 'page-of' }
+          };
+          nodes.push({ id: 'n' + Date.now(), type, enabled: true, status: 'idle', config: defaults[type] });
+          renderNodes();
+        });
+      });
+
+      document.getElementById('btnRunPipeline').addEventListener('click', runPipeline);
+      document.getElementById('btnRedownload').addEventListener('click', () => {
+        if (!lastOutputUrl) return;
+        const a = document.createElement('a');
+        a.href = lastOutputUrl;
+        a.download = lastOutputName;
+        a.click();
+      });
+
+      document.getElementById('btnDownloadHtml').addEventListener('click', () => {
+        const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'day-11-pdfboard.html';
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+
+      checkPdfLib();
+      applyLanguage();
+      renderFiles();
+      renderNodes();
+      addLog(t('readyLog'), 'log-info');
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1672 941" width="1672" height="941">
+  <rect width="1672" height="941" fill="#FFE36E"/>
+  <circle cx="200" cy="180" r="135" fill="#FFF0A8"/>
+  <circle cx="1485" cy="785" r="175" fill="#FFF0A8"/>
+
+  <!-- Launchpad Blueprint Card -->
+  <g transform="rotate(-3 635 480)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <rect x="190" y="135" width="840" height="680" rx="54"/>
+    </g>
+    <rect x="190" y="135" width="840" height="680" rx="54" fill="#FFF8EA" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Window Top Bar -->
+    <path d="M190 189 C190 159 214 135 244 135 H976 C1006 135 1030 159 1030 189 V228 H190 Z" fill="#A9D6FF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <circle cx="256" cy="182" r="16" fill="#FF8F6B" stroke="#17141F" stroke-width="6"/>
+    <circle cx="308" cy="182" r="16" fill="#FFD84D" stroke="#17141F" stroke-width="6"/>
+    <circle cx="360" cy="182" r="16" fill="#3FD0A0" stroke="#17141F" stroke-width="6"/>
+
+    <!-- Hero Wireframe Block -->
+    <rect x="250" y="275" width="720" height="170" rx="28" fill="#FFFFFF" stroke="#17141F" stroke-width="7"/>
+    <rect x="292" y="314" width="380" height="30" rx="15" fill="#17141F"/>
+    <rect x="292" y="362" width="260" height="20" rx="10" fill="#B8C2D4"/>
+    <rect x="750" y="318" width="176" height="68" rx="22" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+    <path d="M812 352 L864 352 M848 336 L866 352 L848 368" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 14-Day Checklist Rows -->
+    <g transform="translate(250 485)">
+      <rect x="0" y="0" width="54" height="54" rx="16" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+      <path d="M14 28 L24 38 L42 18" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="82" y="13" width="360" height="28" rx="14" fill="#17141F"/>
+      <rect x="520" y="6" width="200" height="42" rx="21" fill="#FFB8DE" stroke="#17141F" stroke-width="6"/>
+
+      <rect x="0" y="88" width="54" height="54" rx="16" fill="#3FD0A0" stroke="#17141F" stroke-width="7"/>
+      <path d="M14 116 L24 126 L42 106" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="82" y="101" width="410" height="28" rx="14" fill="#17141F"/>
+      <rect x="550" y="94" width="170" height="42" rx="21" fill="#A9D6FF" stroke="#17141F" stroke-width="6"/>
+
+      <rect x="0" y="176" width="54" height="54" rx="16" fill="#FFFFFF" stroke="#17141F" stroke-width="7"/>
+      <rect x="82" y="189" width="310" height="28" rx="14" fill="#B8C2D4"/>
+      <rect x="490" y="182" width="230" height="42" rx="21" fill="#FFD84D" stroke="#17141F" stroke-width="6"/>
+    </g>
+  </g>
+
+  <!-- Chunky Rocket Launching on Right -->
+  <g transform="rotate(14 1320 460)">
+    <g transform="translate(14 16)" opacity="0.16" fill="#17141F" stroke="#17141F" stroke-width="8">
+      <path d="M1320 150 C1415 240 1445 370 1432 540 H1208 C1195 370 1225 240 1320 150 Z"/>
+    </g>
+    <!-- Exhaust Flame -->
+    <path d="M1262 565 C1245 645 1290 705 1320 742 C1350 705 1395 645 1378 565 Z" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M1292 568 C1285 620 1306 662 1320 682 C1334 662 1355 620 1348 568 Z" fill="#FFD84D"/>
+
+    <!-- Side Fins -->
+    <path d="M1214 438 L1132 522 L1146 588 L1220 538 Z" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <path d="M1426 438 L1508 522 L1494 588 L1420 538 Z" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+
+    <!-- Rocket Body -->
+    <path d="M1320 150 C1415 240 1445 370 1432 540 H1208 C1195 370 1225 240 1320 150 Z" fill="#FFFFFF" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Nose Cone -->
+    <path d="M1320 150 C1368 196 1396 244 1410 290 H1230 C1244 244 1272 196 1320 150 Z" fill="#FF8F6B" stroke="#17141F" stroke-width="8" stroke-linejoin="round"/>
+    <!-- Base Thruster -->
+    <rect x="1244" y="540" width="152" height="34" rx="14" fill="#17141F"/>
+
+    <!-- Porthole Window -->
+    <circle cx="1320" cy="398" r="64" fill="#A9D6FF" stroke="#17141F" stroke-width="8"/>
+    <circle cx="1300" cy="392" r="10" fill="#17141F"/>
+    <circle cx="1340" cy="392" r="10" fill="#17141F"/>
+    <path d="M1302 418 Q1320 438 1338 418" fill="none" stroke="#17141F" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <!-- Sparkles -->
+  <path d="M1115 92 Q1115 134 1157 134 Q1115 134 1115 176 Q1115 134 1073 134 Q1115 134 1115 92Z" fill="#FFFFFF" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1555 245 Q1555 280 1590 280 Q1555 280 1555 315 Q1555 280 1520 280 Q1555 280 1555 245Z" fill="#FFB8DE" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M1110 808 Q1110 840 1142 840 Q1110 840 1110 872 Q1110 840 1078 840 Q1110 840 1110 808Z" fill="#3FD0A0" stroke="#17141F" stroke-width="5" stroke-linejoin="round"/>
+</svg>

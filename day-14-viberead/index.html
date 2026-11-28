@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VibeRead — Day 14 · The Unfinished 30</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
+  <style>
+    :root {
+      --bg: #FCF9F2;
+      --surface: #FFFFFF;
+      --surface-warm: #F5EFE2;
+      --ink: #1A1614;
+      --ink-muted: #5F554D;
+      --border: #E5DCCB;
+      --border-strong: #CEC2AC;
+      --lemon: #FFE36E;
+      --lemon-dark: #D9A404;
+      --accent: #D9532F;
+      --accent-soft: #FDECE6;
+      --topbar: #0E1638;
+      --radius: 14px;
+      --shadow-sm: 0 1px 3px rgba(26, 22, 20, 0.06);
+      --shadow-md: 0 10px 28px rgba(26, 22, 20, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Challenge Top Bar */
+    .challenge-bar {
+      background: var(--topbar);
+      color: #F8FAFC;
+      font-size: 13px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .challenge-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .challenge-bar a { color: #F8FAFC; text-decoration: none; font-weight: 600; }
+    .challenge-bar a:hover { text-decoration: underline; }
+    .challenge-bar .muted-link { color: #94A3B8; font-weight: 400; }
+    .challenge-bar-right { display: flex; align-items: center; gap: 8px; }
+    .bar-btn {
+      background: rgba(255,255,255,0.1);
+      color: #F8FAFC;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .bar-btn:hover { background: rgba(255,255,255,0.18); }
+
+    /* Container */
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 26px 18px 64px;
+    }
+
+    /* Hero */
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--lemon);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      padding: 4px 11px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    h1 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: clamp(30px, 4.2vw, 44px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+    .hero-sub {
+      color: var(--ink-muted);
+      font-size: 15px;
+      margin-top: 6px;
+      max-width: 580px;
+    }
+    .hero-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 15px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--ink);
+      transition: all 0.15s ease;
+    }
+    .btn:hover { background: var(--surface-warm); }
+    .btn-primary {
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+    .btn-primary:hover { background: #332B27; }
+    .btn-accent {
+      background: var(--accent);
+      color: #FFFFFF;
+      border-color: var(--accent);
+    }
+    .btn-accent:hover { background: #BC4322; }
+    .btn-lemon {
+      background: var(--lemon);
+      color: var(--ink);
+      border-color: #E2C13A;
+    }
+    .btn-lemon:hover { background: #F7D754; }
+    .btn-sm { padding: 6px 11px; font-size: 12.5px; border-radius: 8px; }
+
+    /* Studio Layout */
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .studio-grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card + .card { margin-top: 16px; }
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--ink-muted);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Dropzone */
+    .dropzone {
+      border: 2px dashed var(--border-strong);
+      border-radius: 12px;
+      padding: 18px 14px;
+      text-align: center;
+      background: var(--bg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    .dropzone-icon { font-size: 26px; margin-bottom: 6px; }
+    .dropzone-title { font-size: 13.5px; font-weight: 600; color: var(--ink); }
+    .dropzone-sub { font-size: 12px; color: var(--ink-muted); margin-top: 3px; }
+
+    .paste-toggle-area { margin-top: 12px; }
+    .paste-area {
+      width: 100%;
+      min-height: 110px;
+      padding: 10px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--ink);
+      resize: vertical;
+      margin-top: 8px;
+    }
+    .paste-area:focus { outline: none; border-color: var(--accent); background: #FFFFFF; }
+
+    /* Chapters List */
+    .chapters-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .chapter-item {
+      text-align: left;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: var(--bg);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .chapter-item:hover { border-color: var(--border-strong); background: var(--surface-warm); }
+    .chapter-item.active {
+      background: var(--ink);
+      color: #FFFFFF;
+      border-color: var(--ink);
+    }
+    .chapter-name {
+      font-size: 13.5px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chapter-dur {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      opacity: 0.75;
+      flex-shrink: 0;
+    }
+
+    /* Player Deck */
+    .player-deck {
+      background: #1A1614;
+      color: #FCF9F2;
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 18px;
+    }
+    .player-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .player-doc-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    .player-chapter-sub {
+      font-size: 13px;
+      color: #C4B8AD;
+      margin-top: 3px;
+    }
+    .bookmark-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      background: rgba(255, 227, 110, 0.14);
+      color: var(--lemon);
+      border: 1px solid rgba(255, 227, 110, 0.3);
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    /* Transport Controls */
+    .transport-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .play-main-btn {
+      background: var(--lemon);
+      color: #1A1614;
+      border: none;
+      border-radius: 999px;
+      padding: 11px 22px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.1s ease, background 0.15s ease;
+    }
+    .play-main-btn:hover { background: #FFE98A; }
+    .play-main-btn:active { transform: scale(0.98); }
+
+    .deck-btn {
+      background: rgba(255,255,255,0.09);
+      color: #FCF9F2;
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 10px;
+      padding: 9px 13px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .deck-btn:hover { background: rgba(255,255,255,0.18); }
+
+    .progress-wrap {
+      margin-bottom: 16px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--lemon);
+      width: 0%;
+      transition: width 0.25s ease;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #A89C91;
+      margin-top: 6px;
+    }
+
+    /* Sliders & Voice Controls */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 12px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+    }
+    @media (max-width: 720px) {
+      .controls-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 440px) {
+      .controls-grid { grid-template-columns: 1fr; }
+    }
+    .ctrl-field label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #B7ABA0;
+      margin-bottom: 5px;
+    }
+    .ctrl-field select {
+      width: 100%;
+      padding: 7px 9px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: #FCF9F2;
+      font-size: 12.5px;
+      font-family: inherit;
+    }
+    .ctrl-field select option { background: #1A1614; color: #FCF9F2; }
+    .ctrl-field input[type="range"] {
+      width: 100%;
+      accent-color: var(--lemon);
+      cursor: pointer;
+    }
+
+    /* Reader Canvas */
+    .reader-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 26px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    @media (max-width: 520px) {
+      .reader-card { padding: 18px 16px; }
+    }
+    .reader-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-bottom: 14px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .reader-chapter-title {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .reader-hint {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+    .reader-body {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.78;
+      color: #26201D;
+    }
+    .sentence {
+      cursor: pointer;
+      border-radius: 5px;
+      padding: 1px 3px;
+      transition: background 0.15s ease;
+    }
+    .sentence:hover {
+      background: var(--surface-warm);
+    }
+    .sentence.speaking {
+      background: var(--lemon);
+      color: #1A1614;
+      box-shadow: 0 0 0 2px rgba(217, 164, 4, 0.25);
+    }
+    .reader-para { margin-bottom: 14px; }
+
+    /* AI Studio Output Box */
+    .ai-output {
+      margin-top: 16px;
+      padding: 16px 18px;
+      background: #FFFDF5;
+      border: 1px solid #EBD788;
+      border-radius: 12px;
+      display: none;
+    }
+    .ai-output.show { display: block; }
+    .ai-output-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .ai-output-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8A6500;
+    }
+    .ai-output-text {
+      font-size: 14.5px;
+      color: var(--ink);
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    /* BYOK Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 22, 56, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 1200;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: var(--surface);
+      border-radius: 16px;
+      max-width: 480px;
+      width: 100%;
+      padding: 22px 24px;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+    }
+    .modal-box h3 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 22px;
+      margin-bottom: 8px;
+    }
+    .modal-box p {
+      font-size: 13.5px;
+      color: var(--ink-muted);
+      margin-bottom: 14px;
+    }
+    .modal-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      margin-bottom: 14px;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* Unfinished Box */
+    .unfinished-box {
+      margin-top: 34px;
+      padding: 20px 22px;
+      background: var(--surface-warm);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+    }
+    .unfinished-box h3 {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+    .unfinished-box ul {
+      padding-left: 18px;
+      font-size: 14px;
+      color: var(--ink-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--ink);
+      color: #FFFFFF;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: all 0.2s ease;
+      z-index: 2000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <header class="challenge-bar">
+    <div class="challenge-bar-left">
+      <a href="/">The Unfinished 30 · Day 14/30</a>
+      <span style="opacity:0.4">|</span>
+      <a class="muted-link" href="https://www.linkedin.com/in/salahkhenissi/" target="_blank" rel="noopener">by Salah Khenissi</a>
+    </div>
+    <div class="challenge-bar-right">
+      <button class="bar-btn" id="langToggle" type="button">FR</button>
+      <button class="bar-btn" id="downloadHtmlBtn" type="button" data-i18n="downloadHtml">Download HTML</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="eyebrow" data-i18n="eyebrow">Audiobook Studio · Zero Backend</div>
+        <h1>VibeRead</h1>
+        <p class="hero-sub" data-i18n="subtitle">Turn any PDF, Markdown file, or pasted article into a chapterized audiobook right in your browser — with live sentence highlighting and optional Gemini intros.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn btn-lemon" id="openByokBtn" type="button">✨ <span data-i18n="geminiStudio">Gemini Studio (BYOK)</span></button>
+        <button class="btn" id="loadSampleBtn" type="button" data-i18n="loadSample">Load Sample Book</button>
+      </div>
+    </section>
+
+    <div class="studio-grid">
+      <!-- Left Sidebar: Source & Chapters -->
+      <aside>
+        <div class="card">
+          <div class="card-title">
+            <span data-i18n="sourceHeading">Import Document</span>
+            <span id="pdfStatusBadge" style="font-size:11px;font-weight:600;color:var(--accent)">PDF · MD · TXT</span>
+          </div>
+
+          <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload PDF, Markdown, or Text file">
+            <div class="dropzone-icon">🎧</div>
+            <div class="dropzone-title" data-i18n="dropTitle">Drop a PDF, .md, or .txt file</div>
+            <div class="dropzone-sub" data-i18n="dropSub">or click to browse — stays 100% in your browser</div>
+            <input type="file" id="fileInput" accept=".pdf,.txt,.md,text/plain,text/markdown,application/pdf" style="display:none" />
+          </div>
+
+          <div class="paste-toggle-area">
+            <textarea id="pasteInput" class="paste-area" placeholder="Or paste any article, essay, or notes here..."></textarea>
+            <button class="btn btn-primary btn-sm" id="loadPastedBtn" type="button" style="width:100%;margin-top:8px;" data-i18n="loadPasted">Turn Pasted Text into Audiobook</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">
+            <span data-i18n="chaptersHeading">Chapters</span>
+            <span id="totalListenEst" style="font-family:'JetBrains Mono',monospace;">—</span>
+          </div>
+          <div class="chapters-list" id="chaptersList"></div>
+        </div>
+      </aside>
+
+      <!-- Right Column: Player & Reader -->
+      <section>
+        <!-- Dark Player Deck -->
+        <div class="player-deck">
+          <div class="player-top">
+            <div>
+              <div class="player-doc-title" id="docTitle">The 3-Hour Deep Work Shift</div>
+              <div class="player-chapter-sub" id="activeChapterSub">Chapter 1 of 3</div>
+            </div>
+            <div class="bookmark-pill" id="bookmarkBadge">Saved · Ch 1 · #1</div>
+          </div>
+
+          <div class="transport-row">
+            <button class="play-main-btn" id="playPauseBtn" type="button">▶ <span data-i18n="play">Play</span></button>
+            <button class="deck-btn" id="prevSentBtn" type="button" title="Previous sentence">⏮</button>
+            <button class="deck-btn" id="nextSentBtn" type="button" title="Next sentence">⏭</button>
+            <button class="deck-btn" id="prevChapBtn" type="button" data-i18n="prevChap">← Prev Ch</button>
+            <button class="deck-btn" id="nextChapBtn" type="button" data-i18n="nextChap">Next Ch →</button>
+            <button class="deck-btn" id="stopBtn" type="button" data-i18n="stop">Stop</button>
+          </div>
+
+          <div class="progress-wrap">
+            <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-meta">
+              <span id="sentenceCounter">Sentence 1 / 10</span>
+              <span id="sleepCountdown"></span>
+            </div>
+          </div>
+
+          <div class="controls-grid">
+            <div class="ctrl-field">
+              <label for="voiceSelect"><span data-i18n="voiceLabel">Voice</span></label>
+              <select id="voiceSelect"></select>
+            </div>
+            <div class="ctrl-field">
+              <label for="rateRange"><span data-i18n="speedLabel">Speed</span> <span id="rateVal">1.0x</span></label>
+              <input id="rateRange" type="range" min="0.75" max="2.0" step="0.05" value="1.0" />
+            </div>
+            <div class="ctrl-field">
+              <label for="pitchRange"><span data-i18n="pitchLabel">Pitch</span> <span id="pitchVal">1.0</span></label>
+              <input id="pitchRange" type="range" min="0.7" max="1.4" step="0.05" value="1.0" />
+            </div>
+            <div class="ctrl-field">
+              <label for="sleepSelect"><span data-i18n="sleepLabel">Sleep Timer</span></label>
+              <select id="sleepSelect">
+                <option value="0" data-i18n="sleepOff">Off</option>
+                <option value="5">5 min</option>
+                <option value="15">15 min</option>
+                <option value="30">30 min</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reader + AI Actions -->
+        <div class="reader-card">
+          <div class="reader-header">
+            <div>
+              <h2 class="reader-chapter-title" id="readerChapterTitle">Chapter 1</h2>
+              <div class="reader-hint" data-i18n="clickSentenceHint">Click any sentence to jump playback there.</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn btn-sm" id="localSummaryBtn" type="button" data-i18n="quickSummary">Quick Local Summary</button>
+              <button class="btn btn-sm btn-lemon" id="geminiSummaryBtn" type="button">✨ <span data-i18n="aiSummary">AI Summary</span></button>
+              <button class="btn btn-sm btn-lemon" id="geminiIntroBtn" type="button">🎙 <span data-i18n="podcastIntro">Podcast Intro</span></button>
+            </div>
+          </div>
+
+          <div class="ai-output" id="aiOutputBox">
+            <div class="ai-output-head">
+              <span class="ai-output-title" id="aiOutputTitle">Summary</span>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-sm" id="speakAiOutputBtn" type="button">🔊 <span data-i18n="listen">Listen</span></button>
+                <button class="btn btn-sm" id="closeAiOutputBtn" type="button">✕</button>
+              </div>
+            </div>
+            <div class="ai-output-text" id="aiOutputText"></div>
+          </div>
+
+          <div class="reader-body" id="readerBody"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="unfinished-box">
+      <h3 data-i18n="unfinishedTitle">What's still unfinished</h3>
+      <ul>
+        <li data-i18n="unfinished1">Voice quality depends on your OS and browser's built-in SpeechSynthesis voices — no cloud neural TTS MP3 export yet.</li>
+        <li data-i18n="unfinished2">Scanned/image-only PDFs cannot be read because there is no OCR engine; PDF extraction requires selectable text and pdf.js CDN access.</li>
+        <li data-i18n="unfinished3">Mobile browsers sometimes pause SpeechSynthesis when the screen locks.</li>
+      </ul>
+    </section>
+  </main>
+
+  <!-- BYOK Gemini Modal -->
+  <div class="modal-backdrop" id="byokModal" role="dialog" aria-modal="true" aria-label="Gemini API Key">
+    <div class="modal-box">
+      <h3 data-i18n="byokTitle">Gemini Studio (Bring Your Own Key)</h3>
+      <p data-i18n="byokDesc">Add a free Gemini API key to generate crisp chapter summaries or 30-second podcast intros. Your key stays strictly in your browser's localStorage and calls Google's API directly.</p>
+      <input type="password" id="geminiKeyInput" class="modal-input" placeholder="AIzaSy..." autocomplete="off" />
+      <div class="modal-actions">
+        <button class="btn btn-sm" id="clearKeyBtn" type="button" data-i18n="clearKey">Clear Key</button>
+        <button class="btn btn-sm" id="closeByokBtn" type="button" data-i18n="cancel">Cancel</button>
+        <button class="btn btn-sm btn-primary" id="saveKeyBtn" type="button" data-i18n="saveKey">Save Key</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'u30_day14_viberead_v1';
+      const GEMINI_KEY_STORAGE = 'u30_day14_gemini_key';
+
+      const I18N = {
+        en: {
+          downloadHtml: 'Download HTML',
+          eyebrow: 'Audiobook Studio · Zero Backend',
+          subtitle: 'Turn any PDF, Markdown file, or pasted article into a chapterized audiobook right in your browser — with live sentence highlighting and optional Gemini intros.',
+          geminiStudio: 'Gemini Studio (BYOK)',
+          loadSample: 'Load Sample Book',
+          sourceHeading: 'Import Document',
+          dropTitle: 'Drop a PDF, .md, or .txt file',
+          dropSub: 'or click to browse — stays 100% in your browser',
+          pastePlaceholder: 'Or paste any article, essay, or notes here...',
+          loadPasted: 'Turn Pasted Text into Audiobook',
+          chaptersHeading: 'Chapters',
+          play: 'Play',
+          pause: 'Pause',
+          prevChap: '← Prev Ch',
+          nextChap: 'Next Ch →',
+          stop: 'Stop',
+          voiceLabel: 'Voice',
+          speedLabel: 'Speed',
+          pitchLabel: 'Pitch',
+          sleepLabel: 'Sleep Timer',
+          sleepOff: 'Off',
+          clickSentenceHint: 'Click any sentence to jump playback there.',
+          quickSummary: 'Quick Local Summary',
+          aiSummary: 'AI Summary',
+          podcastIntro: 'Podcast Intro',
+          listen: 'Listen',
+          unfinishedTitle: "What's still unfinished",
+          unfinished1: "Voice quality depends on your OS and browser's built-in SpeechSynthesis voices — no cloud neural TTS MP3 export yet.",
+          unfinished2: 'Scanned/image-only PDFs cannot be read because there is no OCR engine; PDF extraction requires selectable text and pdf.js CDN access.',
+          unfinished3: 'Mobile browsers sometimes pause SpeechSynthesis when the screen locks.',
+          byokTitle: 'Gemini Studio (Bring Your Own Key)',
+          byokDesc: "Add a free Gemini API key to generate crisp chapter summaries or 30-second podcast intros. Your key stays strictly in your browser's localStorage and calls Google's API directly.",
+          clearKey: 'Clear Key',
+          cancel: 'Cancel',
+          saveKey: 'Save Key',
+          chapterOf: 'Chapter {i} of {n}',
+          sentenceOf: 'Sentence {i} / {n}',
+          savedBookmark: 'Bookmark · Ch {c} · #{s}',
+          sleepLeft: 'Sleep in {t}',
+          sleepTriggered: 'Sleep timer paused playback',
+          noSpeech: 'Speech synthesis is not supported in this browser.',
+          pdfOffline: 'PDF library unavailable offline — please paste text or upload .txt/.md.',
+          pdfExtracting: 'Extracting text from PDF...',
+          pdfEmpty: 'No selectable text found in this PDF (it may be scanned images).',
+          loadedDoc: 'Audiobook ready!',
+          needKey: 'Add a Gemini API key first (or use Quick Local Summary).',
+          thinking: 'Generating with Gemini...',
+          localSummaryTitle: 'Quick Local Summary (Offline)',
+          aiSummaryTitle: 'Gemini Chapter Summary',
+          aiIntroTitle: 'Gemini Podcast Intro',
+          keySaved: 'Gemini key saved locally',
+          keyCleared: 'Gemini key removed'
+        },
+        fr: {
+          downloadHtml: 'Télécharger HTML',
+          eyebrow: 'Studio Livre Audio · 100% Local',
+          subtitle: 'Transformez un PDF, un fichier Markdown ou un article collé en livre audio chapitré dans votre navigateur — avec suivi phrase par phrase et intros Gemini optionnelles.',
+          geminiStudio: 'Studio Gemini (Clé perso)',
+          loadSample: 'Charger le livre démo',
+          sourceHeading: 'Importer un document',
+          dropTitle: 'Déposez un PDF, .md ou .txt',
+          dropSub: 'ou cliquez pour parcourir — tout reste dans votre navigateur',
+          pastePlaceholder: 'Ou collez un article, un essai ou vos notes ici...',
+          loadPasted: 'Transformer en livre audio',
+          chaptersHeading: 'Chapitres',
+          play: 'Écouter',
+          pause: 'Pause',
+          prevChap: '← Ch. préc.',
+          nextChap: 'Ch. suiv. →',
+          stop: 'Stop',
+          voiceLabel: 'Voix',
+          speedLabel: 'Vitesse',
+          pitchLabel: 'Tonalité',
+          sleepLabel: 'Minuteur veille',
+          sleepOff: 'Désactivé',
+          clickSentenceHint: 'Cliquez sur n’importe quelle phrase pour reprendre la lecture à cet endroit.',
+          quickSummary: 'Résumé local rapide',
+          aiSummary: 'Résumé IA',
+          podcastIntro: 'Intro Podcast',
+          listen: 'Écouter',
+          unfinishedTitle: 'Ce qui reste inachevé',
+          unfinished1: 'La qualité des voix dépend des voix système SpeechSynthesis de votre appareil — pas encore d’export MP3 neuronal.',
+          unfinished2: 'Les PDF scannés en images ne sont pas lisibles sans OCR ; l’extraction PDF utilise pdf.js via CDN.',
+          unfinished3: 'Certains navigateurs mobiles mettent en pause la lecture lorsque l’écran se verrouille.',
+          byokTitle: 'Studio Gemini (Clé API personnelle)',
+          byokDesc: 'Ajoutez votre clé API Gemini pour générer des résumés de chapitre ou une intro façon podcast. La clé reste uniquement dans votre localStorage.',
+          clearKey: 'Effacer',
+          cancel: 'Annuler',
+          saveKey: 'Enregistrer',
+          chapterOf: 'Chapitre {i} sur {n}',
+          sentenceOf: 'Phrase {i} / {n}',
+          savedBookmark: 'Repère · Ch {c} · #{s}',
+          sleepLeft: 'Veille dans {t}',
+          sleepTriggered: 'Minuteur de veille : lecture en pause',
+          noSpeech: 'La synthèse vocale n’est pas prise en charge par ce navigateur.',
+          pdfOffline: 'Bibliothèque PDF indisponible hors-ligne — collez le texte ou importez un .txt/.md.',
+          pdfExtracting: 'Extraction du texte PDF...',
+          pdfEmpty: 'Aucun texte sélectionnable trouvé dans ce PDF.',
+          loadedDoc: 'Livre audio prêt !',
+          needKey: 'Ajoutez d’abord une clé API Gemini (ou utilisez le Résumé local).',
+          thinking: 'Génération avec Gemini...',
+          localSummaryTitle: 'Résumé local rapide (Hors-ligne)',
+          aiSummaryTitle: 'Résumé du chapitre (Gemini)',
+          aiIntroTitle: 'Intro Podcast (Gemini)',
+          keySaved: 'Clé Gemini enregistrée localement',
+          keyCleared: 'Clé Gemini supprimée'
+        }
+      };
+
+      const SAMPLES = {
+        en: {
+          title: 'The 3-Hour Deep Work Shift',
+          text: `# Chapter 1: Why Mornings Disappear
+Most knowledge workers do not lose their day in one dramatic disaster. They lose it in twelve-minute slices before noon. A quick inbox check turns into a Slack thread, which turns into an unplanned status sync, and suddenly it is 11:45 AM with nothing meaningful shipped.
+
+The antidote is not working longer hours or buying another productivity app. It is protecting a single, repeatable three-hour block where your brain stays on one hard problem long enough to reach genuine momentum.
+
+# Chapter 2: Designing the Frictionless Runway
+Deep work fails when starting requires ten micro-decisions. Before you close your laptop the evening before, write down the exact first sentence, file, or bug you will touch tomorrow morning. Leave that tab open and close everything else.
+
+Treat your phone like a loud power tool: keep it in another room while the block runs. Research consistently shows that even a silent phone face-down on the desk quietly taxes your working memory.
+
+# Chapter 3: The Honest Afternoon
+Once your three-hour shift is complete, stop pretending you have eight hours of peak focus in you. Use the afternoon for meetings, reviews, emails, and administrative errands without guilt.
+
+Paradoxically, finishing your most demanding work by lunch makes you calmer and more generous in afternoon meetings. You are no longer secretly resenting every calendar invite because the work that mattered is already done.`
+        },
+        fr: {
+          title: 'Le Bloc de 3 Heures de Travail Profond',
+          text: `# Chapitre 1 : Pourquoi les matinées s’évaporent
+La plupart des travailleurs du savoir ne perdent pas leur journée dans une grande crise. Ils la perdent par tranches de douze minutes avant midi. Un coup d’œil aux e-mails mène à un fil de discussion, puis à un point improvisé, et il est déjà midi sans avancée majeure.
+
+L’antidote ne consiste pas à travailler plus tard ni à installer une nouvelle application. Il consiste à protéger un bloc unique et répétable de trois heures sur un seul problème exigeant, assez longtemps pour atteindre un vrai élan.
+
+# Chapitre 2 : Préparer une piste sans friction
+Le travail profond échoue quand démarrer demande dix micro-décisions. Avant de fermer votre ordinateur la veille, notez la phrase exacte, le fichier ou la tâche par laquelle vous commencerez le lendemain matin.
+
+Traitez votre téléphone comme un outil bruyant : laissez-le dans une autre pièce pendant le bloc. Même silencieux et posé face contre table, sa simple présence capte une part de votre mémoire de travail.
+
+# Chapitre 3 : L’après-midi sans culpabilité
+Une fois vos trois heures accomplies, cessez de croire que vous disposez de huit heures de concentration maximale. Réservez l’après-midi aux réunions, relectures, messages et tâches administratives.
+
+Paradoxalement, terminer votre travail le plus exigeant avant le déjeuner vous rend plus serein et plus disponible en réunion. L’essentiel est déjà livré.`
+        }
+      };
+
+      let state = {
+        lang: 'en',
+        docTitle: '',
+        rawText: '',
+        chapters: [],
+        chapterIdx: 0,
+        sentenceIdx: 0,
+        rate: 1.0,
+        pitch: 1.0,
+        voiceURI: ''
+      };
+
+      let isPlaying = false;
+      let voices = [];
+      let sleepEndTime = null;
+      let sleepInterval = null;
+      let currentAiText = '';
+
+      function t(key) {
+        return (I18N[state.lang] && I18N[state.lang][key]) || I18N.en[key] || key;
+      }
+
+      function showToast(msg) {
+        const el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(() => el.classList.remove('show'), 2500);
+      }
+
+      function saveState() {
+        try {
+          const toSave = {
+            lang: state.lang,
+            docTitle: state.docTitle,
+            rawText: state.rawText.slice(0, 120000),
+            chapterIdx: state.chapterIdx,
+            sentenceIdx: state.sentenceIdx,
+            rate: state.rate,
+            pitch: state.pitch,
+            voiceURI: state.voiceURI
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+        } catch (e) {}
+      }
+
+      function splitSentences(text) {
+        const cleaned = text.replace(/\s+/g, ' ').trim();
+        if (!cleaned) return [];
+        const matches = cleaned.match(/[^.!?…]+[.!?…]+(\s|$)|[^.!?…]+$/g);
+        return (matches || [cleaned]).map(s => s.trim()).filter(Boolean);
+      }
+
+      function parseDocumentToChapters(rawText, fallbackTitle) {
+        const lines = rawText.replace(/\r\n/g, '\n').split('\n');
+        const sections = [];
+        let current = { title: '', paragraphs: [] };
+        let paraBuf = [];
+
+        const flushPara = () => {
+          const txt = paraBuf.join(' ').trim();
+          if (txt) current.paragraphs.push(txt);
+          paraBuf = [];
+        };
+
+        const headingRegex = /^(#{1,3}\s+.+|(?:Chapter|Chapitre|Part|Partie|Section)\s+[0-9IVX]+[:.\-\s].*)$/i;
+
+        lines.forEach(line => {
+          const trimmed = line.trim();
+          if (!trimmed) {
+            flushPara();
+            return;
+          }
+          if (headingRegex.test(trimmed)) {
+            flushPara();
+            if (current.paragraphs.length > 0 || current.title) {
+              sections.push(current);
+            }
+            current = {
+              title: trimmed.replace(/^#{1,3}\s+/, '').trim(),
+              paragraphs: []
+            };
+          } else {
+            paraBuf.push(trimmed);
+          }
+        });
+        flushPara();
+        if (current.paragraphs.length > 0 || current.title) {
+          sections.push(current);
+        }
+
+        // If no explicit headings found and document is long, chunk into ~260 word sections
+        let finalSections = sections.filter(s => s.paragraphs.length > 0);
+        if (finalSections.length === 1 && !finalSections[0].title) {
+          const paras = finalSections[0].paragraphs;
+          const totalWords = paras.join(' ').split(/\s+/).length;
+          if (totalWords > 340) {
+            finalSections = [];
+            let bucket = [];
+            let count = 0;
+            paras.forEach(p => {
+              const w = p.split(/\s+/).length;
+              if (count + w > 260 && bucket.length > 0) {
+                finalSections.push({ title: `Section ${finalSections.length + 1}`, paragraphs: bucket });
+                bucket = [];
+                count = 0;
+              }
+              bucket.push(p);
+              count += w;
+            });
+            if (bucket.length) {
+              finalSections.push({ title: `Section ${finalSections.length + 1}`, paragraphs: bucket });
+            }
+          } else {
+            finalSections[0].title = fallbackTitle || 'Section 1';
+          }
+        }
+
+        if (!finalSections.length) {
+          finalSections = [{ title: fallbackTitle || 'Section 1', paragraphs: [rawText.trim() || '...'] }];
+        }
+
+        return finalSections.map((sec, idx) => {
+          const sentences = [];
+          const paragraphSentenceRanges = [];
+          sec.paragraphs.forEach(p => {
+            const start = sentences.length;
+            const sents = splitSentences(p);
+            sents.forEach(s => sentences.push(s));
+            paragraphSentenceRanges.push([start, sentences.length]);
+          });
+          const words = sec.paragraphs.join(' ').split(/\s+/).filter(Boolean).length;
+          return {
+            title: sec.title || `Section ${idx + 1}`,
+            sentences,
+            paragraphSentenceRanges,
+            words
+          };
+        });
+      }
+
+      function estimateMinutes(words) {
+        const wpm = 165 * (state.rate || 1.0);
+        return Math.max(0.2, words / wpm);
+      }
+
+      function formatDuration(mins) {
+        const totalSec = Math.round(mins * 60);
+        if (totalSec < 60) return `${totalSec}s`;
+        const m = Math.floor(totalSec / 60);
+        const s = totalSec % 60;
+        return s > 0 ? `${m}m ${s}s` : `${m}m`;
+      }
+
+      function loadDocument(title, rawText, resetPos) {
+        stopPlayback();
+        state.docTitle = title || 'Untitled Document';
+        state.rawText = rawText;
+        state.chapters = parseDocumentToChapters(rawText, state.docTitle);
+        if (resetPos) {
+          state.chapterIdx = 0;
+          state.sentenceIdx = 0;
+        } else {
+          state.chapterIdx = Math.min(state.chapterIdx, state.chapters.length - 1);
+          const ch = state.chapters[state.chapterIdx];
+          state.sentenceIdx = Math.min(state.sentenceIdx, Math.max(0, ch.sentences.length - 1));
+        }
+        document.getElementById('aiOutputBox').classList.remove('show');
+        saveState();
+        renderAll();
+      }
+
+      // SpeechSynthesis
+      function populateVoices() {
+        if (!('speechSynthesis' in window)) return;
+        voices = window.speechSynthesis.getVoices() || [];
+        const sel = document.getElementById('voiceSelect');
+        sel.innerHTML = '';
+        if (!voices.length) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'Default System Voice';
+          sel.appendChild(opt);
+          return;
+        }
+        // Prefer matching UI language first
+        const prefPrefix = state.lang === 'fr' ? 'fr' : 'en';
+        const sorted = [...voices].sort((a, b) => {
+          const aMatch = a.lang.toLowerCase().startsWith(prefPrefix) ? 0 : 1;
+          const bMatch = b.lang.toLowerCase().startsWith(prefPrefix) ? 0 : 1;
+          if (aMatch !== bMatch) return aMatch - bMatch;
+          return a.name.localeCompare(b.name);
+        });
+        sorted.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v.voiceURI;
+          opt.textContent = `${v.name} (${v.lang})`;
+          if (v.voiceURI === state.voiceURI) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        if (!state.voiceURI && sorted.length) {
+          state.voiceURI = sorted[0].voiceURI;
+          sel.value = state.voiceURI;
+        }
+      }
+
+      function speakCurrentSentence() {
+        if (!('speechSynthesis' in window)) {
+          showToast(t('noSpeech'));
+          isPlaying = false;
+          updatePlayButton();
+          return;
+        }
+        window.speechSynthesis.cancel();
+
+        const ch = state.chapters[state.chapterIdx];
+        if (!ch || !ch.sentences.length) {
+          stopPlayback();
+          return;
+        }
+        if (state.sentenceIdx >= ch.sentences.length) {
+          if (state.chapterIdx < state.chapters.length - 1) {
+            state.chapterIdx += 1;
+            state.sentenceIdx = 0;
+            saveState();
+            renderAll();
+            speakCurrentSentence();
+          } else {
+            stopPlayback();
+          }
+          return;
+        }
+
+        const text = ch.sentences[state.sentenceIdx];
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = state.rate;
+        utter.pitch = state.pitch;
+        const chosen = voices.find(v => v.voiceURI === state.voiceURI);
+        if (chosen) {
+          utter.voice = chosen;
+          utter.lang = chosen.lang;
+        } else {
+          utter.lang = state.lang === 'fr' ? 'fr-FR' : 'en-US';
+        }
+
+        utter.onend = () => {
+          if (!isPlaying) return;
+          state.sentenceIdx += 1;
+          saveState();
+          updateHighlightsAndMeta();
+          speakCurrentSentence();
+        };
+        utter.onerror = () => {
+          // Avoid tight error loops if user cancels
+        };
+
+        updateHighlightsAndMeta(true);
+        window.speechSynthesis.speak(utter);
+      }
+
+      function startPlayback() {
+        if (!('speechSynthesis' in window)) {
+          showToast(t('noSpeech'));
+          return;
+        }
+        isPlaying = true;
+        updatePlayButton();
+        speakCurrentSentence();
+      }
+
+      function pausePlayback() {
+        isPlaying = false;
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        updatePlayButton();
+      }
+
+      function stopPlayback() {
+        isPlaying = false;
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        updatePlayButton();
+      }
+
+      function updatePlayButton() {
+        const btn = document.getElementById('playPauseBtn');
+        btn.innerHTML = isPlaying ? `⏸ ${t('pause')}` : `▶ ${t('play')}`;
+      }
+
+      // Sleep timer
+      function setSleepTimer(minutes) {
+        clearInterval(sleepInterval);
+        sleepInterval = null;
+        sleepEndTime = null;
+        document.getElementById('sleepCountdown').textContent = '';
+        if (!minutes || minutes <= 0) return;
+        sleepEndTime = Date.now() + minutes * 60 * 1000;
+        const tick = () => {
+          const leftMs = sleepEndTime - Date.now();
+          if (leftMs <= 0) {
+            clearInterval(sleepInterval);
+            sleepEndTime = null;
+            document.getElementById('sleepCountdown').textContent = '';
+            document.getElementById('sleepSelect').value = '0';
+            if (isPlaying) {
+              pausePlayback();
+              showToast(t('sleepTriggered'));
+            }
+            return;
+          }
+          const sec = Math.ceil(leftMs / 1000);
+          const m = Math.floor(sec / 60);
+          const s = sec % 60;
+          const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+          document.getElementById('sleepCountdown').textContent = t('sleepLeft').replace('{t}', str);
+        };
+        tick();
+        sleepInterval = setInterval(tick, 1000);
+      }
+
+      // Render
+      function applyI18n() {
+        document.documentElement.lang = state.lang;
+        document.getElementById('langToggle').textContent = state.lang === 'en' ? 'FR' : 'EN';
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (key) el.textContent = t(key);
+        });
+        document.getElementById('pasteInput').placeholder = t('pastePlaceholder');
+        updatePlayButton();
+      }
+
+      function renderChaptersList() {
+        const list = document.getElementById('chaptersList');
+        list.innerHTML = '';
+        let totalWords = 0;
+        state.chapters.forEach((ch, idx) => {
+          totalWords += ch.words;
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'chapter-item' + (idx === state.chapterIdx ? ' active' : '');
+          btn.innerHTML = `
+            <span class="chapter-name">${escapeHtml(ch.title)}</span>
+            <span class="chapter-dur">${formatDuration(estimateMinutes(ch.words))}</span>
+          `;
+          btn.addEventListener('click', () => {
+            const wasPlaying = isPlaying;
+            stopPlayback();
+            state.chapterIdx = idx;
+            state.sentenceIdx = 0;
+            saveState();
+            renderAll();
+            if (wasPlaying) startPlayback();
+          });
+          list.appendChild(btn);
+        });
+        document.getElementById('totalListenEst').textContent = formatDuration(estimateMinutes(totalWords));
+      }
+
+      function renderReaderBody() {
+        const ch = state.chapters[state.chapterIdx];
+        if (!ch) return;
+        document.getElementById('docTitle').textContent = state.docTitle;
+        document.getElementById('readerChapterTitle').textContent = ch.title;
+
+        const body = document.getElementById('readerBody');
+        body.innerHTML = '';
+
+        ch.paragraphSentenceRanges.forEach(([start, end]) => {
+          const p = document.createElement('p');
+          p.className = 'reader-para';
+          for (let i = start; i < end; i++) {
+            const span = document.createElement('span');
+            span.className = 'sentence' + (i === state.sentenceIdx ? ' speaking' : '');
+            span.dataset.sentIdx = i;
+            span.textContent = ch.sentences[i] + ' ';
+            span.addEventListener('click', () => {
+              state.sentenceIdx = i;
+              saveState();
+              startPlayback();
+            });
+            p.appendChild(span);
+          }
+          body.appendChild(p);
+        });
+
+        updateHighlightsAndMeta(false);
+      }
+
+      function updateHighlightsAndMeta(shouldScroll) {
+        const ch = state.chapters[state.chapterIdx];
+        if (!ch) return;
+        const total = Math.max(1, ch.sentences.length);
+        const cur = Math.min(state.sentenceIdx, total - 1);
+
+        document.getElementById('activeChapterSub').textContent =
+          `${t('chapterOf').replace('{i}', state.chapterIdx + 1).replace('{n}', state.chapters.length)} · ${ch.title}`;
+        document.getElementById('sentenceCounter').textContent =
+          t('sentenceOf').replace('{i}', cur + 1).replace('{n}', total);
+        document.getElementById('bookmarkBadge').textContent =
+          t('savedBookmark').replace('{c}', state.chapterIdx + 1).replace('{s}', cur + 1);
+        document.getElementById('progressFill').style.width = (((cur + 1) / total) * 100) + '%';
+
+        document.querySelectorAll('#readerBody .sentence').forEach(el => {
+          const idx = Number(el.dataset.sentIdx);
+          const active = idx === cur;
+          el.classList.toggle('speaking', active);
+          if (active && shouldScroll) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+      }
+
+      function renderAll() {
+        applyI18n();
+        document.getElementById('rateRange').value = state.rate;
+        document.getElementById('rateVal').textContent = state.rate.toFixed(2).replace(/0$/, '') + 'x';
+        document.getElementById('pitchRange').value = state.pitch;
+        document.getElementById('pitchVal').textContent = state.pitch.toFixed(2).replace(/0$/, '');
+        renderChaptersList();
+        renderReaderBody();
+      }
+
+      function escapeHtml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+
+      // File Handling (TXT, MD, PDF)
+      async function handleFile(file) {
+        if (!file) return;
+        const name = file.name.replace(/\.[^.]+$/, '');
+        if (file.name.toLowerCase().endsWith('.pdf') || file.type === 'application/pdf') {
+          if (!window.pdfjsLib) {
+            showToast(t('pdfOffline'));
+            return;
+          }
+          showToast(t('pdfExtracting'));
+          try {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+              'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            const buf = await file.arrayBuffer();
+            const pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+            let fullText = '';
+            const maxPages = Math.min(pdf.numPages, 60);
+            for (let p = 1; p <= maxPages; p++) {
+              const page = await pdf.getPage(p);
+              const content = await page.getTextContent();
+              const pageStr = content.items.map(it => it.str).join(' ');
+              if (pageStr.trim()) {
+                fullText += `# Page ${p}\n${pageStr.trim()}\n\n`;
+              }
+            }
+            if (!fullText.trim()) {
+              showToast(t('pdfEmpty'));
+              return;
+            }
+            loadDocument(name, fullText, true);
+            showToast(t('loadedDoc'));
+          } catch (err) {
+            showToast(t('pdfOffline'));
+          }
+        } else {
+          const text = await file.text();
+          if (text.trim()) {
+            loadDocument(name, text, true);
+            showToast(t('loadedDoc'));
+          }
+        }
+      }
+
+      // Local Extractive Summary (works 100% offline)
+      function runLocalSummary() {
+        const ch = state.chapters[state.chapterIdx];
+        if (!ch || !ch.sentences.length) return;
+        const sents = ch.sentences;
+        const picks = [];
+        if (sents.length <= 3) {
+          picks.push(...sents);
+        } else {
+          picks.push(sents[0]);
+          picks.push(sents[Math.floor(sents.length / 2)]);
+          picks.push(sents[sents.length - 1]);
+        }
+        const out = picks.map(s => '• ' + s).join('\n');
+        showAiBox(t('localSummaryTitle'), out);
+      }
+
+      // BYOK Gemini Call
+      async function runGemini(mode) {
+        const key = localStorage.getItem(GEMINI_KEY_STORAGE) || '';
+        if (!key) {
+          showToast(t('needKey'));
+          openByokModal();
+          return;
+        }
+        const ch = state.chapters[state.chapterIdx];
+        if (!ch) return;
+        const chapterText = ch.sentences.join(' ').slice(0, 6000);
+        const langName = state.lang === 'fr' ? 'French' : 'English';
+        const prompt = mode === 'intro'
+          ? `Write a warm, engaging 30-second spoken podcast intro in ${langName} introducing this chapter titled "${ch.title}". Keep it natural for text-to-speech, no markdown symbols, max 75 words.\n\nChapter:\n${chapterText}`
+          : `Summarize this chapter titled "${ch.title}" in ${langName} as 3 crisp, insightful bullet points (plain text with • bullets).\n\nChapter:\n${chapterText}`;
+
+        showAiBox(mode === 'intro' ? t('aiIntroTitle') : t('aiSummaryTitle'), t('thinking'));
+        try {
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${encodeURIComponent(key)}`;
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }]
+            })
+          });
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          const data = await res.json();
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'No response returned.';
+          showAiBox(mode === 'intro' ? t('aiIntroTitle') : t('aiSummaryTitle'), text.trim());
+        } catch (err) {
+          showAiBox(mode === 'intro' ? t('aiIntroTitle') : t('aiSummaryTitle'), `Error calling Gemini API (${err.message}). Check your API key or network.`);
+        }
+      }
+
+      function showAiBox(title, text) {
+        currentAiText = text;
+        document.getElementById('aiOutputTitle').textContent = title;
+        document.getElementById('aiOutputText').textContent = text;
+        document.getElementById('aiOutputBox').classList.add('show');
+      }
+
+      function openByokModal() {
+        document.getElementById('geminiKeyInput').value = localStorage.getItem(GEMINI_KEY_STORAGE) || '';
+        document.getElementById('byokModal').classList.add('open');
+      }
+
+      function closeByokModal() {
+        document.getElementById('byokModal').classList.remove('open');
+      }
+
+      // Wire Events
+      document.getElementById('langToggle').addEventListener('click', () => {
+        const prevLang = state.lang;
+        state.lang = state.lang === 'en' ? 'fr' : 'en';
+        populateVoices();
+        // If user is on the untouched sample book, swap sample to new language
+        if (state.docTitle === SAMPLES[prevLang].title) {
+          loadDocument(SAMPLES[state.lang].title, SAMPLES[state.lang].text, true);
+        } else {
+          saveState();
+          renderAll();
+        }
+      });
+
+      document.getElementById('downloadHtmlBtn').addEventListener('click', () => {
+        const blob = new Blob(['<!DOCTYPE html>\n' + document.documentElement.outerHTML], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'viberead-day14.html';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      });
+
+      document.getElementById('loadSampleBtn').addEventListener('click', () => {
+        const s = SAMPLES[state.lang] || SAMPLES.en;
+        loadDocument(s.title, s.text, true);
+        showToast(t('loadedDoc'));
+      });
+
+      const dropzone = document.getElementById('dropzone');
+      const fileInput = document.getElementById('fileInput');
+      dropzone.addEventListener('click', () => fileInput.click());
+      dropzone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') fileInput.click(); });
+      dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('dragover'); });
+      dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+      dropzone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropzone.classList.remove('dragover');
+        if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+      });
+      fileInput.addEventListener('change', e => {
+        if (e.target.files[0]) handleFile(e.target.files[0]);
+        e.target.value = '';
+      });
+
+      document.getElementById('loadPastedBtn').addEventListener('click', () => {
+        const txt = document.getElementById('pasteInput').value.trim();
+        if (!txt) return;
+        const firstLine = txt.split('\n')[0].replace(/^#+\s*/, '').slice(0, 60);
+        loadDocument(firstLine || 'Pasted Article', txt, true);
+        showToast(t('loadedDoc'));
+      });
+
+      document.getElementById('playPauseBtn').addEventListener('click', () => {
+        if (isPlaying) pausePlayback();
+        else startPlayback();
+      });
+      document.getElementById('stopBtn').addEventListener('click', () => {
+        stopPlayback();
+        state.sentenceIdx = 0;
+        saveState();
+        updateHighlightsAndMeta(false);
+      });
+      document.getElementById('prevSentBtn').addEventListener('click', () => {
+        state.sentenceIdx = Math.max(0, state.sentenceIdx - 1);
+        saveState();
+        if (isPlaying) speakCurrentSentence();
+        else updateHighlightsAndMeta(true);
+      });
+      document.getElementById('nextSentBtn').addEventListener('click', () => {
+        const ch = state.chapters[state.chapterIdx];
+        if (!ch) return;
+        state.sentenceIdx = Math.min(ch.sentences.length - 1, state.sentenceIdx + 1);
+        saveState();
+        if (isPlaying) speakCurrentSentence();
+        else updateHighlightsAndMeta(true);
+      });
+      document.getElementById('prevChapBtn').addEventListener('click', () => {
+        if (state.chapterIdx <= 0) return;
+        const wasPlaying = isPlaying;
+        stopPlayback();
+        state.chapterIdx -= 1;
+        state.sentenceIdx = 0;
+        saveState();
+        renderAll();
+        if (wasPlaying) startPlayback();
+      });
+      document.getElementById('nextChapBtn').addEventListener('click', () => {
+        if (state.chapterIdx >= state.chapters.length - 1) return;
+        const wasPlaying = isPlaying;
+        stopPlayback();
+        state.chapterIdx += 1;
+        state.sentenceIdx = 0;
+        saveState();
+        renderAll();
+        if (wasPlaying) startPlayback();
+      });
+
+      document.getElementById('voiceSelect').addEventListener('change', e => {
+        state.voiceURI = e.target.value;
+        saveState();
+        if (isPlaying) speakCurrentSentence();
+      });
+      document.getElementById('rateRange').addEventListener('input', e => {
+        state.rate = parseFloat(e.target.value);
+        document.getElementById('rateVal').textContent = state.rate.toFixed(2).replace(/0$/, '') + 'x';
+        saveState();
+        renderChaptersList();
+        if (isPlaying) speakCurrentSentence();
+      });
+      document.getElementById('pitchRange').addEventListener('input', e => {
+        state.pitch = parseFloat(e.target.value);
+        document.getElementById('pitchVal').textContent = state.pitch.toFixed(2).replace(/0$/, '');
+        saveState();
+        if (isPlaying) speakCurrentSentence();
+      });
+      document.getElementById('sleepSelect').addEventListener('change', e => {
+        setSleepTimer(parseInt(e.target.value, 10));
+      });
+
+      document.getElementById('localSummaryBtn').addEventListener('click', runLocalSummary);
+      document.getElementById('geminiSummaryBtn').addEventListener('click', () => runGemini('summary'));
+      document.getElementById('geminiIntroBtn').addEventListener('click', () => runGemini('intro'));
+      document.getElementById('closeAiOutputBtn').addEventListener('click', () => {
+        document.getElementById('aiOutputBox').classList.remove('show');
+      });
+      document.getElementById('speakAiOutputBtn').addEventListener('click', () => {
+        if (!currentAiText || !('speechSynthesis' in window)) return;
+        stopPlayback();
+        const u = new SpeechSynthesisUtterance(currentAiText);
+        u.rate = state.rate;
+        u.pitch = state.pitch;
+        const chosen = voices.find(v => v.voiceURI === state.voiceURI);
+        if (chosen) u.voice = chosen;
+        window.speechSynthesis.speak(u);
+      });
+
+      document.getElementById('openByokBtn').addEventListener('click', openByokModal);
+      document.getElementById('closeByokBtn').addEventListener('click', closeByokModal);
+      document.getElementById('saveKeyBtn').addEventListener('click', () => {
+        const val = document.getElementById('geminiKeyInput').value.trim();
+        if (val) localStorage.setItem(GEMINI_KEY_STORAGE, val);
+        closeByokModal();
+        showToast(t('keySaved'));
+      });
+      document.getElementById('clearKeyBtn').addEventListener('click', () => {
+        localStorage.removeItem(GEMINI_KEY_STORAGE);
+        document.getElementById('geminiKeyInput').value = '';
+        closeByokModal();
+        showToast(t('keyCleared'));
+      });
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = populateVoices;
+      }
+
+      // Init
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && parsed.rawText) {
+            state = { ...state, ...parsed };
+            loadDocument(state.docTitle, state.rawText, false);
+          } else {
+            loadDocument(SAMPLES.en.title, SAMPLES.en.text, true);
+          }
+        } else {
+          loadDocument(SAMPLES.en.title, SAMPLES.en.text, true);
+        }
+      } catch (e) {
+        loadDocument(SAMPLES.en.title, SAMPLES.en.text, true);
+      }
+      populateVoices();
+    })();
+  </script>
+</body>
+</html>
