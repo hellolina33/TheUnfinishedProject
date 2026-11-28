@@ -242,11 +242,11 @@ def _options(info):
         if not _plain(f) or f.get("ext") not in ("mp4", "m4a", "mp3", "mov", "webm"):
             continue
         v, a = f.get("vcodec"), f.get("acodec")
-        if v not in (None, "none") and f.get("height"):
+        if v != "none" and f.get("height"):
             if a == "none":
                 continue  # picture without sound
             key = min(f["height"], f.get("width") or f["height"])
-            h264 = str(v).startswith(("h264", "avc"))
+            h264 = str(v or "").startswith(("h264", "avc")) or (v is None and f.get("ext") == "mp4")
             score = (h264, f.get("tbr") or 0)
             best = videos.get(key)
             if best is None or score > best[0]:
@@ -269,7 +269,8 @@ def _options(info):
 def _pick(options, preset):
     vids = [o for o in options if o["kind"] == "video"]
     if preset == "audio":
-        return next((o for o in options if o["kind"] == "audio"), None)
+        # no separate sound track (common on X): the lightest video carries the sound
+        return next((o for o in options if o["kind"] == "audio"), vids[-1] if vids else None)
     if preset == "light" and vids:
         return vids[-1]
     if preset == "best" and vids:
