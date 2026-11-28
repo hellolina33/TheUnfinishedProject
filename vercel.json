@@ -114,5 +114,11 @@
       "destination": "/day-04-productivity-library/en/tools/:id/",
       "permanent": true
     }
-  ]
+  ],
+  "functions": {
+    "api/snack.py": {
+      "maxDuration": 300,
+      "memory": 1024
+    }
+  }
 }
