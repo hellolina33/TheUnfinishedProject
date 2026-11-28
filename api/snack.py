@@ -160,11 +160,43 @@ def _filename(title, ext):
     return f"{t}.{ext}"
 
 
+
+def _diag():
+    out = {}
+    yt = "https://www.youtube.com/watch?v=jNQXAC9IVRw"
+    for clients in (["tv"], ["tv_simply"], ["web_embedded"], ["mweb"], ["android_vr"], ["ios"], ["web_safari"], ["web_creator"], ["android"]):
+        try:
+            y = yt_dlp.YoutubeDL({"quiet": True, "no_warnings": True, "skip_download": True, "cachedir": False,
+                                  "extractor_args": {"youtube": {"player_client": clients}}})
+            i = y.extract_info(yt, download=False)
+            fm = [f for f in i.get("formats", []) if f.get("protocol") in ("https", "http")]
+            out["yt:" + clients[0]] = "ok %d plain formats, heights %s" % (len(fm), sorted({f.get("height") for f in fm if f.get("height")}))
+        except Exception as e:  # noqa: BLE001
+            out["yt:" + clients[0]] = "fail " + str(e)[:140]
+    for name, url in (("ig_reel", "https://www.instagram.com/reel/C3RlmdFLxFb/"), ("ig_p", "https://www.instagram.com/p/C3RlmdFLxFb/")):
+        try:
+            i = yt_dlp.YoutubeDL({"quiet": True, "skip_download": True, "cachedir": False}).extract_info(url, download=False)
+            out[name] = "ok %d formats" % len(i.get("formats") or [])
+        except Exception as e:  # noqa: BLE001
+            out[name] = "fail " + str(e)[:140]
+    import urllib.request, json as _j
+    for name, url in (("piped", "https://pipedapi.kavin.rocks/streams/jNQXAC9IVRw"), ("invidious", "https://inv.nadeko.net/api/v1/videos/jNQXAC9IVRw?local=true"),
+                      ("ig_embed", "https://www.instagram.com/p/C3RlmdFLxFb/embed/captioned/")):
+        try:
+            r = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"}), timeout=10)
+            body = r.read(400000)
+            out[name] = "http %s len %d video_url:%s" % (r.status, len(body), b"video_url" in body or b"videoStreams" in body or b"formatStreams" in body)
+        except Exception as e:  # noqa: BLE001
+            out[name] = "fail " + str(e)[:120]
+    return out
+
 @app.route("/api/snack", methods=["GET"])
 @app.route("/api/snack/", methods=["GET"])
 def snack():
     global _global_files
     _today()
+    if os.environ.get("VERCEL_ENV") == "preview" and request.args.get("diag"):
+        return jsonify(_diag())
     if os.environ.get("VERCEL_ENV") == "preview" and request.args.get("selftest"):
         mb = min(int(request.args.get("selftest") or 1), 40)
         def zeros():
