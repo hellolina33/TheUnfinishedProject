@@ -526,3 +526,62 @@ html.sepia body:not(.dark){--bg:#f4ecd8;--fg:#3a2e1d;--mut:#6b5a40;--line:#d8c9a
 .vact .chip{display:inline-flex;align-items:center;gap:6px}.vact .chip svg{width:14px;height:14px;flex:none}
 #pinbar .pinbar{position:fixed;z-index:9;left:50%;transform:translateX(-50%);bottom:calc(var(--tab) + var(--sab) + 104px);width:min(92vw,420px);margin:0;box-shadow:0 8px 24px rgba(0,0,0,.15);background:var(--card)}
 body:has(> .player.full) #pinbar .pinbar{bottom:calc(var(--tab) + var(--sab) + 190px)}
+/* Wave 8: Quran navigation and reading */
+.tools.tools2{grid-template-columns:1fr 1fr}
+.hzrow{border-bottom:1px solid var(--line);padding-bottom:6px}.hzrow .srow{border-bottom:0}
+.hzrow.done .num{background:var(--fg);color:var(--bg);border-radius:50%}
+.hz-done{font:500 11px var(--mono);color:var(--mut);margin-inline-start:6px}.hz-cur{font:500 11px var(--mono);color:var(--ember);margin-inline-start:6px}
+.hzq{display:flex;gap:6px;flex-wrap:wrap;padding-inline-start:52px}.hzq a{font:400 12px var(--mono);color:var(--mut);text-decoration:none;border:1px solid var(--line);border-radius:999px;padding:3px 9px;min-height:28px;display:inline-flex;align-items:center;gap:4px}
+.hzplay{margin:6px 0 2px 52px;display:inline-flex;align-items:center;gap:6px}.hzplay svg{width:12px;height:12px}
+[dir=rtl] .hzq,[dir=rtl] .hzplay{padding-inline-start:52px;margin-inline-start:52px}
+.rubm{margin:22px 0 4px;font:500 12px var(--mono);color:var(--ember);letter-spacing:.04em;display:flex;gap:6px;align-items:center}
+.rubm span{font-size:18px}
+.reader.book .rubm{display:inline;margin:0 4px}
+.rpos{display:block;font-size:11px;color:var(--mut)}
+button.sajda{display:inline-flex;gap:6px;align-items:center;background:none;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:inherit;font-size:13px;margin:6px 0}
+.tr2{color:var(--mut);border-inline-start:2px solid var(--line);padding-inline-start:10px;margin-top:6px}
+body.qnight{--bg:#000;--paper:#000;--fg:#bdbcb7;--ink:#bdbcb7;--mut:#7d7c78;--line:#222;--card:#0b0b0b;--sheet:#111;background:#000}
+body.qnight #view{background:#000}
+.asbar{position:fixed;z-index:20;inset-inline-end:12px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:0 6px 20px rgba(0,0,0,.15)}
+.asbar .ib{font-size:20px}
+.rskel{padding:24px 18px}.rskel>div{background:linear-gradient(90deg,var(--soft) 0%,var(--card) 50%,var(--soft) 100%);background-size:200% 100%;animation:sk 1.2s linear infinite;border-radius:8px;margin:10px 0}
+.rskel .sk-ar{height:44px;margin-top:28px}.rskel .sk-tr{height:14px}.rskel .sk-tr.short{width:60%}
+@keyframes sk{from{background-position:200% 0}to{background-position:0 0}}
+html.rm .rskel>div{animation:none}
+.resumel{width:100%;justify-content:space-between;align-items:center;margin:8px 0;text-align:start}.resumel svg{width:18px;height:18px}
+/* Wave 8: home moment, verse of the day, Ramadan, iqama, khatm by hizb, hifz map */
+.home-moment:empty{display:none}.home-moment{margin-top:10px}
+.home-votd{display:block;margin-top:14px;padding:14px 16px;text-decoration:none;color:inherit}
+.home-votd .ar{font-family:var(--arq);font-size:22px;line-height:2;margin:6px 0 2px}.home-votd .votd-tr{color:var(--mut);font-size:14px;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.home-votd .ar:empty{min-height:44px;background:var(--soft);border-radius:8px}
+.home-lang{width:44px;height:44px;border:1px solid var(--line);border-radius:50%}.home-lang svg{width:20px;height:20px}
+.ramadan{margin:10px 0}.ramadan .rmd{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}.ramadan .rmd b{font-size:26px;display:block}.ramadan small{color:var(--mut)}
+.times .iq{display:block;font-size:11px;color:var(--mut);text-align:end}
+.nightl{font-size:12px;color:var(--mut);text-align:center;margin:8px 0}
+.iqs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}.iqs label{display:flex;flex-direction:column;font-size:12px;gap:2px}
+.kram{width:100%;text-align:start;margin:8px 0}
+.hmap{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:4px;margin:8px 16px}
+.hm{aspect-ratio:1;display:grid;place-items:center;border-radius:6px;font:400 10px var(--mono);color:var(--mut);background:var(--soft);text-decoration:none}
+.hm.part{background:none;border:1.5px solid var(--fg);color:var(--fg)}.hm.full{background:var(--fg);color:var(--bg)}
+.big-ar{font-family:var(--arq);font-size:26px;line-height:2.1}
+.big2{font-size:22px;font-weight:600;margin:8px 0}
+/* Wave 8: accessibility, learning, duas, tasbih, travel */
+.fs4 .ar{font-size:48px;line-height:2.2}.fs5 .ar{font-size:58px;line-height:2.2}
+.reader.simple .ar,.reader.simple .wa{font-family:'Amiri',var(--ar)}
+.card .mono,.srow .mono,.home-row small{text-transform:none;letter-spacing:.02em}
+.j-review{font-size:12px;color:var(--mut);margin:8px 0 0;font-style:italic}
+.gloss dt{font-weight:600;margin-top:14px}.gloss dd{margin:2px 0 0;color:var(--fg)}
+.tjr b{display:inline-block;margin-bottom:4px}.tjsample{font-family:var(--arq);font-size:28px;line-height:2.3;margin:10px 16px}
+.srcl li{display:flex;flex-direction:column;gap:2px}.srcl li span{color:var(--mut);font-size:14px}
+.onebar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(var(--tab) + var(--sab) + 14px);z-index:9;display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 8px;box-shadow:0 8px 24px rgba(0,0,0,.15)}
+.dlist.onemode .dua{min-height:60vh}
+.tasb{display:grid;place-items:center;align-content:center;margin:24px auto;width:min(70vw,280px);aspect-ratio:1;border-radius:50%;border:2px solid var(--fg);background:var(--card);color:var(--fg);touch-action:manipulation}
+.tasb .mono{font-size:64px}.tasb small{color:var(--mut)}.tasb:active{transform:scale(.97)}
+.tother{max-width:110px}
+.qsun{text-align:center;font-size:14px;margin:6px 16px}
+.tzbar{flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center}
+.gentle-acts{flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.msum{margin:10px 0 2px;font-size:14px}
+.onb-prof{margin:14px 0}.onb-prof .seg button{font-family:var(--sans);font-size:14px}
+.j-col summary{cursor:pointer;padding:10px 0;font-weight:600}
+.sharea{width:100%;text-align:start;background:none;border:0;font:inherit;color:inherit}

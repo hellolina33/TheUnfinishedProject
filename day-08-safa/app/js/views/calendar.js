@@ -72,3 +72,5 @@ export function renderCalendar(root) {
   view = null; draw();
   return () => { root.onclick = null; };
 }
+// Ramadan, by the same Hijri calendar the app shows (with the sighting offset).
+export const isRamadan = (k = dayKey()) => hijriOf(k).m === 9;

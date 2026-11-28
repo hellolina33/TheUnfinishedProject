@@ -74,9 +74,10 @@ export function loopVerse(v) { if (P.sleep === 'end') P.sleep = 0; P.mode = 'ver
 export function loopRange(a, b) { if (P.sleep === 'end') P.sleep = 0; P.mode = 'range'; P.a = a; P.b = b; playVerse(a); }
 export function toggle() { if (P.v == null) return playFrom(1); if (audio.paused) audio.play().catch(() => {}); else audio.pause(); }
 /* Sleep timer: minutes from now, or 'end' to stop at the end of the surah (loops end too). */
-export function setSleep(x) { P.sleep = x === 'end' ? 'end' : x ? Date.now() + x * 60000 : 0; if (x === 'end' && P.mode !== 'off') P.mode = 'off'; emit(); }
+export function stopAtEnd(sv) { P.stopAt = sv; emit(); }
+export function setSleep(x) { if (x !== 'hizb') P.stopAt = null; if (x === 'hizb') return; P.sleep = x === 'end' ? 'end' : x ? Date.now() + x * 60000 : 0; if (x === 'end' && P.mode !== 'off') P.mode = 'off'; emit(); }
 export const sleepLeft = () => P.sleep === 'end' ? 'end' : P.sleep ? Math.max(0, P.sleep - Date.now()) : 0;
-export function stop() { clearTimeout(gapT); P.gap = false; audio.pause(); audio.removeAttribute('src'); P.v = null; P.mode = 'off'; P.word = false; emit(); }
+export function stop() { clearTimeout(gapT); P.gap = false; P.stopAt = null; audio.pause(); audio.removeAttribute('src'); P.v = null; P.mode = 'off'; P.word = false; emit(); }
 export function seek(ms) {
   if (!P.durs) return;
   let v = hasBasmala(P.s) ? 0 : 1, acc = 0;
@@ -109,15 +110,19 @@ audio.addEventListener('ended', () => {
   if (P.word) { P.word = false; emit(); return; }
   if (P.v == null) return;
   P.ends = (P.ends || 0) + 1;
+  // A whole hizb (or "stop at the end of this hizb"): stop on its last verse, across surahs.
+  if (P.stopAt && P.mode === 'off' && (P.s > P.stopAt[0] || (P.s === P.stopAt[0] && P.v >= P.stopAt[1]))) { P.stopAt = null; if (P.sleep === 'end') P.sleep = 0; P.v = null; emit(); position(); toast(t('End of the hizb.')); return; }
   if (P.mode === 'verse') return again(() => playVerse(P.v));
   if (P.mode === 'range') return P.v < P.b ? playVerse(P.v + 1) : again(() => playVerse(P.a));
   // A group of verses ends: stop, or start the group again.
   if (P.gB && P.v >= P.gB && P.sleep !== 'end') { if (pm() === 'repeat') return again(() => playVerse(P.gA === 1 && hasBasmala(P.s) ? 0 : P.gA)); P.v = null; emit(); position(); return; }
+  // Repeat after me: a silence as long as the verse, so the listener recites it back.
+  if (S.q.echo && P.mode === 'off' && P.v > 0 && P.v < P.n) { const d = (P.durs && P.durs[P.v - 1]) || 6000, nv = P.v + 1; P.gap = true; emit(); clearTimeout(gapT); gapT = setTimeout(() => { P.gap = false; if (P.v != null) playVerse(nv); }, Math.min(30000, d / (S.q.speed || 1))); return; }
   if (P.v < P.n) return playVerse(P.v + 1);
   // End of the surah.
-  if (P.sleep === 'end') { P.sleep = 0; P.v = null; emit(); position(); return; }
+  if (P.sleep === 'end' && !P.stopAt) { P.sleep = 0; P.v = null; emit(); position(); return; }
   if (pm() === 'repeat') { setGroup(1); return again(() => playVerse(hasBasmala(P.s) ? 0 : 1)); }
-  if (pm() === 'next' && P.s < 114) { gotoSurah(P.s + 1, true); return; }
+  if ((pm() === 'next' || P.stopAt) && P.s < 114) { gotoSurah(P.s + 1, true); return; }
   P.v = null; emit(); position();
 });
 audio.addEventListener('error', () => {

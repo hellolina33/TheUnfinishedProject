@@ -30,6 +30,7 @@ export function render(root, done, { startAtCity = false } = {}) {
       <ul class="onb-feat"><li>${icon.today}<span>${t('Prayer times for your city')}</span></li><li>${icon.quran}<span>${t('The Quran word by word, with the context of each verse')}</span></li><li>${icon.duas}<span>${t('Authentic duas for every moment')}</span></li></ul>
       <p class="onb-promise">${icon.lock}<span>${t('No ads. No account. Everything stays on your phone. Works offline.')}</span></p>
       <p class="muted small">${t('New to prayer, or coming back? We go step by step.')}</p></div>
+      <div class="onb-prof" role="group" aria-label="${t('Where are you with prayer?')}"><p class="lbl">${t('Where are you with prayer? (optional)')}</p><div class="seg">${[['new', t('I am starting')], ['back', t('I am coming back')], ['regular', t('I already pray')]].map(([k, l]) => `<button data-prof="${k}" aria-pressed="${S.profile === k}">${l}</button>`).join('')}</div></div>
       <div class="onb-choice"><p class="lbl">${copy('Par où commencer ? (facultatif)', 'Where to start? (optional)', 'من أين تبدأ؟ (اختياري)')}</p>
         <button class="btn big" id="go">${copy('Voir les horaires', 'See prayer times', 'عرض المواقيت')}</button>
         <a class="btn line big" href="#/journey/prayer" data-start>${copy('Apprendre à prier', 'Learn to pray', 'تعلم الصلاة')}</a>
@@ -38,6 +39,7 @@ export function render(root, done, { startAtCity = false } = {}) {
         <p class="muted small center">${t('Then your times for today. Language can be changed later in Settings.')}</p></div>
     </section>`;
     $('#go', root).onclick = step2;
+    root.querySelectorAll('[data-prof]').forEach(x => x.onclick = () => { S.profile = x.dataset.prof; save(); root.querySelectorAll('[data-prof]').forEach(y => y.setAttribute('aria-pressed', y === x)); });
     root.querySelectorAll('[data-start]').forEach(a => a.addEventListener('click', () => { if (!S.onboarded) { S.onboarded = true; save(); } }));
     root.querySelectorAll('[data-l]').forEach(b => b.onclick = () => { S.lang = b.dataset.l; save(); applyLang(); window.dispatchEvent(new CustomEvent('safa:lang', { detail: { tabsOnly: true } })); step1(); });
   };

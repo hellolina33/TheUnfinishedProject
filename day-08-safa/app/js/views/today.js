@@ -3,7 +3,7 @@ import { timesFor, ORDER, NAMES, AR, fmtTime, hijri, gregorian, weekday, qiblaBe
 import { $, esc, icon, pad, cityField, toast, sheet, closeSheet, download } from '../ui.js';
 import { thaiSurah } from '../thai-quran.js';
 import { t, L, lang, LB } from '../i18n.js';
-import { upcoming } from './calendar.js';
+import { upcoming, isRamadan, hijriOf } from './calendar.js';
 import { hifzDue } from './plan.js';
 
 function nextPrayer() {
@@ -38,7 +38,7 @@ function missed(day, T, now, np) {
   if (day.pz) return '';
   const P = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'], gone = P.filter((k, i) => !day.p[i] && P[i + 1] && T[P[i + 1]] < now && k !== np.cur);
   if (!gone.length) return '';
-  return `<p class="gentle">${t('A prayer went by without a tick? You can still tick it, or make it up later, gently.')} <a href="#/qada">${t('Make-up prayers')}</a></p>`;
+  return `<p class="gentle">${t('A prayer went by without a tick? You can still tick it, or make it up later, gently.')} <a href="#/qada">${t('Make-up prayers')}</a></p><div class="row2 gentle-acts">${gone.map(k => `<button class="btn line sm" data-toqada="${k}">${t('Add {p} to make-up prayers', { p: NAMES[k] })}</button>`).join('')}</div>`;
 }
 // After 3 empty days in a row (not paused), offer the pause once.
 function pauseHint() {
@@ -47,6 +47,20 @@ function pauseHint() {
   if (!S.since || ks.some(k => k < S.since)) return '';
   if (ks.some(k => { const d = S.days[k]; return d && (d.pz || d.p.some(Boolean) || d.r); })) return '';
   return `<section class="card gentlec"><p>${t('A few quiet days. That happens. If life is heavy right now, pause mode freezes the tracking. Nothing is counted against you.')}</p><div class="row2"><a class="btn sm line" href="#/track" data-ph="1">${t('See pause mode')}</a><button class="linkbtn small" data-ph="0">${t('No thanks')}</button></div></section>`;
+}
+// Voluntary fasts: a quiet note the day before (Monday, Thursday, the 13th-15th of the Hijri month).
+function fastNote() {
+  if (!S.fastRem) return '';
+  const tm = addDays(dayKey(), 1), wd = new Date(tm + 'T12:00:00Z').getUTCDay(), h = hijriOf(tm).d;
+  if (isRamadan(tm)) return '';
+  const why = [13, 14, 15].includes(h) ? t('a “white day” ({d} of the Hijri month)', { d: h }) : wd === 1 ? t('Monday') : wd === 4 ? t('Thursday') : '';
+  return why ? `<p class="gentle">${t('Tomorrow is {w}: a voluntary fast is possible, if you wish.', { w: why })}</p>` : '';
+}
+// The phone changed time zone: offer to update the city.
+function tzNote() {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  if (!S.loc || !tz || tz === S.loc.tz || S.tzSeen === tz) return '';
+  return `<div class="card row tzbar" role="status"><span>${t('Your phone is now on {z} time. Show prayer times for where you are?', { z: esc(tz.split('/').pop().replace(/_/g, ' ')) })}</span><span class="row2"><a class="btn sm" href="#/flight">${t('Change city')}</a><button class="btn line sm" data-tzok="${esc(tz)}">${t('Keep {c}', { c: esc(S.loc.name) })}</button></span></div>`;
 }
 function khatmDaysLeft() { try { const st = new Date(S.khatm.start + 'T12:00:00Z'), end = st.getTime() + S.khatm.days * 86400000; return Math.max(1, Math.ceil((end - Date.now()) / 86400000)); } catch (e) { return 1; } }
 function tools() {
@@ -116,10 +130,12 @@ export function render(root) {
     const trk = tracking() && !day.pz;
     root.innerHTML = `
       <header class="vh"><div><h1>${t('Today')}</h1><p class="dates2">${esc(gregorian(now))} · <a href="#/calendar" class="hijri-link">${esc(hijri(now))}</a></p><a class="loc mono" href="#/setup" aria-label="${esc(t('Change city'))}: ${esc(S.loc.name)}">${esc(S.loc.name)}${adjusted() ? ' · ' + t('adjusted') : ''} · ${t('change')}</a></div>
-        <a class="icon-action" href="#/settings">${icon.gear}<span>${t('Settings')}</span></a></header>
+</header>
       ${S.homeLoc ? `<div class="card row travel-bar" role="status"><span>${t('Times for {c}, for now.', { c: esc(S.loc.name) })}</span><button class="btn line sm" id="tback">${t('Back to {c}', { c: esc(S.homeLoc.name) })}</button></div>` : ''}
+      ${tzNote()}
       ${welcome()}
       ${day.pz ? `<div class="card row paused-bar" role="status"><span><span class="dot"></span> ${t('Tracking paused')}</span><button class="btn line sm" id="tresume">${t('Resume tracking')}</button></div>` : ''}
+      ${isRamadan() ? `<section class="card ramadan"><span class="mono">${t('Ramadan')}</span><div class="rmd"><div><small>${t('Fast begins (Fajr)')}</small><b class="mono">${fmtTime(T.fajr)}</b></div><div><small>${t('Fast breaks (Maghrib)')}</small><b class="mono">${fmtTime(T.maghrib)}</b></div></div><div class="row2"><a class="btn line sm" href="#/duas/68">${t('Dua for breaking the fast')}</a><button class="btn line sm" id="zakat">${t('Zakat al-fitr')}</button></div><p class="muted small">${t('Some calendars show an imsak a few minutes before Fajr, as a precaution. The fast itself begins at Fajr.')}</p></section>` : ''}
       <section class="next">
         <svg class="arc" viewBox="0 0 300 150" aria-hidden="true"><path d="M30 132A120 120 0 01270 132" class="arc-l"/><path d="M12 132H288" class="arc-h"/>${arcDots(T, sr, ss)}<circle cx="${sx.toFixed(1)}" cy="${sy.toFixed(1)}" r="7" class="arc-s ${up ? '' : 'night'}"><title>${t('Now')}</title></circle></svg>
         <span class="nextp">${t(np.t > T.isha && np.k === 'fajr' ? '{p} tomorrow at {t}' : '{p} at {t}', { p: NAMES[np.k], t: fmtTime(np.t) })}</span>
@@ -131,12 +147,15 @@ export function render(root) {
         const label = isFri && k === 'dhuhr' ? t("Jumu'a") : NAMES[k];
         return `<li class="${k === np.k && T[k] > now ? 'upnext' : ''} ${k === np.cur ? 'now' : T[k] && T[k] < now ? 'past' : ''} ${i >= 0 ? 'pr' : 'mark'}" ${i >= 0 && trk ? `data-mark="${i}"` : ''}>
           <span class="nm">${label}<span class="ar" lang="ar">${isFri && k === 'dhuhr' ? 'الجمعة' : AR[k]}</span>${off ? `<span class="adj mono" title="${t('Adjusted manually')}">${off > 0 ? '+' : ''}${off} min</span>` : ''}</span>
-          <span class="tm mono">${fmtTime(T[k])}</span>
+          <span class="tm mono">${fmtTime(T[k])}${i >= 0 && (S.iqama || {})[k] ? `<small class="iq">${t('iqama {t}', { t: fmtTime(T[k] + S.iqama[k] * 60000) })}</small>` : ''}</span>
           ${i >= 0 ? (trk ? `<button class="chk ${day.p[i] ? 'on' : ''}" data-mark="${i}" role="checkbox" aria-checked="${!!day.p[i]}" aria-label="${t('{p} prayed?', { p: NAMES[k] })}">${day.p[i] ? icon.check : ''}</button>` : '') : `<span class="sunr mono">${t('sunrise')}</span>`}</li>`;
       }).join('')}</ul>
+      ${(() => { const nf = timesFor(addDays(dayKey(), 1)).fajr, night = nf - T.maghrib; return `<p class="nightl mono">${t('Middle of the night {a} · last third from {b}', { a: fmtTime(T.maghrib + night / 2), b: fmtTime(T.maghrib + night * 2 / 3) })}</p>`; })()}
+      <details class="method-d"><summary class="linkbtn small">${t('Times when voluntary prayer is discouraged')}</summary><p class="muted small">${t('For most scholars: from after Fajr until about 15 minutes after sunrise ({a}), a few minutes before Dhuhr when the sun is at its highest, and from after Asr until sunset ({b}). Make-up prayers and prayers with a reason differ by school.', { a: fmtTime(T.sunrise + 15 * 60000), b: fmtTime(T.maghrib) })}</p></details>
       <details class="method-d"><summary class="linkbtn small">${t('How these times are computed')}</summary><p class="muted small">${esc(METHODS[S.method].n)}${S.madhab === 'hanafi' ? ' · ' + t('Hanafi Asr') : ''}. ${adjusted() ? t('A personal adjustment is on: {x}.', { x: P5.filter(k => S.offsets[k]).map(k => `${NAMES[k]} ${S.offsets[k] > 0 ? '+' : ''}${S.offsets[k]} min`).join(', ') }) : t('No personal adjustment.')} <a href="#/settings/times">${t('Change')}</a></p></details>
       ${trk ? missed(day, T, now, np) : ''}
       ${pauseHint()}
+      ${fastNote()}
       ${tools()}
       <a class="card row" href="#/quran/${last ? last.s + '/' + last.v : '1'}"><span><span class="mono">${t(last ? 'Resume reading' : 'Start reading')}</span><b>${last ? esc(last.n) + ' · ' + last.s + ':' + last.v : 'Al-Fatihah · 1:1'}</b></span>${icon.chev}</a>
       ${suggest}
@@ -185,6 +204,13 @@ export function render(root) {
     };
   };
   root.onclick = async e => {
+    const tq = e.target.closest('[data-toqada]'); if (tq) { S.qada.p[tq.dataset.toqada] = (S.qada.p[tq.dataset.toqada] || 0) + 1; S.qada.started = true; save(); tq.disabled = true; tq.textContent = t('Added. Make it up when you can.'); return; }
+    const tz = e.target.closest('[data-tzok]'); if (tz) { S.tzSeen = tz.dataset.tzok; save(); tz.closest('.tzbar').remove(); return; }
+    if (e.target.id === 'zakat') {
+      const el = sheet(`<h3>${t('Zakat al-fitr')}</h3><p class="muted small">${t('One portion per person in the household, given before the Eid prayer. The amount is set by your mosque or local authority.')}</p><div class="grid2"><label class="lbl">${t('People')}<input class="inp" id="zn" type="number" min="1" value="${S.zakat?.n || 1}" inputmode="numeric"></label><label class="lbl">${t('Amount per person')}<input class="inp" id="za" type="number" min="0" step="0.5" value="${S.zakat?.a ?? ''}" inputmode="decimal"></label></div><p class="big2" id="zt" role="status"></p>`, { label: t('Zakat al-fitr') });
+      const up = () => { const n = Math.max(1, +$('#zn', el).value || 1), a = Math.max(0, +$('#za', el).value || 0); S.zakat = { n, a }; save(); $('#zt', el).textContent = a ? t('Total: {x}', { x: (n * a).toLocaleString(L(), { maximumFractionDigits: 2 }) }) : ''; };
+      el.oninput = up; up(); return;
+    }
     if (e.target.id === 'tacts') { actions(); return; }
     if (e.target.id === 'tback') { S.loc = S.homeLoc; S.homeLoc = null; save(); draw(); return; }
     if (e.target.id === 'tresume') { S.pauseOn = false; S.pauseUntil = null; const d0 = getDay(dayKey(), true); d0.pz = 0; save(); draw(); toast(t('Tracking resumed.')); return; }
@@ -201,6 +227,16 @@ export function render(root) {
 }
 
 /* ---------- Qibla compass ---------- */
+// Where the sun is now (approximate, enough to orient yourself).
+function sunPos(lat, lng, ms) {
+  const r = Math.PI / 180, d = (ms - 946728000000) / 86400000, g = (357.529 + 0.98560028 * d) * r, q = 280.459 + 0.98564736 * d;
+  const Lm = (q + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * r, e = (23.439 - 0.00000036 * d) * r;
+  const ra = Math.atan2(Math.cos(e) * Math.sin(Lm), Math.cos(Lm)), dec = Math.asin(Math.sin(e) * Math.sin(Lm));
+  const gmst = (18.697374558 + 24.06570982441908 * d) % 24, ha = ((gmst * 15 + lng) * r) - ra, la = lat * r;
+  const alt = Math.asin(Math.sin(la) * Math.sin(dec) + Math.cos(la) * Math.cos(dec) * Math.cos(ha));
+  const az = (Math.atan2(Math.sin(ha), Math.cos(ha) * Math.sin(la) - Math.tan(dec) * Math.cos(la)) / r + 180) % 360;
+  return { az, alt: alt / r };
+}
 export function renderQibla(root) {
   const q = qiblaBearing(S.loc.lat, S.loc.lng);
   let heading = null, aligned = false, voice = false, lastSay = ['', 0];
@@ -209,6 +245,7 @@ export function renderQibla(root) {
   root.innerHTML = `<header class="sub"><a href="#/today" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Qibla')}</b><span class="ib"></span></header>
     <section class="qibla">
       <p class="mono qdeg-top">${t('{d}° from north · {c}', { d: q.toLocaleString(L(), { maximumFractionDigits: 1 }), c: esc(S.loc.name) })}</p>
+      ${(() => { const sp = sunPos(S.loc.lat, S.loc.lng, Date.now()); if (sp.alt < 5) return ''; const df = Math.round(((q - sp.az + 540) % 360) - 180); return `<p class="qsun">☀ ${Math.abs(df) < 5 ? t('The Qibla is roughly towards the sun right now.') : t(df > 0 ? 'Without a compass: face the sun, then turn {d}° to your right.' : 'Without a compass: face the sun, then turn {d}° to your left.', { d: Math.abs(df) })}</p>`; })()}
       <p class="qhint">${t('The orange dot shows the Qibla, with north at the top. For live guidance, turn on the compass, hold the phone flat and turn until the dot reaches the top mark.')}</p>
       <div class="dial" id="dial"><div class="ring" id="ring"><span class="n">N</span><span class="e">E</span><span class="s">S</span><span class="w">W</span>
         <div class="needle" style="transform:rotate(${q}deg)"><i></i></div></div><div class="hub"></div><div class="top"></div></div>
@@ -258,6 +295,7 @@ export function renderFlight(root) {
     root.innerHTML = `<header class="sub"><a href="#/plus" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Travelling')}</b><span class="ib"></span></header>
       <div class="seg tseg" role="tablist"><button role="tab" aria-selected="true" data-fm="dest">${t('At my destination')}</button><button role="tab" aria-selected="false" data-fm="air">${t('On the way')}</button></div>
       <section class="card stack"><b>${t('Prayer times where you are going')}</b><p class="muted small">${t('Pick the city. Today shows its times, and your usual city comes back in one tap.')}</p><div id="dcity"></div></section>
+      ${S.homeLoc ? `<p class="gentle">${t('About {k} km from {c}.', { k: Math.round(distanceKm([S.homeLoc.lat, S.homeLoc.lng], [S.loc.lat, S.loc.lng])).toLocaleString(L()), c: esc(S.homeLoc.name) })} ${t('Most schools allow shortening and combining prayers beyond a travel distance of roughly 80 km; the exact distance and duration differ. Ask someone of knowledge.')}</p>` : ''}
       ${S.homeLoc ? `<div class="card row travel-bar"><span>${t('Times for {c}, for now.', { c: esc(S.loc.name) })}</span><button class="btn line sm" id="dback">${t('Back to {c}', { c: esc(S.homeLoc.name) })}</button></div>` : ''}
       <section class="card stack"><b>${t('I am taking a plane')}</b><p class="muted small">${t('See which prayers fall during the flight, in both time zones.')}</p><button class="btn line sm" data-fm="air">${t('Prayers during a flight')}</button></section>
       <section class="note">${t('<b>Travelling.</b> Most scholars allow shortening and combining prayers when travelling. Conditions differ between schools: ask someone of knowledge.')}</section>`;

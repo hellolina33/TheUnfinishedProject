@@ -3,7 +3,8 @@ import { S, save, data, dayKey, addDays, P5 } from '../store.js';
 import { NAMES } from '../prayer.js';
 import { $, $$, esc, icon, toast, sheet, closeSheet } from '../ui.js';
 import { t, L } from '../i18n.js';
-import { surahName } from './quran.js';
+import { surahName, hizbEnd } from './quran.js';
+import { isRamadan } from './calendar.js';
 
 const rng = (s, a, b) => `<bdi>${s}:${a}${b !== a ? '–' + b : ''}</bdi>`;
 const daysBetween = (a, b) => Math.round((Date.parse(b + 'T12:00:00Z') - Date.parse(a + 'T12:00:00Z')) / 86400000);
@@ -12,6 +13,10 @@ const civil = (k, o) => new Intl.DateTimeFormat(L(), Object.assign({ timeZone: '
 /* ---------- Khatm ---------- */
 export function khatmToday(meta) {
   const K = S.khatm; if (!K) return null;
+  if (K.unit === 'hizb') {
+    const today = dayKey(), left = Math.max(1, K.days - daysBetween(K.start, today)), h = K.h || 0, n = Math.max(0, Math.ceil((60 - h) / left)), to = Math.min(60, h + n);
+    return { hizb: true, from: h + 1, to, n, start: meta.hizb[Math.min(59, h)], end: hizbEnd(meta, to), left, doneToday: K.log && K.log[today] };
+  }
   const today = dayKey(), left = Math.max(1, K.days - daysBetween(K.start, today)), pagesLeft = 604 - K.page;
   const n = Math.max(0, Math.ceil(pagesLeft / left)), from = K.page + 1, to = Math.min(604, K.page + n);
   const sv = p => meta.pages[p - 1];
@@ -24,21 +29,34 @@ export async function renderKhatm(root) {
     const K = S.khatm, x = khatmToday(meta);
     root.innerHTML = `<header class="sub"><a href="#/quran" class="ib" aria-label="${t('Back')}">${icon.back}</a><b>${t('Khatm planner')}</b><span class="ib"></span></header>
       ${!K ? `<p class="lead pad">${t('Finish the whole Quran in the time you choose. safa. splits it into daily pages and adjusts if you miss a day.')}</p>
+        ${isRamadan() ? `<button class="card row kram" data-hz="2" data-hd="30"><span><span class="mono">${t('Ramadan')}</span><b>${t('One juz a day, 30 days')}</b></span>${icon.chev}</button>` : ''}
+        <h3 class="sect">${t('By pages')}</h3>
         <div class="seg kd">${[7, 15, 30, 60, 90].map(d => `<button data-days="${d}"><b>${t('{n} days', { n: d })}</b><small>${t('≈ {p} pages a day', { p: Math.ceil(604 / d) })}</small></button>`).join('')}</div>
+        <h3 class="sect">${t('By hizb')}</h3>
+        <div class="seg kd">${[[1, 60], [2, 30], [4, 15]].map(([h, d]) => `<button data-hz="${h}" data-hd="${d}"><b>${t(h === 1 ? '1 hizb a day' : '{n} hizb a day', { n: h })}</b><small>${t('{n} days', { n: d })}</small></button>`).join('')}</div>
+        ${!isRamadan() ? `<button class="btn line sm" data-hz="2" data-hd="30">${t('Ramadan plan: one juz a day')}</button>` : ''}
         <p class="muted small pad">${t('Miss a day? The plan adjusts by itself. No debt, no catching up by hand.')}</p>
         <p class="muted small pad">${t('Based on the 604 pages of the Madinah mushaf.')}</p>`
-      : K.page >= 604 ? `<section class="hero2"><div class="big">✓</div><p>${t('Khatm complete. May Allah accept it.')}</p></section><button class="btn line big" id="kreset">${t('Start a new khatm')}</button>`
-      : `<section class="hero2"><span class="mono">${t('Today')}</span><div class="big">${x.n}</div><p class="muted">${t('pages · {a} to {b}', { a: x.from, b: x.to })}</p></section>
-        <div class="bar"><i style="width:${(K.page / 604 * 100).toFixed(1)}%"></i></div>
-        <p class="mono pad">${t('{p} of 604 pages · {d} days left', { p: K.page, d: x.left })}</p>
+      : (K.unit === 'hizb' ? (K.h || 0) >= 60 : K.page >= 604) ? `<section class="hero2"><div class="big">✓</div><p>${t('Khatm complete. May Allah accept it.')}</p></section><button class="btn line big" id="kreset">${t('Start a new khatm')}</button>`
+      : `<section class="hero2"><span class="mono">${t('Today')}</span><div class="big">${x.n}</div><p class="muted">${x.hizb ? t('hizb · {a} to {b}', { a: x.from, b: x.to }) : t('pages · {a} to {b}', { a: x.from, b: x.to })}</p></section>
+        <div class="bar"><i style="width:${(x.hizb ? (K.h || 0) / 60 : K.page / 604) * 100}%"></i></div>
+        <p class="mono pad">${x.hizb ? t('{p} of 60 hizb · {d} days left', { p: K.h || 0, d: x.left }) : t('{p} of 604 pages · {d} days left', { p: K.page, d: x.left })}</p>
         <a class="card row" href="#/quran/${x.start[0]}/${x.start[1]}"><span><span class="mono">${t('Read today’s portion')}</span><b>${esc(surahName(meta, x.start[0]))} <bdi>${x.start[0]}:${x.start[1]}</bdi> → ${esc(surahName(meta, x.end[0]))} <bdi>${x.end[0]}:${x.end[1]}</bdi></b></span>${icon.chev}</a>
         <button class="btn big" id="kdone">${t('I read today’s portion')}</button>
         <p class="muted small pad">${t('Missed a day? Nothing to make up by hand. The remaining pages are spread over the days left.')}</p>
-        <button class="btn line sm danger" id="kreset">${t('Stop this plan')}</button>`}`;
+        <button class="btn line sm danger" id="kreset">${t('Stop this plan')}</button>`}
+      <section class="card stack"><b>${t('A group khatm')}</b><p class="muted small">${t('Share the 30 juz among family or friends. safa. prepares the message; each person writes their name next to a juz.')}</p><button class="btn line sm" id="kgroup">${t('Prepare the message')}</button></section>`;
   };
   root.onclick = e => {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.days) { S.khatm = { start: dayKey(), days: +b.dataset.days, page: 0, log: {} }; save(); draw(); }
+    if (b.dataset.hz) { S.khatm = { unit: 'hizb', start: dayKey(), days: +b.dataset.hd, h: 0, page: 0, log: {} }; save(); draw(); return; }
+    if (b.id === 'kgroup') {
+      const txt = `${t('Group khatm · safa.')}\n${t('Write your name next to a juz, then send the message on.')}\n\n` + Array.from({ length: 30 }, (_, i) => `${t('Juz {n}', { n: i + 1 })} (${esc(surahName(meta, meta.juz[i][0]))} ${meta.juz[i][0]}:${meta.juz[i][1]}) : ___`).join('\n');
+      (async () => { try { if (navigator.share) await navigator.share({ text: txt }); else { await navigator.clipboard.writeText(txt); toast(t('Message copied')); } } catch (err) { /* cancelled */ } })();
+      return;
+    }
+    if (b.id === 'kdone' && S.khatm.unit === 'hizb') { const x = khatmToday(meta); S.khatm.h = x.to; S.khatm.log[dayKey()] = 1; save(); toast(t('Well done.')); draw(); return; }
     if (b.id === 'kdone') { const x = khatmToday(meta); S.khatm.page = x.to; S.khatm.log[dayKey()] = 1; save(); toast(t('Well done.')); draw(); }
     if (b.id === 'kreset') { S.khatm = null; save(); draw(); }
   };
@@ -69,8 +87,11 @@ export async function renderHifz(root) {
         <details><summary class="mono">${t('Choose another portion')}</summary>
           <div class="grid3"><select id="hs" class="inp">${meta.s.map((m, i) => `<option value="${i + 1}" ${i + 1 === nextS ? 'selected' : ''}>${i + 1}. ${esc(surahName(meta, i + 1))}</option>`).join('')}</select>
           <input id="ha" class="inp" type="number" min="1" value="${nextA}" aria-label="${t('From verse')}"><input id="hb" class="inp" type="number" min="1" value="${nextB}" aria-label="${t('To verse')}"></div>
-          <button class="btn line sm" id="hadd2">${t('Add')}</button></details>
+          <button class="btn line sm" id="hadd2">${t('Add')}</button>
+          <label class="lbl" for="hq">${t('Or a quarter of a hizb')}</label><div class="row2"><select id="hq" class="inp">${meta.rub.map(([qs, qv], i) => `<option value="${i}">${t('Hizb {n}', { n: (i >> 2) + 1 })} ${['', '¼', '½', '¾'][i % 4]} · ${esc(surahName(meta, qs))} ${qs}:${qv}</option>`).join('')}</select><button class="btn line sm" id="haddq">${t('Add')}</button></div><p class="muted small">${t('A quarter that runs over two surahs is cut at the end of the first one.')}</p></details>
       </section>
+      <h3 class="sect">${t('My map')}</h3><div class="hmap" aria-label="${t('Surahs memorised')}">${meta.s.map((x, i) => { const n = i + 1, its = H.items.filter(y => y.s === n), cov = new Set(); its.forEach(y => { for (let v = y.a; v <= y.b; v++) cov.add(v); }); const f = cov.size / x[3]; return `<a href="#/quran/${n}" class="hm ${f >= 1 ? 'full' : f > 0 ? 'part' : ''}" title="${esc(surahName(meta, n))} · ${Math.round(f * 100)}%"><span>${n}</span></a>`; }).join('')}</div><p class="muted small pad">${t('Dark: whole surah in your plan. Outlined: part of it. No score, just where you are.')}</p>
+      <div class="row2 pad"><button class="btn line sm" id="htest" ${H.items.length ? '' : 'disabled'}>${t('Test: the next verse')}</button><button class="btn line sm" id="hrec">${t('Record my recitation')}</button></div>
       ${due.length ? `<h3 class="sect">${t('Due today · {n}', { n: due.length })}</h3><ul class="evl">${due.map(row).join('')}</ul>` : H.items.length ? `<p class="muted pad">${t('Nothing to review today.')}</p>` : ''}
       ${H.items.length > due.length ? `<h3 class="sect">${t('Later')}</h3><ul class="evl">${H.items.filter(x => x.d > today).map(row).join('')}</ul>` : ''}
       <p class="muted small pad">${t('Guided: listen to each verse three times, read it three times, then recite it from memory.')} ${t('Practise opens the reader with the portion on loop. Use “Hide” in the player to test yourself, then rate it here.')}</p>`;
@@ -80,6 +101,9 @@ export async function renderHifz(root) {
     const b = e.target.closest('button'); if (!b) return;
     if (b.dataset.per) { S.hifz.perDay = +b.dataset.per; save(); draw(); return; }
     if (b.id === 'hadd') add(+b.dataset.s, +b.dataset.a, +b.dataset.b);
+    if (b.id === 'haddq') { const i = +$('#hq', root).value, [qs, qv] = meta.rub[i], nx = meta.rub[i + 1], end = nx && nx[0] === qs ? nx[1] - 1 : meta.s[qs - 1][3]; add(qs, qv, end); }
+    if (b.id === 'htest') testNext(meta);
+    if (b.id === 'hrec') recorder();
     if (b.id === 'hadd2') { const s = +$('#hs', root).value, n = meta.s[s - 1][3], a = Math.min(n, Math.max(1, +$('#ha', root).value || 1)), c = Math.min(n, Math.max(a, +$('#hb', root).value || a)); add(s, a, c); }
     if (b.dataset.r != null) { const x = S.hifz.items.find(y => y.id === b.dataset.id); x.box = +b.dataset.r ? Math.min(GAP.length - 1, x.box + 1) : 0; x.d = addDays(dayKey(), GAP[x.box]); save(); draw(); }
   };
@@ -149,4 +173,24 @@ export function renderQada(root) {
   P5.forEach(p => { if ((S.qada.p[p] || 0) > QMAX) S.qada.p[p] = QMAX; }); if ((S.qada.fast || 0) > QMAX) S.qada.fast = QMAX;
   draw();
   return () => { root.onclick = null; root.onchange = null; };
+}
+
+// Next-verse test: a verse from your portions; recite the one after it, then check.
+async function testNext(meta) {
+  const its = S.hifz.items.filter(x => x.b > x.a); if (!its.length) { toast(t('Add a portion of at least two verses first.')); return; }
+  const x = its[Math.floor(Math.random() * its.length)], v = x.a + Math.floor(Math.random() * (x.b - x.a)), sur = await data(`quran/${x.s}.json`);
+  const el = sheet(`<h3>${t('Test: the next verse')}</h3><p class="mono">${esc(surahName(meta, x.s))} <bdi>${x.s}:${v}</bdi></p><p class="ar big-ar" lang="ar" dir="rtl">${sur.v[v - 1].a.join(' ')}</p><p class="muted small">${t('Recite the verse that follows, then check.')}</p><div id="tans"></div><div class="row2"><button class="btn sm" id="tshow">${t('Show the next verse')}</button><button class="btn line sm" id="tagain">${t('Another one')}</button></div>`, { label: t('Test: the next verse') });
+  el.onclick = e => { if (e.target.id === 'tshow') { $('#tans', el).innerHTML = `<p class="mono"><bdi>${x.s}:${v + 1}</bdi></p><p class="ar big-ar" lang="ar" dir="rtl">${sur.v[v].a.join(' ')}</p>`; e.target.remove(); } if (e.target.id === 'tagain') { closeSheet(); testNext(meta); } };
+}
+// Record yourself and listen back. Nothing leaves the device.
+function recorder() {
+  const el = sheet(`<h3>${t('Record my recitation')}</h3><p class="muted small">${t('The recording stays in this window only. Nothing is saved or sent.')}</p><div class="row2"><button class="btn sm" id="rgo">${t('Start')}</button><button class="btn line sm" id="rstop" disabled>${t('Stop')}</button></div><audio id="rplay" controls hidden></audio>`, { label: t('Record my recitation') });
+  let mr = null, chunks = [];
+  el.onclick = async e => {
+    if (e.target.id === 'rgo') {
+      try { const st = await navigator.mediaDevices.getUserMedia({ audio: true }); mr = new MediaRecorder(st); chunks = []; mr.ondataavailable = d => chunks.push(d.data); mr.onstop = () => { st.getTracks().forEach(x => x.stop()); const a = $('#rplay', el); a.src = URL.createObjectURL(new Blob(chunks, { type: mr.mimeType })); a.hidden = false; }; mr.start(); e.target.disabled = true; $('#rstop', el).disabled = false; }
+      catch (err) { toast(t('The microphone is not available here.')); }
+    }
+    if (e.target.id === 'rstop' && mr) { mr.stop(); e.target.disabled = true; $('#rgo', el).disabled = false; }
+  };
 }
