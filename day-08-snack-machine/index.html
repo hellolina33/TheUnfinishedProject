@@ -157,12 +157,12 @@ footer details p{margin:6px 0 0;opacity:.85;line-height:1.45}
     <div class="marquee"><strong>SNACK <i>MACHINE</i></strong><span class="tt">TikTok + X</span></div>
     <form class="coin" id="form" autocomplete="off">
       <label for="link" data-i18n="coin">Insert a link</label>
-      <input id="link" type="text" inputmode="url" placeholder="tiktok.com/@creator or a video link" required>
+      <input id="link" type="text" inputmode="url" placeholder="tiktok.com/@creator, x.com/creator or a post link" required>
       <div class="row">
         <button class="btn alt" type="button" id="paste" data-i18n="paste">Paste</button>
         <button class="btn" type="submit" id="go" data-i18n="go">Insert ▶</button>
       </div>
-      <p class="tiny" data-i18n="coinHint">A TikTok video, a profile, an @handle, or an X post with a video.</p>
+      <p class="tiny" data-i18n="coinHint">A TikTok or X link: a post, a profile, or a TikTok @handle.</p>
     </form>
 
     <section class="profile" id="profile" hidden aria-live="polite"></section>
@@ -202,7 +202,7 @@ footer details p{margin:6px 0 0;opacity:.85;line-height:1.45}
 <footer>
   <details id="unfinished">
     <summary data-i18n="unf">What is still unfinished</summary>
-    <p data-i18n="unfText">The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. X works one post at a time, with no profile view, and posts that only stream (no file) are refused. Private accounts and slideshows are skipped. The zip is built in your browser, so keep a bag under 25 clips. Daily limits are best effort.</p>
+    <p data-i18n="unfText">The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. On X, the machine sees the account's last ~100 posts, and X does not share view counts there, so X clips are ranked by likes. Private accounts and slideshows are skipped. The zip is built in your browser, so keep a bag under 25 clips. Daily limits are best effort.</p>
   </details>
   <div>
     <a href="/day-08-snack-machine/index.html" download="snack-machine-day-08.html" data-i18n="dl">Download the HTML</a> ·
@@ -216,20 +216,20 @@ const API = location.protocol === 'file:' ? 'https://the-unfinished-30.vercel.ap
 const MAX_BAG = 25;
 const T = {
  en:{ day:'Day 8/30', tagline:'one free prototype a day', coin:'Insert a link', paste:'Paste', go:'Insert ▶',
-  coinHint:'A TikTok video, a profile, an @handle, or an X post with a video.',
+  coinHint:'A TikTok or X link: a post, a profile, or a TikTok @handle.',
   bag:'Your snack bag', qBest:'Best', qLight:'Light', qAudio:'Audio', drop:'Drop the bag (.zip)', refs:'Copy references',
   bagHint:'Best = sharpest file that plays in PowerPoint, Keynote and Slides. The zip includes a references list with every author and link.',
   howTags:'How the tags work', rights:'Only take what you are allowed to use, and credit the creator every time you show their clip.',
   selAll:'Select shown', clear:'Clear', search:'Search captions',
   unf:'What is still unfinished',
-  unfText:'The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. X works one post at a time, with no profile view, and posts that only stream (no file) are refused. Private accounts and slideshows are skipped. The zip is built in your browser, so keep a bag under 25 clips. Daily limits are best effort.',
+  unfText:'The machine reads the latest 60 videos of a profile, not the whole history. Stats are the public counters TikTok shows at that moment. On X, the machine sees the account\u2019s last ~100 posts, and X does not share view counts there, so X clips are ranked by likes. Private accounts and slideshows are skipped. The zip is built in your browser, so keep a bag under 25 clips. Daily limits are best effort.',
   dl:'Download the HTML', credit:'Designed and built by', engine:'powered by the open-source yt-dlp',
-  emptyT:'Feed me a TikTok link.', emptyP:"Paste a video or a profile. I stock the shelf with the creator's latest 60 videos, sorted by what performed, with tags you can read at a glance. Pick the good ones, drop them in your bag, take them with their references.",
+  emptyT:'Feed me a TikTok or X link.', emptyP:"Paste a video or a profile. I stock the shelf with the creator's latest videos (60 on TikTok, the video posts among their last ~100 on X), sorted by what performed, with tags you can read at a glance. Pick the good ones, drop them in your bag, take them with their references.",
   loadingT:'Stocking the shelves…', loadingP:'Reading the profile and its latest videos. About 5 seconds.',
-  followers:'followers', likes:'likes', videos:'videos', open:'Open on TikTok ↗', openX:'Open on X ↗',
+  followers:'followers', likes:'likes', videos:'videos', posts:'posts', scanned:(n,m)=>`Read the last ${n} posts: ${m} with a video.`, open:'Open on TikTok ↗', openX:'Open on X ↗',
   sorts:{views:'Most viewed',likes:'Most liked',eng:'Best engagement',comments:'Most comments',new:'Newest',old:'Oldest',short:'Shortest'},
   tags:{hit:'🔥 Hit',above:'🚀 Above usual',gem:'💎 Hidden gem',talk:'💬 Talked about',short:'⚡ Under 15 s',new:'🆕 Last 30 days'},
-  tagHelp:{hit:'Top 10% of views on this shelf.',above:"At least twice the creator's usual (median) views.",gem:'Top 20% engagement but below-usual views: people loved it, the algorithm did not push it.',talk:'Top 10% for comments per view.',short:'Shorter than 15 seconds: easy to drop in a slide.',new:'Posted in the last 30 days.'},
+  tagHelp:{hit:'Top 10% of views on this shelf (likes on X).',above:"At least twice the creator's usual (median) views, or likes on X.",gem:'Top 20% engagement but below-usual views: people loved it, the algorithm did not push it.',talk:'Top 10% for comments per view (per like on X).',short:'Shorter than 15 seconds: easy to drop in a slide.',new:'Posted in the last 30 days.'},
   open1:'Watch ↗', one:'⬇ Take', none:'No video matches these filters.',
   bagFull:'The bag holds 25 snacks. Drop this one first.', copied:'References copied. Paste them in your notes or under your slide.',
   zipping:'Dropping snack', of:'of', done:'Bag dropped! Check your downloads.', taking:'Snack on its way to your downloads.', partial:'Bag dropped, but some snacks fell behind the machine:',
@@ -244,20 +244,20 @@ const T = {
    sold_out:'Sold out: no file to take for this one.', jammed:'The machine jammed. Try again in a moment.',
    origin:'Wrong door.', net:'No connection to the machine.', bad_format:'Unknown snack.'}},
  fr:{ day:'Jour 8/30', tagline:'un prototype gratuit par jour', coin:'Insère un lien', paste:'Coller', go:'Insérer ▶',
-  coinHint:'Une vidéo TikTok, un profil, un @pseudo, ou un post X avec une vidéo.',
+  coinHint:'Un lien TikTok ou X : un post, un profil, ou un @pseudo TikTok.',
   bag:'Ton sachet de snacks', qBest:'Meilleure', qLight:'Légère', qAudio:'Audio', drop:'Lâcher le sachet (.zip)', refs:'Copier les références',
   bagHint:'Meilleure = le fichier le plus net qui se lit dans PowerPoint, Keynote et Slides. Le zip contient la liste des références avec chaque auteur et lien.',
   howTags:'Comment marchent les tags', rights:'Ne prends que ce que tu as le droit d’utiliser, et cite le créateur chaque fois que tu montres son extrait.',
   selAll:'Tout sélectionner', clear:'Vider', search:'Chercher dans les légendes',
   unf:'Ce qui n’est pas encore fini',
-  unfText:'La machine lit les 60 dernières vidéos d’un profil, pas tout l’historique. Les stats sont les compteurs publics de TikTok à cet instant. X marche un post à la fois, sans vue profil, et les posts en streaming seul (sans fichier) sont refusés. Les comptes privés et les diaporamas sont ignorés. Le zip est construit dans ton navigateur : garde un sachet sous 25 extraits. Les limites quotidiennes sont approximatives.',
+  unfText:'La machine lit les 60 dernières vidéos d’un profil, pas tout l’historique. Les stats sont les compteurs publics de TikTok à cet instant. Sur X, la machine voit les ~100 derniers posts du compte, et X n’y donne pas les vues : les extraits X sont classés par likes. Les comptes privés et les diaporamas sont ignorés. Le zip est construit dans ton navigateur : garde un sachet sous 25 extraits. Les limites quotidiennes sont approximatives.',
   dl:'Télécharger le HTML', credit:'Conçu et codé par', engine:'propulsé par yt-dlp, open source',
-  emptyT:'Donne-moi un lien TikTok.', emptyP:'Colle une vidéo ou un profil. Je remplis la vitrine avec les 60 dernières vidéos du créateur, triées par performance, avec des tags lisibles en un coup d’œil. Choisis les bonnes, mets-les dans ton sachet, et repars avec leurs références.',
+  emptyT:'Donne-moi un lien TikTok ou X.', emptyP:'Colle une vidéo ou un profil. Je remplis la vitrine avec les dernières vidéos du créateur (60 sur TikTok, les posts vidéo parmi ses ~100 derniers sur X), triées par performance, avec des tags lisibles en un coup d’œil. Choisis les bonnes, mets-les dans ton sachet, et repars avec leurs références.',
   loadingT:'Je remplis la vitrine…', loadingP:'Lecture du profil et de ses dernières vidéos. Environ 5 secondes.',
-  followers:'abonnés', likes:'likes', videos:'vidéos', open:'Ouvrir sur TikTok ↗', openX:'Ouvrir sur X ↗',
+  followers:'abonnés', likes:'likes', videos:'vidéos', posts:'posts', scanned:(n,m)=>`J’ai lu les ${n} derniers posts : ${m} avec une vidéo.`, open:'Ouvrir sur TikTok ↗', openX:'Ouvrir sur X ↗',
   sorts:{views:'Les plus vues',likes:'Les plus likées',eng:'Meilleur engagement',comments:'Les plus commentées',new:'Plus récentes',old:'Plus anciennes',short:'Plus courtes'},
   tags:{hit:'🔥 Carton',above:'🚀 Au-dessus',gem:'💎 Pépite',talk:'💬 Fait parler',short:'⚡ Moins de 15 s',new:'🆕 30 derniers jours'},
-  tagHelp:{hit:'Top 10 % des vues de la vitrine.',above:'Au moins deux fois les vues habituelles (médiane) du créateur.',gem:'Top 20 % d’engagement mais des vues sous la normale : le public a aimé, l’algorithme ne l’a pas poussée.',talk:'Top 10 % des commentaires par vue.',short:'Moins de 15 secondes : facile à glisser dans une slide.',new:'Publiée ces 30 derniers jours.'},
+  tagHelp:{hit:'Top 10 % des vues de la vitrine (likes sur X).',above:'Au moins deux fois les vues habituelles (médiane) du créateur, ou les likes sur X.',gem:'Top 20 % d’engagement mais des vues sous la normale : le public a aimé, l’algorithme ne l’a pas poussée.',talk:'Top 10 % des commentaires par vue (par like sur X).',short:'Moins de 15 secondes : facile à glisser dans une slide.',new:'Publiée ces 30 derniers jours.'},
   open1:'Voir ↗', one:'⬇ Prendre', none:'Aucune vidéo ne correspond à ces filtres.',
   bagFull:'Le sachet tient 25 snacks. Lâche-le d’abord.', copied:'Références copiées. Colle-les dans tes notes ou sous ta slide.',
   zipping:'Snack', of:'sur', done:'Sachet lâché ! Regarde tes téléchargements.', taking:'Le snack part dans tes téléchargements.', partial:'Sachet lâché, mais des snacks sont tombés derrière la machine :',
@@ -289,14 +289,15 @@ function eng(v){ return v.views ? ((v.likes||0)+(v.comments||0)+(v.shares||0))/v
 function quant(arr,q){ if(!arr.length) return Infinity; const s=[...arr].sort((a,b)=>a-b); return s[Math.min(s.length-1,Math.floor(q*(s.length-1)))]; }
 
 function computeTags(videos){
-  const views = videos.map(v=>v.views||0), med = quant(views,.5), p90 = quant(views,.9);
+  const base = v => v.views ?? v.likes ?? 0;
+  const views = videos.map(base), med = quant(views,.5), p90 = quant(views,.9);
   const engs = videos.map(eng), e80 = quant(engs,.8);
-  const talk = videos.map(v=>v.views? (v.comments||0)/v.views : 0), t90 = quant(talk,.9);
+  const talk = videos.map(v=>base(v)? (v.comments||0)/base(v) : 0), t90 = quant(talk,.9);
   const many = videos.length >= 8, now = Date.now()/1000;
   videos.forEach((v,i)=>{
     const tg = [];
-    if (many && v.views && v.views >= p90) tg.push('hit');
-    else if (many && med && (v.views||0) >= 2*med) tg.push('above');
+    if (many && base(v) && base(v) >= p90) tg.push('hit');
+    else if (many && med && base(v) >= 2*med) tg.push('above');
     if (many && v.views && engs[i] >= e80 && v.views <= med) tg.push('gem');
     if (many && v.comments && talk[i] >= t90) tg.push('talk');
     if (v.duration && v.duration < 15) tg.push('short');
@@ -310,12 +311,18 @@ function applyLang(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{ const v=T[lang][el.dataset.i18n]; if(typeof v==='string') el.textContent=v; });
   document.querySelectorAll('[data-lang]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.lang===lang)));
   $('search').placeholder = t('search');
-  $('sort').innerHTML = Object.entries(t('sorts')).map(([k,v])=>`<option value="${k}" ${k===state.sort?'selected':''}>${v}</option>`).join('');
+  fillSort();
   $('tagHelp').innerHTML = Object.keys(t('tags')).map(k=>`<li><b>${t('tags')[k]}</b> ${t('tagHelp')[k]}</li>`).join('');
   render();
 }
 document.querySelectorAll('[data-lang]').forEach(b=>b.addEventListener('click',()=>{ lang=b.dataset.lang; try{localStorage.setItem('snack-lang',lang)}catch{} applyLang(); }));
 
+function hasViews(){ return !state.data || state.data.videos.some(v=>v.views!=null); }
+function fillSort(){
+  const skip = hasViews() ? [] : ['views','eng'];
+  if (skip.includes(state.sort)) state.sort = 'likes';
+  $('sort').innerHTML = Object.entries(t('sorts')).filter(([k])=>!skip.includes(k)).map(([k,v])=>`<option value="${k}" ${k===state.sort?'selected':''}>${v}</option>`).join('');
+}
 function say(text, ms=2800){ const b=$('bubble'); b.textContent=text; b.hidden=false; clearTimeout(say.t); if(ms) say.t=setTimeout(()=>b.hidden=true, ms); }
 
 function renderProfile(){
@@ -326,7 +333,8 @@ function renderProfile(){
   el.innerHTML = `${p.avatar?`<img class="avatar" alt="" src="${esc(p.avatar)}" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`:'<div class="avatar"></div>'}
     <div class="pname">${esc(p.name||p.handle||'')} ${p.verified?'<span class="v" title="verified">✔</span>':''}</div>
     <div class="phandle">${p.handle?'@'+esc(p.handle):''} ${p.url?`· <a href="${esc(p.url)}" target="_blank" rel="noopener">${x?t('openX'):t('open')}</a>`:''}</div>
-    ${p.followers!=null?`<div class="pstats"><div><b>${num(p.followers)}</b><span>${t('followers')}</span></div><div><b>${num(p.likes)}</b><span>${t('likes')}</span></div><div><b>${num(p.videos)}</b><span>${t('videos')}</span></div></div>`:''}
+    ${p.followers!=null?`<div class="pstats"><div><b>${num(p.followers)}</b><span>${t('followers')}</span></div>${x?`<div><b>${num(p.posts)}</b><span>${t('posts')}</span></div><div><b>${num(d.videos.length)}</b><span>${t('videos')}</span></div>`:`<div><b>${num(p.likes)}</b><span>${t('likes')}</span></div><div><b>${num(p.videos)}</b><span>${t('videos')}</span></div>`}</div>`:''}
+    ${x && p.scanned?`<p class="pbio" style="font-weight:700">${t('scanned')(p.scanned, d.videos.length)}</p>`:''}
     ${p.bio?`<p class="pbio">${esc(p.bio)}</p>`:''}`;
 }
 
@@ -376,7 +384,7 @@ function card(v,i){
   return `<div class="card ${sel?'sel':''} ${d.focus===v.id?'focus':''}" data-id="${esc(v.id)}" role="checkbox" aria-checked="${sel}" tabindex="0">
     <div class="thumb">${v.thumb?`<img loading="lazy" alt="" src="${esc(v.thumb)}" referrerpolicy="no-referrer" onerror="this.remove()">`:''}
       ${rank}<span class="tick">${sel?'✓':'+'}</span>
-      ${v.views!=null?`<span class="views">▶ ${num(v.views)}</span>`:''}${v.duration?`<span class="dur">${dur(v.duration)}</span>`:''}</div>
+      ${v.views!=null?`<span class="views">▶ ${num(v.views)}</span>`:(v.likes!=null?`<span class="views">♥ ${num(v.likes)}</span>`:'')}${v.duration?`<span class="dur">${dur(v.duration)}</span>`:''}</div>
     <div class="body">
       ${v._tags.length?`<div class="tags">${v._tags.map(k=>`<span class="tag ${k}">${tags[k]}</span>`).join('')}</div>`:''}
       <p class="cap">${esc(v.title)}</p>
@@ -400,7 +408,7 @@ async function insert(raw){
     const data = await r.json().catch(()=>({error:'jammed'}));
     if (!r.ok || data.error) throw Object.assign(new Error(data.error||'jammed'),{key:data.error||'jammed'});
     computeTags(data.videos);
-    state.data = data;
+    state.data = data; state.sort = 'views'; fillSort();
     if (data.focus) state.sel.add(data.focus);
     try { history.replaceState(null,'','?u='+encodeURIComponent(link)+(lang==='fr'?'&lang=fr':'')); } catch {}
   } catch(e) {
@@ -426,7 +434,7 @@ function picked(){ const vis = visible(); return vis.filter(v=>state.sel.has(v.i
 
 function references(list, files){
   const p = state.data.profile || {}, site = state.data.site === 'x' ? 'X' : 'TikTok';
-  return list.map((v,i)=>`${i+1}. ${p.handle?'@'+p.handle:''}${p.name&&p.name!==p.handle?' ('+p.name+')':''}, "${(v.title||'').replace(/\s+/g,' ').slice(0,90)}", ${site}, ${date(v.ts)}${v.views!=null?', '+num(v.views)+' '+t('viewsW'):''}. ${v.url}${files&&files[i]?'  [file: '+files[i]+']':''}`).join('\n');
+  return list.map((v,i)=>`${i+1}. ${p.handle?'@'+p.handle:''}${p.name&&p.name!==p.handle?' ('+p.name+')':''}, "${(v.title||'').replace(/\s+/g,' ').slice(0,90)}", ${site}, ${date(v.ts)}${v.views!=null?', '+num(v.views)+' '+t('viewsW'):(v.likes!=null?', '+num(v.likes)+' likes':'')}. ${v.url}${files&&files[i]?'  [file: '+files[i]+']':''}`).join('\n');
 }
 
 $('refs').addEventListener('click', async ()=>{

@@ -6,6 +6,7 @@ GET /api/snack?u=<post>&f=<preset>  -> streams one file. preset: best | light | 
 
 Files are re-extracted at download time so the media URL is always fresh.
 """
+import calendar
 import hashlib
 import json
 import os
@@ -211,6 +212,9 @@ def _single(link, site):
     handle = info.get("uploader_id") or ""
     row = _video_row(info, handle)
     row["url"] = info.get("webpage_url") or link
+    sm = re.search(r"/status/(\d+)", link)
+    if sm:
+        row["id"] = sm.group(1)
     row["title"] = (info.get("description") or info.get("title") or "")[:300]
     options = _options(info)
     if not any(o["kind"] == "video" for o in options):
@@ -219,6 +223,97 @@ def _single(link, site):
             "profile": {"handle": handle, "name": info.get("uploader") or handle,
                         "url": f"https://x.com/{handle}" if handle else None},
             "videos": [row], "focus": row["id"]}
+
+
+
+# ---------- X profile (public embed timeline: ~100 latest posts, no login) ----------
+
+X_RESERVED = {"i", "home", "search", "explore", "settings", "messages", "notifications", "hashtag", "intent", "share"}
+
+
+def _x_handle(link):
+    m = re.search(r"(?:x|twitter)\.com/([A-Za-z0-9_]{1,15})(?:/status/(\d+))?", link)
+    if not m or m.group(1).lower() in X_RESERVED:
+        return None, None
+    return m.group(1), m.group(2)
+
+
+def _x_time(s):
+    try:
+        return calendar.timegm(time.strptime(s, "%a %b %d %H:%M:%S +0000 %Y"))
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _x_text(tw):
+    txt = tw.get("full_text") or tw.get("text") or ""
+    return re.sub(r"\s*https://t\.co/\w+$", "", txt).strip()
+
+
+def _x_timeline(handle):
+    url = f"https://syndication.twitter.com/srv/timeline-profile/screen-name/{handle}?showReplies=false"
+    body = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "en"}), timeout=15).read().decode("utf8", "ignore")
+    m = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', body, re.S)
+    if not m:
+        raise RuntimeError("not found")
+    tl = (((json.loads(m.group(1)).get("props") or {}).get("pageProps") or {}).get("timeline") or {})
+    return [((e.get("content") or {}).get("tweet")) or {} for e in (tl.get("entries") or [])]
+
+
+def _x_profile(link):
+    handle, focus = _x_handle(link)
+    if not handle:
+        raise RuntimeError("unsupported url")
+    key = ("x:" + handle.lower(), 0)
+    hit = _cache.get(key)
+    if hit and time.time() - hit[0] < 600:
+        data = dict(hit[1])
+    else:
+        tweets = _x_timeline(handle)
+        prof, videos, seen, total = {}, [], set(), 0
+        for tw in tweets:
+            if not tw.get("id_str"):
+                continue
+            user = tw.get("user") or {}
+            own = (user.get("screen_name") or "").lower() == handle.lower()
+            if own:
+                total += 1
+                if not prof:
+                    prof = {"handle": user.get("screen_name"), "name": user.get("name"),
+                            "bio": (user.get("description") or "")[:300],
+                            "avatar": (user.get("profile_image_url_https") or "").replace("_normal.", "_200x200."),
+                            "verified": bool(user.get("verified") or user.get("is_blue_verified")),
+                            "followers": user.get("followers_count"), "posts": user.get("statuses_count"),
+                            "url": f"https://x.com/{user.get('screen_name')}"}
+            if not own or tw["id_str"] in seen:
+                continue  # reposts of other accounts are skipped
+            media = (tw.get("extended_entities") or tw.get("entities") or {}).get("media") or []
+            vid = next((x for x in media if x.get("type") in ("video", "animated_gif")), None)
+            if not vid:
+                continue
+            seen.add(tw["id_str"])
+            ms = (vid.get("video_info") or {}).get("duration_millis")
+            videos.append({
+                "id": tw["id_str"], "url": f"https://x.com/{handle}/status/{tw['id_str']}",
+                "title": _x_text(tw)[:300], "views": None, "likes": tw.get("favorite_count"),
+                "comments": tw.get("reply_count"), "shares": (tw.get("retweet_count") or 0) + (tw.get("quote_count") or 0),
+                "duration": round(ms / 1000, 1) if ms else None, "ts": _x_time(tw.get("created_at") or ""),
+                "thumb": vid.get("media_url_https"), "gif": vid.get("type") == "animated_gif",
+            })
+        prof = prof or {"handle": handle, "url": f"https://x.com/{handle}"}
+        prof["scanned"] = total
+        data = {"kind": "profile", "site": "x", "profile": prof, "videos": videos}
+        _cache[key] = (time.time(), data)
+    data["focus"] = focus
+    if focus and not any(v["id"] == focus for v in data["videos"]):
+        try:
+            one = _single(f"https://x.com/{handle}/status/{focus}", "x")
+            data = dict(data, videos=one["videos"] + data["videos"])
+        except Exception:  # noqa: BLE001
+            pass
+    if not data["videos"]:
+        raise RuntimeError("does not have any videos")
+    return data
 
 
 # ---------- formats ----------
@@ -282,50 +377,11 @@ def _pick(options, preset):
 # ---------- route ----------
 
 
-def _diag():
-    out = {}
-    h = request.args.get("h") or "rileybrown"
-    for name, url in (("synd", f"https://syndication.twitter.com/srv/timeline-profile/screen-name/{h}"),
-                      ("synd2", f"https://syndication.twitter.com/srv/timeline-profile/screen-name/{h}?showReplies=false"),
-                      ("xpage", f"https://x.com/{h}/media")):
-        try:
-            r = urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "en"}), timeout=12)
-            b = r.read().decode("utf8", "ignore")
-            m = re.search(r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>', b, re.S)
-            info = {"status": r.status, "len": len(b)}
-            if m:
-                d = json.loads(m.group(1))
-                ents = (((d.get("props") or {}).get("pageProps") or {}).get("timeline") or {}).get("entries") or []
-                vids = 0
-                for e in ents:
-                    tw = ((e.get("content") or {}).get("tweet")) or {}
-                    md = (tw.get("extended_entities") or tw.get("entities") or {}).get("media") or []
-                    if any(x.get("type") in ("video", "animated_gif") for x in md):
-                        vids += 1
-                info.update(entries=len(ents), videos=vids, keys=list((d.get("props") or {}).get("pageProps", {}).keys())[:10])
-                if ents:
-                    tw = ents[0].get("content", {}).get("tweet", {})
-                    info["sample"] = {k: tw.get(k) for k in ("id_str", "created_at", "full_text", "favorite_count", "retweet_count", "reply_count", "views")}
-                    info["sample_keys"] = sorted(tw.keys())[:60]
-            info["head"] = b[:200]
-            out[name] = info
-        except Exception as ex:  # noqa: BLE001
-            out[name] = "fail " + str(ex)[:200]
-    try:
-        y = _ydl(noplaylist=False, extract_flat="in_playlist", playlistend=20, ignoreerrors=True)
-        i = y.extract_info(f"https://x.com/{h}/media", download=False) or {}
-        out["ytdlp_media"] = len([e for e in (i.get("entries") or []) if e])
-    except Exception as ex:  # noqa: BLE001
-        out["ytdlp_media"] = "fail " + str(ex)[:200]
-    return out
-
 @app.route("/api/snack", methods=["GET"])
 @app.route("/api/snack/", methods=["GET"])
 def snack():
     global _global_files
     _today()
-    if os.environ.get("VERCEL_ENV") == "preview" and request.args.get("diag"):
-        return _ok(_diag())
     origin = request.headers.get("origin")
     if origin and origin not in ("https://" + request.host, "http://localhost:3000", "null"):
         return _err("origin", 403)
@@ -346,7 +402,13 @@ def snack():
         try:
             if site == "tiktok":
                 return _ok(_tiktok_profile(link, n))
-            return _ok(_single(link, site))
+            try:
+                return _ok(_x_profile(link))
+            except Exception as e:  # noqa: BLE001
+                print("[snack] x profile failed, single post instead", str(e)[:200])
+                if "/status/" not in link:
+                    raise
+                return _ok(_single(link, site))
         except Exception as e:  # noqa: BLE001
             print("[snack] menu failed", site, str(e)[:300])
             return _err(_friendly(e), 502)
