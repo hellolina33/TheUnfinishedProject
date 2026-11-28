@@ -127,6 +127,30 @@ footer details{max-width:700px}
 footer summary{cursor:pointer;font-weight:800}
 footer details p{margin:6px 0 0;opacity:.85;line-height:1.45}
 
+
+/* player */
+.play-ov{position:absolute;inset:0;display:grid;place-items:center;background:none;border:0;padding:0;cursor:pointer}
+.play-ov span{width:54px;height:54px;border-radius:50%;background:var(--lemon);border:3px solid var(--ink);display:grid;place-items:center;font-size:22px;box-shadow:3px 3px 0 var(--ink);opacity:.92;transition:transform .12s}
+.thumb:hover .play-ov span{transform:scale(1.12)}
+.player{position:fixed;inset:0;z-index:50;background:rgba(15,13,30,.82);display:flex;align-items:center;justify-content:center;padding:18px}
+.player[hidden]{display:none}
+.pbox{background:var(--cream);border:4px solid var(--ink);border-radius:22px;box-shadow:10px 10px 0 rgba(0,0,0,.45);display:grid;grid-template-columns:minmax(0,auto) 300px;gap:14px;padding:14px;max-width:min(1100px,100%);max-height:100%;position:relative}
+.pbox video{display:block;max-height:calc(100dvh - 72px);max-width:min(640px,60vw);width:auto;background:#000;border:3px solid var(--ink);border-radius:14px}
+.pside{display:flex;flex-direction:column;gap:9px;min-width:0;overflow:auto;max-height:calc(100dvh - 72px)}
+.pside h4{margin:0;font-size:15px;font-weight:900}
+.pside .ptext{font-size:13px;line-height:1.4;white-space:pre-line;margin:0;max-height:13em;overflow:auto}
+.pside .pmeta{font-family:var(--mono);font-size:12px;display:flex;flex-wrap:wrap;gap:4px 10px}
+.pnav{display:flex;gap:7px;margin-top:auto}
+.pnav .btn{flex:1;padding:7px 6px;font-size:13px}
+.pclose{position:absolute;top:-16px;right:-16px;width:40px;height:40px;border-radius:50%;border:3px solid var(--ink);background:var(--red);color:#fff;font-weight:900;font-size:18px;box-shadow:3px 3px 0 var(--ink)}
+.pload{font-size:12px;font-weight:700;margin:0;min-height:1em}
+@media (max-width:900px){
+  .player{padding:10px;align-items:flex-start}
+  .pbox{grid-template-columns:1fr;max-height:calc(100dvh - 20px);overflow:auto;padding:10px;margin-top:10px}
+  .pbox video{max-width:100%;width:100%;max-height:62dvh}
+  .pside{max-height:none}
+  .pclose{top:-8px;right:-8px}
+}
 @media (max-width:900px){
   main{display:flex;flex-direction:column;height:auto;flex:none;padding:4px 10px 150px}
   .panel{overflow:visible;flex:none}
@@ -199,6 +223,22 @@ footer details p{margin:6px 0 0;opacity:.85;line-height:1.45}
   </section>
 </main>
 
+<div class="player" id="player" hidden role="dialog" aria-modal="true" aria-label="Video player">
+  <div class="pbox">
+    <button class="pclose" type="button" id="pclose" aria-label="Close">✕</button>
+    <video id="pvideo" controls playsinline preload="metadata"></video>
+    <div class="pside">
+      <h4 id="pwho"></h4>
+      <p class="pmeta" id="pmeta"></p>
+      <p class="ptext" id="ptext"></p>
+      <p class="pload" id="pload"></p>
+      <div class="row"><button class="btn" type="button" id="padd"></button></div>
+      <div class="row"><button class="btn alt" type="button" id="ptake"></button><a class="btn alt" id="popen" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;color:var(--ink)"></a></div>
+      <div class="pnav"><button class="btn alt" type="button" id="pprev">◀</button><button class="btn alt" type="button" id="pnext">▶</button></div>
+    </div>
+  </div>
+</div>
+
 <footer>
   <details id="unfinished">
     <summary data-i18n="unf">What is still unfinished</summary>
@@ -230,7 +270,7 @@ const T = {
   sorts:{views:'Most viewed',likes:'Most liked',eng:'Best engagement',comments:'Most comments',new:'Newest',old:'Oldest',short:'Shortest'},
   tags:{hit:'🔥 Hit',above:'🚀 Above usual',gem:'💎 Hidden gem',talk:'💬 Talked about',short:'⚡ Under 15 s',new:'🆕 Last 30 days'},
   tagHelp:{hit:'Top 10% of views on this shelf (likes on X).',above:"At least twice the creator's usual (median) views, or likes on X.",gem:'Top 20% engagement but below-usual views: people loved it, the algorithm did not push it.',talk:'Top 10% for comments per view (per like on X).',short:'Shorter than 15 seconds: easy to drop in a slide.',new:'Posted in the last 30 days.'},
-  open1:'Watch ↗', one:'⬇ Take', none:'No video matches these filters.',
+  open1:'Watch ↗', one:'⬇ Take', play:'▶ Play', addBag:'+ Add to bag', inBag:'✓ In the bag', loadingVid:'Loading the video… (a few seconds)', vidFail:'This video would not play here. Use Take or open the post.', openShort:'Open ↗', none:'No video matches these filters.',
   bagFull:'The bag holds 25 snacks. Drop this one first.', copied:'References copied. Paste them in your notes or under your slide.',
   zipping:'Dropping snack', of:'of', done:'Bag dropped! Check your downloads.', taking:'Snack on its way to your downloads.', partial:'Bag dropped, but some snacks fell behind the machine:',
   clonk:'Clonk. The bag is stuck… *gentle kick*', clipFail:'Your browser blocked Paste. Long-press the field instead.',
@@ -258,7 +298,7 @@ const T = {
   sorts:{views:'Les plus vues',likes:'Les plus likées',eng:'Meilleur engagement',comments:'Les plus commentées',new:'Plus récentes',old:'Plus anciennes',short:'Plus courtes'},
   tags:{hit:'🔥 Carton',above:'🚀 Au-dessus',gem:'💎 Pépite',talk:'💬 Fait parler',short:'⚡ Moins de 15 s',new:'🆕 30 derniers jours'},
   tagHelp:{hit:'Top 10 % des vues de la vitrine (likes sur X).',above:'Au moins deux fois les vues habituelles (médiane) du créateur, ou les likes sur X.',gem:'Top 20 % d’engagement mais des vues sous la normale : le public a aimé, l’algorithme ne l’a pas poussée.',talk:'Top 10 % des commentaires par vue (par like sur X).',short:'Moins de 15 secondes : facile à glisser dans une slide.',new:'Publiée ces 30 derniers jours.'},
-  open1:'Voir ↗', one:'⬇ Prendre', none:'Aucune vidéo ne correspond à ces filtres.',
+  open1:'Voir ↗', one:'⬇ Prendre', play:'▶ Lire', addBag:'+ Ajouter au sachet', inBag:'✓ Dans le sachet', loadingVid:'Chargement de la vidéo… (quelques secondes)', vidFail:'Cette vidéo ne se lit pas ici. Utilise Prendre ou ouvre le post.', openShort:'Ouvrir ↗', none:'Aucune vidéo ne correspond à ces filtres.',
   bagFull:'Le sachet tient 25 snacks. Lâche-le d’abord.', copied:'Références copiées. Colle-les dans tes notes ou sous ta slide.',
   zipping:'Snack', of:'sur', done:'Sachet lâché ! Regarde tes téléchargements.', taking:'Le snack part dans tes téléchargements.', partial:'Sachet lâché, mais des snacks sont tombés derrière la machine :',
   clonk:'Clonk. Le sachet est coincé… *petit coup de pied*', clipFail:'Ton navigateur bloque le collage. Appuie longuement dans le champ.',
@@ -372,24 +412,25 @@ function render(){
   if (!vs.length) { shelf.innerHTML = `<div class="empty"><h2>🫙</h2><p>${t('none')}</p></div>`; return; }
   shelf.innerHTML = `<div class="grid">${vs.map((v,i)=>card(v,i)).join('')}</div>`;
   shelf.querySelectorAll('.card').forEach(c=>{
-    c.addEventListener('click',e=>{ if(e.target.closest('a,.one')) return; toggle(c.dataset.id); });
+    c.addEventListener('click',e=>{ if(e.target.closest('a,.one,.pl,.play-ov')) return; toggle(c.dataset.id); });
     c.addEventListener('keydown',e=>{ if((e.key==='Enter'||e.key===' ') && e.target===c){ e.preventDefault(); toggle(c.dataset.id);} });
   });
   shelf.querySelectorAll('.one').forEach(b=>b.addEventListener('click',()=>takeOne(b.dataset.id)));
+  shelf.querySelectorAll('.pl,.play-ov').forEach(b=>b.addEventListener('click',()=>openPlayer(b.dataset.id)));
 }
 
 function card(v,i){
   const sel = state.sel.has(v.id), d = state.data, tags = t('tags');
   const rank = ['views','likes','eng','comments'].includes(state.sort) && d.videos.length > 1 ? `<span class="rank">#${i+1}</span>` : '';
   return `<div class="card ${sel?'sel':''} ${d.focus===v.id?'focus':''}" data-id="${esc(v.id)}" role="checkbox" aria-checked="${sel}" tabindex="0">
-    <div class="thumb">${v.thumb?`<img loading="lazy" alt="" src="${esc(v.thumb)}" referrerpolicy="no-referrer" onerror="this.remove()">`:''}
+    <div class="thumb">${v.thumb?`<img loading="lazy" alt="" src="${esc(v.thumb)}" referrerpolicy="no-referrer" onerror="this.remove()">`:''}<button type="button" class="play-ov" data-id="${esc(v.id)}" aria-label="${t('play')}"><span>▶</span></button>
       ${rank}<span class="tick">${sel?'✓':'+'}</span>
       ${v.views!=null?`<span class="views">▶ ${num(v.views)}</span>`:(v.likes!=null?`<span class="views">♥ ${num(v.likes)}</span>`:'')}${v.duration?`<span class="dur">${dur(v.duration)}</span>`:''}</div>
     <div class="body">
       ${v._tags.length?`<div class="tags">${v._tags.map(k=>`<span class="tag ${k}">${tags[k]}</span>`).join('')}</div>`:''}
       <p class="cap">${esc(v.title)}</p>
       <div class="meta"><span>♥ ${num(v.likes)}</span><span>💬 ${num(v.comments)}</span><span>↗ ${num(v.shares)}</span><span>${ago(v.ts)}</span></div>
-      <div class="acts"><a href="${esc(v.url)}" target="_blank" rel="noopener">${t('open1')}</a><button type="button" class="one" data-id="${esc(v.id)}">${t('one')}</button></div>
+      <div class="acts"><button type="button" class="pl" data-id="${esc(v.id)}">${t('play')}</button><button type="button" class="one" data-id="${esc(v.id)}">${t('one')}</button><a href="${esc(v.url)}" target="_blank" rel="noopener" title="${t('open1')}" style="flex:.45">↗</a></div>
     </div></div>`;
 }
 
@@ -512,6 +553,48 @@ $('paste').addEventListener('click', async ()=>{
   catch { say(t('clipFail')); $('link').focus(); }
 });
 $('link').addEventListener('paste',()=>setTimeout(()=>{ const v=$('link').value.trim(); if(/tiktok\.com|x\.com|twitter\.com|^@/.test(v)) insert(v); },30));
+
+// ---- player ----
+let pid = null;
+function playUrl(v){ const q = (v.duration && v.duration > 600) ? 'light' : 'best'; return API+'?u='+encodeURIComponent(v.url)+'&f='+q+'&play=1'; }
+function openPlayer(id){
+  const v = byId(id); if (!v) return;
+  pid = id;
+  const p = state.data.profile || {}, x = state.data.site === 'x';
+  const vid = $('pvideo');
+  $('pwho').textContent = (p.name || '') + (p.handle ? '  @' + p.handle : '');
+  $('pmeta').innerHTML = `${v.views!=null?`<span>▶ ${num(v.views)}</span>`:''}<span>♥ ${num(v.likes)}</span><span>💬 ${num(v.comments)}</span><span>↗ ${num(v.shares)}</span>${v.duration?`<span>${dur(v.duration)}</span>`:''}<span>${date(v.ts)}</span>`;
+  $('ptext').textContent = v.title || '';
+  $('ptake').textContent = t('one');
+  $('popen').textContent = t('openShort'); $('popen').href = v.url;
+  updatePlayerBag();
+  $('pload').textContent = t('loadingVid');
+  vid.poster = v.thumb || '';
+  vid.src = playUrl(v);
+  $('player').hidden = false;
+  document.body.style.overflow = 'hidden';
+  vid.play().catch(()=>{});
+  const list = visible(), i = list.findIndex(x=>x.id===id);
+  $('pprev').disabled = i <= 0; $('pnext').disabled = i < 0 || i >= list.length-1;
+}
+function updatePlayerBag(){ if (!pid) return; const inb = state.sel.has(pid); $('padd').textContent = inb ? t('inBag') : t('addBag'); $('padd').classList.toggle('red', inb); }
+function closePlayer(){ const vid=$('pvideo'); vid.pause(); vid.removeAttribute('src'); vid.load(); $('player').hidden = true; document.body.style.overflow=''; pid = null; }
+function stepPlayer(d){ const list = visible(), i = list.findIndex(x=>x.id===pid); const n = list[i+d]; if (n) openPlayer(n.id); }
+$('pvideo').addEventListener('playing',()=>{ $('pload').textContent=''; });
+$('pvideo').addEventListener('canplay',()=>{ $('pload').textContent=''; });
+$('pvideo').addEventListener('error',()=>{ if (pid) $('pload').textContent = t('vidFail'); });
+$('pclose').addEventListener('click', closePlayer);
+$('player').addEventListener('click', e=>{ if (e.target.id === 'player') closePlayer(); });
+$('pprev').addEventListener('click', ()=>stepPlayer(-1));
+$('pnext').addEventListener('click', ()=>stepPlayer(1));
+$('padd').addEventListener('click', ()=>{ if (pid) { toggle(pid); updatePlayerBag(); } });
+$('ptake').addEventListener('click', ()=>{ if (pid) takeOne(pid); });
+document.addEventListener('keydown', e=>{
+  if ($('player').hidden) return;
+  if (e.key === 'Escape') closePlayer();
+  else if (e.key === 'ArrowRight' && e.target.tagName !== 'VIDEO') stepPlayer(1);
+  else if (e.key === 'ArrowLeft' && e.target.tagName !== 'VIDEO') stepPlayer(-1);
+});
 
 applyLang();
 try { const pre = new URLSearchParams(location.search).get('u'); if (pre) { $('link').value = pre; insert(pre); } } catch {}
